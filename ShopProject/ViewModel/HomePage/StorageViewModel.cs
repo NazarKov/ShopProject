@@ -19,6 +19,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand visibileAllButton;
         private ICommand openCreateProductWindow;
         private ICommand deleteProduct;
+        private ICommand openUpdateProductWindow;
 
         public StorageViewModel()
         {
@@ -29,6 +30,8 @@ namespace ShopProject.ViewModel.HomePage
             searchButton = new DelegateCommand(Search);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(VisibileAllProductThread)).Start(); });
             openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().ShowDialog(); });
+            openUpdateProductWindow = new DelegateCommand(() => { new UpdateProduct().ShowDialog(); });
+
             deleteProduct = new DelegateCommand(() => { storageModel.DeleteProduct(_prodcutSelectedProduct);});
 
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -122,6 +125,8 @@ namespace ShopProject.ViewModel.HomePage
         }
 
         public ICommand OpenCreateProductWindow => openCreateProductWindow;
+        public ICommand OpenUpdateProductWindow => openUpdateProductWindow;
+
 
         private Product _prodcutSelectedProduct;
         public Product ProdcutSelectedProduct
@@ -131,7 +136,7 @@ namespace ShopProject.ViewModel.HomePage
         }
 
         public ICommand DeleteProduct => deleteProduct;
-
+       
 
     }
 }

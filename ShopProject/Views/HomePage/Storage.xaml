@@ -11,7 +11,7 @@
         <local:StorageViewModel x:Key="VM"></local:StorageViewModel>
         <ContextMenu x:Key="contextmenu">
             <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
-            <MenuItem Header="Редагувати товар"/>
+            <MenuItem Header="Редагувати товар" Command="{Binding OpenUpdateProductWindow}"/>
             <MenuItem Header="Видалити товар" Command="{Binding DeleteProduct}"/>
         </ContextMenu>
     </Page.Resources>
