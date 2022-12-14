@@ -31,6 +31,7 @@ namespace ShopProject.Model.HomePage
   
         public List<Product> GetItemsLoadDb()
         {
+            db = new ShopContext();
             db.products.Load();
             products = db.products.ToList();
             return db.products.ToList();
@@ -80,6 +81,7 @@ namespace ShopProject.Model.HomePage
 
         public void DeleteProduct(Product productDelete)
         {
+      
             db.products.Remove(productDelete);
             db.SaveChangesAsync();
         }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.HomePage
@@ -30,7 +31,7 @@ namespace ShopProject.ViewModel.HomePage
             searchButton = new DelegateCommand(Search);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(VisibileAllProductThread)).Start(); });
             openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().ShowDialog(); });
-            openUpdateProductWindow = new DelegateCommand(() => { new UpdateProduct().ShowDialog(); });
+            openUpdateProductWindow = new DelegateCommand(OpenUpdateProductWindowParameter);
 
             deleteProduct = new DelegateCommand(() => { storageModel.DeleteProduct(_prodcutSelectedProduct);});
 
@@ -137,6 +138,18 @@ namespace ShopProject.ViewModel.HomePage
 
         public ICommand DeleteProduct => deleteProduct;
        
-
+        void OpenUpdateProductWindowParameter()
+        {
+            if (_prodcutSelectedProduct != null)
+            {
+                ResourseProductModel.product = _prodcutSelectedProduct;
+                new UpdateProduct().ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Продук не вибраний для редагування");
+            }
+            new Thread(new ThreadStart(addItemThread)).Start();
+        }
     }
 }
