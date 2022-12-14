@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
 using ShopProject.Views.HomePage;
+using ShopProject.Views.ToolsPage;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -20,6 +21,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openSetting;
         private ICommand openStorage;
         private ICommand openArchive;
+        private ICommand openExportProduct;
 
         HomeModel homeModel;
 
@@ -31,6 +33,7 @@ namespace ShopProject.ViewModel.HomePage
             openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); });
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
+            openExportProduct = new DelegateCommand(() => { new ExportProductExel().ShowDialog(); });
             
             newModels();
 
@@ -123,6 +126,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand ExitApp => exitApp;
         public ICommand OpenStorage => openStorage;
         public ICommand OpenArchive => openArchive;
+        public ICommand OpenExportProduct => openExportProduct;
 
     }
 }

@@ -38,6 +38,7 @@
                     <MenuItem Header="Архів" Command="{Binding OpenArchive}"></MenuItem>
                 </MenuItem>
             <MenuItem Header="Інструменти" >
+                <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProduct}"></MenuItem>
             </MenuItem>
                 <MenuItem Header="Довідник" ></MenuItem>
                 <MenuItem Header="Справка" ></MenuItem>
