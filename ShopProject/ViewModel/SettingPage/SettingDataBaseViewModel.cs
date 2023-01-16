@@ -26,7 +26,7 @@ namespace ShopProject.ViewModel.SettingPage
         {
             settingDb = new SettingDataBaseModel();
             createDataBase = new DelegateCommand(CreateDataBaseInUpdateField);
-            deleteDataBase = new DelegateCommand(DeleteDb);
+            deleteDataBase = new DelegateCommand(DeleteDataBaseAndDeleteSettingDataBase);
            
             _isCreateButton = true;
             _dbname = string.Empty;
@@ -95,7 +95,7 @@ namespace ShopProject.ViewModel.SettingPage
             }
         }
         
-        void ThreadCreateDataBase()
+        private void ThreadCreateDataBase()
         {
             if (settingDb.CreateDataBase())
             {
@@ -103,7 +103,7 @@ namespace ShopProject.ViewModel.SettingPage
                 MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-        void UpdateField()
+        private void UpdateField()
         {
             IsCreateLableName = "База створена";
             IsCreateButton = false;
@@ -128,12 +128,12 @@ namespace ShopProject.ViewModel.SettingPage
 
         public ICommand DeleteDataBase => deleteDataBase;
 
-        private void DeleteDb()
+        private void DeleteDataBaseAndDeleteSettingDataBase()
         {
-            new Thread(new ThreadStart(deleteDb)).Start();
+            new Thread(new ThreadStart(DeleteDataBaseisFieldUpdate)).Start();
             settingDb.RemoveSetting();
         }
-        void deleteDb()
+        private void DeleteDataBaseisFieldUpdate()
         {
             if (settingDb.DeleteDataBase())
             {
