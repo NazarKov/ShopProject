@@ -8,7 +8,7 @@
       d:DesignHeight="405" d:DesignWidth="535"
       Title="SettingDb">
     <Page.DataContext>
-        <local:SettingDbViewModel/>
+        <local:SettingDataBaseViewModel/>
     </Page.DataContext>
     <Border BorderBrush="Black" BorderThickness="0.3">
         <Grid>
