@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ShopProject.ViewModel.HomePage"
         mc:Ignorable="d"
         Title="Home" Height="450" Width="800"
-         WindowState="Maximized">
+        WindowState="Maximized">
     <Window.Resources>
         <local:HomeViewModel x:Key="VM"></local:HomeViewModel>
     </Window.Resources>
@@ -16,13 +16,14 @@
 
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
-                <RowDefinition Height="20"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        
             <Menu Height="20" Grid.RowSpan="1" VerticalAlignment="Top">
                 <MenuItem Header="Програма">
                     <MenuItem Header="Настройки" Command="{Binding OpenSetting}" ></MenuItem>
@@ -39,6 +40,7 @@
                 </MenuItem>
             <MenuItem Header="Інструменти" >
                 <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProduct}"></MenuItem>
+                <MenuItem Header="Імпортувати товари" Command="{Binding OpenImportProduct}"></MenuItem>
             </MenuItem>
                 <MenuItem Header="Довідник" ></MenuItem>
                 <MenuItem Header="Справка" ></MenuItem>
@@ -57,6 +59,7 @@
             </Menu>
  
         <Canvas Visibility="Hidden" VerticalAlignment="Stretch">
+            
             <Label x:Name="label3" HorizontalAlignment="Left" Margin="348,149,0,0" VerticalAlignment="Top" Content="{Binding Number3}" />
 
             <Label x:Name="label2" Content="Імя" HorizontalAlignment="Left" Margin="246,191,0,0" VerticalAlignment="Top"/>
@@ -73,8 +76,6 @@
         </Canvas>
 
         <Frame Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Content="{Binding Path=Page}" NavigationUIVisibility="Hidden"></Frame>
-
-
-
+        
     </Grid>
 </Window>

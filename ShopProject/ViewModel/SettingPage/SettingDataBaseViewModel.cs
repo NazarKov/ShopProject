@@ -31,7 +31,7 @@ namespace ShopProject.ViewModel.SettingPage
             _isCreateButton = true;
             _dbname = string.Empty;
             _isCreateLableName = string.Empty;
-
+           
             if (settingDb.GetName() != string.Empty)
             {
                 SetFieldText(true);         

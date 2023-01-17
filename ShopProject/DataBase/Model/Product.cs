@@ -18,6 +18,10 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public string? name { get; set; }
         /// <summary>
+        /// ариткуль товару
+        /// </summary>
+        public string? articule { get; set; }
+        /// <summary>
         /// опис товару
         /// </summary>
         public string? description { get; set; }

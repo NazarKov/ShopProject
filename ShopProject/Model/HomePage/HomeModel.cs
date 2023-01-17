@@ -14,12 +14,13 @@ namespace ShopProject.Model.HomePage
 {
     internal class HomeModel
     {
-        ShopContext db = null;
-        List<User> sellers = null;
+        ShopContext db;
+        List<User> sellers;
 
         public HomeModel ()
         {
-           
+            db = new ShopContext();
+            sellers = new List<User>();
         }
 
         public string GetName(int i )
@@ -36,51 +37,7 @@ namespace ShopProject.Model.HomePage
             sellers = new List<User>();
             sellers.AddRange(db.user.Local.ToList());
         }
-
-        public void ConnectionDB(string dbConnectSelectedItem)
-        {
-            Configuration configuration = null;
-            ConnectionStringSettings connectionString = null;
-
-            configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            for (int i = 0; i < configuration.ConnectionStrings.ConnectionStrings.Count; i++)
-            {
-                configuration.ConnectionStrings.ConnectionStrings.RemoveAt(i);
-            }
-            connectionString = new ConnectionStringSettings();
-
-            if (dbConnectSelectedItem == "SQLExpress")
-            {
-                connectionString.ConnectionString = "Data Source=" + Environment.MachineName + "\\SQLExpress;Initial Catalog=Shop;Integrated Security=True";
-            }
-            else
-            {
-               connectionString.ConnectionString = "Data Source=" + Environment.MachineName + ";Initial Catalog=shop1;Integrated Security=True";
-            }
-            connectionString.Name = "DBConnectionMyString";
-            connectionString.ProviderName = "System.Data.SqlClient";
-            configuration.ConnectionStrings.ConnectionStrings.Add(connectionString);
-            connectionString = new ConnectionStringSettings();
-
-
-            if (dbConnectSelectedItem == "SQLExpress")
-            {
-                connectionString.ConnectionString = "Data Source=" + Environment.MachineName + "\\SQLExpress;Initial Catalog=Shop;Integrated Security=True";
-
-            }
-            else
-            {
-                connectionString.ConnectionString = "Data Source=" + Environment.MachineName + ";Initial Catalog=shop1;Integrated Security=True";
-            }
-            connectionString.ConnectionString = "Data Source=" + Environment.MachineName + ";Initial Catalog=shop1;Integrated Security=True";
-            connectionString.Name = "Shop.Properties.Settings.ShopConnectionString";
-            connectionString.ProviderName = "System.Data.SqlClient";
-            configuration.ConnectionStrings.ConnectionStrings.Add(connectionString);
-          
-            configuration.Save(ConfigurationSaveMode.Modified, true);
-            ConfigurationManager.RefreshSection("connectionStrings");
-
-        }        
+        
 
         public string Authorization(string name,string password)
         {

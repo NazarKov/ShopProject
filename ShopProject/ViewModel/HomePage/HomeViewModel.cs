@@ -22,6 +22,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openStorage;
         private ICommand openArchive;
         private ICommand openExportProduct;
+        private ICommand opemImportProduct;
 
         HomeModel homeModel;
 
@@ -34,6 +35,7 @@ namespace ShopProject.ViewModel.HomePage
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
             openExportProduct = new DelegateCommand(() => { new ExportProductExel().ShowDialog(); });
+            opemImportProduct = new DelegateCommand(() => { new ImportProductExel().ShowDialog(); });
             
             newModels();
 
@@ -97,7 +99,7 @@ namespace ShopProject.ViewModel.HomePage
         private void AuthorizationUser()
         {
             string temp;
-            homeModel.ConnectionDB(_dbConnectSelectedItem);
+         //   homeModel.ConnectionDB(_dbConnectSelectedItem);
             temp = homeModel.Authorization(_name, _password);
             if (temp == "0")
             {
@@ -127,6 +129,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenStorage => openStorage;
         public ICommand OpenArchive => openArchive;
         public ICommand OpenExportProduct => openExportProduct;
+        public ICommand OpenImportProduct => opemImportProduct;
 
     }
 }

@@ -55,6 +55,7 @@
                   SelectedItem="{Binding ProdcutSelectedProduct,UpdateSourceTrigger=PropertyChanged}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
+                <DataGridTextColumn Header="Артикул" Binding="{Binding articule}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
                 <DataGridTextColumn Header="Опис" Binding="{Binding description}" />
