@@ -1,5 +1,5 @@
 ﻿using ShopProject.DataBase.Model;
-using ShopProject.Model;
+using ShopProject.Model.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows;
 using ShopProject.Model.ToolsPage;
 using System.Threading;
+using ShopProject.Model;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
@@ -16,95 +17,125 @@ namespace ShopProject.ViewModel.ToolsPage
     {
         private ICommand saveProduct;
 
-        UpdateProductModel update;
-        Product product;
+        private UpdateProductModel update;
+        private Product? product;
 
         public UpdateProductViewModel()
         {
-            product = ResourseProductModel.product;
             update = new UpdateProductModel();
-            if(product.code!=null)
-            Code = product.code;
-            if (product.name != null)
-                Name = product.name;
-            if (product.description != null)
-                Description = product.description;
-            if (product.price != null)
-                Price = (double)product.price;
-            if (product.purchase_prise != null)
-                PurchasePrice = (double)product.purchase_prise;
-            if (product.count != null)
-                Count = (int)product.count;
+            saveProduct = new DelegateCommand(UpdateProductDataBase);
 
-            ResourseProductModel.product = null;
+            if (ResourseProductModel.product != null)
+                product = ResourseProductModel.product;
 
-            saveProduct = new DelegateCommand(saveProductDb);
+            _code = string.Empty;
+            _name = string.Empty;
+            _articule = string.Empty;
+            _description = string.Empty;
+            _units = null;
+            _selectUnits = string.Empty;
 
+
+            SetFieldComboBox();
+            SetFieldText();
+            ClearResourses();
+        }
+        private void SetFieldText()
+        {
+            if (product != null)
+            {
+                if (product.code != null)
+                    Code = product.code;
+                if (product.name != null)
+                    Name = product.name;
+                if (product.articule != null)
+                    Articule = product.articule;
+                if (product.description != null)
+                    Description = product.description;
+                if (product.price != null)
+                    Price = (double)product.price;
+                if (product.purchase_prise != null)
+                    PurchasePrice = (double)product.purchase_prise;
+                if (product.count != null)
+                    Count = (int)product.count;
+                if (product.units != null)
+                    SelectUnits = product.units;
+            }
+          
+        }
+        private void SetFieldComboBox()
+        {
             Units = new List<string>();
             Units.Add("Шт");
             Units.Add("кг");
             Units.Add("пачка");
             Units.Add("ящик");
-
-            SelectUnits = product.units;
-
-         
+        }
+        private void ClearResourses()
+        {
+            ResourseProductModel.product = null;
         }
 
         private string _code;
         public string Code
         {
-            set { _code = value; OnPropertyChanged("Code"); }
             get { return _code; }
+            set { _code = value; OnPropertyChanged("Code"); }
         }
 
         private string _name;
         public string Name
         {
-            set { _name = value; OnPropertyChanged("Name"); }
             get { return _name; }
+            set { _name = value; OnPropertyChanged("Name"); }
+        }
+        private string _articule;
+        public string Articule
+        {
+            get { return _articule; }
+            set { _articule=value; OnPropertyChanged("Articule"); }
         }
 
         private string _description;
         public string Description
         {
-            set { _description = value; OnPropertyChanged("Description"); }
             get { return _description; }
+            set { _description = value; OnPropertyChanged("Description"); }
         }
 
         private double _price;
         public double Price
         {
-            set { _price = value; OnPropertyChanged("Price"); }
             get { return _price; }
+            set { _price = value; OnPropertyChanged("Price"); }
         }
 
         private double _purchase_price;
         public double PurchasePrice
         {
-            set { _purchase_price = value; OnPropertyChanged("PurchasePrice"); }
             get { return _purchase_price; }
+            set { _purchase_price = value; OnPropertyChanged("PurchasePrice"); }
         }
 
         private int _count;
         public int Count
         {
-            set { _count = value; OnPropertyChanged("Count"); }
             get { return _count; }
+            set { _count = value; OnPropertyChanged("Count"); }
         }
 
-        private List<string> _units;
-        public List<string> Units
+        private List<string>? _units;
+        public List<string>? Units
         {
-            set { _units = value; OnPropertyChanged("Units"); }
             get { return _units; }
+            set { _units = value; OnPropertyChanged("Units"); }
         }
 
         private string _selectUnits;
         public string SelectUnits
         {
-            set { _selectUnits = value; OnPropertyChanged("SelectUnits"); }
             get { return _selectUnits; }
+            set { _selectUnits = value; OnPropertyChanged("SelectUnits"); }
         }
 
         public ICommand ExitWindow { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -113,22 +144,24 @@ namespace ShopProject.ViewModel.ToolsPage
             Window? window = parameter as Window;
             window?.Close();
         }
-
         private bool CanRegister(object parameter) => true;
+
 
         public ICommand SaveProduct => saveProduct;
 
-        private void saveProductDb()
+        private void UpdateProductDataBase()
         {
-            if (update.updateproduct(_name, _code, _description, _price, _purchase_price, _count, _selectUnits))
+            if (update.UpdateProduct(_name, _code, _articule, _description, _price, _purchase_price, _count, _selectUnits))
             {
-                MessageBox.Show("товар редаговано");
+                if (update.SaveProduct())
+                {
+                    MessageBox.Show("товар редаговано");
+                }
+                else
+                {
+                    MessageBox.Show("помилка редагування");
+                }
             }
-            else
-            {
-                MessageBox.Show("помилка редагування");
-            }
-            
         }
     }
 }

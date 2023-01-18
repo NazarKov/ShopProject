@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.Views.HomePage
+namespace ShopProject.Views.StoragePage
 {
     /// <summary>
     /// Interaction logic for Archive.xaml

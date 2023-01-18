@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ShopProject.Model
+namespace ShopProject.Model.Command
 {
     internal abstract class Command : ICommand
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShopProject.Model
+namespace ShopProject.Model.Command
 {
     internal sealed class DelegateCommand : Command
     {

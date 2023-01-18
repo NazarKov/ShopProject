@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
 
-namespace ShopProject.Model.HomePage
+namespace ShopProject.Model.StoragePage
 {
     internal class StorageModel
     {
@@ -28,7 +28,7 @@ namespace ShopProject.Model.HomePage
             products = new List<Product>();
 
         }
-  
+
         public List<Product> GetItemsLoadDb()
         {
             db = new ShopContext();
@@ -81,7 +81,7 @@ namespace ShopProject.Model.HomePage
 
         public void DeleteProduct(Product productDelete)
         {
-      
+
             db.products.Remove(productDelete);
             db.SaveChangesAsync();
         }

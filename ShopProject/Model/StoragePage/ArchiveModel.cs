@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using static ShopProject.Model.HomePage.StorageModel;
+using static ShopProject.Model.StoragePage.StorageModel;
 
-namespace ShopProject.Model.HomePage
+namespace ShopProject.Model.StoragePage
 {
     internal class ArchiveModel
     {
@@ -20,7 +20,7 @@ namespace ShopProject.Model.HomePage
         };
 
         ShopContext db;
-        List<Archive>  archives;
+        List<Archive> archives;
 
         public ArchiveModel()
         {

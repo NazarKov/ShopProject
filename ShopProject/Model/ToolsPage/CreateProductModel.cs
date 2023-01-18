@@ -56,7 +56,8 @@ namespace ShopProject.Model.ToolsPage
             {
 
                 product = new Product();
-                FieldValidation(name, code, articule, description, price, purchase_price, count, units, true);
+                CodeCoincidenceinDatabase(code);
+                Validation.TextField(product,name, code, articule, description, price, purchase_price, count, units, true);
                 return true;
             }
             catch (Exception ex)
@@ -65,70 +66,21 @@ namespace ShopProject.Model.ToolsPage
                 return false;
             }
         }
-        private void FieldValidation(string name, string code, string articule, string description, double price, double purchase_price, int count, string units,bool validation)
+       
+
+        private void CodeCoincidenceinDatabase(string code)
         {
-            if (validation)
+            if(db!=null)
+            if(db.products!=null)
+            foreach (Product item in db.products)
             {
-                if (product != null)
+                if (item.code == code)
                 {
-                    product.name = ItemChekIsNull(name,typeof(string), "Назва").ToString();
-                    product.code = ItemChekIsNull(code, typeof(string), "Штрихкод").ToString();
-                    product.articule = ItemChekIsNull(articule, typeof(string), "Артикуль").ToString();
-                    product.description = ItemChekIsNull(description, typeof(string), "Опис").ToString();
-                    product.price = Convert.ToDouble(ItemChekIsNull(price, typeof(double), "Ціна"));
-                    product.purchase_prise = Convert.ToDouble(ItemChekIsNull(purchase_price, typeof(double), "Початкова ціна"));
-                    product.count = Convert.ToInt32(ItemChekIsNull(count, typeof(int), "Кількість")); ;
-                    product.units = ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
-                    product.sales = 0;
-                    product.created_at = new DateTimeOffset().LocalDateTime;
-                    product.mark_up = (price / purchase_price) * 100;
-                }
-            }
-            else
-            {
-                if (product != null)
-                {
-                    product.name = name.ToString();
-                    product.code = code.ToString();
-                    product.articule = articule.ToString();
-                    product.description = description.ToString();
-                    product.price = price;
-                    product.purchase_prise = purchase_price;
-                    product.count = count;
-                    product.units = units.ToString();
-                    product.sales = 0;
-                    product.created_at = new DateTimeOffset().LocalDateTime;
-                    product.mark_up = (price / purchase_price) * 100;
+                    throw new Exception("Такий товар iснує");
                 }
             }
         }
 
-        private object ItemChekIsNull(object? item, Type type, string messeges)
-        {
-            if (item != null)
-            {
-                if (type.Equals(typeof(string))&&(string)item != string.Empty)
-                {
-                    return item;
-                }
-                else if (type.Equals(typeof(int))&&(int)item != 0)
-                {
-                    return item;
-                }
-                else if (type.Equals(typeof(double))&&(double)item != 0)
-                {
-                    return item;
-                }
-                else
-                {
-                    throw new Exception("Заповніть поле " + messeges);
-                }
-            }
-            else
-            {
-                throw new Exception("Заповніть поле " + messeges);
-            }
-
-        }
+      
     }
 }

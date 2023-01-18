@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ShopProject.ViewModel.HomePage;
 
-namespace ShopProject.View.HomePage
+namespace ShopProject.Views.HomePage
 {
     /// <summary>
     /// Interaction logic for Home.xaml

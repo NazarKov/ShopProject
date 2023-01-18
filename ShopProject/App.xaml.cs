@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ShopProject.View.HomePage;
+using ShopProject.Views.HomePage;
 
 namespace ShopProject
 {

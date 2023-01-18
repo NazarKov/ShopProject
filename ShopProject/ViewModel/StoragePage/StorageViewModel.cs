@@ -1,6 +1,7 @@
 ﻿using ShopProject.DataBase.Model;
 using ShopProject.Model;
-using ShopProject.Model.HomePage;
+using ShopProject.Model.Command;
+using ShopProject.Model.StoragePage;
 using ShopProject.Views.ToolsPage;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.HomePage
+namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
@@ -27,15 +28,15 @@ namespace ShopProject.ViewModel.HomePage
             storageModel = new StorageModel();
             Products = new List<Product>();
             SearchTemplateName = new List<string>();
-         
+
             searchButton = new DelegateCommand(Search);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(VisibileAllProductThread)).Start(); });
             openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().ShowDialog(); });
             openUpdateProductWindow = new DelegateCommand(OpenUpdateProductWindowParameter);
 
-            deleteProduct = new DelegateCommand(() => { storageModel.DeleteProduct(_prodcutSelectedProduct);});
+            deleteProduct = new DelegateCommand(() => { storageModel.DeleteProduct(_prodcutSelectedProduct); });
 
-            SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
+            SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
             SearchTemplateName.Add("ШтрихКод");
             SearchTemplateName.Add("Назва");
             SelectedIndexSearch = 0;
@@ -46,7 +47,7 @@ namespace ShopProject.ViewModel.HomePage
 
         void addItemThread()
         {
-            Products = storageModel.GetItemsLoadDb(); 
+            Products = storageModel.GetItemsLoadDb();
         }
 
         private List<Product> _product;
@@ -78,7 +79,7 @@ namespace ShopProject.ViewModel.HomePage
                 _searchTemplateName = value;
                 OnPropertyChanged("SearchTemplateName");
             }
-            get { return _searchTemplateName;}
+            get { return _searchTemplateName; }
         }
 
         private int _selectedIndexSearch;
@@ -100,7 +101,7 @@ namespace ShopProject.ViewModel.HomePage
                 nameSearch = value;
                 OnPropertyChanged("NameSearch");
             }
-            get { return nameSearch;}
+            get { return nameSearch; }
         }
 
         public ICommand SearchButton => searchButton;
@@ -113,9 +114,9 @@ namespace ShopProject.ViewModel.HomePage
             }
             else
             {
-                Products = storageModel.Search(nameSearch,StorageModel.TypeSearch.Code);
+                Products = storageModel.Search(nameSearch, StorageModel.TypeSearch.Code);
             }
-    
+
         }
         public ICommand VisibileAllButton => visibileAllButton;
 
@@ -137,7 +138,7 @@ namespace ShopProject.ViewModel.HomePage
         }
 
         public ICommand DeleteProduct => deleteProduct;
-       
+
         void OpenUpdateProductWindowParameter()
         {
             if (_prodcutSelectedProduct != null)

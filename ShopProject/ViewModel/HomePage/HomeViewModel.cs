@@ -1,5 +1,4 @@
 ﻿using ShopProject.Model.HomePage;
-using ShopProject.Model;
 using ShopProject.Views.SettingPage;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
-using ShopProject.Views.HomePage;
+using ShopProject.Views.StoragePage;
 using ShopProject.Views.ToolsPage;
+using ShopProject.Model.Command;
 
 namespace ShopProject.ViewModel.HomePage
 {

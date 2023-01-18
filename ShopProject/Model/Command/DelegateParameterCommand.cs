@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ShopProject.Model
+namespace ShopProject.Model.Command
 {
     internal class DelegateParameterCommand : ICommand
     {
@@ -18,16 +18,16 @@ namespace ShopProject.Model
         public DelegateParameterCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null) throw new ArgumentNullException("execute");
-            this._execute = execute;
-            this._canExecute = canExecute;
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter) => this._canExecute == null ? true : this._canExecute(parameter);
+        public bool CanExecute(object parameter) => _canExecute == null ? true : _canExecute(parameter);
 
-        public void Execute(object parameter) => this._execute(parameter);
+        public void Execute(object parameter) => _execute(parameter);
 
-        public void RaiseCanExecuteChanged() => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

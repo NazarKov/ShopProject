@@ -1,6 +1,6 @@
 ﻿using ShopProject.DataBase.Model;
-using ShopProject.Model;
-using ShopProject.Model.HomePage;
+using ShopProject.Model.Command;
+using ShopProject.Model.StoragePage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.HomePage
+namespace ShopProject.ViewModel.StoragePage
 {
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
@@ -34,13 +34,14 @@ namespace ShopProject.ViewModel.HomePage
         }
         void addItem()
         {
-           Archives=archiveModel.GetItemsLoadDb();
+            Archives = archiveModel.GetItemsLoadDb();
         }
 
         private List<Archive> _archives;
         public List<Archive> Archives
         {
-            set { 
+            set
+            {
                 _archives = value;
                 OnPropertyChanged("Archives");
             }
@@ -96,11 +97,11 @@ namespace ShopProject.ViewModel.HomePage
         {
             if (_selectedIndexSearch == 1)
             {
-                Archives = archiveModel.Search(nameSearch,ArchiveModel.TypeSearch.Name);
+                Archives = archiveModel.Search(nameSearch, ArchiveModel.TypeSearch.Name);
             }
             else
             {
-                Archives = archiveModel.Search(nameSearch,ArchiveModel.TypeSearch.Code);
+                Archives = archiveModel.Search(nameSearch, ArchiveModel.TypeSearch.Code);
             }
 
         }
