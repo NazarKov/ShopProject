@@ -5,85 +5,67 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Media3D;
 using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Model;
 
 namespace ShopProject.Model.StoragePage
 {
     internal class StorageModel
     {
-        public enum TypeSearch
-        {
-            Name = 0,
-            Code = 1,
-        };
-
-
-        ShopContext db;
-        List<Product> products;
+        private ShopContext db;
+        private List<Product> products;
 
         public StorageModel()
         {
             db = new ShopContext();
             products = new List<Product>();
-
-        }
-
-        public List<Product> GetItemsLoadDb()
-        {
-            db = new ShopContext();
             db.products.Load();
+            if(db.products!=null)
             products = db.products.ToList();
-            return db.products.ToList();
         }
         public List<Product> GetItems()
         {
-            return db.products.ToList();
+            return products;
         }
 
-        public List<Product>? Search(string itemSearch, TypeSearch type)
+        public List<Product>? SearchProduct(string itemSearch, TypeSearch type)
         {
-            products = new List<Product>();
-            products = db.products.ToList();
-            List<Product> searchResult = new List<Product>();
-
-            switch (type)
+            try
             {
-                case TypeSearch.Name:
-                    {
-                        foreach (Product product in products)
-                        {
-                            if (product.name == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-
-                        return searchResult;
-                    }
-                case TypeSearch.Code:
-                    {
-                        foreach (Product product in products)
-                        {
-                            if (product.code == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-                        return searchResult;
-                    }
-                default:
-                    {
-                        return null;
-                    }
+                return Search.ProductDataBase(itemSearch, type, products);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка",MessageBoxButton.OK);
+                return null;
             }
         }
 
-        public void DeleteProduct(Product productDelete)
+        public bool DeleteProduct(Product productDelete)
         {
+            try
+            {
+                if (db != null)
+                {
+                    if (db.products != null)
+                    {
+                        db.products.Remove(productDelete);
+                        db.SaveChangesAsync();
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                return false;
+            }
 
-            db.products.Remove(productDelete);
-            db.SaveChangesAsync();
         }
 
 

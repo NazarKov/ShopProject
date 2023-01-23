@@ -16,7 +16,8 @@ namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
-        StorageModel storageModel;
+        StorageModel? storageModel;
+
         private ICommand searchButton;
         private ICommand visibileAllButton;
         private ICommand openCreateProductWindow;
@@ -25,110 +26,67 @@ namespace ShopProject.ViewModel.StoragePage
 
         public StorageViewModel()
         {
-            storageModel = new StorageModel();
             Products = new List<Product>();
             SearchTemplateName = new List<string>();
+          
 
-            searchButton = new DelegateCommand(Search);
-            visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(VisibileAllProductThread)).Start(); });
-            openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().ShowDialog(); });
+            searchButton = new DelegateCommand(SearchProductInCodeAndName);
+            visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
+            openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
             openUpdateProductWindow = new DelegateCommand(OpenUpdateProductWindowParameter);
-
-            deleteProduct = new DelegateCommand(() => { storageModel.DeleteProduct(_prodcutSelectedProduct); });
+            deleteProduct = new DelegateCommand(DeleteProductDatabase);
 
             SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
+            
+            _nameSearch = string.Empty;
+            _prodcutSelectedProduct = new Product();
+            _searchTemplateName = new List<string>();
+
+            SetFieldTextComboBox();
+
+            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+        }
+
+        private void SetFieldTextComboBox()
+        {
             SearchTemplateName.Add("ШтрихКод");
             SearchTemplateName.Add("Назва");
             SelectedIndexSearch = 0;
-
-            new Thread(new ThreadStart(addItemThread)).Start();
-
         }
 
-        void addItemThread()
+        private List<Product>? _product;
+        public List<Product>? Products
         {
-            Products = storageModel.GetItemsLoadDb();
-        }
-
-        private List<Product> _product;
-        public List<Product> Products
-        {
-            set
-            {
-                _product = value;
-                OnPropertyChanged("Products");
-            }
             get { return _product; }
+            set{ _product = value; OnPropertyChanged("Products"); }
         }
 
         private int _sizeDataGrid;
         public int SizeDataGrid
         {
-            set
-            {
-                _sizeDataGrid = value;
-                OnPropertyChanged("SizeDataGrid");
-            }
+            set{ _sizeDataGrid = value; OnPropertyChanged("SizeDataGrid"); }
         }
 
         private List<string> _searchTemplateName;
         public List<string> SearchTemplateName
         {
-            set
-            {
-                _searchTemplateName = value;
-                OnPropertyChanged("SearchTemplateName");
-            }
             get { return _searchTemplateName; }
+            set { _searchTemplateName = value; OnPropertyChanged("SearchTemplateName"); }
         }
 
         private int _selectedIndexSearch;
         public int SelectedIndexSearch
         {
-            set
-            {
-                _selectedIndexSearch = value;
-                OnPropertyChanged("SelectedIndexSearch");
-            }
             get { return _selectedIndexSearch; }
+            set { _selectedIndexSearch = value; OnPropertyChanged("SelectedIndexSearch"); }
         }
 
-        private string nameSearch;
+        private string _nameSearch;
         public string NameSearch
         {
-            set
-            {
-                nameSearch = value;
-                OnPropertyChanged("NameSearch");
-            }
-            get { return nameSearch; }
+            get { return _nameSearch; }
+            set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
-
-        public ICommand SearchButton => searchButton;
-
-        void Search()
-        {
-            if (_selectedIndexSearch == 1)
-            {
-                Products = storageModel.Search(nameSearch, StorageModel.TypeSearch.Name);
-            }
-            else
-            {
-                Products = storageModel.Search(nameSearch, StorageModel.TypeSearch.Code);
-            }
-
-        }
-        public ICommand VisibileAllButton => visibileAllButton;
-
-        void VisibileAllProductThread()
-        {
-            Products = null;
-            Products = storageModel.GetItems();
-        }
-
-        public ICommand OpenCreateProductWindow => openCreateProductWindow;
-        public ICommand OpenUpdateProductWindow => openUpdateProductWindow;
-
 
         private Product _prodcutSelectedProduct;
         public Product ProdcutSelectedProduct
@@ -136,9 +94,43 @@ namespace ShopProject.ViewModel.StoragePage
             get { return _prodcutSelectedProduct; }
             set { _prodcutSelectedProduct = value; OnPropertyChanged("IndexSelectedProduct"); }
         }
+        
+        public ICommand SearchButton => searchButton;
 
-        public ICommand DeleteProduct => deleteProduct;
+        void SearchProductInCodeAndName()
+        {
+            if (storageModel != null)
+                if (_selectedIndexSearch == 1)
+                {
+                    Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
+                }
+                else
+                {
+                    Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                }
+        }
+        public ICommand VisibileAllButton => visibileAllButton;
 
+        void SetFieldItemDataGridThread()
+        {
+            Products = null;
+            storageModel = new StorageModel();
+            Products = storageModel.GetItems();
+        }
+
+        public ICommand OpenCreateProductWindow => openCreateProductWindow;
+
+        private void CreateProductDatabase()
+        {
+            if (storageModel != null)
+            {
+                if(new CreateProductPage().ShowDialog().HasValue)
+                    new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+            }
+        }
+
+        public ICommand OpenUpdateProductWindow => openUpdateProductWindow;
+      
         void OpenUpdateProductWindowParameter()
         {
             if (_prodcutSelectedProduct != null)
@@ -150,7 +142,19 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 MessageBox.Show("Продук не вибраний для редагування");
             }
-            new Thread(new ThreadStart(addItemThread)).Start();
+            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+        }
+
+        public ICommand DeleteProduct => deleteProduct;
+
+        private void DeleteProductDatabase()
+        {
+            if (_prodcutSelectedProduct != null)
+                if (storageModel != null)
+                {
+                    if(storageModel.DeleteProduct(_prodcutSelectedProduct))
+                        new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                }
         }
     }
 }
