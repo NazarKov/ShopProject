@@ -55,6 +55,7 @@ namespace ShopProject.Model
         public List<string> GetTableName()
         {
             List<string> tableName = new List<string>();
+            if(tableCollection!= null)
             foreach (DataTable table in tableCollection)
             {
                 tableName.Add(table.TableName);

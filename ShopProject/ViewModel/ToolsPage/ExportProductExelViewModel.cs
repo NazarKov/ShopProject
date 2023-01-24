@@ -16,8 +16,8 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class ExportProductExelViewModel : ViewModel<ExportProductExelViewModel>
     {
-        ExportProductExelModel model;
-        SaveFileDialog saveFileDialog;
+        private ExportProductExelModel? model;
+        private SaveFileDialog? saveFileDialog;
         private ICommand addProductList;
         private ICommand saveSelectItem;
         private ICommand saveAllItem;
@@ -27,90 +27,96 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             Products = new List<Product>();
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
-            saveFileDialog = new SaveFileDialog();
+           
+            addProductList = new DelegateCommand(AddItemExportList);
+            saveSelectItem = new DelegateCommand(SaveExprotItem);
+            saveAllItem = new DelegateCommand(SaveExprotItemAll);
 
-            addProductList = new DelegateCommand(addItemList);
-            saveSelectItem = new DelegateCommand(saveItem);
-            saveAllItem = new DelegateCommand(saveItemAll);
+            _products = new List<Product>();
+            _code = string.Empty;
 
-            saveFileDialog.DefaultExt = "csv";
-            saveFileDialog.Filter = "Text files(*.txt)|*.txt|Exel files(*.csv)|*.csv|All files(*.*)|*.*";
-
-
+            SetFieldFileDialog();
             new Thread(new ThreadStart(startModelThread)).Start();
         }
-        void startModelThread()
+        private void startModelThread()
         {
             model = new ExportProductExelModel();
-
+        }
+        private void SetFieldFileDialog()
+        {
+            saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = "csv";
+            saveFileDialog.Filter = "Text files(*.txt)|*.txt|Exel files(*.csv)|*.csv|All files(*.*)|*.*";
         }
 
         private List<Product> _products;
         public List<Product> Products
         {
-            set { _products = value;  OnPropertyChanged("Products"); }
             get { return _products; }
+            set { _products = value;  OnPropertyChanged("Products"); }
         }
 
         private int _sizeDataGrid;
         public int SizeDataGrid
         {
-            set
-            {
-                _sizeDataGrid = value;
-                OnPropertyChanged("SizeDataGrid");
-            }
+            set { _sizeDataGrid = value;  OnPropertyChanged("SizeDataGrid"); }
         }
 
         private string _code;
-        public string Code { get { return _code; } set { _code = value; OnPropertyChanged("Code"); } }
+        public string Code 
+        {
+            get { return _code; } 
+            set { _code = value; OnPropertyChanged("Code"); }
+        }
 
         public ICommand AddProductList => addProductList;
 
-        private void addItemList()
+        private void AddItemExportList()
         {
-            var resultProduct = model.GetItem(_code);
-            if (resultProduct != null)
+            if (model != null)
             {
-                List<Product> tempProduct = new List<Product>();
+                var resultProduct = model.GetItem(_code);
+                if (resultProduct != null)
+                {
+                    List<Product> tempProduct = new List<Product>();
 
-                tempProduct.AddRange(_products);
-                tempProduct.Add(resultProduct);
-                Products = tempProduct;
-                
-            }
-            else
-            {
-                MessageBox.Show("Товар не знайдено");
+                    tempProduct.AddRange(_products);
+                    tempProduct.Add(resultProduct);
+                    Products = tempProduct;
+                }
             }
         }
 
         public ICommand SaveSelectItem => saveSelectItem;
 
-        private void saveItem()
+        private void SaveExprotItem()
         {
-            save(_products);
+            Save(_products);
         }
 
         public ICommand SaveAllItem => saveAllItem;
 
-        private void saveItemAll()
+        private void SaveExprotItemAll()
         {
-            save(model.GetItems());
+            if(model != null)
+               Save(model.GetItems());
         }
-        private void save(List<Product> products)
+        private void Save(List<Product> products)
         {
-            if (saveFileDialog.ShowDialog() == true)
+            if (saveFileDialog != null)
             {
-                string path = saveFileDialog.FileName;
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string path = saveFileDialog.FileName;
 
-                if (FileCVS.writeFile(path, products))
-                {
-                    MessageBox.Show("товар успішно експортовано");
-                }
-                else
-                {
-                    MessageBox.Show("товар не експортовано");
+                    if (FileCVS.writeFile(path, products))
+                    {
+                        MessageBox.Show("товар успішно експортовано");
+                    }
+                    else
+                    {
+                        MessageBox.Show("товар не експортовано");
+                    }
                 }
             }
         }

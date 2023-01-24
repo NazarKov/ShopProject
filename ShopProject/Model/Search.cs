@@ -15,6 +15,7 @@ namespace ShopProject.Model
 
     internal static class Search
     {
+        private static Product? item;
         private static List<Product>? searchResult;
         private static List<Archive>? searchResultArhive;
 
@@ -85,6 +86,42 @@ namespace ShopProject.Model
                             }
                         }
                         return searchResultArhive;
+                    }
+                default:
+                    {
+                        throw new Exception("Товар не знайдено");
+                    }
+            }
+        }
+        public static Product ProductDataBase(string itemSearch, List<Product> products, TypeSearch type)
+        {
+            item = new Product();
+            switch (type)
+            {
+                case TypeSearch.Name:
+                    {
+                        foreach (Product product in products)
+                        {
+                            if (product.name == itemSearch)
+                            {
+                                item = product;
+                                break;
+                            }
+                        }
+
+                        return item;
+                    }
+                case TypeSearch.Code:
+                    {
+                        foreach (Product product in products)
+                        {
+                            if (product.code == itemSearch)
+                            {
+                                item = product;
+                                break;
+                            }
+                        }
+                        return item;
                     }
                 default:
                     {

@@ -24,16 +24,9 @@ namespace ShopProject.Model.ToolsPage
             products = db.products.Local.ToList();
         }
 
-        public Product? GetItem(string Code)
+        public Product? GetItem(string itemSearch)
         {
-            foreach(Product product in products)
-            {
-                if(product.code==Code)
-                {
-                    return product;
-                }
-            }
-            return null;
+            return Search.ProductDataBase(itemSearch, products, TypeSearch.Code);
         }
 
         public List<Product> GetItems()

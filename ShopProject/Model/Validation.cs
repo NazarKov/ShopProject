@@ -1,9 +1,12 @@
 ﻿using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Automation.Peers;
 
 namespace ShopProject.Model
 {
@@ -45,7 +48,6 @@ namespace ShopProject.Model
             }
         }
 
-
         private static object ItemChekIsNull(object? item, Type type, string messeges)
         {
             if (item != null)
@@ -73,5 +75,51 @@ namespace ShopProject.Model
             }
 
         }
+        public static string ChekParamsIsNull(int column, int rows, DataTable table)
+        {
+            if (column != 0)
+            {
+                return table.Rows[rows].ItemArray.ElementAt(column - 1).ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+        public static int ChekNull(int item)
+        {
+            if(item != 0)
+            {
+                return item;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public static int ChekNull(int item,int count)
+        {
+            if (item != 0)
+            {
+                return item;
+            }
+            else
+            {
+                return count;
+            }
+        }
+        
+        public static double ChekEmpty(int item,int i , DataTable dataTable)
+        {
+            if (ChekParamsIsNull(item, i, dataTable) != string.Empty)
+            {
+                return Convert.ToDouble(ChekParamsIsNull(item, i, dataTable));
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    
     }
 }

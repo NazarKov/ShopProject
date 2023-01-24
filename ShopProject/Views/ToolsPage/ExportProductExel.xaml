@@ -42,9 +42,9 @@
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
-                <DataGridTextColumn Header="Опис" Binding="{Binding description}" />
-                <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
-                <DataGridTextColumn Header="Продажна ціна"  Binding="{Binding purchase_prise}" />
+                <DataGridTextColumn Header="Опис" Binding="{Binding articule}" />
+                <DataGridTextColumn Header="Початкова ціна"  Binding="{Binding startingPrise}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding startingPrise}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
                 <DataGridTextColumn Header="Одниці"  Binding="{Binding units}" />
                 <DataGridTextColumn Header="Снижка"  Binding="{Binding sales}" />

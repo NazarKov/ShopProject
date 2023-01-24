@@ -18,21 +18,22 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class ImportProductExelViewModel : ViewModel<ImportProductExelViewModel>
     {
-        private ImportProductExelModel _model;
-        private FileExel db;
-
+        private ImportProductExelModel importProductExelModel;
         private ICommand openFileExel;
         private ICommand saveItemDb;
         private ICommand updateTablePage;
 
         public ImportProductExelViewModel()
         {
-            _model= new ImportProductExelModel();
-
+            importProductExelModel = new ImportProductExelModel();
             openFileExel = new DelegateCommand(SetItemDataGrid);
-            saveItemDb = new DelegateCommand(saveItem);
+            saveItemDb = new DelegateCommand(SaveItem);
             updateTablePage = new DelegateCommand(UpdatePage);
             TableName = new List<string>();
+
+            _productTemp = new DataTable();
+            _tableName = new List<string>();
+
             SelectIndex = 0;
         }
 
@@ -64,13 +65,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _indexArticule = value;OnPropertyChanged("IndexArticule"); }
         }
 
-        private int _indexDescription;
-        public int IndexDescription
-        {
-            get { return _indexDescription; }
-            set { _indexDescription = value; }
-        }
-
         private int _indexPrice;
         public int IndexPrice
         {
@@ -78,11 +72,11 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _indexPrice = value; }
         }
 
-        private int _indexPurchasePrice;
-        public int IndexPurchasePrice
+        private int _indexStartingPrice;
+        public int IndexStatingPrice
         {
-            get { return _indexPurchasePrice; }
-            set { _indexPurchasePrice = value; }
+            get { return _indexStartingPrice; }
+            set { _indexStartingPrice = value; }
         }
 
         private int _indexCount;
@@ -110,7 +104,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public int IndexBottom
         {
             get { return _indexBottom; }
-            set { _indexTop = value; }
+            set { _indexBottom = value; }
         }
 
         private List<string> _tableName;
@@ -133,22 +127,31 @@ namespace ShopProject.ViewModel.ToolsPage
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                db = new FileExel(openFileDialog.FileName);
-                ProductTemp = db.GetTabel(_selectIndex);
-                TableName = db.GetTableName();
+                importProductExelModel.SetPath(openFileDialog.FileName);
+                if(importProductExelModel.LoadFile())
+                {
+                    ProductTemp = importProductExelModel.GetTable(_selectIndex);
+                    TableName = importProductExelModel.GetNableName();
+                }
             }
         }
         public ICommand UpdateTablePage => updateTablePage;
         private void UpdatePage()
         {
-            ProductTemp = db.GetTabel(_selectIndex);
+            ProductTemp = importProductExelModel.GetTable(_selectIndex);
         }
 
-
         public ICommand SaveItemDb => saveItemDb;
-        private void saveItem()
+        private void SaveItem()
         {
-            _model.SetItemDataBase(_productTemp, _indexCode,_indexArticule, _indexName, _indexDescription, _indexPrice, _indexPurchasePrice, _indexCount, _indexUnit);
+            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexArticule, _indexName, _indexPrice, _indexStartingPrice, _indexCount, _indexUnit,_indexTop,_indexBottom))
+            {
+                MessageBox.Show("Товари добалено");
+            }
+            else
+            {
+                MessageBox.Show("Помилка добавленя");
+            }
         }
 
         public ICommand ExitWindow { get => new DelegateParameterCommand(WindowClose, CanRegister); }

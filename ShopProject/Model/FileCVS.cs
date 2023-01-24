@@ -18,10 +18,10 @@ namespace ShopProject.Model
             {
                 using (StreamWriter write = new StreamWriter(path, true,Encoding.UTF8))
                 {
-                    write.WriteLine("Штрихкод;Назва;Ціна;Продажна ціна;Кількість;Одиниці;Знижка;");
+                    write.WriteLine("Штрихкод;Назва;Артикуль;Стартова ціна;Ціна;Кількість;Одиниці;Знижка;");
                     for (int i = 0; i < products.Count; i++)
                     {
-                        write.WriteLine($"{products[i].code};{products[i].name};{products[i].price};{products[i].startingPrise};{products[i].count};{products[i].units};{products[i].sales};");
+                        write.WriteLine($"{products[i].code};{products[i].name};{products[i].articule};{products[i].startingPrise};{products[i].price};{products[i].count};{products[i].units};{products[i].sales};");
                     }
                 }
                 return true;

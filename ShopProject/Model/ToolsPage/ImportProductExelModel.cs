@@ -15,71 +15,77 @@ namespace ShopProject.Model.ToolsPage
     {
         private ShopContext? db;
         private Product? product;
+        private FileExel? fileExel;
+        private string path;
 
         public ImportProductExelModel()
         {
             db = new ShopContext();
             db.products.Load();
+            path = string.Empty;
         }
 
-        public void SetItemDataBase(DataTable dataTable,params int[] column)
+        public void SetPath(string path)
+        {
+            this.path = path;
+        }
+        public bool LoadFile()
         {
             try
             {
-                for (int i = 0, max = dataTable.Rows.Count; i < max; i++)
-                {
-                    product = new Product();
+                fileExel = new FileExel(path);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                return false;
+            }
+        }
+        public DataTable? GetTable(int i)
+        {
+            return fileExel.GetTabel(i);
+        }
+        public List<string> GetNableName()
+        {
+            return fileExel.GetTableName();
+        }
 
-                    product.code = ChekParamsIsNull(column[0], i, dataTable);
-                    product.name = ChekParamsIsNull(column[1], i, dataTable);
-                    product.articule = ChekParamsIsNull(column[2], i, dataTable);
-                     if (ChekParamsIsNull(column[4], i, dataTable) != string.Empty)
-                    {
-                        product.price = Convert.ToDouble(ChekParamsIsNull(column[5], i, dataTable));
-                    }
-                    else
-                    {
-                        product.price = 0;
-                    }
-                    if (ChekParamsIsNull(column[6], i, dataTable) != string.Empty)
-                    {
-                        product.startingPrise = Convert.ToDouble(ChekParamsIsNull(column[6], i, dataTable));
-                    }
-                    else
-                    {
-                        product.startingPrise = 0;
-                    }
-                    if (ChekParamsIsNull(column[6], i, dataTable) != string.Empty)
-                    {
-                        product.count = Convert.ToInt32(ChekParamsIsNull(column[6], i, dataTable));
-                    }
-                    else
-                    {
-                        product.count = 0;
-                    }
-                     
-                    product.units = ChekParamsIsNull(column[7], i, dataTable);
-                    product.created_at = DateTime.Now;
-                    db.products.Add(product);
-                }
-                db.SaveChanges();
+        public bool SetItemDataBase(DataTable dataTable,params int[] column)
+        {
+            try
+            {
+                SaveItem(dataTable, column[0], column[1], column[2], column[3], column[4], column[5], column[6], column[7], column[8]);
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return false;
             }
         }
-        private string ChekParamsIsNull(int column, int rows, DataTable table)
+        private void SaveItem(DataTable dataTable,int code ,int name,int articule,int price,int startingPrice,int count,int units,int indexTop,int intdexBottom)
         {
-            if (column != 0)
-            {
-                return table.Rows[rows].ItemArray.ElementAt(column - 1).ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
+            int i = Validation.ChekNull(indexTop);
+            int max = Validation.ChekNull(intdexBottom,dataTable.Rows.Count);
 
+            for (; i < max; i++)
+            {
+                product = new Product();
+                product.code = Validation.ChekParamsIsNull(code, i, dataTable);
+                product.name = Validation.ChekParamsIsNull(name, i, dataTable);
+                product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
+                product.price = Validation.ChekEmpty(price, i, dataTable);
+                product.startingPrise = Validation.ChekEmpty(startingPrice, i, dataTable);
+                product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+                product.units = Validation.ChekParamsIsNull(units, i, dataTable);
+                product.created_at = DateTime.Now;
+                if(db!=null)
+                    if(db.products!=null)
+                        db.products.Add(product);
+            }
+            if (db != null)
+                db.SaveChanges();
+        }
     }
 }
