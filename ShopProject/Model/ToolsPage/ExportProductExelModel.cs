@@ -17,12 +17,14 @@ namespace ShopProject.Model.ToolsPage
         public ExportProductExelModel()
         {
             db = new ShopContext();
-            db.products.Load();
             products = new List<Product>();
+            
+            db.products.Load();
+            if(db.products!=null)
             products = db.products.Local.ToList();
         }
 
-        public Product GetItem(string Code)
+        public Product? GetItem(string Code)
         {
             foreach(Product product in products)
             {

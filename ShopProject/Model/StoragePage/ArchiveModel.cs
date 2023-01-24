@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using static ShopProject.Model.StoragePage.StorageModel;
 
@@ -13,72 +14,38 @@ namespace ShopProject.Model.StoragePage
 {
     internal class ArchiveModel
     {
-        public enum TypeSearch
-        {
-            Name = 0,
-            Code = 1,
-        };
-
-        ShopContext db;
-        List<Archive> archives;
+        private ShopContext db;
+        private List<Archive> archives;
 
         public ArchiveModel()
         {
             db = new ShopContext();
             archives = new List<Archive>();
 
-
-        }
-
-        public List<Archive> GetItemsLoadDb()
-        {
             db.products.Load();
             db.archives.Load();
+            if(db.archives!=null)
             archives = db.archives.ToList();
-            return db.archives.ToList();
         }
+
         public List<Archive> GetItems()
         {
-            return db.archives.ToList();
+            return archives;
         }
 
-        public List<Archive>? Search(string itemSearch, TypeSearch type)
+        public List<Archive>? SearchArhive(string itemSearch, TypeSearch type)
         {
-            archives = new List<Archive>();
-            archives = db.archives.ToList();
-            List<Archive> searchResult = new List<Archive>();
-
-            switch (type)
+            try
             {
-                case TypeSearch.Name:
-                    {
-                        foreach (Archive product in archives)
-                        {
-                            if (product.product.name == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-
-                        return searchResult;
-                    }
-                case TypeSearch.Code:
-                    {
-                        foreach (Archive product in archives)
-                        {
-                            if (product.product.code == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-                        return searchResult;
-                    }
-                default:
-                    {
-                        return null;
-                    }
+                return Search.ArhiveDataBase(itemSearch, type,archives);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                return null;
             }
         }
+        
 
     }
 }

@@ -13,10 +13,10 @@ namespace ShopProject.Model
         Code = 1,
     };
 
-
     internal static class Search
     {
         private static List<Product>? searchResult;
+        private static List<Archive>? searchResultArhive;
 
         public static List<Product>? ProductDataBase(string itemSearch, TypeSearch type,List<Product> products)
         {
@@ -45,6 +45,46 @@ namespace ShopProject.Model
                             }
                         }
                         return searchResult;
+                    }
+                default:
+                    {
+                        throw new Exception("Товар не знайдено");
+                    }
+            }
+        }
+        public static List<Archive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<Archive> archives)
+        {
+            searchResultArhive = new List<Archive>();
+            switch (type)
+            {
+                case TypeSearch.Name:
+                    {
+                        foreach (Archive archive in archives)
+                        {
+                            if (archive.product != null)
+                            {
+                                if (archive.product.name == itemSearch)
+                                {
+                                    searchResultArhive.Add(archive);
+                                }
+
+                            }
+                        }
+                        return searchResultArhive;
+                    }
+                case TypeSearch.Code:
+                    {
+                        foreach (Archive archive in archives)
+                        {
+                            if (archive.product != null)
+                            {
+                                if (archive.product.code == itemSearch)
+                                {
+                                    searchResultArhive.Add(archive);
+                                }
+                            }
+                        }
+                        return searchResultArhive;
                     }
                 default:
                     {

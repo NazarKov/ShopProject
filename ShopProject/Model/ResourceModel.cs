@@ -18,9 +18,9 @@ namespace ShopProject.Model
         {
             this.NameDb = name;
         }
-        public string GetNameDb()
+        public string? GetNameDb()
         {
-            return this.NameDb;
+             return NameDb;
         }
 
         public void SetDescriptionDb(string description)
@@ -28,9 +28,9 @@ namespace ShopProject.Model
             this.DescriptionDb = description;
         }
 
-        public string GetDescriptionDb()
+        public string? GetDescriptionDb()
         {
-            return this.DescriptionDb;
+            return DescriptionDb;
         }
 
    

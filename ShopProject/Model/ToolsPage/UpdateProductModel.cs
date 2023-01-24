@@ -24,7 +24,7 @@ namespace ShopProject.Model.ToolsPage
             db.products.Load();
             if(db!=null)
                 if(db.products!=null)
-            products = db.products.Local.ToList();
+                   products = db.products.Local.ToList();
         }
 
         public bool SaveProduct()
@@ -32,7 +32,6 @@ namespace ShopProject.Model.ToolsPage
             LoadTableDataBase();
             try
             {
-
                 SearchAndSaveProduct();
                 db.SaveChanges();
                 return true;
@@ -66,7 +65,6 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-
                 product = new Product();
                 Validation.TextField(product,name, code, articule, price, startingPrise, count, units, true);
                 return true;

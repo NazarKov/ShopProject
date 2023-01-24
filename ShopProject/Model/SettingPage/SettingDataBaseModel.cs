@@ -109,9 +109,13 @@ namespace ShopProject.Model.SettingPage
 
         private void RemoveConnectingString(Configuration configuration)
         {
-            for (int i = 0, maxCount = configuration.ConnectionStrings.ConnectionStrings.Count-1; i < maxCount; i++)
+            for (int i = 0, maxCount = configuration.ConnectionStrings.ConnectionStrings.Count; i < maxCount-1; i++)
             {
                 configuration.ConnectionStrings.ConnectionStrings.RemoveAt(i);
+            }
+            if (configuration.ConnectionStrings.ConnectionStrings.Count != 0)
+            {
+                configuration.ConnectionStrings.ConnectionStrings.RemoveAt(0);
             }
         }
         
@@ -137,7 +141,7 @@ namespace ShopProject.Model.SettingPage
         {
             using (FileStream fs = new FileStream(@"..\..\..\Resource\appSetting.xml", FileMode.OpenOrCreate))
             {
-                setting =(ResourceModel)xmlSerializer.Deserialize(fs);
+                setting = (ResourceModel)xmlSerializer.Deserialize(fs);
             }
         }
 

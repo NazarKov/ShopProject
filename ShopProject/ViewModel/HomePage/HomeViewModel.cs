@@ -29,7 +29,6 @@ namespace ShopProject.ViewModel.HomePage
         public HomeViewModel()
         {
 
-            authorizationUser = new DelegateCommand(AuthorizationUser);
             exitApp = new DelegateCommand(() => { Application.Current.MainWindow.Close();});
             openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); });
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
@@ -94,22 +93,7 @@ namespace ShopProject.ViewModel.HomePage
             }
         }
 
-        public ICommand AuthorizationUserCommand => authorizationUser;
 
-        private void AuthorizationUser()
-        {
-            string temp;
-         //   homeModel.ConnectionDB(_dbConnectSelectedItem);
-            temp = homeModel.Authorization(_name, _password);
-            if (temp == "0")
-            {
-                MessageBox.Show("Акаунт не знайдено", "Eror", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                VisibleCanvasAuthorization = "Hidden";
-            }
-        }
 
         #endregion
 

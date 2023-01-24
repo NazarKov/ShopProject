@@ -16,18 +16,13 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class CreateProductModel
     {
- 
-        readonly ShopContext? db;
-        Product? product;
+
+        private readonly ShopContext? db;
+        private Product? product;
 
         public CreateProductModel()
         {
             db = new ShopContext();
-            new Thread(new ThreadStart(LoadProductDataBase)).Start();
-        }
-        private void LoadProductDataBase()
-        {
-            if(db != null)
             db.products.Load();
         }
 

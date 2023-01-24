@@ -87,7 +87,6 @@ namespace ShopProject.ViewModel.SettingPage
             if (settingDb.SetConnectionStringDataBase())
             {
                 new Thread(new ThreadStart(ThreadCreateDataBase)).Start();
-                SaveFileSettingDataBase();
             }
             else
             {
@@ -100,6 +99,7 @@ namespace ShopProject.ViewModel.SettingPage
             if (settingDb.CreateDataBase())
             {
                 UpdateField();
+                SaveFileSettingDataBase();
                 MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
