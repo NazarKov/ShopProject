@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="UpdateProduct" Height="615" Width="415" ResizeMode="NoResize"
+        Title="UpdateProduct" Height="415" Width="415" ResizeMode="NoResize"
         x:Name="window">
     <Window.Resources>
         <local:UpdateProductViewModel x:Key="VM"></local:UpdateProductViewModel>
@@ -20,8 +20,6 @@
         <ColumnDefinition Width="*"></ColumnDefinition>
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-        <RowDefinition Height="80"></RowDefinition>
-        <RowDefinition Height="80"></RowDefinition>
         <RowDefinition Height="80"></RowDefinition>
         <RowDefinition Height="80"></RowDefinition>
         <RowDefinition Height="80"></RowDefinition>
@@ -51,11 +49,8 @@
     <Label x:Name="Articulelabel" Content="Артикуль" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="3" VerticalAlignment="Top"/>
     <TextBox x:Name="articule" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Articule , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
-    <Label x:Name="Descriptionlabel" Content="Опис товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="4" Grid.Column="0" VerticalAlignment="Top"/>
-    <TextBox x:Name="Description" Grid.ColumnSpan="2" Grid.RowSpan="2"  HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Description,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="120" Width="370"/>
-
-    <Button x:Name="buttonSave" Content="Редагувати" Grid.Column="0" Grid.Row="6" Command="{Binding SaveProduct}" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" Width="100"/>
-    <Button x:Name="buttonCansel"  Content="Вийти" Grid.Column="1" Grid.Row="6" Command="{Binding ExitWindow}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,40,15,0" VerticalAlignment="Top" Width="100"/>
+    <Button x:Name="buttonSave" Content="Редагувати" Grid.Column="0" Grid.Row="4" Command="{Binding SaveProduct}" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" Width="100"/>
+    <Button x:Name="buttonCansel"  Content="Вийти" Grid.Column="1" Grid.Row="4" Command="{Binding ExitWindow}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,40,15,0" VerticalAlignment="Top" Width="100"/>
 
 
 

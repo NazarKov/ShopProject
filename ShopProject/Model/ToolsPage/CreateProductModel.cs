@@ -50,14 +50,14 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public bool CreateNewProduct(string name, string code, string articule, string description, double price, double purchase_price, int count, string units)
+        public bool CreateNewProduct(string name, string code, string articule, double price, double statingPrice, int count, string units)
         {
             try
             {
 
                 product = new Product();
                 CodeCoincidenceinDatabase(code);
-                Validation.TextField(product,name, code, articule, description, price, purchase_price, count, units, true);
+                Validation.TextField(product,name, code, articule, price, statingPrice, count, units, true);
                 return true;
             }
             catch (Exception ex)

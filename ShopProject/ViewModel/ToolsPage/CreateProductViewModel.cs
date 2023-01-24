@@ -28,7 +28,6 @@ namespace ShopProject.ViewModel.ToolsPage
             _code = string.Empty;
             _name = string.Empty;
             _articule = string.Empty;
-            _description = string.Empty;
             _units = null;
             _selectUnits = string.Empty;
 
@@ -65,13 +64,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _articule = value; OnPropertyChanged("Articule"); }
         }
 
-        private string _description;
-        public string Description
-        {
-            get{ return _description; }
-            set { _description = value; OnPropertyChanged("Description"); }
-        }
-
         private double _price;
         public double Price
         {
@@ -79,11 +71,11 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _price= value; OnPropertyChanged("Price"); } 
         }
 
-        private double _purchase_price;
-        public double PurchasePrice
+        private double _startingPrice;
+        public double StartingPrice
         {
-            get { return _purchase_price; }
-            set { _purchase_price = value; OnPropertyChanged("PurchasePrice"); }
+            get { return _startingPrice; }
+            set { _startingPrice = value; OnPropertyChanged("PurchasePrice"); }
         }
 
         private int _count;
@@ -122,11 +114,10 @@ namespace ShopProject.ViewModel.ToolsPage
         private void ClearTextWindow()
         {
             Name = string.Empty;
-            Description = string.Empty;
             Code = string.Empty;
             Count = 0;
             Price = 0;
-            PurchasePrice = 0;
+            StartingPrice = 0;
         }
 
         public ICommand SaveProduct => saveProduct;
@@ -147,7 +138,7 @@ namespace ShopProject.ViewModel.ToolsPage
         }
             private bool CreateProduct()
         {
-            return productModel.CreateNewProduct(_name, _code, _articule, _description, _price, _purchase_price, _count, _selectUnits);
+            return productModel.CreateNewProduct(_name, _code, _articule, _price, _startingPrice, _count, _selectUnits);
         } 
 
     }

@@ -31,7 +31,6 @@ namespace ShopProject.ViewModel.ToolsPage
             _code = string.Empty;
             _name = string.Empty;
             _articule = string.Empty;
-            _description = string.Empty;
             _units = null;
             _selectUnits = string.Empty;
 
@@ -50,12 +49,10 @@ namespace ShopProject.ViewModel.ToolsPage
                     Name = product.name;
                 if (product.articule != null)
                     Articule = product.articule;
-                if (product.description != null)
-                    Description = product.description;
-                if (product.price != null)
+                 if (product.price != null)
                     Price = (double)product.price;
-                if (product.purchase_prise != null)
-                    PurchasePrice = (double)product.purchase_prise;
+                if (product.startingPrise != null)
+                    StartingPrise = (double)product.startingPrise;
                 if (product.count != null)
                     Count = (int)product.count;
                 if (product.units != null)
@@ -96,13 +93,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _articule=value; OnPropertyChanged("Articule"); }
         }
 
-        private string _description;
-        public string Description
-        {
-            get { return _description; }
-            set { _description = value; OnPropertyChanged("Description"); }
-        }
-
         private double _price;
         public double Price
         {
@@ -110,11 +100,11 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _price = value; OnPropertyChanged("Price"); }
         }
 
-        private double _purchase_price;
-        public double PurchasePrice
+        private double _startingPrise;
+        public double StartingPrise
         {
-            get { return _purchase_price; }
-            set { _purchase_price = value; OnPropertyChanged("PurchasePrice"); }
+            get { return _startingPrise; }
+            set { _startingPrise = value; OnPropertyChanged("PurchasePrice"); }
         }
 
         private int _count;
@@ -151,7 +141,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void UpdateProductDataBase()
         {
-            if (update.UpdateProduct(_name, _code, _articule, _description, _price, _purchase_price, _count, _selectUnits))
+            if (update.UpdateProduct(_name, _code, _articule, _price, _startingPrise, _count, _selectUnits))
             {
                 if (update.SaveProduct())
                 {

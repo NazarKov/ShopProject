@@ -22,17 +22,13 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public string? articule { get; set; }
         /// <summary>
-        /// опис товару
-        /// </summary>
-        public string? description { get; set; }
-        /// <summary>
         /// ціна продукту
         /// </summary>
         public double? price { get; set; }
         /// <summary>
         /// ціна з націнкою 
         /// </summary>
-        public double? purchase_prise { get; set; }
+        public double? startingPrise { get; set; }
         /// <summary>
         ///кількість товару
         /// </summary>
@@ -44,7 +40,7 @@ namespace ShopProject.DataBase.Model
         /// <summary>
         /// націнка
         /// </summary>
-        public double? mark_up { get; set; }
+        public double? markUp { get; set; }
         /// <summary>
         /// скідка
         /// </summary>
