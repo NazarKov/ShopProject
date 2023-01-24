@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ShopProject.DataBase.Model;
 using ShopProject.Model;
+using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,7 @@ namespace ShopProject.ViewModel.ToolsPage
             {
                 string path = saveFileDialog.FileName;
 
-                if (FileReaderCVS.writeFile(path, products))
+                if (FileCVS.writeFile(path, products))
                 {
                     MessageBox.Show("товар успішно експортовано");
                 }

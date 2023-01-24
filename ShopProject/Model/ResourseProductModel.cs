@@ -9,9 +9,6 @@ namespace ShopProject.Model
 {
     internal static class ResourseProductModel
     {
-       public static Product product { get; set; }
-
-       
-
+       public static Product? product { get; set; } 
     }
 }

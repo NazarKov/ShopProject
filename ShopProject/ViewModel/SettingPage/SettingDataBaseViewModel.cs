@@ -1,5 +1,5 @@
 ﻿using ShopProject.DataBase.Context;
-using ShopProject.Model;
+using ShopProject.Model.Command;
 using ShopProject.Model.SettingPage;
 using System;
 using System.Collections.Generic;
