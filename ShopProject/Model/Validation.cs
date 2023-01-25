@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Model;
+﻿using ShopProject.DataBase.Context;
+using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -120,6 +121,21 @@ namespace ShopProject.Model
                 return 0;
             }
         }
-    
+
+
+        public static bool CodeCoincidenceinDatabase(string code , ShopContext db)
+        {
+            if (db != null)
+                if (db.products != null)
+                    foreach (Product item in db.products)
+                    {
+                        if (item.code == code)
+                        {
+                            return true;
+                        }
+                    }
+            return false;
+        }
+
     }
 }

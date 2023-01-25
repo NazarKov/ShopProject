@@ -16,12 +16,16 @@ namespace ShopProject.Model.ToolsPage
         private ShopContext? db;
         private Product? product;
         private FileExel? fileExel;
+        private List<Product> products;
         private string path;
 
         public ImportProductExelModel()
         {
             db = new ShopContext();
+            products = new List<Product>();
             db.products.Load();
+            if(db.products!=null)
+                products = db.products.Local.ToList();
             path = string.Empty;
         }
 
@@ -71,21 +75,42 @@ namespace ShopProject.Model.ToolsPage
 
             for (; i < max; i++)
             {
-                product = new Product();
-                product.code = Validation.ChekParamsIsNull(code, i, dataTable);
-                product.name = Validation.ChekParamsIsNull(name, i, dataTable);
-                product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
-                product.price = Validation.ChekEmpty(price, i, dataTable);
-                product.startingPrise = Validation.ChekEmpty(startingPrice, i, dataTable);
-                product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
-                product.units = Validation.ChekParamsIsNull(units, i, dataTable);
-                product.created_at = DateTime.Now;
                 if(db!=null)
-                    if(db.products!=null)
-                        db.products.Add(product);
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),db))
+                    {
+                        SetCountItem(code, count, i, dataTable);
+                    }
+                    else
+                    {
+                        product = new Product();
+                        product.code = Validation.ChekParamsIsNull(code, i, dataTable);
+                        product.name = Validation.ChekParamsIsNull(name, i, dataTable);
+                        product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
+                        product.price = Validation.ChekEmpty(price, i, dataTable);
+                        product.startingPrise = Validation.ChekEmpty(startingPrice, i, dataTable);
+                        product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+                        product.units = Validation.ChekParamsIsNull(units, i, dataTable);
+                        product.created_at = DateTime.Now;
+                        if (db != null)
+                            if (db.products != null)
+                                db.products.Add(product);
+                    }
             }
             if (db != null)
                 db.SaveChanges();
+        }
+        private void SetCountItem(int code,int count, int i , DataTable dataTable)
+        {
+            if(db!=null)
+              if(db.products!=null)
+                 foreach(Product item in db.products)
+                 {
+                        if(item.code == Validation.ChekParamsIsNull(code,i,dataTable))
+                        {
+                            item.count +=Convert.ToInt32(Validation.ChekParamsIsNull(count, i, dataTable));
+                            break;
+                        }
+                 }
         }
     }
 }

@@ -51,7 +51,11 @@ namespace ShopProject.Model.ToolsPage
             {
 
                 product = new Product();
-                CodeCoincidenceinDatabase(code);
+                if(db!= null)
+                if (Validation.CodeCoincidenceinDatabase(code, db))
+                {
+                        throw new Exception("Товар існує");
+                }
                 Validation.TextField(product,name, code, articule, price, statingPrice, count, units, true);
                 return true;
             }
@@ -63,18 +67,6 @@ namespace ShopProject.Model.ToolsPage
         }
        
 
-        private void CodeCoincidenceinDatabase(string code)
-        {
-            if(db!=null)
-            if(db.products!=null)
-            foreach (Product item in db.products)
-            {
-                if (item.code == code)
-                {
-                    throw new Exception("Такий товар iснує");
-                }
-            }
-        }
 
       
     }
