@@ -122,7 +122,7 @@ namespace ShopProject.Model.SettingPage
         private ConnectionStringSettings CreateConnectionString()
         {
             connectionString = new ConnectionStringSettings();
-            connectionString.ConnectionString = "Data Source=" + Environment.MachineName + ";Initial Catalog=" + this.nameDataBase + ";Integrated Security=True";
+            connectionString.ConnectionString = "Data Source=" + Environment.MachineName + "\\SQLExpress;Initial Catalog=" + this.nameDataBase + ";Integrated Security=True";
             connectionString.Name = "DBConnectionMyString";
             connectionString.ProviderName = "System.Data.SqlClient";
 

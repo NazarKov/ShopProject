@@ -52,6 +52,7 @@ namespace ShopProject.Model.ToolsPage
                 {
                     products.ElementAt(i).name = product.name;
                     products.ElementAt(i).price = product.price;
+                    products.ElementAt(i).articule = product.articule;
                     products.ElementAt(i).startingPrise = product.startingPrise;
                     products.ElementAt(i).count = product.count;
                     products.ElementAt(i).units = product.units;

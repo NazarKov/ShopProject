@@ -104,7 +104,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public double StartingPrise
         {
             get { return _startingPrise; }
-            set { _startingPrise = value; OnPropertyChanged("PurchasePrice"); }
+            set { _startingPrise = value; OnPropertyChanged("StartingPrise"); }
         }
 
         private int _count;
