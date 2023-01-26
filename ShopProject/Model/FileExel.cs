@@ -1,4 +1,6 @@
 ﻿using ExcelDataReader;
+using OfficeOpenXml;
+using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Shapes;
 
 namespace ShopProject.Model
 {
@@ -14,12 +17,14 @@ namespace ShopProject.Model
     {
         private DataTableCollection? tableCollection = null;
 
+        public FileExel() { }
+
         public FileExel(string filePath)
         {
-            readFile(filePath);
+            Read(filePath);
         }
 
-        public void readFile(string path)
+        private void Read(string path)
         {
             try
             {
@@ -42,6 +47,11 @@ namespace ShopProject.Model
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        public void Write(string path,List<Product> products)
+        {
+           //зробити
         }
 
         public DataTable? GetTabel(int i)

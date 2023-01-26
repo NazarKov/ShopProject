@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace ShopProject.Model.ToolsPage
 {
     internal class ExportProductExelModel
     {
-        ShopContext db;
-        List<Product> products;
+        private ShopContext db;
+        private List<Product> products;
+        private FileExel? fileExel;
 
         public ExportProductExelModel()
         {
@@ -34,5 +34,19 @@ namespace ShopProject.Model.ToolsPage
             return products;
         }
         
+        public bool Export(string path,List<Product> products)
+        {
+            try
+            {
+                fileExel = new FileExel();
+                fileExel.Write(path,products);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                return false;
+            }
+        }
     }
 }

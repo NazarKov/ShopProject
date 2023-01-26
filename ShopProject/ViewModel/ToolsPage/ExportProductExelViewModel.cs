@@ -45,8 +45,8 @@ namespace ShopProject.ViewModel.ToolsPage
         private void SetFieldFileDialog()
         {
             saveFileDialog = new SaveFileDialog();
-            saveFileDialog.DefaultExt = "csv";
-            saveFileDialog.Filter = "Text files(*.txt)|*.txt|Exel files(*.csv)|*.csv|All files(*.*)|*.*";
+            saveFileDialog.DefaultExt = ".cvs";
+            saveFileDialog.Filter = "Exel files(*.cvs)|*.cvs|All files(*.*)|*.*";
         }
 
         private List<Product> _products;
@@ -108,15 +108,15 @@ namespace ShopProject.ViewModel.ToolsPage
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string path = saveFileDialog.FileName;
-
-                    if (FileCVS.writeFile(path, products))
-                    {
-                        MessageBox.Show("товар успішно експортовано");
-                    }
-                    else
-                    {
-                        MessageBox.Show("товар не експортовано");
-                    }
+                    if(model!=null)
+                       if (FileCVS.writeFile(path, products))
+                       {
+                           MessageBox.Show("товар успішно експортовано");
+                       }
+                       else
+                       {
+                           MessageBox.Show("товар не експортовано");
+                       }
                 }
             }
         }

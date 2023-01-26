@@ -144,7 +144,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public ICommand SaveItemDb => saveItemDb;
         private void SaveItem()
         {
-            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexArticule, _indexName, _indexPrice, _indexStartingPrice, _indexCount, _indexUnit,_indexTop,_indexBottom))
+            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexName, _indexArticule, _indexPrice, _indexStartingPrice, _indexCount, _indexUnit,_indexTop,_indexBottom))
             {
                 MessageBox.Show("Товари добалено");
             }

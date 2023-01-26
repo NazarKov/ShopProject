@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="UpdateProduct" Height="415" Width="415" ResizeMode="NoResize"
+        Title="UpdateProduct" Height="445" Width="415" ResizeMode="NoResize"
         x:Name="window">
     <Window.Resources>
         <local:UpdateProductViewModel x:Key="VM"></local:UpdateProductViewModel>
@@ -32,13 +32,13 @@
     <TextBox x:Name="name" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
     <Label x:Name="Codelabel" Content="Штрихкод товару" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Margin="15,15,0,0" VerticalAlignment="Top"/>
-    <TextBox x:Name="Code" IsEnabled="False" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Code,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+    <TextBox x:Name="Code" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Code,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
     <Label x:Name="Pricelabel" Content="Ціна товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
     <TextBox x:Name="Price"  HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
     <Label x:Name="Purchase_pricelabel" Content="Початкова ціна товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
-    <TextBox x:Name="Purchase_price" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding PurchasePrice,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+        <TextBox x:Name="Purchase_price" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding StartingPrise,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
     <Label x:Name="countlabel" Content="Кількість товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="2" VerticalAlignment="Top"/>
     <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
