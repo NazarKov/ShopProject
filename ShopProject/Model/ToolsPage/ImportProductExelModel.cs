@@ -59,6 +59,7 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
+                Validation.ChekRowIsNull(column[0], column[1], column[2], column[3], column[4], column[5], column[6]);
                 SaveItem(dataTable, column[0], column[1], column[2], column[3], column[4], column[5], column[6], column[7], column[8]);
                 return true;
             }

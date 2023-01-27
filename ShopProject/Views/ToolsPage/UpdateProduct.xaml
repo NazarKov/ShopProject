@@ -44,7 +44,7 @@
     <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
     <Label x:Name="unitlabel" Content="Одиниці товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top"/>
-    <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top" SelectedIndex="0" SelectedValue="{Binding SelectUnits}" ItemsSource="{Binding Units }" Width="170"/>
+    <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top"  SelectedValue="{Binding SelectUnits}" ItemsSource="{Binding Units }" Width="170"/>
 
     <Label x:Name="Articulelabel" Content="Артикуль" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="3" VerticalAlignment="Top"/>
     <TextBox x:Name="articule" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Articule , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>

@@ -10,7 +10,7 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ExportProductExelModel
     {
-        private ShopContext db;
+        private readonly ShopContext db;
         private List<Product> products;
         private FileExel? fileExel;
 

@@ -1,21 +1,21 @@
 ﻿using ExcelDataReader;
-using OfficeOpenXml;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Shapes;
 
 namespace ShopProject.Model
 {
     internal class FileExel
     {
         private DataTableCollection? tableCollection = null;
+        private IWorkbook? workbook;
 
         public FileExel() { }
 
@@ -49,9 +49,55 @@ namespace ShopProject.Model
             }
         }
 
-        public void Write(string path,List<Product> products)
+        public void Write(string path, List<Product> products)
         {
-           //зробити
+            workbook = new XSSFWorkbook();
+            CreateExelTable(products);
+           
+            FileStream sw = File.Create(path);
+            workbook.Write(sw,true);
+            sw.Close();
+        
+        }
+        private void CreateExelTable(List<Product> products)
+        {
+            if (workbook != null)
+            {
+                ISheet sheet1 = workbook.CreateSheet("Продукти");
+
+                IRow row = sheet1.CreateRow(0);
+                CreateExelTableHeader(row);
+                int i = 1;
+                foreach (Product product in products)
+                {
+                    row = sheet1.CreateRow(i);
+                    row.CreateCell(0).SetCellValue(product.code);
+                    row.CreateCell(1).SetCellValue(product.name);
+                    row.CreateCell(2).SetCellValue(product.articule);
+                    if(product.startingPrise != null)
+                        row.CreateCell(3).SetCellValue((double)product.startingPrise);
+                    if(product.price!=null)
+                        row.CreateCell(4).SetCellValue((double)product.price);
+                    if (product.count != null)
+                        row.CreateCell(5).SetCellValue((double)product.count);
+                    row.CreateCell(6).SetCellValue(product.units);
+                    if (product.sales != null)
+                        row.CreateCell(7).SetCellValue((double)product.sales);
+                    i++;
+                }
+
+            }
+        }
+        private void CreateExelTableHeader(IRow row)
+        {
+            row.CreateCell(0).SetCellValue("Шрихкод");
+            row.CreateCell(1).SetCellValue("Назва");
+            row.CreateCell(2).SetCellValue("Артикуль");
+            row.CreateCell(3).SetCellValue("Стартова ціна");
+            row.CreateCell(4).SetCellValue("Продажна ціна");
+            row.CreateCell(5).SetCellValue("Кількість");
+            row.CreateCell(6).SetCellValue("Одиниці");
+            row.CreateCell(7).SetCellValue("Знижка");
         }
 
         public DataTable? GetTabel(int i)

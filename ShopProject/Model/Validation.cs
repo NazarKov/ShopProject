@@ -137,5 +137,30 @@ namespace ShopProject.Model
             return false;
         }
 
+        public static void ChekRowIsNull(int code, int name, int articule, int price, int startingPrice, int count, int units)
+        {
+            if(code == 0)
+            {
+                if(name==0)
+                {
+                    if(articule==0)
+                    {
+                        if(price==0)
+                        {
+                            if(startingPrice==0)
+                            {
+                                if (count == 0)
+                                {
+                                    if(units==0)
+                                    {
+                                        throw new Exception("Заповніть поля");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
