@@ -49,7 +49,7 @@ namespace ShopProject.Model
             }
         }
 
-        private static object ItemChekIsNull(object? item, Type type, string messeges)
+        public static object ItemChekIsNull(object? item, Type type, string messeges)
         {
             if (item != null)
             {

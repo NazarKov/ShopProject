@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.HomePage"
         mc:Ignorable="d"
-        Title="Home" Height="450" Width="800"
+        Title="" Height="450" Width="800"
         WindowState="Maximized">
     <Window.Resources>
         <local:HomeViewModel x:Key="VM"></local:HomeViewModel>
@@ -39,6 +39,7 @@
                     <MenuItem Header="Архів" Command="{Binding OpenArchive}"></MenuItem>
                 </MenuItem>
             <MenuItem Header="Інструменти" >
+                <MenuItem Header="Роздрукувати Етикетку" Command="{Binding OpenCreateStiker }"></MenuItem>
                 <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProduct}"></MenuItem>
                 <MenuItem Header="Імпортувати товари" Command="{Binding OpenImportProduct}"></MenuItem>
             </MenuItem>

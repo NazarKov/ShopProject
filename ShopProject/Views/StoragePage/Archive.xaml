@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Archive">
+      Title="Архів">
     <Page.Resources>
         <local:ArchiveViewModel x:Key="VM" ></local:ArchiveViewModel>
     </Page.Resources>
@@ -49,8 +49,8 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding product.ID}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding product.code}" />
+                <DataGridTextColumn Header="Опис" Binding="{Binding product.articule}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding product.name}" />
-                <DataGridTextColumn Header="Опис" Binding="{Binding product.description}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding product.price}" />
                 <DataGridTextColumn Header="Дата списання" Binding="{Binding created_at}" />
             </DataGrid.Columns>

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ShopProject.ViewModel.SettingPage"
       mc:Ignorable="d" 
       d:DesignHeight="405" d:DesignWidth="535"
-      Title="SettingDb">
+      Title="Настройки бази даних">
     <Page.DataContext>
         <local:SettingDataBaseViewModel/>
     </Page.DataContext>

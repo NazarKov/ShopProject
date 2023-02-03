@@ -23,6 +23,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openArchive;
         private ICommand openExportProduct;
         private ICommand opemImportProduct;
+        private ICommand openCreateStiker;
 
         HomeModel homeModel;
 
@@ -33,8 +34,9 @@ namespace ShopProject.ViewModel.HomePage
             openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); });
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
-            openExportProduct = new DelegateCommand(() => { new ExportProductExel().ShowDialog(); });
-            opemImportProduct = new DelegateCommand(() => { new ImportProductExel().ShowDialog(); });
+            openExportProduct = new DelegateCommand(() => { new ExportProductExel().Show(); });
+            opemImportProduct = new DelegateCommand(() => { new ImportProductExel().Show(); });
+            openCreateStiker = new DelegateCommand(() => { new CreateStiker().Show(); });
             
             newModels();
 
@@ -114,6 +116,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenArchive => openArchive;
         public ICommand OpenExportProduct => openExportProduct;
         public ICommand OpenImportProduct => opemImportProduct;
+        public ICommand OpenCreateStiker => openCreateStiker;
 
     }
 }

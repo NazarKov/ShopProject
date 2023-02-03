@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="UpdateProduct" Height="445" Width="415" ResizeMode="NoResize"
+        Title="Редагування товару" Height="445" Width="415" ResizeMode="NoResize"
         x:Name="window">
     <Window.Resources>
         <local:UpdateProductViewModel x:Key="VM"></local:UpdateProductViewModel>

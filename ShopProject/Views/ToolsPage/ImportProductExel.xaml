@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="ImportProductExel" Height="450" Width="800" x:Name="window" >
+        Title="Імпорт з Exel" Height="450" Width="800" x:Name="window" >
     <Window.Resources>
         <local:ImportProductExelViewModel x:Key="VM"></local:ImportProductExelViewModel>
     </Window.Resources>

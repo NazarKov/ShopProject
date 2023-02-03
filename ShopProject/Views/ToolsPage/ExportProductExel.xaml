@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="ExportProductExel" Height="450" Width="1000" ResizeMode="NoResize">
+        Title="Експорт в Exel" Height="450" Width="1000" ResizeMode="NoResize">
     <Window.Resources>
         <local:ExportProductExelViewModel x:Key="VM"></local:ExportProductExelViewModel>
     </Window.Resources>
