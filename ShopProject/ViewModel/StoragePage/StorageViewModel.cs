@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Model;
+﻿using NPOI.SS.Formula.Atp;
+using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
@@ -47,6 +48,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             SearchTemplateName.Add("ШтрихКод");
             SearchTemplateName.Add("Назва");
+            SearchTemplateName.Add("Артикуль");
             SelectedIndexSearch = 0;
         }
 
@@ -89,13 +91,23 @@ namespace ShopProject.ViewModel.StoragePage
         void SearchProductInCodeAndName()
         {
             if (storageModel != null)
-                if (_selectedIndexSearch == 1)
+                switch (_selectedIndexSearch)
                 {
-                    Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
-                }
-                else
-                {
-                    Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                    case 0:
+                        {
+                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                            break;
+                        }
+                    case 1:
+                        {
+                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
+                            break;
+                        }
+                    case 2:
+                        {
+                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
+                            break;
+                        }
                 }
         }
         public ICommand VisibileAllButton => visibileAllButton;

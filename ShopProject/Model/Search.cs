@@ -11,6 +11,7 @@ namespace ShopProject.Model
     {
         Name = 0,
         Code = 1,
+        Articule =2,
     };
 
     internal static class Search
@@ -24,18 +25,6 @@ namespace ShopProject.Model
             searchResult = new List<Product>();
             switch (type)
             {
-                case TypeSearch.Name:
-                    {
-                        foreach (Product product in products)
-                        {
-                            if (product.name == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-
-                        return searchResult;
-                    }
                 case TypeSearch.Code:
                     {
                         foreach (Product product in products)
@@ -45,6 +34,32 @@ namespace ShopProject.Model
                                 searchResult.Add(product);
                             }
                         }
+                        return searchResult;
+                    }
+                case TypeSearch.Name:
+                    {
+                        foreach (Product product in products)
+                        {
+                            if(product.name!=null)
+                                if (product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                {
+                                    searchResult.Add(product);
+                                }
+                        }
+
+                        return searchResult;
+                    }
+                case TypeSearch.Articule:
+                    {
+                        foreach (Product product in products)
+                        {
+                            if(product.articule !=null)
+                                if (product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                {
+                                    searchResult.Add(product);
+                                }
+                        }
+
                         return searchResult;
                     }
                 default:
