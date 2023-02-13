@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -67,7 +68,13 @@ namespace ShopProject.Model.StoragePage
             }
 
         }
-
+        public void ContertToListProduct(IList list, List<Product> products)
+        {
+            foreach (var item in list)
+            {
+                products.Add((Product)item);
+            }
+        }
 
     }
 }

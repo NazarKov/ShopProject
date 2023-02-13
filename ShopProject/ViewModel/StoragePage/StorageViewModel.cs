@@ -4,6 +4,7 @@ using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Views.ToolsPage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,7 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand searchButton;
         private ICommand visibileAllButton;
         private ICommand openCreateProductWindow;
-        private ICommand deleteProduct;
-        private ICommand openUpdateProductWindow;
-
+        
         public StorageViewModel()
         {
             Products = new List<Product>();
@@ -33,13 +32,10 @@ namespace ShopProject.ViewModel.StoragePage
             searchButton = new DelegateCommand(SearchProductInCodeAndName);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
             openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
-            openUpdateProductWindow = new DelegateCommand(OpenUpdateProductWindowParameter);
-            deleteProduct = new DelegateCommand(DeleteProductDatabase);
-
+       
             SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
             
             _nameSearch = string.Empty;
-            _prodcutSelectedProduct = new Product();
             _searchTemplateName = new List<string>();
 
             SetFieldTextComboBox();
@@ -88,13 +84,6 @@ namespace ShopProject.ViewModel.StoragePage
             set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
 
-        private Product _prodcutSelectedProduct;
-        public Product ProdcutSelectedProduct
-        {
-            get { return _prodcutSelectedProduct; }
-            set { _prodcutSelectedProduct = value; OnPropertyChanged("IndexSelectedProduct"); }
-        }
-        
         public ICommand SearchButton => searchButton;
 
         void SearchProductInCodeAndName()
@@ -129,32 +118,44 @@ namespace ShopProject.ViewModel.StoragePage
             }
         }
 
-        public ICommand OpenUpdateProductWindow => openUpdateProductWindow;
-      
-        void OpenUpdateProductWindowParameter()
+        public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
+        private void EditingProduct(object parameter)
         {
-            if (_prodcutSelectedProduct != null)
+            List<Product> products = new List<Product>();
+            if(storageModel!=null)
+            storageModel.ContertToListProduct((IList)parameter, products);
+
+            if(products.Count==1)
             {
-                ResourseProductModel.product = _prodcutSelectedProduct;
+                StaticResourse.product = products[0];
                 new UpdateProduct().ShowDialog();
             }
             else
             {
-                MessageBox.Show("Продук не вибраний для редагування");
+                StaticResourse.products = products; 
+                new UpdateProductAll().ShowDialog();
             }
-            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+
         }
 
-        public ICommand DeleteProduct => deleteProduct;
-
-        private void DeleteProductDatabase()
+        public ICommand DeleteProductCommand { get => new DelegateParameterCommand(DeleteProduct, CanRegister); }
+        private void DeleteProduct(object parameter)
         {
-            if (_prodcutSelectedProduct != null)
-                if (storageModel != null)
-                {
-                    if(storageModel.DeleteProduct(_prodcutSelectedProduct))
-                        new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
-                }
+            List<Product> products = new List<Product>();
+            if (storageModel != null)
+                storageModel.ContertToListProduct((IList)parameter, products);
+            if (products.Count == 1)
+            {
+                if (products[0] != null)
+                    if (storageModel != null)
+                    {
+                        if (storageModel.DeleteProduct(products[0]))
+                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                    }
+            }
         }
+        private bool CanRegister(object parameter) => true;
+
+
     }
 }

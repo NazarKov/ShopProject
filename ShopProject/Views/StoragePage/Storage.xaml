@@ -6,21 +6,21 @@
       xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Склад">
+      Title="Склад" Name="wd">
     <Page.Resources>
         <local:StorageViewModel x:Key="VM"></local:StorageViewModel>
-        <ContextMenu x:Key="contextmenu">
-            <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
-            <MenuItem Header="Редагувати товар" Command="{Binding OpenUpdateProductWindow}"/>
-            <MenuItem Header="Видалити товар" Command="{Binding DeleteProduct}"/>
-        </ContextMenu>
     </Page.Resources>
     <Page.DataContext>
         <Binding Source="{StaticResource VM}"></Binding>
     </Page.DataContext>
 
 
-    <Grid ContextMenu="{StaticResource contextmenu}">
+    <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu Name="context">
+                <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
         <Grid.RowDefinitions>
             <RowDefinition Height="150"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
@@ -46,13 +46,12 @@
 
 
         </Grid>
-        <DataGrid x:Name="dataGrid" 
+        <DataGrid Name="list"
                   Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Products}" AutoGenerateColumns="False"
                   HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
                   HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
                   VerticalAlignment="Stretch" MaxWidth="{Binding SizeDataGrid}" Width="{Binding SizeDataGrid}" ColumnWidth="*"
-                  CanUserAddRows="False"
-                  SelectedItem="{Binding ProdcutSelectedProduct,UpdateSourceTrigger=PropertyChanged}">
+                  CanUserAddRows="False"  >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
                 <DataGridTextColumn Header="Артикул" Binding="{Binding articule}" />
@@ -64,7 +63,23 @@
                 <DataGridTextColumn Header="Одниці"  Binding="{Binding units}" />
                 <DataGridTextColumn Header="Скідка"  Binding="{Binding sales}" />
             </DataGrid.Columns>
-   
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
+                    <Separator></Separator>
+                    <MenuItem
+                        Header="Редагувати товар"
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding UpdateProductCommand}" />
+                    <Separator></Separator>
+                    <MenuItem 
+                        Header="Видалити товар" 
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding DeleteProductCommand}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
+
+      
     </Grid>
 </Page>

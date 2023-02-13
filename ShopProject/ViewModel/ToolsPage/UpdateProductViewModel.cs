@@ -25,8 +25,8 @@ namespace ShopProject.ViewModel.ToolsPage
             update = new UpdateProductModel();
             saveProduct = new DelegateCommand(UpdateProductDataBase);
 
-            if (ResourseProductModel.product != null)
-                product = ResourseProductModel.product;
+            if (StaticResourse.product != null)
+                product = StaticResourse.product;
 
             _code = string.Empty;
             _name = string.Empty;
@@ -70,7 +70,7 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void ClearResourses()
         {
-            ResourseProductModel.product = null;
+            StaticResourse.product = null;
         }
 
         private string _code;

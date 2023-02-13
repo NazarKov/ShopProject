@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model
 {
-    internal static class ResourseProductModel
+    internal static class StaticResourse
     {
        public static Product? product { get; set; } 
+       public static List<Product>? products { get; set; }
     }
 }
