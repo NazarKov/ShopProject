@@ -11,6 +11,8 @@ using System.Windows.Media.Media3D;
 using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
 using ShopProject.Model;
+using ShopProject.Views.StoragePage;
+using Archive = ShopProject.DataBase.Model.Archive;
 
 namespace ShopProject.Model.StoragePage
 {
@@ -18,14 +20,22 @@ namespace ShopProject.Model.StoragePage
     {
         private ShopContext db;
         private List<Product> products;
+        private List<Archive> archives;
 
         public StorageModel()
         {
             db = new ShopContext();
             products = new List<Product>();
+            archives = new List<Archive>();
+
             db.products.Load();
-            if(db.products!=null)
-            products = db.products.ToList();
+            db.archives.Load();
+
+            if (db.products != null && db.archives!=null)
+            {
+                products = db.products.ToList();//Where(p => p.count != 0).ToList();
+                archives = db.archives.ToList();
+            }
         }
         public List<Product> GetItems()
         {
@@ -74,6 +84,51 @@ namespace ShopProject.Model.StoragePage
             {
                 products.Add((Product)item);
             }
+        }
+
+        public void SetProductInArhive(Product item)
+        {
+            try
+            {
+                Validation.ChekIsProductInArhive(item, archives);
+               
+                Archive archive = new Archive();
+                SetFieldArchive(archive, item);
+
+                if (db.products!=null)
+                  SetProductCountNull(item);
+                SaveChangeDataBase(archive);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+            }
+        }
+        private void SetFieldArchive(Archive archive, Product item)
+        {
+            archive.product = item;
+            archive.created_at = DateTime.Now;
+        }
+
+        private void SetProductCountNull(Product item)
+        {
+            if (db.products != null)
+            {
+                foreach (Product product in db.products)
+                {
+                    if (product.Equals(item))
+                    {
+                        product.count = 0;
+                    }
+                }
+            }
+        }
+        
+        private void SaveChangeDataBase(Archive archive)
+        {
+            if (db.archives != null)
+                db.archives.Add(archive);
+            db.SaveChangesAsync();
         }
 
     }

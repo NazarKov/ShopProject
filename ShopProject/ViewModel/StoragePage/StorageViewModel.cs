@@ -23,6 +23,7 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand searchButton;
         private ICommand visibileAllButton;
         private ICommand openCreateProductWindow;
+        private List<Product> products;
         
         public StorageViewModel()
         {
@@ -35,7 +36,8 @@ namespace ShopProject.ViewModel.StoragePage
             openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
        
             SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
-            
+            products = new List<Product>();
+
             _nameSearch = string.Empty;
             _searchTemplateName = new List<string>();
 
@@ -133,7 +135,7 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
         private void EditingProduct(object parameter)
         {
-            List<Product> products = new List<Product>();
+            products = new List<Product>();
             if(storageModel!=null)
             storageModel.ContertToListProduct((IList)parameter, products);
 
@@ -153,17 +155,38 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand DeleteProductCommand { get => new DelegateParameterCommand(DeleteProduct, CanRegister); }
         private void DeleteProduct(object parameter)
         {
-            List<Product> products = new List<Product>();
-            if (storageModel != null)
-                storageModel.ContertToListProduct((IList)parameter, products);
-            if (products.Count == 1)
+            if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                if (products[0] != null)
-                    if (storageModel != null)
+                products = new List<Product>();
+                if (storageModel != null)
+                    storageModel.ContertToListProduct((IList)parameter, products);
+                if (products.Count == 1)
+                {
+                    if (products[0] != null)
+                        if (storageModel != null)
+                        {
+                            if (storageModel.DeleteProduct(products[0]))
+                                new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                        }
+                }
+            }
+        }
+
+        public ICommand AddProductArhiveCommand { get => new DelegateParameterCommand(AddProductArhive, CanRegister); }
+        private void AddProductArhive(object parameter)
+        {
+            if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                products = new List<Product>();
+                if (storageModel != null)
+                {
+                    storageModel.ContertToListProduct((IList)parameter, products);
+                    if (products.Count == 1)
                     {
-                        if (storageModel.DeleteProduct(products[0]))
-                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+
+                        storageModel.SetProductInArhive(products[0]);
                     }
+                }
             }
         }
         private bool CanRegister(object parameter) => true;

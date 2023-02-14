@@ -72,6 +72,9 @@
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                         Command="{Binding UpdateProductCommand}" />
                     <Separator></Separator>
+                    <MenuItem Header="Перенести в архів"
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding AddProductArhiveCommand}" />
                     <MenuItem 
                         Header="Видалити товар" 
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"

@@ -11,7 +11,7 @@ namespace ShopProject.Model
     {
         Name = 0,
         Code = 1,
-        Articule =2,
+        Articule = 2,
     };
 
     internal static class Search
@@ -117,7 +117,7 @@ namespace ShopProject.Model
                     {
                         foreach (Product product in products)
                         {
-                            if (product.name == itemSearch)
+                            if (product.name == itemSearch.ToString())
                             {
                                 item = product;
                                 break;
@@ -130,7 +130,7 @@ namespace ShopProject.Model
                     {
                         foreach (Product product in products)
                         {
-                            if (product.code == itemSearch)
+                            if (product.code == itemSearch.ToString())
                             {
                                 item = product;
                                 break;

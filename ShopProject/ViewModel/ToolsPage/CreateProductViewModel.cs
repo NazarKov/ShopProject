@@ -128,7 +128,7 @@ namespace ShopProject.ViewModel.ToolsPage
             {
                 if (productModel.SaveItemDataBase())
                 {
-                    MessageBox.Show("товар доблений");
+                    MessageBox.Show("товар добавлений");
                 }
                 else
                 {
