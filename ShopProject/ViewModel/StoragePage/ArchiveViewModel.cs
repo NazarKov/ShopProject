@@ -3,18 +3,23 @@ using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ShopProject.ViewModel.StoragePage
 {
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
         private ArchiveModel? archiveModel;
+        private List<Archive> archives;
 
         private ICommand searchButton;
         private ICommand visibileAllButton;
@@ -25,6 +30,7 @@ namespace ShopProject.ViewModel.StoragePage
             searchButton = new DelegateCommand(SearchArhive);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
 
+            archives = new List<Archive>();
             _archives = new List<Archive>();
             _searchTemplateName = new List<string>();
             _nameSearch = string.Empty;
@@ -43,6 +49,7 @@ namespace ShopProject.ViewModel.StoragePage
             SearchTemplateName = new List<string>();
             SearchTemplateName.Add("ШтрихКод");
             SearchTemplateName.Add("Назва");
+            SearchTemplateName.Add("Артикуль");
             SelectedIndexSearch = 0;
         }
 
@@ -84,17 +91,73 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void SearchArhive()
         {
-            if (_selectedIndexSearch == 1)
-            {   
-                Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Name);
-            }
-            else
+            switch(_selectedIndexSearch)
             {
-                Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Code);
-            }
+                case 0:
+                    {
+                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Code);
+                        break;
+                    }
+                case 1:
+                    {
+                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Name);
+                        break;
+                    }
+                case 2:
+                    {
+                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Articule);
+                        break;
+                    }
 
+            }
         }
+
         public ICommand VisibileAllButton => visibileAllButton;
 
+        public ICommand ReturnProductInStorageCommand { get => new DelegateParameterCommand (ReturnProductInStorage,(object parameter)=>true); }
+        private void ReturnProductInStorage(object parameter)
+        {
+            if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                archives = new List<Archive>();
+                if (archiveModel != null)
+                {
+                    archiveModel.ConvertToList((IList)parameter,archives);
+                    if(archives.Count == 1)
+                    {
+                        if(archiveModel.ReturnProductInStorage(archives[0]))
+                        {
+                            MessageBox.Show("Перенесено товар до складу\nКількість товару буде встановленна на одиницю", "in", MessageBoxButton.OK);
+                            new Thread(new ThreadStart(SetFieldGridView)).Start();
+                        }
+                    }
+                }
+            }
+        }
+
+        public ICommand DeleteArhiveAndProductCommand { get => new DelegateParameterCommand(DeleteArhiveAndProduct, (object parameter) => true); }
+        private void DeleteArhiveAndProduct(object parameter)
+        {
+            if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                archives = new List<Archive>();
+                if (archiveModel != null)
+                {
+                    archiveModel.ConvertToList((IList)parameter, archives);
+
+                    if (archives.Count == 1)
+                    {
+                        if (archiveModel.DeleteRecordArhive(archives[0], archives[0].product))
+                        {
+                            MessageBox.Show("Aрхівну записку виладено","in",MessageBoxButton.OK);
+                            new Thread(new ThreadStart(SetFieldGridView)).Start();
+                        }
+
+                    }
+                }
+            }
+        }
+
+        
     }
 }

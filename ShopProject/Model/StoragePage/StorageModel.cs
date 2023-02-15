@@ -33,7 +33,7 @@ namespace ShopProject.Model.StoragePage
 
             if (db.products != null && db.archives!=null)
             {
-                products = db.products.ToList();//Where(p => p.count != 0).ToList();
+                products = db.products.Where(p => p.count != 0).ToList();//ToList();//
                 archives = db.archives.ToList();
             }
         }

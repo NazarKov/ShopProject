@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Model;
+﻿using NPOI.SS.Formula.Functions;
+using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,21 +74,6 @@ namespace ShopProject.Model
             searchResultArhive = new List<Archive>();
             switch (type)
             {
-                case TypeSearch.Name:
-                    {
-                        foreach (Archive archive in archives)
-                        {
-                            if (archive.product != null)
-                            {
-                                if (archive.product.name == itemSearch)
-                                {
-                                    searchResultArhive.Add(archive);
-                                }
-
-                            }
-                        }
-                        return searchResultArhive;
-                    }
                 case TypeSearch.Code:
                     {
                         foreach (Archive archive in archives)
@@ -100,6 +86,36 @@ namespace ShopProject.Model
                                 }
                             }
                         }
+                        return searchResultArhive;
+                    }
+                case TypeSearch.Name:
+                    {
+                        foreach (Archive archive in archives)
+                        {
+                            if (archive.product != null)
+                            {
+                                if (archive.product.name != null)
+                                    if (archive.product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultArhive.Add(archive);
+                                    }
+
+                            }
+                        }
+                        return searchResultArhive;
+                    }
+                case TypeSearch.Articule:
+                    {
+                        foreach (Archive archive in archives)
+                        {
+                            if (archive.product != null)
+                                if(archive.product.articule != null)
+                                    if (archive.product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultArhive.Add(archive);
+                                    }
+                        }
+
                         return searchResultArhive;
                     }
                 default:

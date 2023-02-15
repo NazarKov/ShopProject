@@ -49,11 +49,24 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding product.ID}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding product.code}" />
-                <DataGridTextColumn Header="Опис" Binding="{Binding product.articule}" />
+                <DataGridTextColumn Header="Артикуль" Binding="{Binding product.articule}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding product.name}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding product.price}" />
+                <DataGridTextColumn Header="Кількість" Binding="{Binding product.count}"/>
+                <DataGridTextColumn Header="Одиниці" Binding="{Binding  product.units}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Дата списання" Binding="{Binding created_at}" />
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Повернути на склад"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding ReturnProductInStorageCommand }"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Видалити"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding DeleteArhiveAndProductCommand }"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
 
         </DataGrid>
     </Grid>

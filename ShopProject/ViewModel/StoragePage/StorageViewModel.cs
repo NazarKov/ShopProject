@@ -183,7 +183,6 @@ namespace ShopProject.ViewModel.StoragePage
                     storageModel.ContertToListProduct((IList)parameter, products);
                     if (products.Count == 1)
                     {
-
                         storageModel.SetProductInArhive(products[0]);
                     }
                 }
