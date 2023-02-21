@@ -26,10 +26,6 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public double? price { get; set; }
         /// <summary>
-        /// ціна з націнкою 
-        /// </summary>
-        public double? startingPrise { get; set; }
-        /// <summary>
         ///кількість товару
         /// </summary>
         public int? count { get; set; }
@@ -38,13 +34,13 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public string? units { get; set; }
         /// <summary>
-        /// націнка
-        /// </summary>
-        public double? markUp { get; set; }
-        /// <summary>
         /// скідка
         /// </summary>
         public double? sales { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? isArhive { get; set; }
         /// <summary>
         /// ключ поєднання
         /// </summary>

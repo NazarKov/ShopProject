@@ -1,5 +1,4 @@
-﻿using NPOI.Util;
-using ShopProject.DataBase.Model;
+﻿using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
@@ -9,12 +8,12 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
-    internal class UpdateProductAllModelView : ViewModel<UpdateProductAllModelView>
+    internal class UpdateProductAllViewModel : ViewModel<UpdateProductAllViewModel>
     {
         private UpdateProductAllModel model;
         private ICommand upateProductDataBaseCommand;
 
-        public UpdateProductAllModelView()
+        public UpdateProductAllViewModel()
         {
             model = new UpdateProductAllModel();
             upateProductDataBaseCommand = new DelegateCommand(UpdateProduct);

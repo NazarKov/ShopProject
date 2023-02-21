@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="UpdateProductAll" Height="475" Width="800" ResizeMode="NoResize" Name="window" >
     <Window.Resources>
-        <local:UpdateProductAllModelView x:Key="VM"  ></local:UpdateProductAllModelView>
+        <local:UpdateProductAllViewModel x:Key="VM"  ></local:UpdateProductAllViewModel>
         <CollectionViewSource x:Key="Units" Source="{Binding TextComboBox}"></CollectionViewSource>
     </Window.Resources>
     <Window.DataContext>
@@ -30,7 +30,6 @@
                 <DataGridTextColumn Header="Артикул" Binding="{Binding articule}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
-                <DataGridTextColumn Header="Початкова ціна"  Binding="{Binding startingPrise}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
                 <DataGridComboBoxColumn Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" SelectedItemBinding="{Binding units}"/>

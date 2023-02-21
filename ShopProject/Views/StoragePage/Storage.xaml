@@ -57,7 +57,6 @@
                 <DataGridTextColumn Header="Артикул" Binding="{Binding articule}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
-                <DataGridTextColumn Header="Початкова ціна"  Binding="{Binding startingPrise}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
                 <DataGridTextColumn Header="Одниці"  Binding="{Binding units}" />

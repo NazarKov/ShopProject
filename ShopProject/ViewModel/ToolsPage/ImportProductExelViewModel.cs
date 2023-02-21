@@ -72,13 +72,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _indexPrice = value; }
         }
 
-        private int _indexStartingPrice;
-        public int IndexStatingPrice
-        {
-            get { return _indexStartingPrice; }
-            set { _indexStartingPrice = value; }
-        }
-
         private int _indexCount;
         public int IndexCount
         {
@@ -144,7 +137,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public ICommand SaveItemDb => saveItemDb;
         private void SaveItem()
         {
-            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexName, _indexArticule, _indexPrice, _indexStartingPrice, _indexCount, _indexUnit,_indexTop,_indexBottom))
+            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexName, _indexArticule, _indexPrice ,_indexCount, _indexUnit,_indexTop,_indexBottom))
             {
                 MessageBox.Show("Товари добалено");
             }

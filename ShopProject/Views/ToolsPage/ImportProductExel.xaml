@@ -19,7 +19,7 @@
             <ColumnDefinition Width="70"></ColumnDefinition>
             <ColumnDefinition Width="70"></ColumnDefinition>
             <ColumnDefinition Width="70"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="70"></ColumnDefinition>
             <ColumnDefinition Width="70"></ColumnDefinition>
             <ColumnDefinition Width="70"></ColumnDefinition>
             <ColumnDefinition Width="70"></ColumnDefinition>
@@ -52,18 +52,16 @@
         <Label x:Name="label1" Grid.Column="1" Content="Шрихкод" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label2" Grid.Column="2" Content="Назва" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label3" Grid.Column="3" Content="Артикуль" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label5" Grid.Column="4" Content="Початкова ціна" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label6" Grid.Column="5" Content="Ціна" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label7" Grid.Column="6" Content="Кількість" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label8" Grid.Column="7" Content="Одиниці" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label6" Grid.Column="4" Content="Ціна" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label7" Grid.Column="5" Content="Кількість" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label8" Grid.Column="6" Content="Одиниці" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top"/>
         
         <TextBox x:Name="textBox0" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexCode}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
         <TextBox x:Name="textBox1" Grid.Column="2" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexName}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
         <TextBox x:Name="textBox2" Grid.Column="3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexArticule}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
-        <TextBox x:Name="textBox4" Grid.Column="4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexStatingPrice}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="100"/>
-        <TextBox x:Name="textBox5" Grid.Column="5" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexPrice}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
-        <TextBox x:Name="textBox6" Grid.Column="6" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexCount}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
-        <TextBox x:Name="textBox7" Grid.Column="7" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexUnit}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
+        <TextBox x:Name="textBox5" Grid.Column="4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexPrice}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
+        <TextBox x:Name="textBox6" Grid.Column="5" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexCount}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
+        <TextBox x:Name="textBox7" Grid.Column="6" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding IndexUnit}" HorizontalContentAlignment="Center" VerticalAlignment="Center" Width="70"/>
         
         <Label x:Name="label" Content="Номер рядка" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,0,10" VerticalAlignment="Bottom"/>
 

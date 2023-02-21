@@ -74,9 +74,7 @@ namespace ShopProject.Model
                     row.CreateCell(0).SetCellValue(product.code);
                     row.CreateCell(1).SetCellValue(product.name);
                     row.CreateCell(2).SetCellValue(product.articule);
-                    if(product.startingPrise != null)
-                        row.CreateCell(3).SetCellValue((double)product.startingPrise);
-                    if(product.price!=null)
+                   if(product.price!=null)
                         row.CreateCell(4).SetCellValue((double)product.price);
                     if (product.count != null)
                         row.CreateCell(5).SetCellValue((double)product.count);
@@ -93,7 +91,6 @@ namespace ShopProject.Model
             row.CreateCell(0).SetCellValue("Шрихкод");
             row.CreateCell(1).SetCellValue("Назва");
             row.CreateCell(2).SetCellValue("Артикуль");
-            row.CreateCell(3).SetCellValue("Стартова ціна");
             row.CreateCell(4).SetCellValue("Продажна ціна");
             row.CreateCell(5).SetCellValue("Кількість");
             row.CreateCell(6).SetCellValue("Одиниці");

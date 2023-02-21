@@ -45,7 +45,7 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public bool CreateNewProduct(string name, string code, string articule, double price, double statingPrice, int count, string units)
+        public bool CreateNewProduct(string name, string code, string articule, double price,int count, string units)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace ShopProject.Model.ToolsPage
                 {
                         throw new Exception("Товар існує");
                 }
-                Validation.TextField(product,name, code, articule, price, statingPrice, count, units, true);
+                Validation.TextField(product,name, code, articule, price, count, units, true);
                 return true;
             }
             catch (Exception ex)

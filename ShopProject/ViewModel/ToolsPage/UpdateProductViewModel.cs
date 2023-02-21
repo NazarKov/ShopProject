@@ -49,10 +49,8 @@ namespace ShopProject.ViewModel.ToolsPage
                     Name = product.name;
                 if (product.articule != null)
                     Articule = product.articule;
-                 if (product.price != null)
+                if (product.price != null)
                     Price = (double)product.price;
-                if (product.startingPrise != null)
-                    StartingPrise = (double)product.startingPrise;
                 if (product.count != null)
                     Count = (int)product.count;
                 if (product.units != null)
@@ -100,13 +98,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _price = value; OnPropertyChanged("Price"); }
         }
 
-        private double _startingPrise;
-        public double StartingPrise
-        {
-            get { return _startingPrise; }
-            set { _startingPrise = value; OnPropertyChanged("StartingPrise"); }
-        }
-
         private int _count;
         public int Count
         {
@@ -141,7 +132,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void UpdateProductDataBase()
         {
-            if (update.UpdateProduct(_name, _code, _articule, _price, _startingPrise, _count, _selectUnits))
+            if (update.UpdateProduct(_name, _code, _articule, _price, _count, _selectUnits))
             {
                 if (update.SaveProduct())
                 {

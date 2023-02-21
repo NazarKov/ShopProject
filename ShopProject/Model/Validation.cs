@@ -13,7 +13,7 @@ namespace ShopProject.Model
 {
     internal static class Validation
     {
-        public static void TextField(Product product,string name, string code, string articule, double price, double statingPrice, int count, string units, bool validation)
+        public static void TextField(Product product,string name, string code, string articule, double price, int count, string units, bool validation)
         {
             if (validation)
             {
@@ -23,12 +23,10 @@ namespace ShopProject.Model
                     product.code = ItemChekIsNull(code, typeof(string), "Штрихкод").ToString();
                     product.articule = ItemChekIsNull(articule, typeof(string), "Артикуль").ToString();
                     product.price = Convert.ToDouble(ItemChekIsNull(price, typeof(double), "Ціна"));
-                    product.startingPrise = Convert.ToDouble(ItemChekIsNull(statingPrice, typeof(double), "Початкова ціна"));
                     product.count = Convert.ToInt32(ItemChekIsNull(count, typeof(int), "Кількість")); ;
                     product.units = ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
                     product.sales = 0;
                     product.created_at = new DateTimeOffset().LocalDateTime;
-                    product.markUp = (price / statingPrice) * 100;
                 }
             }
             else
@@ -39,12 +37,10 @@ namespace ShopProject.Model
                     product.code = code.ToString();
                     product.articule = articule.ToString();
                     product.price = price;
-                    product.startingPrise = statingPrice;
                     product.count = count;
                     product.units = units.ToString();
                     product.sales = 0;
                     product.created_at = new DateTimeOffset().LocalDateTime;
-                    product.markUp = (price / statingPrice) * 100;
                 }
             }
         }
@@ -137,7 +133,7 @@ namespace ShopProject.Model
             return false;
         }
 
-        public static void ChekRowIsNull(int code, int name, int articule, int price, int startingPrice, int count, int units)
+        public static void ChekRowIsNull(int code, int name, int articule, int price, int count, int units)
         {
             if(code == 0)
             {
@@ -146,15 +142,12 @@ namespace ShopProject.Model
                     if(articule==0)
                     {
                         if(price==0)
-                        {
-                            if(startingPrice==0)
+                        {   
+                            if (count == 0)
                             {
-                                if (count == 0)
+                                if(units==0)
                                 {
-                                    if(units==0)
-                                    {
-                                        throw new Exception("Заповніть поля");
-                                    }
+                                    throw new Exception("Заповніть поля");
                                 }
                             }
                         }

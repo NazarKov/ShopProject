@@ -59,8 +59,8 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-                Validation.ChekRowIsNull(column[0], column[1], column[2], column[3], column[4], column[5], column[6]);
-                SaveItem(dataTable, column[0], column[1], column[2], column[3], column[4], column[5], column[6], column[7], column[8]);
+                Validation.ChekRowIsNull(column[0], column[1], column[2], column[3], column[4], column[5]);
+                SaveItem(dataTable, column[0], column[1], column[2], column[3], column[4], column[5], column[6], column[7]);
                 return true;
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace ShopProject.Model.ToolsPage
                 return false;
             }
         }
-        private void SaveItem(DataTable dataTable,int code ,int name,int articule,int price,int startingPrice,int count,int units,int indexTop,int intdexBottom)
+        private void SaveItem(DataTable dataTable,int code ,int name,int articule,int price,int count,int units,int indexTop,int intdexBottom)
         {
             int i = Validation.ChekNull(indexTop);
             int max = Validation.ChekNull(intdexBottom,dataTable.Rows.Count);
@@ -88,7 +88,6 @@ namespace ShopProject.Model.ToolsPage
                         product.name = Validation.ChekParamsIsNull(name, i, dataTable);
                         product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
                         product.price = Validation.ChekEmpty(price, i, dataTable);
-                        product.startingPrise = Validation.ChekEmpty(startingPrice, i, dataTable);
                         product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
                         product.units = Validation.ChekParamsIsNull(units, i, dataTable);
                         product.created_at = DateTime.Now;

@@ -36,9 +36,7 @@ namespace ShopProject.Model.ToolsPage
                             product.articule = list[i].articule;
                             product.units = list[i].units;
                             product.count = list[i].count;
-                            product.startingPrise = list[i].startingPrise;
-                            product.sales = list[i].sales;
-                            product.markUp = list[i].markUp;
+                            product.sales = list[i].sales;                    
                             product.name = list[i].name;
                         }
                     }

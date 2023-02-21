@@ -71,13 +71,6 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _price= value; OnPropertyChanged("Price"); } 
         }
 
-        private double _startingPrice;
-        public double StartingPrice
-        {
-            get { return _startingPrice; }
-            set { _startingPrice = value; OnPropertyChanged("PurchasePrice"); }
-        }
-
         private int _count;
         public int Count 
         {
@@ -117,7 +110,6 @@ namespace ShopProject.ViewModel.ToolsPage
             Code = string.Empty;
             Count = 0;
             Price = 0;
-            StartingPrice = 0;
         }
 
         public ICommand SaveProduct => saveProduct;
@@ -138,7 +130,7 @@ namespace ShopProject.ViewModel.ToolsPage
         }
             private bool CreateProduct()
         {
-            return productModel.CreateNewProduct(_name, _code, _articule, _price, _startingPrice, _count, _selectUnits);
+            return productModel.CreateNewProduct(_name, _code, _articule, _price, _count, _selectUnits);
         } 
 
     }

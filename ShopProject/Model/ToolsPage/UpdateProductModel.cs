@@ -53,7 +53,6 @@ namespace ShopProject.Model.ToolsPage
                     products.ElementAt(i).name = product.name;
                     products.ElementAt(i).price = product.price;
                     products.ElementAt(i).articule = product.articule;
-                    products.ElementAt(i).startingPrise = product.startingPrise;
                     products.ElementAt(i).count = product.count;
                     products.ElementAt(i).units = product.units;
                     products.ElementAt(i).created_at = new DateTimeOffset().LocalDateTime;
@@ -62,12 +61,12 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public bool UpdateProduct(string name, string code,string articule, double price, double startingPrise, int count, string units)
+        public bool UpdateProduct(string name, string code,string articule, double price, int count, string units)
         {
             try
             {
                 product = new Product();
-                Validation.TextField(product,name, code, articule, price, startingPrise, count, units, true);
+                Validation.TextField(product,name, code, articule, price, count, units, true);
                 return true;
             }
             catch (Exception ex)
