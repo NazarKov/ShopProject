@@ -11,32 +11,32 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using static ShopProject.Model.StoragePage.StorageModel;
-using Archive = ShopProject.DataBase.Model.Archive;
+using ProductArchive = ShopProject.DataBase.Model.ProductArchive;
 
 namespace ShopProject.Model.StoragePage
 {
     internal class ArchiveModel
     {
         private ShopContext db;
-        private List<Archive> archives;
+        private List<ProductArchive> archives;
 
         public ArchiveModel()
         {
             db = new ShopContext();
-            archives = new List<Archive>();
+            archives = new List<ProductArchive>();
 
             db.products.Load();
-            db.archives.Load();
-            if(db.archives!=null)
-            archives = db.archives.ToList();
+            db.productArchives.Load();
+            if(db.productArchives != null)
+            archives = db.productArchives.ToList();
         }
 
-        public List<Archive> GetItems()
+        public List<ProductArchive> GetItems()
         {
             return archives;
         }
 
-        public List<Archive>? SearchArhive(string itemSearch, TypeSearch type)
+        public List<ProductArchive>? SearchArhive(string itemSearch, TypeSearch type)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public bool DeleteRecordArhive(Archive archive,Product product)
+        public bool DeleteRecordArhive(ProductArchive archive,Product product)
         {
             try
             {
@@ -64,11 +64,11 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        private void DeleteArhive(Archive archive)
+        private void DeleteArhive(ProductArchive archive)
         {
-            if (db.archives != null)
+            if (db.productArchives != null)
             {
-                db.archives.Remove(archive);
+                db.productArchives.Remove(archive);
             }
         }
         private void DeleteProduct(Product product)
@@ -81,20 +81,20 @@ namespace ShopProject.Model.StoragePage
                 }
             }
         }
-        public void ConvertToList(IList collection, List<Archive> itemConver)
+        public void ConvertToList(IList collection, List<ProductArchive> itemConver)
         {
             for (int i = 0; i < collection.Count; i++)
             {
-                itemConver.Add((Archive)collection[i]);
-                itemConver[i].product = ((Archive)collection[i]).product;
+                itemConver.Add((ProductArchive)collection[i]);
+                itemConver[i].product = ((ProductArchive)collection[i]).product;
             }
         }
         
-        public bool ReturnProductInStorage(Archive archive)
+        public bool ReturnProductInStorage(ProductArchive archive)
         {
             try
             {
-                SetProductCount(archive);
+                SetProductStatus(archive);
                 DeleteArhive(archive);
                 db.SaveChangesAsync();
                 return true;
@@ -105,14 +105,14 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        private void SetProductCount(Archive archive)
+        private void SetProductStatus(ProductArchive archive)
         {
             if(db.products!=null)
                 foreach(Product product in db.products)
                 {
                     if (product == archive.product)
                     {
-                        product.count = 1;
+                        product.status = "in_stock";
                     }
                 }
         }

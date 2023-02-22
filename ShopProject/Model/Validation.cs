@@ -27,6 +27,7 @@ namespace ShopProject.Model
                     product.units = ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
                     product.sales = 0;
                     product.created_at = new DateTimeOffset().LocalDateTime;
+                    product.status = "in_stock";
                 }
             }
             else
@@ -155,9 +156,9 @@ namespace ShopProject.Model
                 }
             }
         }
-        public static void ChekIsProductInArhive(Product product,List<Archive> archives)
+        public static void ChekIsProductInArhive(Product product,List<ProductArchive> archives)
         {
-            foreach (Archive archive in archives)
+            foreach (ProductArchive archive in archives)
             {
                 if (archive.product != null)
                 {

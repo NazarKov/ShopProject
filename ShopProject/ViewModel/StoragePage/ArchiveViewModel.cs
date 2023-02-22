@@ -19,7 +19,7 @@ namespace ShopProject.ViewModel.StoragePage
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
         private ArchiveModel? archiveModel;
-        private List<Archive> archives;
+        private List<ProductArchive> archives;
 
         private ICommand searchButton;
         private ICommand visibileAllButton;
@@ -30,8 +30,8 @@ namespace ShopProject.ViewModel.StoragePage
             searchButton = new DelegateCommand(SearchArhive);
             visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
 
-            archives = new List<Archive>();
-            _archives = new List<Archive>();
+            archives = new List<ProductArchive>();
+            _archives = new List<ProductArchive>();
             _searchTemplateName = new List<string>();
             _nameSearch = string.Empty;
 
@@ -53,8 +53,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<Archive> _archives;
-        public List<Archive> Archives
+        private List<ProductArchive> _archives;
+        public List<ProductArchive> Archives
         {
             get { return _archives; }
             set { _archives = value; OnPropertyChanged("Archives"); }
@@ -119,7 +119,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                archives = new List<Archive>();
+                archives = new List<ProductArchive>();
                 if (archiveModel != null)
                 {
                     archiveModel.ConvertToList((IList)parameter,archives);
@@ -127,7 +127,6 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         if(archiveModel.ReturnProductInStorage(archives[0]))
                         {
-                            MessageBox.Show("Перенесено товар до складу\nКількість товару буде встановленна на одиницю", "in", MessageBoxButton.OK);
                             new Thread(new ThreadStart(SetFieldGridView)).Start();
                         }
                     }
@@ -140,7 +139,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                archives = new List<Archive>();
+                archives = new List<ProductArchive>();
                 if (archiveModel != null)
                 {
                     archiveModel.ConvertToList((IList)parameter, archives);

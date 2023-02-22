@@ -22,36 +22,36 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public string? articule { get; set; }
         /// <summary>
-        /// ціна продукту
+        /// ціна товару
         /// </summary>
         public double? price { get; set; }
         /// <summary>
-        ///кількість товару
+        /// кількість товару
         /// </summary>
         public int? count { get; set; }
         /// <summary>
-        /// одиниці виміру
+        /// одиниці виміру ддя товару
         /// </summary>
         public string? units { get; set; }
         /// <summary>
-        /// скідка
+        /// знижка
         /// </summary>
         public double? sales { get; set; }
         /// <summary>
-        /// 
+        /// статус товару
         /// </summary>
-        public bool? isArhive { get; set; }
+        public string? status { get; set; }
         /// <summary>
-        /// ключ поєднання
+        /// дата створення товару
         /// </summary>
         public DateTimeOffset? created_at { get; set; }
 
-        private ICollection<ProductOrder> productOrders { get; set; }
-        private ICollection<Archive> archives { get; set; }
+        private ICollection<ProductOrder> _productOrders { get; set; }
+        private ICollection<ProductArchive> _archives { get; set; }
         public Product()
         {
-            this.productOrders = new List<ProductOrder>();
-            this.archives = new List<Archive>();
+            _productOrders = new List<ProductOrder>();
+            _archives = new List<ProductArchive>();
         }
     }
 }

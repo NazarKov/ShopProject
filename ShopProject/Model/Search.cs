@@ -19,7 +19,7 @@ namespace ShopProject.Model
     {
         private static Product? item;
         private static List<Product>? searchResult;
-        private static List<Archive>? searchResultArhive;
+        private static List<ProductArchive>? searchResultArhive;
 
         public static List<Product>? ProductDataBase(string itemSearch, TypeSearch type,List<Product> products)
         {
@@ -69,14 +69,14 @@ namespace ShopProject.Model
                     }
             }
         }
-        public static List<Archive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<Archive> archives)
+        public static List<ProductArchive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<ProductArchive> archives)
         {
-            searchResultArhive = new List<Archive>();
+            searchResultArhive = new List<ProductArchive>();
             switch (type)
             {
                 case TypeSearch.Code:
                     {
-                        foreach (Archive archive in archives)
+                        foreach (ProductArchive archive in archives)
                         {
                             if (archive.product != null)
                             {
@@ -90,7 +90,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Name:
                     {
-                        foreach (Archive archive in archives)
+                        foreach (ProductArchive archive in archives)
                         {
                             if (archive.product != null)
                             {
@@ -106,7 +106,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Articule:
                     {
-                        foreach (Archive archive in archives)
+                        foreach (ProductArchive archive in archives)
                         {
                             if (archive.product != null)
                                 if(archive.product.articule != null)

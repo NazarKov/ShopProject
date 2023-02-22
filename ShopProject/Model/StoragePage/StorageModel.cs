@@ -11,46 +11,39 @@ using System.Windows.Media.Media3D;
 using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
 using ShopProject.Model;
+using ShopProject.Model.ModelRepository;
 using ShopProject.Views.StoragePage;
-using Archive = ShopProject.DataBase.Model.Archive;
 
 namespace ShopProject.Model.StoragePage
 {
     internal class StorageModel
     {
-        private ShopContext db;
-        private List<Product> products;
-        private List<Archive> archives;
+        private ProductTableRepository _productTableRepository;
+        private List<Product> _products;
+        private List<ProductArchive> _archives;
 
         public StorageModel()
         {
-            db = new ShopContext();
-            products = new List<Product>();
-            archives = new List<Archive>();
+            _productTableRepository = new ProductTableRepository();
+            _products = new List<Product>();
+            _archives = new List<ProductArchive>();
+            _products = (List<Product>)_productTableRepository.GetAll();
 
-            db.products.Load();
-            db.archives.Load();
-
-            if (db.products != null && db.archives!=null)
-            {
-                products = db.products.Where(p => p.count != 0).ToList();//ToList();//
-                archives = db.archives.ToList();
-            }
         }
         public List<Product> GetItems()
         {
-            return products;
+            return _products;
         }
 
         public List<Product>? SearchProduct(string itemSearch, TypeSearch type)
         {
             try
             {
-                return Search.ProductDataBase(itemSearch, type, products);
+                return Search.ProductDataBase(itemSearch, type, _products);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Помилка",MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
                 return null;
             }
         }
@@ -59,25 +52,16 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                if (db != null)
-                {
-                    if (db.products != null)
-                    {
-                        db.products.Remove(productDelete);
-                        db.SaveChangesAsync();
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
+                _productTableRepository.Delete(productDelete);
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
                 return false;
             }
-
         }
+
         public void ContertToListProduct(IList list, List<Product> products)
         {
             foreach (var item in list)
@@ -90,46 +74,30 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                Validation.ChekIsProductInArhive(item, archives);
-               
-                Archive archive = new Archive();
+                Validation.ChekIsProductInArhive(item, _archives);//перевірка на існуючий товар в архіві
+
+                ProductArchive archive = new ProductArchive();
                 SetFieldArchive(archive, item);
 
-                if (db.products!=null)
-                  SetProductCountNull(item);
-                SaveChangeDataBase(archive);
+                //if (db.products != null)
+                //    SetProductStatusArchived(item);
+                //SaveChangeDataBase(archive);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
             }
         }
-        private void SetFieldArchive(Archive archive, Product item)
+        private void SetFieldArchive(ProductArchive archive, Product item)
         {
             archive.product = item;
             archive.created_at = DateTime.Now;
         }
 
-        private void SetProductCountNull(Product item)
+        private void SetProductStatusArchived(Product item)
         {
-            if (db.products != null)
-            {
-                foreach (Product product in db.products)
-                {
-                    if (product.Equals(item))
-                    {
-                        product.count = 0;
-                    }
-                }
-            }
+            Product product = (Product)_productTableRepository.GetId(item.ID);
+            product.status ="archived";
         }
-        
-        private void SaveChangeDataBase(Archive archive)
-        {
-            if (db.archives != null)
-                db.archives.Add(archive);
-            db.SaveChangesAsync();
-        }
-
     }
 }

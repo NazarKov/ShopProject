@@ -91,6 +91,7 @@ namespace ShopProject.Model.ToolsPage
                         product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
                         product.units = Validation.ChekParamsIsNull(units, i, dataTable);
                         product.created_at = DateTime.Now;
+                        product.status = "in_stock";
                         if (db != null)
                             if (db.products != null)
                                 db.products.Add(product);

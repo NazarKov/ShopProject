@@ -20,10 +20,10 @@ namespace ShopProject.ViewModel.StoragePage
     {
         StorageModel? storageModel;
 
-        private ICommand searchButton;
-        private ICommand visibileAllButton;
-        private ICommand openCreateProductWindow;
-        private List<Product> products;
+        private ICommand _searchButton;
+        private ICommand _visibileAllButton;
+        private ICommand _openCreateProductWindow;
+        private List<Product> _products;
         
         public StorageViewModel()
         {
@@ -31,12 +31,12 @@ namespace ShopProject.ViewModel.StoragePage
             SearchTemplateName = new List<string>();
           
 
-            searchButton = new DelegateCommand(SearchProductInCodeAndName);
-            visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
-            openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
+            _searchButton = new DelegateCommand(SearchProductInCodeAndName);
+            _visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
+            _openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
        
             SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
-            products = new List<Product>();
+            _products = new List<Product>();
 
             _nameSearch = string.Empty;
             _searchTemplateName = new List<string>();
@@ -88,7 +88,7 @@ namespace ShopProject.ViewModel.StoragePage
             set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
 
-        public ICommand SearchButton => searchButton;
+        public ICommand SearchButton => _searchButton;
 
         void SearchProductInCodeAndName()
         {
@@ -112,7 +112,7 @@ namespace ShopProject.ViewModel.StoragePage
                         }
                 }
         }
-        public ICommand VisibileAllButton => visibileAllButton;
+        public ICommand VisibileAllButton => _visibileAllButton;
 
         void SetFieldItemDataGridThread()
         {
@@ -121,32 +121,31 @@ namespace ShopProject.ViewModel.StoragePage
             Products = storageModel.GetItems();
         }
 
-        public ICommand OpenCreateProductWindow => openCreateProductWindow;
+        public ICommand OpenCreateProductWindow => _openCreateProductWindow;
 
         private void CreateProductDatabase()
         {
             if (storageModel != null)
             {
-                if(new CreateProductPage().ShowDialog().HasValue)
-                    new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                new CreateProductPage().ShowDialog();
             }
         }
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
         private void EditingProduct(object parameter)
         {
-            products = new List<Product>();
-            if(storageModel!=null)
-            storageModel.ContertToListProduct((IList)parameter, products);
+            _products = new List<Product>();
+            if (storageModel != null)
+                storageModel.ContertToListProduct((IList)parameter, _products);
 
-            if(products.Count==1)
+            if (_products.Count == 1)
             {
-                StaticResourse.product = products[0];
+                StaticResourse.product = _products[0];
                 new UpdateProduct().ShowDialog();
             }
             else
             {
-                StaticResourse.products = products; 
+                StaticResourse.products = _products;
                 new UpdateProductAll().ShowDialog();
             }
 
@@ -157,15 +156,15 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                products = new List<Product>();
+                _products = new List<Product>();
                 if (storageModel != null)
-                    storageModel.ContertToListProduct((IList)parameter, products);
-                if (products.Count == 1)
+                    storageModel.ContertToListProduct((IList)parameter, _products);
+                if (_products.Count == 1)
                 {
-                    if (products[0] != null)
+                    if (_products[0] != null)
                         if (storageModel != null)
                         {
-                            if (storageModel.DeleteProduct(products[0]))
+                            if (storageModel.DeleteProduct(_products[0]))
                                 new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                         }
                 }
@@ -177,13 +176,13 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                products = new List<Product>();
+                _products = new List<Product>();
                 if (storageModel != null)
                 {
-                    storageModel.ContertToListProduct((IList)parameter, products);
-                    if (products.Count == 1)
+                    storageModel.ContertToListProduct((IList)parameter, _products);
+                    if (_products.Count == 1)
                     {
-                        storageModel.SetProductInArhive(products[0]);
+                        storageModel.SetProductInArhive(_products[0]);
                     }
                 }
             }
