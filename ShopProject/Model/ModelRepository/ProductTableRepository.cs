@@ -11,6 +11,17 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.ModelRepository
 {
+    public enum TypeParameterSetTable
+    {
+        Code = 0,
+        Name = 1,
+        Articule = 2,
+        Price = 3,
+        Count = 4,
+        Units = 5,
+        Sale = 6,
+        Status = 7,
+    }
     class ProductTableRepository : ITableRepository<Product>
     {
         public ProductTableRepository(){}
@@ -99,7 +110,7 @@ namespace ShopProject.Model.ModelRepository
                 context.products.Load();
                 if(context.products!=null)
                 {
-                    return context.products.Where( p=> p.status == "in_stock").ToList();//in_stock товар готовий до продажі
+                    return context.products.Where( p=> p.status == "in_stock").ToList();
                 }
                 else
                 {
@@ -107,6 +118,70 @@ namespace ShopProject.Model.ModelRepository
                 }
             }
         }
+
+        public void SetParameter(int ID,object parameter,TypeParameterSetTable type)
+        {
+            using (ShopContext context = new ShopContext())
+            {
+                context.products.Load();
+                if (context.products != null)
+                {
+
+                    Product product = new Product();
+                    product = context.products.Find(ID);
+
+                    if (product != null)
+                    {
+                        switch (type)
+                        {
+                            case TypeParameterSetTable.Code:
+                                {
+                                    product.code = parameter.ToString();
+                                    break;
+                                }
+                            case TypeParameterSetTable.Name:
+                                {
+                                    product.name = parameter.ToString();
+                                    break;
+                                }
+                            case TypeParameterSetTable.Articule:
+                                {
+                                    product.articule = parameter.ToString();
+                                    break;
+                                }
+                            case TypeParameterSetTable.Price:
+                                {
+                                    product.price = Convert.ToInt32(parameter);
+                                    break;
+                                }
+                            case TypeParameterSetTable.Count:
+                                {
+                                    product.count = Convert.ToInt32(parameter);
+                                    break;
+                                }
+                            case TypeParameterSetTable.Units:
+                                {
+                                    product.units = parameter.ToString();
+                                    break;
+                                }
+                            case TypeParameterSetTable.Sale:
+                                {
+                                    product.sales = Convert.ToInt32(parameter);
+                                    break;
+                                }
+                            case TypeParameterSetTable.Status:
+                                {
+                                    product.status = parameter.ToString();
+                                    break;
+                                }
+
+                        }
+                    }
+                }
+                context.SaveChanges();
+            }
+        }
+
     
     }
 }

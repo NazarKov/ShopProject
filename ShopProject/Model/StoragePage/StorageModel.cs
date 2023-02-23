@@ -19,12 +19,14 @@ namespace ShopProject.Model.StoragePage
     internal class StorageModel
     {
         private ProductTableRepository _productTableRepository;
+        private ArhiveTableRepositories _arhiveTableRepositories;
         private List<Product> _products;
         private List<ProductArchive> _archives;
 
         public StorageModel()
         {
             _productTableRepository = new ProductTableRepository();
+            _arhiveTableRepositories = new ArhiveTableRepositories();
             _products = new List<Product>();
             _archives = new List<ProductArchive>();
             _products = (List<Product>)_productTableRepository.GetAll();
@@ -70,34 +72,20 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public void SetProductInArhive(Product item)
+        public bool SetProductInArhive(Product item)
         {
             try
             {
                 Validation.ChekIsProductInArhive(item, _archives);//перевірка на існуючий товар в архіві
-
-                ProductArchive archive = new ProductArchive();
-                SetFieldArchive(archive, item);
-
-                //if (db.products != null)
-                //    SetProductStatusArchived(item);
-                //SaveChangeDataBase(archive);
+                _productTableRepository.SetParameter(item.ID, "arhived", TypeParameterSetTable.Status);
+                _arhiveTableRepositories.Add(new ProductArchive() { product=item });
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                return false;
             }
-        }
-        private void SetFieldArchive(ProductArchive archive, Product item)
-        {
-            archive.product = item;
-            archive.created_at = DateTime.Now;
-        }
-
-        private void SetProductStatusArchived(Product item)
-        {
-            Product product = (Product)_productTableRepository.GetId(item.ID);
-            product.status ="archived";
         }
     }
 }

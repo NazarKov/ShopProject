@@ -12,25 +12,37 @@ namespace ShopProject.Model.ModelRepository
 {
     internal class ArhiveTableRepositories : ITableRepository<ProductArchive>
     {
-        public ArhiveTableRepositories() {}
+        private ITableRepository<Product> _productTableRepository;
+        public ArhiveTableRepositories()
+        {
+            _productTableRepository = new ProductTableRepository();
+        }
 
         public void Add(ProductArchive productArhive)
         {
             using (ShopContext context = new ShopContext())
             {
-                context.products.Load();
                 context.productArchives.Load();
+               
+                ProductArchive archive = new ProductArchive();
+                SetFiledAthive(archive, productArhive);
 
                 if (context.productArchives != null)
                 {
                     if (productArhive != null&&productArhive.product!=null)
-                    {
-                        context.productArchives.Add(productArhive);
+                    {  
+                        context.productArchives.Add(archive);
                     }
                 }
                 context.SaveChanges();
             }
         }
+        private void SetFiledAthive(ProductArchive archive, ProductArchive productArchive)
+        {
+            archive.product = (Product)_productTableRepository.GetId(productArchive.product.ID);
+            archive.created_at = DateTime.Now;
+        }
+     
         //public void Update(object item)//не реалізований в програмі
         //{
         //    ProductArchive product = (ProductArchive)item;
@@ -62,7 +74,7 @@ namespace ShopProject.Model.ModelRepository
         //    productUpdate.name = product.name;
         //}
 
-        public void Delete(object item)
+        public void Delete(ProductArchive item)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -70,7 +82,7 @@ namespace ShopProject.Model.ModelRepository
                 context.productArchives.Load();
                 if (context.productArchives != null)
                 {
-                    var productArchive = context.productArchives.Find(((ProductArchive)item).ID);
+                    var productArchive = context.productArchives.Find(item.ID);
 
                     if (productArchive != null)
                     {

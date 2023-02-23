@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using static ShopProject.Model.StoragePage.StorageModel;
-using ProductArchive = ShopProject.DataBase.Model.ProductArchive;
 
 namespace ShopProject.Model.StoragePage
 {

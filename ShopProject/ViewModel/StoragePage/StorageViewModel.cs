@@ -1,16 +1,11 @@
-﻿using NPOI.SS.Formula.Atp;
-using ShopProject.DataBase.Model;
+﻿using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Views.ToolsPage;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -18,7 +13,7 @@ namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
-        StorageModel? storageModel;
+        private StorageModel? _storageModel;
 
         private ICommand _searchButton;
         private ICommand _visibileAllButton;
@@ -92,22 +87,22 @@ namespace ShopProject.ViewModel.StoragePage
 
         void SearchProductInCodeAndName()
         {
-            if (storageModel != null)
+            if (_storageModel != null)
                 switch (_selectedIndexSearch)
                 {
                     case 0:
                         {
-                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
                             break;
                         }
                     case 1:
                         {
-                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
+                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
                             break;
                         }
                     case 2:
                         {
-                            Products = storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
+                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
                             break;
                         }
                 }
@@ -117,15 +112,15 @@ namespace ShopProject.ViewModel.StoragePage
         void SetFieldItemDataGridThread()
         {
             Products = null;
-            storageModel = new StorageModel();
-            Products = storageModel.GetItems();
+            _storageModel = new StorageModel();
+            Products = _storageModel.GetItems();
         }
 
         public ICommand OpenCreateProductWindow => _openCreateProductWindow;
 
         private void CreateProductDatabase()
         {
-            if (storageModel != null)
+            if (_storageModel != null)
             {
                 new CreateProductPage().ShowDialog();
             }
@@ -135,8 +130,8 @@ namespace ShopProject.ViewModel.StoragePage
         private void EditingProduct(object parameter)
         {
             _products = new List<Product>();
-            if (storageModel != null)
-                storageModel.ContertToListProduct((IList)parameter, _products);
+            if (_storageModel != null)
+                _storageModel.ContertToListProduct((IList)parameter, _products);
 
             if (_products.Count == 1)
             {
@@ -157,14 +152,14 @@ namespace ShopProject.ViewModel.StoragePage
             if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 _products = new List<Product>();
-                if (storageModel != null)
-                    storageModel.ContertToListProduct((IList)parameter, _products);
+                if (_storageModel != null)
+                    _storageModel.ContertToListProduct((IList)parameter, _products);
                 if (_products.Count == 1)
                 {
                     if (_products[0] != null)
-                        if (storageModel != null)
+                        if (_storageModel != null)
                         {
-                            if (storageModel.DeleteProduct(_products[0]))
+                            if (_storageModel.DeleteProduct(_products[0]))
                                 new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                         }
                 }
@@ -177,12 +172,13 @@ namespace ShopProject.ViewModel.StoragePage
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 _products = new List<Product>();
-                if (storageModel != null)
+                if (_storageModel != null)
                 {
-                    storageModel.ContertToListProduct((IList)parameter, _products);
+                    _storageModel.ContertToListProduct((IList)parameter, _products);
                     if (_products.Count == 1)
                     {
-                        storageModel.SetProductInArhive(_products[0]);
+                        if(_storageModel.SetProductInArhive(_products[0]))
+                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
             }
