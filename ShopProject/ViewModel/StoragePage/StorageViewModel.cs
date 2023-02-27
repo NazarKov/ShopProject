@@ -122,7 +122,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (_storageModel != null)
             {
-                new CreateProductPage().ShowDialog();
+                new CreateProductPage().Show();
             }
         }
 

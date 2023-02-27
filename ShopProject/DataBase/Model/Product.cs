@@ -46,12 +46,12 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public DateTimeOffset? created_at { get; set; }
 
+        public ProductArchive ProductArchive { get; set; }
+
         private ICollection<ProductOrder> _productOrders { get; set; }
-        private ICollection<ProductArchive> _archives { get; set; }
         public Product()
         {
             _productOrders = new List<ProductOrder>();
-            _archives = new List<ProductArchive>();
         }
     }
 }

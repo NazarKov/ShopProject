@@ -156,19 +156,5 @@ namespace ShopProject.Model
                 }
             }
         }
-        public static void ChekIsProductInArhive(Product product,List<ProductArchive> archives)
-        {
-            foreach (ProductArchive archive in archives)
-            {
-                if (archive.product != null)
-                {
-                    if (archive.product.Equals(product))
-                    {
-                        throw new Exception("Товар вже в архіві");
-                    }
-                }
-            }
-        }
-    
     }
 }

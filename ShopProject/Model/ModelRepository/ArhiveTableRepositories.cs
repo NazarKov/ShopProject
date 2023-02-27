@@ -4,6 +4,7 @@ using ShopProject.Interfaces.InterfacesRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,35 +13,24 @@ namespace ShopProject.Model.ModelRepository
 {
     internal class ArhiveTableRepositories : ITableRepository<ProductArchive>
     {
-        private ITableRepository<Product> _productTableRepository;
-        public ArhiveTableRepositories()
-        {
-            _productTableRepository = new ProductTableRepository();
-        }
+        public ArhiveTableRepositories(){}
 
         public void Add(ProductArchive productArhive)
         {
             using (ShopContext context = new ShopContext())
             {
                 context.productArchives.Load();
-               
-                ProductArchive archive = new ProductArchive();
-                SetFiledAthive(archive, productArhive);
+                context.products.Load();
 
-                if (context.productArchives != null)
+                if (context.productArchives != null && productArhive.ID != 0)
                 {
-                    if (productArhive != null&&productArhive.product!=null)
-                    {  
-                        context.productArchives.Add(archive);
+                    if (productArhive != null)
+                    {
+                        context.productArchives.Add(productArhive); ;
                     }
                 }
                 context.SaveChanges();
             }
-        }
-        private void SetFiledAthive(ProductArchive archive, ProductArchive productArchive)
-        {
-            archive.product = (Product)_productTableRepository.GetId(productArchive.product.ID);
-            archive.created_at = DateTime.Now;
         }
      
         //public void Update(object item)//не реалізований в програмі
@@ -87,9 +77,9 @@ namespace ShopProject.Model.ModelRepository
                     if (productArchive != null)
                     {
                         context.productArchives.Remove(productArchive);
-                        if (productArchive.product!=null)
-                            if(context.products!=null)
-                            context.products.Remove(productArchive.product);
+                        //if (productArchive.ID != null)
+                            //if(context.products!=null)
+                           // context.products.Remove(productArchive);
                     }
                     else
                     {

@@ -39,7 +39,8 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                return Search.ArhiveDataBase(itemSearch, type,archives);
+                //return Search.ArhiveDataBase(itemSearch, type,archives);
+                return null;
             }
             catch(Exception ex)
             {
@@ -85,7 +86,7 @@ namespace ShopProject.Model.StoragePage
             for (int i = 0; i < collection.Count; i++)
             {
                 itemConver.Add((ProductArchive)collection[i]);
-                itemConver[i].product = ((ProductArchive)collection[i]).product;
+                //itemConver[i].product = ((ProductArchive)collection[i]).product;
             }
         }
         
@@ -109,10 +110,10 @@ namespace ShopProject.Model.StoragePage
             if(db.products!=null)
                 foreach(Product product in db.products)
                 {
-                    if (product == archive.product)
-                    {
-                        product.status = "in_stock";
-                    }
+                    //if (product == archive.product)
+                    //{
+                    //    product.status = "in_stock";
+                    //}
                 }
         }
 
