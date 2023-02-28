@@ -1,46 +1,35 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.Model;
-using ShopProject.Views.StoragePage;
+﻿using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using static ShopProject.Model.StoragePage.StorageModel;
 
 namespace ShopProject.Model.StoragePage
 {
+
     internal class ArchiveModel
     {
-        private ShopContext db;
-        private List<ProductArchive> archives;
+        private ITableRepository<ProductArchive,TypeParameterSetTableProductArhive> _archiveRepository;
+        private ITableRepository<Product,TypeParameterSetTableProduct> _productRepository;
 
         public ArchiveModel()
         {
-            db = new ShopContext();
-            archives = new List<ProductArchive>();
-
-            db.products.Load();
-            db.productArchives.Load();
-            if(db.productArchives != null)
-            archives = db.productArchives.ToList();
+            _productRepository = new ProductTableRepository();
+            _archiveRepository = new ArhiveTableRepositories();
         }
 
         public List<ProductArchive> GetItems()
         {
-            return archives;
+            return (List<ProductArchive>)_archiveRepository.GetAll();
         }
 
         public List<ProductArchive>? SearchArhive(string itemSearch, TypeSearch type)
         {
             try
             {
-                //return Search.ArhiveDataBase(itemSearch, type,archives);
-                return null;
+                return Search.ArhiveDataBase(itemSearch, type, (List<ProductArchive>)_archiveRepository.GetAll());
             }
             catch(Exception ex)
             {
@@ -52,9 +41,8 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                DeleteArhive(archive);
-                DeleteProduct(product);
-                db.SaveChangesAsync();
+                _archiveRepository.Delete(archive);
+                _productRepository.Delete(product);
                 return true;
                 throw new Exception("Помилка видалення");
             }
@@ -64,29 +52,12 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        private void DeleteArhive(ProductArchive archive)
-        {
-            if (db.productArchives != null)
-            {
-                db.productArchives.Remove(archive);
-            }
-        }
-        private void DeleteProduct(Product product)
-        {
-            if (db.products != null)
-            {
-                if (product != null)
-                {
-                    db.products.Remove(product);
-                }
-            }
-        }
         public void ConvertToList(IList collection, List<ProductArchive> itemConver)
         {
             for (int i = 0; i < collection.Count; i++)
             {
                 itemConver.Add((ProductArchive)collection[i]);
-                //itemConver[i].product = ((ProductArchive)collection[i]).product;
+                itemConver[i].Product = ((ProductArchive)collection[i]).Product;
             }
         }
         
@@ -94,9 +65,8 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                SetProductStatus(archive);
-                DeleteArhive(archive);
-                db.SaveChangesAsync();
+                _productRepository.SetParameter(archive.ID, "in_stock", TypeParameterSetTableProduct.Status);
+                _archiveRepository.Delete(archive);
                 return true;
             }
             catch (Exception ex)
@@ -105,17 +75,5 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        private void SetProductStatus(ProductArchive archive)
-        {
-            if(db.products!=null)
-                foreach(Product product in db.products)
-                {
-                    //if (product == archive.product)
-                    //{
-                    //    product.status = "in_stock";
-                    //}
-                }
-        }
-
     }
 }

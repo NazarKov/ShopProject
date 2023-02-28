@@ -146,11 +146,11 @@ namespace ShopProject.ViewModel.StoragePage
 
                     if (archives.Count == 1)
                     {
-                        //if (archiveModel.DeleteRecordArhive(archives[0], archives[0].product))
-                        //{
-                        //    MessageBox.Show("Aрхівну записку виладено","in",MessageBoxButton.OK);
-                        //    new Thread(new ThreadStart(SetFieldGridView)).Start();
-                        //}
+                        if (archiveModel.DeleteRecordArhive(archives[0], archives[0].Product))
+                        {
+                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+                            new Thread(new ThreadStart(SetFieldGridView)).Start();
+                        }
 
                     }
                 }

@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Interfaces.InterfacesRepository
 {
-    internal interface ITableRepository<T>
+    internal interface ITableRepository<T,Type>
     {
         public void Add(T item) { }
 
         public void Update (T item) { }
 
+        public void SetParameter(int ID, object item, Type type) { }
+        
         public void Delete (T item) { }
         
         public object? GetId(int id) { return null; }

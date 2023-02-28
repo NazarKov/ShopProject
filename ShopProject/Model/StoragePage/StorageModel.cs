@@ -10,8 +10,8 @@ namespace ShopProject.Model.StoragePage
 {
     internal class StorageModel
     {
-        private ProductTableRepository _productTableRepository;
-        private ITableRepository<ProductArchive> _arhiveTableRepositories;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productTableRepository;
+        private ITableRepository<ProductArchive,TypeParameterSetTableProductArhive> _arhiveTableRepositories;
         private List<Product> _products;
 
         public StorageModel()
@@ -66,7 +66,7 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                _productTableRepository.SetParameter(item.ID, "arhived", TypeParameterSetTable.Status);
+                _productTableRepository.SetParameter(item.ID, "arhived", TypeParameterSetTableProduct.Status);
                 _arhiveTableRepositories.Add(new ProductArchive() { ID = item.ID ,created_at = DateTime.Now });
                 return true;
             }

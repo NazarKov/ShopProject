@@ -69,90 +69,54 @@ namespace ShopProject.Model
                     }
             }
         }
-        //public static List<ProductArchive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<ProductArchive> archives)
-        //{
-        //    searchResultArhive = new List<ProductArchive>();
-        //    switch (type)
-        //    {
-        //        case TypeSearch.Code:
-        //            {
-        //                foreach (ProductArchive archive in archives)
-        //                {
-        //                    if (archive.product != null)
-        //                    {
-        //                        if (archive.product.code == itemSearch)
-        //                        {
-        //                            searchResultArhive.Add(archive);
-        //                        }
-        //                    }
-        //                }
-        //                return searchResultArhive;
-        //            }
-        //        case TypeSearch.Name:
-        //            {
-        //                foreach (ProductArchive archive in archives)
-        //                {
-        //                    if (archive.product != null)
-        //                    {
-        //                        if (archive.product.name != null)
-        //                            if (archive.product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
-        //                            {
-        //                                searchResultArhive.Add(archive);
-        //                            }
-
-        //                    }
-        //                }
-        //                return searchResultArhive;
-        //            }
-        //        case TypeSearch.Articule:
-        //            {
-        //                foreach (ProductArchive archive in archives)
-        //                {
-        //                    if (archive.product != null)
-        //                        if(archive.product.articule != null)
-        //                            if (archive.product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
-        //                            {
-        //                                searchResultArhive.Add(archive);
-        //                            }
-        //                }
-
-        //                return searchResultArhive;
-        //            }
-        //        default:
-        //            {
-        //                throw new Exception("Товар не знайдено");
-        //            }
-        //    }
-        //}
-        public static Product ProductDataBase(string itemSearch, List<Product> products, TypeSearch type)
+        public static List<ProductArchive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<ProductArchive> archives)
         {
-            item = new Product();
+            searchResultArhive = new List<ProductArchive>();
             switch (type)
             {
-                case TypeSearch.Name:
-                    {
-                        foreach (Product product in products)
-                        {
-                            if (product.name == itemSearch.ToString())
-                            {
-                                item = product;
-                                break;
-                            }
-                        }
-
-                        return item;
-                    }
                 case TypeSearch.Code:
                     {
-                        foreach (Product product in products)
+                        foreach (ProductArchive archive in archives)
                         {
-                            if (product.code == itemSearch.ToString())
+                            if (archive.Product != null)
                             {
-                                item = product;
-                                break;
+                                if (archive.Product.code == itemSearch)
+                                {
+                                    searchResultArhive.Add(archive);
+                                }
                             }
                         }
-                        return item;
+                        return searchResultArhive;
+                    }
+                case TypeSearch.Name:
+                    {
+                        foreach (ProductArchive archive in archives)
+                        {
+                            if (archive.Product != null)
+                            {
+                                if (archive.Product.name != null)
+                                    if (archive.Product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultArhive.Add(archive);
+                                    }
+
+                            }
+                        }
+                        return searchResultArhive;
+                    }
+                case TypeSearch.Articule:
+                    {
+                        foreach (ProductArchive archive in archives)
+                        {
+                            if (archive.Product != null)
+                                if (archive.Product.articule != null)
+                                    if (archive.Product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultArhive.Add(archive);
+                                    }
+                        }
+
+                        return searchResultArhive;
                     }
                 default:
                     {
@@ -160,5 +124,6 @@ namespace ShopProject.Model
                     }
             }
         }
+       
     }
 }

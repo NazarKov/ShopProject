@@ -24,10 +24,10 @@ namespace ShopProject.Model.ToolsPage
             products = db.products.Local.ToList();
         }
 
-        public Product? GetItem(string itemSearch)
-        {
-            return Search.ProductDataBase(itemSearch, products, TypeSearch.Code);
-        }
+        //public Product? GetItem(string itemSearch)
+        //{
+        //    //return Search.ProductDataBase(itemSearch, products, TypeSearch.Code);
+        //}
 
         public List<Product> GetItems()
         {

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.ModelRepository
 {
-    public enum TypeParameterSetTable
+    public enum TypeParameterSetTableProduct
     {
         Code = 0,
         Name = 1,
@@ -22,7 +22,7 @@ namespace ShopProject.Model.ModelRepository
         Sale = 6,
         Status = 7,
     }
-    class ProductTableRepository : ITableRepository<Product>
+    class ProductTableRepository : ITableRepository<Product, TypeParameterSetTableProduct>
     {
         public ProductTableRepository(){}
        
@@ -119,7 +119,7 @@ namespace ShopProject.Model.ModelRepository
             }
         }
 
-        public void SetParameter(int ID,object parameter,TypeParameterSetTable type)
+        public void SetParameter(int ID,object parameter, TypeParameterSetTableProduct type)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -134,42 +134,42 @@ namespace ShopProject.Model.ModelRepository
                     {
                         switch (type)
                         {
-                            case TypeParameterSetTable.Code:
+                            case TypeParameterSetTableProduct.Code:
                                 {
                                     product.code = parameter.ToString();
                                     break;
                                 }
-                            case TypeParameterSetTable.Name:
+                            case TypeParameterSetTableProduct.Name:
                                 {
                                     product.name = parameter.ToString();
                                     break;
                                 }
-                            case TypeParameterSetTable.Articule:
+                            case TypeParameterSetTableProduct.Articule:
                                 {
                                     product.articule = parameter.ToString();
                                     break;
                                 }
-                            case TypeParameterSetTable.Price:
+                            case TypeParameterSetTableProduct.Price:
                                 {
                                     product.price = Convert.ToInt32(parameter);
                                     break;
                                 }
-                            case TypeParameterSetTable.Count:
+                            case TypeParameterSetTableProduct.Count:
                                 {
                                     product.count = Convert.ToInt32(parameter);
                                     break;
                                 }
-                            case TypeParameterSetTable.Units:
+                            case TypeParameterSetTableProduct.Units:
                                 {
                                     product.units = parameter.ToString();
                                     break;
                                 }
-                            case TypeParameterSetTable.Sale:
+                            case TypeParameterSetTableProduct.Sale:
                                 {
                                     product.sales = Convert.ToInt32(parameter);
                                     break;
                                 }
-                            case TypeParameterSetTable.Status:
+                            case TypeParameterSetTableProduct.Status:
                                 {
                                     product.status = parameter.ToString();
                                     break;
