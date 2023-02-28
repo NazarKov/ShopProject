@@ -1,5 +1,8 @@
-﻿using ShopProject.DataBase.Context;
+﻿using NPOI.SS.UserModel;
+using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -12,36 +15,21 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductAllModel
     {
-        private ShopContext db;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductAllModel()
         {
-            db = new ShopContext();
-            db.products.Load();
+            _productRepository = new ProductTableRepository();
         }
 
         public bool UpdateProduct(List<Product> list)
         {
             try
             {
-                if(db.products!=null)
-                foreach (Product product in db.products)
+                for(int i  = 0; i < list.Count;i++)
                 {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        if (product.code == list[i].code)
-                        {
-                            product.code = list[i].code;
-                            product.price = list[i].price;
-                            product.articule = list[i].articule;
-                            product.units = list[i].units;
-                            product.count = list[i].count;
-                            product.sales = list[i].sales;                    
-                            product.name = list[i].name;
-                        }
-                    }
+                    _productRepository.Update(list[i]);
                 }
-                db.SaveChanges();
                 return true;
             }
             catch(Exception ex)

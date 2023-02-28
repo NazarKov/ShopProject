@@ -143,7 +143,7 @@ namespace ShopProject.ViewModel.StoragePage
                 StaticResourse.products = _products;
                 new UpdateProductAll().ShowDialog();
             }
-
+            
         }
 
         public ICommand DeleteProductCommand { get => new DelegateParameterCommand(DeleteProduct, CanRegister); }

@@ -1,5 +1,7 @@
 ﻿using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,63 +12,30 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductModel
     {
-        private ShopContext db;
-        private List<Product> products;
-        private Product? product;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductModel()
         {
-            db = new ShopContext();
-            products = new List<Product>();
+            _productRepository = new ProductTableRepository();
         }
-        private void LoadTableDataBase()
+      
+        public bool UpdateProduct(int id,string name, string code,string articule, double price, int count, string units)
         {
-            db.products.Load();
-            if(db!=null)
-                if(db.products!=null)
-                   products = db.products.Local.ToList();
-        }
-
-        public bool SaveProduct()
-        {
-            LoadTableDataBase();
             try
             {
-                SearchAndSaveProduct();
-                db.SaveChanges();
-                return true;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return false;
-            }
-        }
-
-        private void SearchAndSaveProduct()
-        {
-            if(product!=null)
-            for (int i = 0, index = products.Count; i < index; i++)
-            {
-                if (products[i].code == product.code)
+                if(Validation.TextField(name, code, articule, price, count, units, false))
                 {
-                    products.ElementAt(i).name = product.name;
-                    products.ElementAt(i).price = product.price;
-                    products.ElementAt(i).articule = product.articule;
-                    products.ElementAt(i).count = product.count;
-                    products.ElementAt(i).units = product.units;
-                    products.ElementAt(i).created_at = new DateTimeOffset().LocalDateTime;
-                    break;
+                    _productRepository.Update(new Product()
+                    {
+                        ID = id,
+                        name=name,
+                        code=code,
+                        articule=articule,
+                        price=price,
+                        count=count,
+                        units=units
+                    });
                 }
-            }
-        }
-
-        public bool UpdateProduct(string name, string code,string articule, double price, int count, string units)
-        {
-            try
-            {
-                product = new Product();
-                Validation.TextField(product,name, code, articule, price, count, units, true);
                 return true;
             }
             catch (Exception ex)

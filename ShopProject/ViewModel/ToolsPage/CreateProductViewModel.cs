@@ -116,22 +116,11 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void SaveAndCreateProductDataBase()
         {
-            if (CreateProduct())
-            {
-                if (productModel.SaveItemDataBase())
-                {
-                    MessageBox.Show("товар добавлений");
-                }
-                else
-                {
-                    MessageBox.Show("помилка добавлення");
-                }
-            }
+           if (productModel.SaveItemDataBase(_name, _code, _articule, _price, _count, _selectUnits))
+           {
+                MessageBox.Show("товар добавлений");
+           }
         }
-            private bool CreateProduct()
-        {
-            return productModel.CreateNewProduct(_name, _code, _articule, _price, _count, _selectUnits);
-        } 
 
     }
 }

@@ -72,31 +72,31 @@ namespace ShopProject.Model.ToolsPage
         private void SaveItem(DataTable dataTable,int code ,int name,int articule,int price,int count,int units,int indexTop,int intdexBottom)
         {
             int i = Validation.ChekNull(indexTop);
-            int max = Validation.ChekNull(intdexBottom,dataTable.Rows.Count);
+            int max = Validation.ChekNull(intdexBottom, dataTable.Rows.Count);
 
-            for (; i < max; i++)
-            {
-                if(db!=null)
-                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),db))
-                    {
-                        SetCountItem(code, count, i, dataTable);
-                    }
-                    else
-                    {
-                        product = new Product();
-                        product.code = Validation.ChekParamsIsNull(code, i, dataTable);
-                        product.name = Validation.ChekParamsIsNull(name, i, dataTable);
-                        product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
-                        product.price = Validation.ChekEmpty(price, i, dataTable);
-                        product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
-                        product.units = Validation.ChekParamsIsNull(units, i, dataTable);
-                        product.created_at = DateTime.Now;
-                        product.status = "in_stock";
-                        if (db != null)
-                            if (db.products != null)
-                                db.products.Add(product);
-                    }
-            }
+            //for (; i < max; i++)
+            //{
+            //    if (db != null)
+            //        if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), db))
+            //        {
+            //            SetCountItem(code, count, i, dataTable);
+            //        }
+            //        else
+            //        {
+            //            product = new Product();
+            //            product.code = Validation.ChekParamsIsNull(code, i, dataTable);
+            //            product.name = Validation.ChekParamsIsNull(name, i, dataTable);
+            //            product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
+            //            product.price = Validation.ChekEmpty(price, i, dataTable);
+            //            product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+            //            product.units = Validation.ChekParamsIsNull(units, i, dataTable);
+            //            product.created_at = DateTime.Now;
+            //            product.status = "in_stock";
+            //            if (db != null)
+            //                if (db.products != null)
+            //                    db.products.Add(product);
+            //        }
+            //}
             if (db != null)
                 db.SaveChanges();
         }

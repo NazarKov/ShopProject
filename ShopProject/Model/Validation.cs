@@ -13,36 +13,21 @@ namespace ShopProject.Model
 {
     internal static class Validation
     {
-        public static void TextField(Product product,string name, string code, string articule, double price, int count, string units, bool validation)
+        public static bool TextField(string name, string code, string articule, double price, int count, string units, bool validation)
         {
             if (validation)
             {
-                if (product != null)
-                {
-                    product.name = ItemChekIsNull(name, typeof(string), "Назва").ToString();
-                    product.code = ItemChekIsNull(code, typeof(string), "Штрихкод").ToString();
-                    product.articule = ItemChekIsNull(articule, typeof(string), "Артикуль").ToString();
-                    product.price = Convert.ToDouble(ItemChekIsNull(price, typeof(double), "Ціна"));
-                    product.count = Convert.ToInt32(ItemChekIsNull(count, typeof(int), "Кількість")); ;
-                    product.units = ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
-                    product.sales = 0;
-                    product.created_at = new DateTimeOffset().LocalDateTime;
-                    product.status = "in_stock";
-                }
+                ItemChekIsNull(name, typeof(string), "Назва").ToString();
+                ItemChekIsNull(code, typeof(string), "Штрихкод").ToString();
+                ItemChekIsNull(articule, typeof(string), "Артикуль").ToString();
+                ItemChekIsNull(price, typeof(double), "Ціна");
+                ItemChekIsNull(count, typeof(int), "Кількість"); ;
+                ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
+                return true;
             }
             else
             {
-                if (product != null)
-                {
-                    product.name = name.ToString();
-                    product.code = code.ToString();
-                    product.articule = articule.ToString();
-                    product.price = price;
-                    product.count = count;
-                    product.units = units.ToString();
-                    product.sales = 0;
-                    product.created_at = new DateTimeOffset().LocalDateTime;
-                }
+                return true;
             }
         }
 
@@ -120,17 +105,15 @@ namespace ShopProject.Model
         }
 
 
-        public static bool CodeCoincidenceinDatabase(string code , ShopContext db)
+        public static bool CodeCoincidenceinDatabase(string code , IEnumerable<Product> products)
         {
-            if (db != null)
-                if (db.products != null)
-                    foreach (Product item in db.products)
-                    {
-                        if (item.code == code)
-                        {
-                            return true;
-                        }
-                    }
+            foreach (Product item in products)
+            {
+                if (item.code == code)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 

@@ -1,5 +1,7 @@
 ﻿using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -16,47 +18,36 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class CreateProductModel
     {
-
-        private readonly ShopContext? db;
-        private Product? product;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
 
         public CreateProductModel()
         {
-            db = new ShopContext();
-            db.products.Load();
+            _productRepository = new ProductTableRepository();
         }
 
-        public bool SaveItemDataBase()
+        public bool SaveItemDataBase(string name, string code, string articule, double price, int count, string units)
         {
             try
             {
-                if(db!=null)
-                if (this.product != null && db.products != null)
+                if (Validation.TextField(name, code, articule, price, count,units, true))
                 {
-                    db.products.Add(this.product);
-                    db.SaveChangesAsync();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return false;
-            }
-        }
-
-        public bool CreateNewProduct(string name, string code, string articule, double price,int count, string units)
-        {
-            try
-            {
-
-                product = new Product();
-                if(db!= null)
-                if (Validation.CodeCoincidenceinDatabase(code, db))
-                {
+                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Product>)_productRepository.GetAll()))//перевірка на наявність товару по штрих коду
+                    {
                         throw new Exception("Товар існує");
+                    }
+                    _productRepository.Add(new Product()
+                    {
+                        name = name,
+                        code = code,
+                        articule = articule,
+                        price = price,
+                        count = count,
+                        units = units,
+                        created_at = DateTime.Now,
+                        status = "in_stock",
+                        sales = 0
+                    });
                 }
-                Validation.TextField(product,name, code, articule, price, count, units, true);
                 return true;
             }
             catch (Exception ex)
@@ -66,8 +57,5 @@ namespace ShopProject.Model.ToolsPage
             }
         }
        
-
-
-      
     }
 }

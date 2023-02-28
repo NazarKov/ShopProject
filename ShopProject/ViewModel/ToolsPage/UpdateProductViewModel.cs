@@ -43,6 +43,8 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             if (product != null)
             {
+                if(product.ID!=0)
+                    _id = product.ID;
                 if (product.code != null)
                     Code = product.code;
                 if (product.name != null)
@@ -70,6 +72,8 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             StaticResourse.product = null;
         }
+
+        private int _id;
 
         private string _code;
         public string Code
@@ -132,16 +136,9 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void UpdateProductDataBase()
         {
-            if (update.UpdateProduct(_name, _code, _articule, _price, _count, _selectUnits))
+            if (update.UpdateProduct(_id,_name, _code, _articule, _price, _count, _selectUnits))
             {
-                if (update.SaveProduct())
-                {
-                    MessageBox.Show("товар редаговано");
-                }
-                else
-                {
-                    MessageBox.Show("помилка редагування");
-                }
+                MessageBox.Show("товар редаговано");
             }
         }
     }
