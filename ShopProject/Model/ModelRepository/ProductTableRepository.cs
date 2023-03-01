@@ -103,6 +103,21 @@ namespace ShopProject.Model.ModelRepository
                 }
             }
         }
+        public object GetItem(string barCode)
+        {
+            using(ShopContext context = new ShopContext())
+            {
+                context.products.Load();
+                if(context.products != null)
+                {
+                    return context.products.Where(p => p.code==barCode).FirstOrDefault();
+                }
+                else
+                {
+                    throw new Exception("товар не знайдено");
+                }
+            }
+        }
         public IEnumerable<object> GetAll()
         {
             using (ShopContext context = new ShopContext())

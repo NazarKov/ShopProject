@@ -1,5 +1,7 @@
 ﻿using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,28 +12,23 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ExportProductExelModel
     {
-        private readonly ShopContext db;
-        private List<Product> products;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
         private FileExel? fileExel;
 
         public ExportProductExelModel()
         {
-            db = new ShopContext();
-            products = new List<Product>();
-            
-            db.products.Load();
-            if(db.products!=null)
-            products = db.products.Local.ToList();
+            _productRepository = new ProductTableRepository();
         }
 
-        //public Product? GetItem(string itemSearch)
-        //{
-        //    //return Search.ProductDataBase(itemSearch, products, TypeSearch.Code);
-        //}
+        public Product? GetItem(string itemSearch)
+        {
+            Product product = (Product)_productRepository.GetItem(itemSearch);
+            return product;
+        }
 
         public List<Product> GetItems()
         {
-            return products;
+            return (List<Product>)_productRepository.GetAll();
         }
         
         public bool Export(string path,List<Product> products)

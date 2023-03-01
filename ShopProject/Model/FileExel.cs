@@ -75,12 +75,12 @@ namespace ShopProject.Model
                     row.CreateCell(1).SetCellValue(product.name);
                     row.CreateCell(2).SetCellValue(product.articule);
                    if(product.price!=null)
-                        row.CreateCell(4).SetCellValue((double)product.price);
+                        row.CreateCell(3).SetCellValue((double)product.price);
                     if (product.count != null)
-                        row.CreateCell(5).SetCellValue((double)product.count);
-                    row.CreateCell(6).SetCellValue(product.units);
+                        row.CreateCell(4).SetCellValue((double)product.count);
+                    row.CreateCell(5).SetCellValue(product.units);
                     if (product.sales != null)
-                        row.CreateCell(7).SetCellValue((double)product.sales);
+                        row.CreateCell(6).SetCellValue((double)product.sales);
                     i++;
                 }
 
@@ -91,10 +91,10 @@ namespace ShopProject.Model
             row.CreateCell(0).SetCellValue("Шрихкод");
             row.CreateCell(1).SetCellValue("Назва");
             row.CreateCell(2).SetCellValue("Артикуль");
-            row.CreateCell(4).SetCellValue("Продажна ціна");
-            row.CreateCell(5).SetCellValue("Кількість");
-            row.CreateCell(6).SetCellValue("Одиниці");
-            row.CreateCell(7).SetCellValue("Знижка");
+            row.CreateCell(3).SetCellValue("Ціна");
+            row.CreateCell(4).SetCellValue("Кількість");
+            row.CreateCell(5).SetCellValue("Одиниці");
+            row.CreateCell(6).SetCellValue("Знижка");
         }
 
         public DataTable? GetTabel(int i)

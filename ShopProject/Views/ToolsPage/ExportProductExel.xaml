@@ -43,11 +43,10 @@
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
                 <DataGridTextColumn Header="Опис" Binding="{Binding articule}" />
-                <DataGridTextColumn Header="Початкова ціна"  Binding="{Binding startingPrise}" />
-                <DataGridTextColumn Header="Ціна"  Binding="{Binding startingPrise}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
                 <DataGridTextColumn Header="Одниці"  Binding="{Binding units}" />
-                <DataGridTextColumn Header="Снижка"  Binding="{Binding sales}" />
+                <DataGridTextColumn Header="Знижка"  Binding="{Binding sales}" />
             </DataGrid.Columns>
         </DataGrid>
 

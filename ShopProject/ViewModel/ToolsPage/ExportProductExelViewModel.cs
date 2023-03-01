@@ -73,18 +73,18 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void AddItemExportList()
         {
-            //if (model != null)
-            //{
-            //   // var resultProduct = model.GetItem(_code);
-            //    if (resultProduct != null)
-            //    {
-            //        List<Product> tempProduct = new List<Product>();
+            if (model != null)
+            {
+                var resultProduct = model.GetItem(_code);
+                if (resultProduct != null)
+                {
+                    List<Product> tempProduct = new List<Product>();
 
-            //        tempProduct.AddRange(_products);
-            //        tempProduct.Add(resultProduct);
-            //        Products = tempProduct;
-            //    }
-            //}
+                    tempProduct.AddRange(_products);
+                    tempProduct.Add(resultProduct);
+                    Products = tempProduct;
+                }
+            }
         }
 
         public ICommand SaveSelectItem => saveSelectItem;

@@ -1,5 +1,7 @@
 ﻿using ShopProject.DataBase.Context;
 using ShopProject.DataBase.Model;
+using ShopProject.Interfaces.InterfacesRepository;
+using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,19 +15,15 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ImportProductExelModel 
     {
-        private ShopContext? db;
-        private Product? product;
+        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
         private FileExel? fileExel;
         private List<Product> products;
         private string path;
+        private Product product;
 
         public ImportProductExelModel()
         {
-            db = new ShopContext();
-            products = new List<Product>();
-            db.products.Load();
-            if(db.products!=null)
-                products = db.products.Local.ToList();
+            _productRepository = new ProductTableRepository();
             path = string.Empty;
         }
 
@@ -74,44 +72,32 @@ namespace ShopProject.Model.ToolsPage
             int i = Validation.ChekNull(indexTop);
             int max = Validation.ChekNull(intdexBottom, dataTable.Rows.Count);
 
-            //for (; i < max; i++)
-            //{
-            //    if (db != null)
-            //        if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), db))
-            //        {
-            //            SetCountItem(code, count, i, dataTable);
-            //        }
-            //        else
-            //        {
-            //            product = new Product();
-            //            product.code = Validation.ChekParamsIsNull(code, i, dataTable);
-            //            product.name = Validation.ChekParamsIsNull(name, i, dataTable);
-            //            product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
-            //            product.price = Validation.ChekEmpty(price, i, dataTable);
-            //            product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
-            //            product.units = Validation.ChekParamsIsNull(units, i, dataTable);
-            //            product.created_at = DateTime.Now;
-            //            product.status = "in_stock";
-            //            if (db != null)
-            //                if (db.products != null)
-            //                    db.products.Add(product);
-            //        }
-            //}
-            if (db != null)
-                db.SaveChanges();
+            for (; i < max; i++)
+            {
+                if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), (IEnumerable<Product>)_productRepository.GetAll()))
+                {
+                    SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
+                }
+                else
+                {
+                    product = new Product();
+                    product.code = Validation.ChekParamsIsNull(code, i, dataTable);
+                    product.name = Validation.ChekParamsIsNull(name, i, dataTable);
+                    product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
+                    product.price = Validation.ChekEmpty(price, i, dataTable);
+                    product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+                    product.units = Validation.ChekParamsIsNull(units, i, dataTable);
+                    product.created_at = DateTime.Now;
+                    product.status = "in_stock";
+
+                    _productRepository.Add(product);
+                }
+            }
         }
         private void SetCountItem(int code,int count, int i , DataTable dataTable)
         {
-            if(db!=null)
-              if(db.products!=null)
-                 foreach(Product item in db.products)
-                 {
-                        if(item.code == Validation.ChekParamsIsNull(code,i,dataTable))
-                        {
-                            item.count +=Convert.ToInt32(Validation.ChekParamsIsNull(count, i, dataTable));
-                            break;
-                        }
-                 }
+            Product product = (Product)_productRepository.GetItem(Validation.ChekParamsIsNull(code, i, dataTable));
+            _productRepository.SetParameter(product.ID, (product.count + count), TypeParameterSetTableProduct.Count);
         }
     }
 }

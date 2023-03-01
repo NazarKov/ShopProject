@@ -17,6 +17,8 @@ namespace ShopProject.Interfaces.InterfacesRepository
         public void Delete (T item) { }
         
         public object? GetId(int id) { return null; }
+        
+        public object? GetItem(string barCode) { return null; }
 
         public IEnumerable<object> GetAll () { return Enumerable.Empty<object> (); }
     }
