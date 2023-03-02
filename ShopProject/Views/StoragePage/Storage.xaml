@@ -65,19 +65,23 @@
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
-                    <Separator></Separator>
                     <MenuItem
                         Header="Редагувати товар"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                         Command="{Binding UpdateProductCommand}" />
-                    <Separator></Separator>
-                    <MenuItem Header="Перенести в архів"
-                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding AddProductArhiveCommand}" />
                     <MenuItem 
                         Header="Видалити товар" 
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                         Command="{Binding DeleteProductCommand}"/>
+                    <Separator></Separator>
+                    <MenuItem Header="Перенести в архів"
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding AddProductArhiveCommand}" />
+                    <MenuItem Header="Роздрукувати етикетку"
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding OpenWindoiwCreateStiker}" />
+                    <Separator></Separator>
+                    
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

@@ -10,6 +10,8 @@ namespace ShopProject.Interfaces.InterfacesRepository
     {
         public void Add(T item) { }
 
+        public void AddRange(List<T> items) { }
+
         public void Update (T item) { }
 
         public void SetParameter(int ID, object item, Type type) { }

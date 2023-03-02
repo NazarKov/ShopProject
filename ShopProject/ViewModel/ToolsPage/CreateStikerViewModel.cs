@@ -1,19 +1,10 @@
-﻿using ShopProject.Model.Command;
+﻿using ShopProject.Model;
+using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using FontFamily = System.Windows.Media.FontFamily;
 using Image = System.Windows.Controls.Image;
 
 namespace ShopProject.ViewModel.ToolsPage
@@ -38,6 +29,48 @@ namespace ShopProject.ViewModel.ToolsPage
             _code = string.Empty;
             _description = string.Empty;
             _barCode = new BitmapImage();
+
+            IsShowNameCompany = true;
+            IsShowProductBarCode = true;
+            IsShowProductName = true;
+            IsShowProductDescription = true;
+            
+            SetFeildTextBox();
+            StaticResourse.Clear();
+        }
+        private void SetFeildTextBox()
+        {
+            if (StaticResourse.product == null)
+            {
+                NameCompany = StaticResourse.nameCompany;
+            }
+            else
+            {
+                NameCompany = StaticResourse.nameCompany;
+                if(StaticResourse.product.code!=null)
+                    Code = StaticResourse.product.code.ToString();
+                if (StaticResourse.product.name != null)
+                {
+                    string[] splitName = StaticResourse.product.name.ToString().Split(' ');
+                    if (splitName.Length < 2)
+                    {
+                        NameProduct = splitName[0];
+                        IsShowProductDescription = false;
+                    }
+                    else if (splitName.Length == 2)
+                    {
+                        NameProduct = splitName[0] +" "+ splitName[1];
+                        IsShowProductDescription = false;
+                    }
+                    else
+                    {
+                        NameProduct = splitName[0] + splitName[1];
+                        for (int i = 2; i < splitName.Length; i++)
+                            Description += splitName[i] + " ";
+                    }
+                }
+               
+            }
         }
 
         private string _nameProduct;
@@ -75,10 +108,37 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _barCode = value; OnPropertyChanged("BarCode"); }
         }
 
+        private bool _isShowNameCompany;
+        public bool IsShowNameCompany
+        {
+            get { return _isShowNameCompany; }
+            set { _isShowNameCompany = value; OnPropertyChanged("IsShowNameCompany"); }
+        }
+
+        private bool _isShowProductBarCode;
+        public bool IsShowProductBarCode
+        {
+            get { return _isShowProductBarCode; }
+            set { _isShowProductBarCode = value; OnPropertyChanged("IsShowProductBarCode"); }
+        }
+        private bool _isShowProductName;
+        public bool IsShowProductName
+        {
+            get { return _isShowProductName; }
+            set { _isShowProductName = value; OnPropertyChanged("IsShowProductName"); }
+        }
+        private bool _isShowProductDescription;
+        public bool IsShowProductDescription
+        {
+            get { return _isShowProductDescription; }
+            set { _isShowProductDescription = value; OnPropertyChanged("IsShowProductDescription"); }
+        }
+
         public ICommand CreateStikerComman => createStikerCommand;
 
         private void CreateStiker()
         {
+            model.SetShowTextInImage(_isShowNameCompany, _isShowProductBarCode, _isShowProductName, _isShowProductDescription);
             BarCode = model.CreateBarCode(_nameCompany, _nameProduct, _description, _code);
         }
 

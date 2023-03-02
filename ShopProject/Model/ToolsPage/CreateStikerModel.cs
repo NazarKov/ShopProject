@@ -17,8 +17,20 @@ namespace ShopProject.Model.ToolsPage
         private Bitmap? barCode;
         private int sizeText = 12;
         private string nameFont = "Verdana";
+        private bool isShowNameCompany { get;set; }
+        private bool isShowProductBarCode { get; set; }
+        private bool isShowProductName { get; set; }
+        private bool isShowProductDescription { get;set; }
 
         public CreateStikerModel(){}
+
+        public void SetShowTextInImage(bool isShowNameCompany, bool isShowProductBarCode, bool isShowProductName, bool isShowProductDescription)
+        {
+            this.isShowNameCompany = isShowNameCompany;
+            this.isShowProductBarCode = isShowProductBarCode;
+            this.isShowProductName = isShowProductName;
+            this.isShowProductDescription = isShowProductDescription;
+        }
 
         private Bitmap CopyBitmapInBitmap(Bitmap image, int x, int y, int width, int height, int bottom)
         {
@@ -35,17 +47,18 @@ namespace ShopProject.Model.ToolsPage
             return resultCopy;
         }
 
-        public BitmapImage CreateBarCode(string company , string name,string deckriptions,string code)
+        public BitmapImage CreateBarCode(string company , string name,string description, string code)
         {
             try
             {
-                ValidIsNull(company, name, code, deckriptions);
+                ValidIsNull(company, name, code, description);
+                ChekLength(company, code, name,  description);
 
                 barCode = new Bitmap(500, 300);
                 barCode = CopyBitmapInBitmap(CreateBarCode(code), 0, 160, 500, 300, 50);
 
                 CreateBorderStiker(barCode);
-                SetTextStiker(name, company, deckriptions, code, barCode);
+                SetTextStiker(name, company, description, code, barCode);
 
                 return Bitmap2BitmapImage(barCode);
             }
@@ -56,6 +69,29 @@ namespace ShopProject.Model.ToolsPage
                 return null;
             }
         }
+        private void ChekLength(string company, string code, string name,string description)
+        {
+            if (company.Length <= 3)
+            {
+                throw new Exception("мінімальна довжина назви компанії 3 символа");
+            }
+            if (code.Length <= 3)
+            {
+                throw new Exception("мінімальна довжина цифер штрихкоду 3 символа");
+            }
+            if (code.Length > 15)
+            {
+                throw new Exception("максимальна довжина цифер штрихкоду 15 символа");
+            }
+            if (name.Length > 30)
+            {
+                throw new Exception("максимальна довжина назви продукта 30 символа");
+            }
+            if (description.Length > 30)
+            {
+                throw new Exception("максимальна довжина опису продукта 30 символа");
+            }
+        }
 
         public BitmapImage Clear()
         {
@@ -63,12 +99,12 @@ namespace ShopProject.Model.ToolsPage
             return Bitmap2BitmapImage(barCode);
         }
 
-        private void ValidIsNull(string company,string name,string code,string deckriptions)
-        {
-            Validation.ItemChekIsNull(code, typeof(string), "штрихкод");
+        private void ValidIsNull(string company,string name,string code,string description)
+        {           
+            Validation.ItemChekIsNull(code, typeof(string), "штрихкод");    
             Validation.ItemChekIsNull(company, typeof(string), "компанія");
             Validation.ItemChekIsNull(name, typeof(string), "назва");
-            Validation.ItemChekIsNull(deckriptions, typeof(string), "опис");
+            Validation.ItemChekIsNull(description, typeof(string), "опис");
         }
 
         private Bitmap CreateBarCode(string code)
@@ -110,12 +146,16 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        private void SetTextStiker(string name,string company,string deckriptions,string code,Bitmap bitmap)
+        private void SetTextStiker(string name,string company,string description, string code,Bitmap bitmap)
         {
-            CreateTextStiker(company, bitmap,GetCenterString(company), 30, new Font(nameFont, sizeText));
-            CreateTextStiker("Назва товару : " + name, bitmap, 30, 70, new Font(nameFont, sizeText));
-            CreateTextStiker("Опис товару : " + deckriptions, bitmap, 30, 100, new Font(nameFont, sizeText));
-            CreateTextStiker(code, bitmap, GetCenterString(code), 260, new Font(nameFont, sizeText));
+            if(isShowNameCompany)
+                CreateTextStiker(company, bitmap,GetCenterString(company), 30, new Font(nameFont, sizeText));
+            if(isShowProductBarCode)
+                CreateTextStiker(code, bitmap, GetCenterString(code), 260, new Font(nameFont, sizeText));
+            if(isShowProductName)
+                CreateTextStiker("Назва товару : " + name, bitmap, 30, 70, new Font(nameFont, sizeText));
+            if(isShowProductDescription)
+                CreateTextStiker("Опис товару : " + description, bitmap, 30, 100, new Font(nameFont, sizeText));
         }
 
         private int GetCenterString(string text)
@@ -125,7 +165,7 @@ namespace ShopProject.Model.ToolsPage
 
         private void CreateTextStiker(string text ,Bitmap bitmap ,int x ,int y ,Font font)
         {
-            rectf = new RectangleF(x, y, 12 * text.Length, 60);
+            rectf = new RectangleF(x, y, sizeText * text.Length, 60);
             g = Graphics.FromImage(bitmap);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;

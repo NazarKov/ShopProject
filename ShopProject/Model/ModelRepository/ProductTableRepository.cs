@@ -36,6 +36,17 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
+
+        public void AddRange(List<Product> products)
+        {
+            using (ShopContext context = new ShopContext())
+            {
+                context.products.Load();
+                if(context.products!=null)
+                    context.products.AddRange(products);
+                context.SaveChanges();
+            }
+        }
         public void Update(Product product)
         {
             using(ShopContext context = new ShopContext())

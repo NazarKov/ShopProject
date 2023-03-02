@@ -30,7 +30,7 @@ namespace ShopProject.ViewModel.StoragePage
             _visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
             _openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
        
-            SizeDataGrid = (int)SystemParameters.PrimaryScreenWidth;
+            SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
             _products = new List<Product>();
 
             _nameSearch = string.Empty;
@@ -56,8 +56,8 @@ namespace ShopProject.ViewModel.StoragePage
             set{ _product = value; OnPropertyChanged("Products"); }
         }
 
-        private int _sizeDataGrid;
-        public int SizeDataGrid
+        private double _sizeDataGrid;
+        public double SizeDataGrid
         {
             set{ _sizeDataGrid = value; OnPropertyChanged("SizeDataGrid"); }
         }
@@ -181,6 +181,19 @@ namespace ShopProject.ViewModel.StoragePage
                             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
+            }
+        }
+        public ICommand OpenWindoiwCreateStiker{ get => new DelegateParameterCommand(ShowWindowCreateStiker, CanRegister); }
+        private void ShowWindowCreateStiker(object parameter)
+        {
+            _products = new List<Product>();
+            if (_storageModel != null)
+                _storageModel.ContertToListProduct((IList)parameter, _products);
+
+            if (_products.Count == 1)
+            {
+                StaticResourse.product = _products[0];
+                new CreateStiker().Show();
             }
         }
         private bool CanRegister(object parameter) => true;
