@@ -47,6 +47,7 @@ namespace ShopProject.DataBase.Model
         public DateTimeOffset? created_at { get; set; }
 
         public ProductArchive ProductArchive { get; set; }
+        public ProductsOutOfStock productsOutStock { get; set; }
 
         private ICollection<ProductOrder> _productOrders { get; set; }
         public Product()

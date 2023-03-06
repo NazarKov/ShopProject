@@ -20,6 +20,7 @@ namespace ShopProject.Model
         private static Product? item;
         private static List<Product>? searchResult;
         private static List<ProductArchive>? searchResultArhive;
+        private static List<ProductsOutOfStock>? searchResultProductsOutOfStock;
 
         public static List<Product>? ProductDataBase(string itemSearch, TypeSearch type,List<Product> products)
         {
@@ -124,6 +125,58 @@ namespace ShopProject.Model
                     }
             }
         }
-       
+        public static List<ProductsOutOfStock>? OutOfStockProductDataBase(string itemSearch, TypeSearch type, List<ProductsOutOfStock> products)
+        {
+            searchResultProductsOutOfStock = new List<ProductsOutOfStock>();
+            switch (type)
+            {
+                case TypeSearch.Code:
+                    {
+                        foreach (ProductsOutOfStock product in products)
+                        {
+                            if (product.Product != null)
+                            {
+                                if (product.Product.code == itemSearch)
+                                {
+                                    searchResultProductsOutOfStock.Add(product);
+                                }
+                            }
+                        }
+                        return searchResultProductsOutOfStock;
+                    }
+                case TypeSearch.Name:
+                    {
+                        foreach (ProductsOutOfStock product in products)
+                        {
+                            if (product.Product != null)
+                                if (product.Product.name != null)
+                                    if (product.Product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultProductsOutOfStock.Add(product);
+                                    }
+                        }
+
+                        return searchResultProductsOutOfStock;
+                    }
+                case TypeSearch.Articule:
+                    {
+                        foreach (ProductsOutOfStock product in products)
+                        {
+                            if (product.Product != null)
+                                if (product.Product.articule != null)
+                                    if (product.Product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                                    {
+                                        searchResultProductsOutOfStock.Add(product);
+                                    }
+                        }
+
+                        return searchResultProductsOutOfStock;
+                    }
+                default:
+                    {
+                        throw new Exception("Товар не знайдено");
+                    }
+            }
+        }
     }
 }

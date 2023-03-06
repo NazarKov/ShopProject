@@ -1,0 +1,72 @@
+﻿<Page x:Class="ShopProject.Views.StoragePage.OutOfStock"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="OutOfStock">
+    <Page.Resources>
+        <local:OutOfStockViewModel x:Key="VM"></local:OutOfStockViewModel>
+    </Page.Resources>
+    <Page.DataContext>
+        <Binding Source="{StaticResource VM}"></Binding>
+    </Page.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="200*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0"  Content="Тип пошуку" Margin="25,0,0,0"/>
+            <ComboBox Grid.Column="0" Margin="25,25,0,0" ItemsSource="{Binding SearchTemplateName}" SelectedIndex="{Binding SelectedIndexSearch}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120"></ComboBox>
+            <Label Grid.Column="1"  Content="Назва продукту" Margin="20,0,0,0"/>
+            <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Left" Margin="20,25,0,0" TextWrapping="Wrap" Text="{Binding NameSearch}" VerticalAlignment="Top" Width="120"/>
+
+            <Button x:Name="button" Grid.Column="2" Content="Пошук" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="150" Command="{Binding SearchButton}"/>
+            <Button x:Name="button1" Grid.Column="2" Content="Відобразити всі продукти" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="150" Command="{Binding VisibileAllButton}"/>
+
+
+        </Grid>
+        <DataGrid x:Name="dataGrid" 
+                  Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Products }" AutoGenerateColumns="False"
+                  HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" 
+                  HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
+                  VerticalAlignment="Stretch" MaxWidth="{Binding SizeDataGrid}" Width="{Binding SizeDataGrid}" ColumnWidth="*"
+                  CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Product.ID}" />
+                <DataGridTextColumn Header="Штрих код"  Binding="{Binding Product.code}" />
+                <DataGridTextColumn Header="Артикуль" Binding="{Binding Product.articule}" />
+                <DataGridTextColumn Header="Назва"  Binding="{Binding Product.name}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding Product.price}" />
+                <DataGridTextColumn Header="Кількість" Binding="{Binding Product.count}"/>
+                <DataGridTextColumn Header="Одиниці" Binding="{Binding  Product.units}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Дата списання" Binding="{Binding created_at}" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Повернути на склад"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding ReturnProductInStorageCommand }"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Видалити"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding DeleteProductOutOfStockAndProductCommand }"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+        </DataGrid>
+    </Grid>
+</Page>

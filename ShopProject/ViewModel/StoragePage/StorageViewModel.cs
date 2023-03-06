@@ -183,6 +183,23 @@ namespace ShopProject.ViewModel.StoragePage
                 }
             }
         }
+        public ICommand AddOutOfStockProductCommand { get => new DelegateParameterCommand(AddOutOfStockProduct, CanRegister); }
+        private void AddOutOfStockProduct(object parameter)
+        {
+            if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                _products = new List<Product>();
+                if (_storageModel != null)
+                {
+                    _storageModel.ContertToListProduct((IList)parameter, _products);
+                    if (_products.Count == 1)
+                    {
+                        if (_storageModel.SetProductinOutOfStok(_products[0]))
+                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                    }
+                }
+            }
+        }
         public ICommand OpenWindoiwCreateStiker{ get => new DelegateParameterCommand(ShowWindowCreateStiker, CanRegister); }
         private void ShowWindowCreateStiker(object parameter)
         {

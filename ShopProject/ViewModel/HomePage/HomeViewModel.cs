@@ -24,6 +24,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openExportProduct;
         private ICommand opemImportProduct;
         private ICommand openCreateStiker;
+        private ICommand openOutOfStock;
 
         HomeModel homeModel;
 
@@ -37,7 +38,8 @@ namespace ShopProject.ViewModel.HomePage
             openExportProduct = new DelegateCommand(() => { new ExportProductExel().Show(); });
             opemImportProduct = new DelegateCommand(() => { new ImportProductExel().Show(); });
             openCreateStiker = new DelegateCommand(() => { new CreateStiker().Show(); });
-            
+            openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
+
             newModels();
 
         }
@@ -117,6 +119,6 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenExportProduct => openExportProduct;
         public ICommand OpenImportProduct => opemImportProduct;
         public ICommand OpenCreateStiker => openCreateStiker;
-
+        public ICommand OpenOutOfStock => openOutOfStock;
     }
 }

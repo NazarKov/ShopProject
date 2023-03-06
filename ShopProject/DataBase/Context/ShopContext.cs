@@ -12,6 +12,7 @@ namespace ShopProject.DataBase.Context
         public DbSet<Order>? orders { get; set; }
         public DbSet<ProductOrder>? productOrders { get; set; }
         public DbSet<ProductArchive>? productArchives { get; set; }
+        public DbSet<ProductsOutOfStock>? productsOutOfs { get; set; }
 
         public DbSet<User>? user { get; set; }
         public DbSet<CashRegister>? cashRegisters { get; set; }

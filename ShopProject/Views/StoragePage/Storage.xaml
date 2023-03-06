@@ -77,6 +77,9 @@
                     <MenuItem Header="Перенести в архів"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                         Command="{Binding AddProductArhiveCommand}" />
+                    <MenuItem Header="Товар закінчився"
+                        CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                        Command="{Binding AddOutOfStockProductCommand}" />
                     <MenuItem Header="Роздрукувати етикетку"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                         Command="{Binding OpenWindoiwCreateStiker}" />

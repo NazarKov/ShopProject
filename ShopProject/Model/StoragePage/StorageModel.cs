@@ -12,12 +12,15 @@ namespace ShopProject.Model.StoragePage
     {
         private ITableRepository<Product, TypeParameterSetTableProduct> _productTableRepository;
         private ITableRepository<ProductArchive,TypeParameterSetTableProductArhive> _arhiveTableRepositories;
+        private ITableRepository<ProductsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockRepositories;
         private List<Product> _products;
 
         public StorageModel()
         {
             _productTableRepository = new ProductTableRepository();
             _arhiveTableRepositories = new ArhiveTableRepositories();
+            _outOfStockRepositories = new OutOfStockTableRepositories();
+
             _products = new List<Product>();
             _products = (List<Product>)_productTableRepository.GetAll();
 
@@ -71,6 +74,20 @@ namespace ShopProject.Model.StoragePage
                 return true;
             }
             catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                return false;
+            }
+        }
+        public bool SetProductinOutOfStok(Product item)
+        {
+            try
+            {
+                _productTableRepository.SetParameter(item.ID, "out_of_stock", TypeParameterSetTableProduct.Status);
+                _outOfStockRepositories.Add(new ProductsOutOfStock() { ID=item.ID,created_at = DateTime.Now});
+                return true;
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
                 return false;
