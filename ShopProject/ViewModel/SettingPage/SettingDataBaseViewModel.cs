@@ -1,4 +1,5 @@
 ﻿using ShopProject.DataBase.Context;
+using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.SettingPage;
 using System;
@@ -20,19 +21,19 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand createDataBase;
         private ICommand deleteDataBase;
 
-        SettingDataBaseModel settingDb;
+        private SettingDataBaseModel _model;
      
         public SettingDataBaseViewModel()
         {
-            settingDb = new SettingDataBaseModel();
-            createDataBase = new DelegateCommand(CreateDataBaseInUpdateField);
-            deleteDataBase = new DelegateCommand(DeleteDataBaseAndDeleteSettingDataBase);
+            _model = new SettingDataBaseModel();
+            createDataBase = new DelegateCommand(()=>new Thread(new ThreadStart(CreateDataBaseInUpdateField)).Start());
+            deleteDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(DeleteDataBaseAndDeleteSettingDataBase)).Start());
            
             _isCreateButton = true;
             _dbname = string.Empty;
             _isCreateLableName = string.Empty;
            
-            if (settingDb.GetName() != string.Empty)
+            if (AppSettingsManager.GetParameterFiles("ConnectionString") != string.Empty)
             {
                 SetFieldText(true);         
             }
@@ -48,7 +49,7 @@ namespace ShopProject.ViewModel.SettingPage
             {
                 IsCreateButton = false;
                 IsCreateLableName = "База створена";
-                DBName = settingDb.GetName();
+                DBName = AppSettingsManager.GetParameterFiles("NameDataBase");
             }
             else
             {
@@ -62,7 +63,7 @@ namespace ShopProject.ViewModel.SettingPage
         public string DBName
         {
             get { return _dbname; }
-            set { _dbname = value; }
+            set { _dbname = value; OnPropertyChanged("DBName"); }
         }
 
         private string _isCreateLableName;
@@ -83,64 +84,32 @@ namespace ShopProject.ViewModel.SettingPage
 
         private void CreateDataBaseInUpdateField()
         {
-            settingDb.SetName(_dbname);
-            if (settingDb.SetConnectionStringDataBase())
+     
+            if (_model.CreateDataBase(DBName))
             {
-                new Thread(new ThreadStart(ThreadCreateDataBase)).Start();
+                SetFieldText(true);
+                MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 MessageBox.Show("База даних не створена","Eror",MessageBoxButton.OK,MessageBoxImage.Error);
             }
         }
-        
-        private void ThreadCreateDataBase()
-        {
-            if (settingDb.CreateDataBase())
-            {
-                UpdateField();
-                SaveFileSettingDataBase();
-                MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        private void UpdateField()
-        {
-            IsCreateLableName = "База створена";
-            IsCreateButton = false;
-        }
-        private void SaveFileSettingDataBase()
-        {
-            if (_dbname != null)
-            {
-                settingDb.SetName(_dbname);
-                settingDb.FileSaveOptionsDataBase();
-            }
-            else
-            {
-                GenerateException("Введіть назву бази даних");
-            }
-        }
-
-        private Exception GenerateException(string nameExeption)
-        {
-            throw new Exception(nameExeption);
-        }
-
         public ICommand DeleteDataBase => deleteDataBase;
-
         private void DeleteDataBaseAndDeleteSettingDataBase()
         {
-            new Thread(new ThreadStart(DeleteDataBaseisFieldUpdate)).Start();
-            settingDb.RemoveSetting();
-        }
-        private void DeleteDataBaseisFieldUpdate()
-        {
-            if (settingDb.DeleteDataBase())
+            if (_model.DeleteDataBase())
             {
                 SetFieldText(false);
                 MessageBox.Show("База даних видалена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            else
+            {
+                MessageBox.Show("База даних не видалена","Eror",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
         }
+
+      
 
 
     }
