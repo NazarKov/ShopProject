@@ -1,6 +1,8 @@
 ﻿using ShopProject.DataBase.Model;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace ShopProject.DataBase.Context
 {
@@ -17,6 +19,6 @@ namespace ShopProject.DataBase.Context
         public DbSet<User>? user { get; set; }
         public DbSet<CashRegister>? cashRegisters { get; set; }
         public DbSet<GiftCertificates>? GiftCertificates { get; set; }
-        
+
     }
 }

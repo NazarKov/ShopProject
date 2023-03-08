@@ -18,16 +18,18 @@ namespace ShopProject.ViewModel.SettingPage
 {
     internal class SettingDataBaseViewModel : ViewModel<SettingDataBaseViewModel>
     {
-        private ICommand createDataBase;
-        private ICommand deleteDataBase;
+        private ICommand _createDataBase;
+        private ICommand _deleteDataBase;
+        private ICommand _clearDataBase;
 
         private SettingDataBaseModel _model;
      
         public SettingDataBaseViewModel()
         {
             _model = new SettingDataBaseModel();
-            createDataBase = new DelegateCommand(()=>new Thread(new ThreadStart(CreateDataBaseInUpdateField)).Start());
-            deleteDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(DeleteDataBaseAndDeleteSettingDataBase)).Start());
+            _createDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(CreateDataBaseInUpdateField)).Start());
+            _deleteDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(DeleteDataBaseAndDeleteSettingDataBase)).Start());
+            _clearDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(ClearDataBaseAll)).Start());
            
             _isCreateButton = true;
             _dbname = string.Empty;
@@ -80,7 +82,7 @@ namespace ShopProject.ViewModel.SettingPage
             set { _isCreateButton = value; OnPropertyChanged("IsCreateButton"); }
         }
 
-        public ICommand CreateDataBase => createDataBase;
+        public ICommand CreateDataBase => _createDataBase;
 
         private void CreateDataBaseInUpdateField()
         {
@@ -95,7 +97,7 @@ namespace ShopProject.ViewModel.SettingPage
                 MessageBox.Show("База даних не створена","Eror",MessageBoxButton.OK,MessageBoxImage.Error);
             }
         }
-        public ICommand DeleteDataBase => deleteDataBase;
+        public ICommand DeleteDataBase => _deleteDataBase;
         private void DeleteDataBaseAndDeleteSettingDataBase()
         {
             if (_model.DeleteDataBase())
@@ -109,6 +111,18 @@ namespace ShopProject.ViewModel.SettingPage
             }
         }
 
+        public ICommand ClearDataBase => _clearDataBase;
+        private void ClearDataBaseAll()
+        {
+            if(_model.ClearDataBase())
+            {
+                MessageBox.Show("База даних ощищена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("База даних не очищена", "Eror", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
       
 
 

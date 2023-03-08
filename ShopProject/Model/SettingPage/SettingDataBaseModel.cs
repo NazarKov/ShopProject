@@ -53,7 +53,20 @@ namespace ShopProject.Model.SettingPage
                 HendlerShowExeption(ex);
                 return false;
             }
-            return false;
+        }
+        public bool ClearDataBase()
+        {
+            try
+            {
+
+                _contextDataBase.Clear();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                HendlerShowExeption(ex);
+                return false;
+            }
         }
       
         private void HendlerShowExeption(Exception ex)
