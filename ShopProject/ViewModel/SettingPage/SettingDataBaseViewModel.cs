@@ -34,7 +34,10 @@ namespace ShopProject.ViewModel.SettingPage
             _isCreateButton = true;
             _dbname = string.Empty;
             _isCreateLableName = string.Empty;
-           
+            _typeConnect = new List<string>();
+            
+
+            SetFieldComboBox();
             if (AppSettingsManager.GetParameterFiles("ConnectionString") != string.Empty)
             {
                 SetFieldText(true);         
@@ -42,6 +45,25 @@ namespace ShopProject.ViewModel.SettingPage
             else
             {
                 SetFieldText(false);
+            }
+        }
+        private void SetFieldComboBox()
+        {
+            TypeConnect = new List<string>();
+            TypeConnect.Add("EXPRESS");
+            TypeConnect.Add("DEVELOPER");
+
+            if (AppSettingsManager.GetParameterFiles("TypeConnect")=="EXPRESS")
+            {
+                SelectItemConnect = 0;
+            }
+            else if(AppSettingsManager.GetParameterFiles("TypeConnect") == "DEVELOPER")
+            {
+                SelectItemConnect = 1;
+            }
+            else
+            {
+                SelectItemConnect = 2;
             }
         }
 
@@ -59,6 +81,19 @@ namespace ShopProject.ViewModel.SettingPage
                 IsCreateLableName =string.Empty;
                 DBName = string.Empty;
             }
+        }
+        private int _selectItemConnect;
+        public int SelectItemConnect
+        {
+            get { return _selectItemConnect; }
+            set { _selectItemConnect = value; OnPropertyChanged("SelectItemConnect"); }
+        }
+
+        private List<string> _typeConnect;
+        public List<string> TypeConnect
+        {
+            get { return _typeConnect; }
+            set { _typeConnect = value; OnPropertyChanged("TypeConnect"); }
         }
 
         private string _dbname;
@@ -87,7 +122,7 @@ namespace ShopProject.ViewModel.SettingPage
         private void CreateDataBaseInUpdateField()
         {
      
-            if (_model.CreateDataBase(DBName))
+            if (_model.CreateDataBase(DBName,SelectItemConnect))
             {
                 SetFieldText(true);
                 MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);

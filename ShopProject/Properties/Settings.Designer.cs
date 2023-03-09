@@ -46,5 +46,17 @@ namespace ShopProject.Properties {
                 this["NameDataBase"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TypeConnect {
+            get {
+                return ((string)(this["TypeConnect"]));
+            }
+            set {
+                this["TypeConnect"] = value;
+            }
+        }
     }
 }

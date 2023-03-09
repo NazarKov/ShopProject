@@ -23,11 +23,20 @@ namespace ShopProject.Model.SettingPage
             _contextDataBase = new DataContext();
         }
 
-        public bool CreateDataBase(string name)
+        public bool CreateDataBase(string name,int typeConnections)
         {
             try
             {
-                AppSettingsManager.SetConnectionDataBase(name,TypeConnections.DEVELOPER);
+                if(typeConnections == 0)
+                {
+                    AppSettingsManager.SetConnectionDataBase(name,TypeConnections.EXPRESS);
+                    AppSettingsManager.SetParameterFile("TypeConnect", "EXPRESS");
+                }
+                else
+                {
+                    AppSettingsManager.SetConnectionDataBase(name, TypeConnections.DEVELOPER);
+                    AppSettingsManager.SetParameterFile("TypeConnect", "DEVELOPER");
+                }
                 AppSettingsManager.SetParameterFile("NameDataBase", name);
                 _contextDataBase.Create();
                 return true;
