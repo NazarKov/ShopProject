@@ -59,6 +59,7 @@ namespace ShopProject.Model.ToolsPage
 
                 CreateBorderStiker(barCode);
                 SetTextStiker(name, company, description, code, barCode);
+                AppSettingsManager.SetParameterFile("LastBarCode", code);
 
                 return Bitmap2BitmapImage(barCode);
             }
@@ -71,25 +72,37 @@ namespace ShopProject.Model.ToolsPage
         }
         private void ChekLength(string company, string code, string name,string description)
         {
-            if (company.Length <= 3)
+            if (isShowNameCompany)
             {
-                throw new Exception("мінімальна довжина назви компанії 3 символа");
+                if (company.Length <= 3)
+                {
+                    throw new Exception("мінімальна довжина назви компанії 3 символа");
+                }
             }
-            if (code.Length <= 3)
+            if (isShowProductBarCode)
             {
-                throw new Exception("мінімальна довжина цифер штрихкоду 3 символа");
+                if (code.Length <= 3)
+                {
+                    throw new Exception("мінімальна довжина цифер штрихкоду 3 символа");
+                }
+                else if (code.Length > 15)
+                {
+                    throw new Exception("максимальна довжина цифер штрихкоду 15 символа");
+                }
             }
-            if (code.Length > 15)
+            if (isShowProductName)
             {
-                throw new Exception("максимальна довжина цифер штрихкоду 15 символа");
+                if (name.Length > 30)
+                {
+                    throw new Exception("максимальна довжина назви продукта 30 символа");
+                }
             }
-            if (name.Length > 30)
+            if (isShowProductDescription)
             {
-                throw new Exception("максимальна довжина назви продукта 30 символа");
-            }
-            if (description.Length > 30)
-            {
-                throw new Exception("максимальна довжина опису продукта 30 символа");
+                if (description.Length > 30)
+                {
+                    throw new Exception("максимальна довжина опису продукта 30 символа");
+                }
             }
         }
 
@@ -101,10 +114,14 @@ namespace ShopProject.Model.ToolsPage
 
         private void ValidIsNull(string company,string name,string code,string description)
         {           
-            Validation.ItemChekIsNull(code, typeof(string), "штрихкод");    
-            Validation.ItemChekIsNull(company, typeof(string), "компанія");
-            Validation.ItemChekIsNull(name, typeof(string), "назва");
-            Validation.ItemChekIsNull(description, typeof(string), "опис");
+            if(isShowProductBarCode)
+                Validation.ItemChekIsNull(code, typeof(string), "штрихкод");
+            if (isShowNameCompany)
+                Validation.ItemChekIsNull(company, typeof(string), "компанія");
+            if (isShowProductName)
+                Validation.ItemChekIsNull(name, typeof(string), "назва");
+            if (isShowProductDescription)
+                Validation.ItemChekIsNull(description, typeof(string), "опис");
         }
 
         private Bitmap CreateBarCode(string code)

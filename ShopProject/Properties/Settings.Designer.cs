@@ -58,5 +58,17 @@ namespace ShopProject.Properties {
                 this["TypeConnect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastBarCode {
+            get {
+                return ((string)(this["LastBarCode"]));
+            }
+            set {
+                this["LastBarCode"] = value;
+            }
+        }
     }
 }

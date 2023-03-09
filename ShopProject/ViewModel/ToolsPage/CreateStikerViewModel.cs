@@ -43,11 +43,16 @@ namespace ShopProject.ViewModel.ToolsPage
             if (StaticResourse.product == null)
             {
                 NameCompany = StaticResourse.nameCompany;
+
+                if (AppSettingsManager.GetParameterFiles("LastBarCode") != string.Empty)
+                {
+                    Code = AppSettingsManager.GetParameterFiles("LastBarCode");
+                }
             }
             else
             {
                 NameCompany = StaticResourse.nameCompany;
-                if(StaticResourse.product.code!=null)
+                if (StaticResourse.product.code != null)
                     Code = StaticResourse.product.code.ToString();
                 if (StaticResourse.product.name != null)
                 {
@@ -59,7 +64,7 @@ namespace ShopProject.ViewModel.ToolsPage
                     }
                     else if (splitName.Length == 2)
                     {
-                        NameProduct = splitName[0] +" "+ splitName[1];
+                        NameProduct = splitName[0] + "  " + splitName[1];
                         IsShowProductDescription = false;
                     }
                     else
@@ -69,7 +74,7 @@ namespace ShopProject.ViewModel.ToolsPage
                             Description += splitName[i] + " ";
                     }
                 }
-               
+
             }
         }
 
