@@ -16,10 +16,10 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Margin="5,5,5,-405" BorderBrush="Black" BorderThickness="0.4">
             <Canvas>
-                <Button x:Name="button"             Content="Загальне" Canvas.Left="1" Canvas.Top="1"    Width="238" BorderBrush="White" Background="White" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Command="{Binding DbSettingOpen}"/>
+                <Button x:Name="button"             Content="Загальне" Canvas.Left="1" Canvas.Top="1"    Width="238" BorderBrush="White" Background="White" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Command="{Binding GeneralSettingOpenCommand}" />
                 <Button x:Name="button_Copy"        Content="Персоназілація" Canvas.Left="1" Canvas.Top="31"   Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Button x:Name="button_Copy1"       Content="Користувач" Canvas.Left="1" Canvas.Top="61"   Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                <Button x:Name="button_Copy2"       Content="База даних" Canvas.Left="1" Canvas.Top="91"   Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <Button x:Name="button_Copy2"       Content="База даних" Canvas.Left="1" Canvas.Top="91"   Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" Command="{Binding DataBaseSettingOpenCommand}"/>
                 <Button x:Name="button_Copy3"       Content="Час мова" Canvas.Left="1" Canvas.Top="121"  Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Button x:Name="button_Copy4"       Content="Етикетка" Canvas.Left="1" Canvas.Top="151"  Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Button x:Name="button_Copy5"       Content="Button" Canvas.Left="1" Canvas.Top="181"  Width="238" BorderBrush="White" Background="White" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
@@ -29,7 +29,7 @@
             </Canvas>
         </Border>
         <Canvas Grid.Column="1" Margin="5,5,6,-405" Width="535" VerticalAlignment="Top">
-            <Frame Source="SettingDataBase.xaml" Visibility="{Binding VisibilitiDbPage}"></Frame>
+            <Frame Content="{Binding PageSetting}" NavigationUIVisibility="Hidden"></Frame>
         </Canvas>
         
 

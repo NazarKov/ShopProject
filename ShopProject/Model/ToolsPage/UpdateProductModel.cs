@@ -23,7 +23,7 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-                if(Validation.TextField(name, code, articule, price, count, units, false))
+                if(Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct")))
                 {
                     _productRepository.Update(new Product()
                     {

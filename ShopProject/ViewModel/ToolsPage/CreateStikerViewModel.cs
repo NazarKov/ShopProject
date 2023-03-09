@@ -46,7 +46,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
                 if (AppSettingsManager.GetParameterFiles("LastBarCode") != string.Empty)
                 {
-                    Code = AppSettingsManager.GetParameterFiles("LastBarCode");
+                    Code = AppSettingsManager.GetParameterFiles("LastBarCode").ToString();
                 }
             }
             else

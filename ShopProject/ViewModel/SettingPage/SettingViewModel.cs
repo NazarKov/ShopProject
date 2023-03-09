@@ -4,42 +4,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using ShopProject.Views.SettingPage;
 
 namespace ShopProject.ViewModel.SettingPage
 {
     internal class SettingViewModel : ViewModel<SettingViewModel>
     {
-        private ICommand dbSettingOpen;
+        private ICommand _dataBaseSettingOpenCommand;
+        private ICommand _generalSettingOpenCommand;
+
+
 
         public SettingViewModel()
         {
-            dbSettingOpen = new DelegateCommand(DbSettingPageOpen);
-            _visibilitiDbPage = "Visible";
+            _dataBaseSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingDataBase(); });
+            _generalSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); });
         }
 
-        private string _visibilitiDbPage;
-        public string VisibilitiDbPage
+        private Page _pageSetting;
+        public Page PageSetting
         {
-            set { 
-                _visibilitiDbPage = value;
-                OnPropertyChanged("VisibilitiDbPage");
-            }
-            get { return _visibilitiDbPage; }
+            get { return _pageSetting; }
+            set { _pageSetting = value; OnPropertyChanged("PageSetting"); }
         }
 
-        public ICommand DbSettingOpen => dbSettingOpen;
 
-        private void DbSettingPageOpen()
-        {
-            if(_visibilitiDbPage =="Hidden")
-            {
-                VisibilitiDbPage = "Visible";
-            }
-            else
-            {
-                VisibilitiDbPage = "Hidden";
-            }
-        }
+        public ICommand DataBaseSettingOpenCommand => _dataBaseSettingOpenCommand;
+        public ICommand GeneralSettingOpenCommand => _generalSettingOpenCommand;
+       
     }
 }

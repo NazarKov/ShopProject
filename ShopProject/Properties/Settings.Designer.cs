@@ -70,5 +70,29 @@ namespace ShopProject.Properties {
                 this["LastBarCode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsValidCreateProduct {
+            get {
+                return ((bool)(this["IsValidCreateProduct"]));
+            }
+            set {
+                this["IsValidCreateProduct"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsValidUpdateProduct {
+            get {
+                return ((bool)(this["IsValidUpdateProduct"]));
+            }
+            set {
+                this["IsValidUpdateProduct"] = value;
+            }
+        }
     }
 }

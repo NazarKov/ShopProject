@@ -53,11 +53,11 @@ namespace ShopProject.ViewModel.SettingPage
             TypeConnect.Add("EXPRESS");
             TypeConnect.Add("DEVELOPER");
 
-            if (AppSettingsManager.GetParameterFiles("TypeConnect")=="EXPRESS")
+            if (AppSettingsManager.GetParameterFiles("TypeConnect").ToString()=="EXPRESS")
             {
                 SelectItemConnect = 0;
             }
-            else if(AppSettingsManager.GetParameterFiles("TypeConnect") == "DEVELOPER")
+            else if(AppSettingsManager.GetParameterFiles("TypeConnect").ToString() == "DEVELOPER")
             {
                 SelectItemConnect = 1;
             }
@@ -73,7 +73,7 @@ namespace ShopProject.ViewModel.SettingPage
             {
                 IsCreateButton = false;
                 IsCreateLableName = "База створена";
-                DBName = AppSettingsManager.GetParameterFiles("NameDataBase");
+                DBName = AppSettingsManager.GetParameterFiles("NameDataBase").ToString();
             }
             else
             {

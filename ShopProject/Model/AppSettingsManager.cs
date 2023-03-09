@@ -41,9 +41,14 @@ namespace ShopProject.Model
             Properties.Settings.Default[key] = value;
             Properties.Settings.Default.Save();
         }
-        public static string GetParameterFiles(string key)
+        public static void SetParameterFile(string key, bool value)
         {
-            return Properties.Settings.Default[key].ToString();
+            Properties.Settings.Default[key] = value;
+            Properties.Settings.Default.Save();
+        }
+        public static object GetParameterFiles(string key)
+        {
+            return Properties.Settings.Default[key];
         }
     }
 }

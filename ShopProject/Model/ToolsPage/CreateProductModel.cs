@@ -29,7 +29,7 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-                if (Validation.TextField(name, code, articule, price, count,units, true))
+                if (Validation.TextField(name, code, articule, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
                 {
                     if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Product>)_productRepository.GetAll()))//перевірка на наявність товару по штрих коду
                     {

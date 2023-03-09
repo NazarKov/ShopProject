@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ShopProject.Views.SettingPage
 {
     /// <summary>
-    /// Interaction logic for SettingDb.xaml
+    /// Interaction logic for SettingGeneral.xaml
     /// </summary>
-    public partial class SettingDataBase : Page
+    public partial class SettingGeneral : Page
     {
-        public SettingDataBase()
+        public SettingGeneral()
         {
             InitializeComponent();
         }
