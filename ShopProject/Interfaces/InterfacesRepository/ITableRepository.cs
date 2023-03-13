@@ -14,7 +14,7 @@ namespace ShopProject.Interfaces.InterfacesRepository
 
         public void Update (T item) { }
 
-        public void SetParameter(int ID, object item, Type type) { }
+        public void SetParameter(int ID, object parameter, Type type) { }
         
         public void Delete (T item) { }
         

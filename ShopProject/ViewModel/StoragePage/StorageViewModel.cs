@@ -18,6 +18,8 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _searchButton;
         private ICommand _visibileAllButton;
         private ICommand _openCreateProductWindow;
+        private ICommand _openFormationProductWindow;
+
         private List<Product> _products;
         
         public StorageViewModel()
@@ -28,8 +30,9 @@ namespace ShopProject.ViewModel.StoragePage
 
             _searchButton = new DelegateCommand(SearchProductInCodeAndName);
             _visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
-            _openCreateProductWindow = new DelegateCommand(CreateProductDatabase);
-       
+            _openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().Show(); });
+            _openFormationProductWindow = new DelegateCommand(() => { new FormationProduct().Show(); });
+
             SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
             _products = new List<Product>();
 
@@ -114,16 +117,6 @@ namespace ShopProject.ViewModel.StoragePage
             Products = null;
             _storageModel = new StorageModel();
             Products = _storageModel.GetItems();
-        }
-
-        public ICommand OpenCreateProductWindow => _openCreateProductWindow;
-
-        private void CreateProductDatabase()
-        {
-            if (_storageModel != null)
-            {
-                new CreateProductPage().Show();
-            }
         }
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
@@ -215,6 +208,8 @@ namespace ShopProject.ViewModel.StoragePage
         }
         private bool CanRegister(object parameter) => true;
 
+        public ICommand OpenCreateProductWindow => _openCreateProductWindow;
+        public ICommand OpenFormationProductWindow => _openFormationProductWindow;
 
     }
 }

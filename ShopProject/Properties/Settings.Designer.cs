@@ -94,5 +94,17 @@ namespace ShopProject.Properties {
                 this["IsValidUpdateProduct"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsValidFormationProduct {
+            get {
+                return ((bool)(this["IsValidFormationProduct"]));
+            }
+            set {
+                this["IsValidFormationProduct"] = value;
+            }
+        }
     }
 }

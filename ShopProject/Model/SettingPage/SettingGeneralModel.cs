@@ -11,6 +11,7 @@ namespace ShopProject.Model.SettingPage
     {
         CreateProduct = 1,
         UpdateProduct = 2,
+        FormationProduct = 3,
     }
 
     internal class SettingGeneralModel
@@ -44,6 +45,18 @@ namespace ShopProject.Model.SettingPage
                             else
                             {
                                 AppSettingsManager.SetParameterFile("IsValidUpdateProduct", false);
+                            }
+                            break;
+                        }
+                    case TypeUpdateFieldIsValid.FormationProduct:
+                        {
+                            if (isFiled)
+                            {
+                                AppSettingsManager.SetParameterFile("IsValidFormationProduct", true);
+                            }
+                            else
+                            {
+                                AppSettingsManager.SetParameterFile("IsValidFormationProduct", false);
                             }
                             break;
                         }

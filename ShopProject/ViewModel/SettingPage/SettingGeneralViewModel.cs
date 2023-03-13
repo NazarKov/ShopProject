@@ -14,6 +14,7 @@ namespace ShopProject.ViewModel.SettingPage
     {
         private ICommand _updateFieldIsValidCreateProductCommand;
         private ICommand _updateFieldIsValidUpdateProductCommand;
+        private ICommand _updateFieldIsValidFormationProductCommand;
 
         private SettingGeneralModel _model;
 
@@ -21,6 +22,7 @@ namespace ShopProject.ViewModel.SettingPage
         {
             _updateFieldIsValidCreateProductCommand = new DelegateCommand(UpdateFieldCreateProduct);
             _updateFieldIsValidUpdateProductCommand = new DelegateCommand(UpdateFieldUpdateProduct);
+            _updateFieldIsValidFormationProductCommand = new DelegateCommand(UpdateFieldFormationProduct);
 
              _model = new SettingGeneralModel();
 
@@ -30,6 +32,7 @@ namespace ShopProject.ViewModel.SettingPage
         {
             IsValidCrateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct");
             IsValidUpdateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct");
+            IsValidFormationProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct");
         }
 
         private bool _isValidCrateProduct;
@@ -46,6 +49,13 @@ namespace ShopProject.ViewModel.SettingPage
             set { _isValidUpdateProduct = value; OnPropertyChanged("IsValidUpdateProduct"); }
         }
 
+        private bool _isValidFormationProduct;
+        public bool IsValidFormationProduct
+        {
+            get { return _isValidFormationProduct; }
+            set { _isValidFormationProduct = value; OnPropertyChanged("IsValidFormationProduct"); }
+        }
+
         public ICommand UpdateFieldIsValidCreateProductCommand => _updateFieldIsValidCreateProductCommand;
 
         private void UpdateFieldCreateProduct()
@@ -58,6 +68,13 @@ namespace ShopProject.ViewModel.SettingPage
         private void UpdateFieldUpdateProduct()
         {
             _model.updateField(IsValidUpdateProduct, TypeUpdateFieldIsValid.UpdateProduct);
+        }
+
+        public ICommand UpdateFieldIsValidFormationProductCommand => _updateFieldIsValidFormationProductCommand;
+
+        private void UpdateFieldFormationProduct()
+        {
+            _model.updateField(IsValidUpdateProduct, TypeUpdateFieldIsValid.FormationProduct);
         }
     }
 }

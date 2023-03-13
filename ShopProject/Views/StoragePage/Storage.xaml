@@ -19,6 +19,7 @@
         <Grid.ContextMenu>
             <ContextMenu Name="context">
                 <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
+                <MenuItem Header="Сфомувати товар" Command="{Binding OpenFormationProductWindow}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Grid.RowDefinitions>
