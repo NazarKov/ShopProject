@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using ShopProject.Views.StoragePage;
 using ShopProject.Views.ToolsPage;
 using ShopProject.Model.Command;
+using ShopProject.Views.SalePage;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -25,6 +26,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand opemImportProduct;
         private ICommand openCreateStiker;
         private ICommand openOutOfStock;
+        private ICommand openSaleMenu;
 
         HomeModel homeModel;
 
@@ -39,6 +41,7 @@ namespace ShopProject.ViewModel.HomePage
             opemImportProduct = new DelegateCommand(() => { new ImportProductExel().Show(); });
             openCreateStiker = new DelegateCommand(() => { new CreateStiker().Show(); });
             openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
+            openSaleMenu = new DelegateCommand(() => { Page = new SaleMenu(); });
 
             newModels();
 
@@ -120,5 +123,6 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenImportProduct => opemImportProduct;
         public ICommand OpenCreateStiker => openCreateStiker;
         public ICommand OpenOutOfStock => openOutOfStock;
+        public ICommand OpenSaleMenu => openSaleMenu;
     }
 }

@@ -48,16 +48,7 @@
                 <MenuItem Header="Справка" ></MenuItem>
             </Menu>
             <Menu Height="20" Grid.RowSpan="2" VerticalAlignment="Bottom">
-                <MenuItem Header="Меню продаж">
-                    <MenuItem Header="Настройки" ></MenuItem>
-                    <MenuItem Header="хз" >
-                        <MenuItem Header="WinForms"></MenuItem>
-                        <MenuItem Header="WPF" ></MenuItem>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
-                </MenuItem>
-              
+                <MenuItem Header="Меню продаж" Command="{Binding OpenSaleMenu}" />
             </Menu>
  
         <Canvas Visibility="Hidden" VerticalAlignment="Stretch">

@@ -49,10 +49,7 @@ namespace ShopProject.DataBase.Model
         public ProductArchive ProductArchive { get; set; }
         public ProductsOutOfStock productsOutStock { get; set; }
 
-        private ICollection<ProductOrder> _productOrders { get; set; }
-        public Product()
-        {
-            _productOrders = new List<ProductOrder>();
-        }
+        public ICollection<ProductOrder> OrderItem { get; set; }
+        
     }
 }

@@ -9,10 +9,7 @@ namespace ShopProject.Model.Command
         private Func<bool> canExecuteMethod;
         private readonly Action executeMethod;
 
-        public DelegateCommand(Action executeMethod) :
-            this(executeMethod, defaultCanExecuteMethod)
-        {
-        }
+        public DelegateCommand(Action executeMethod) : this(executeMethod, defaultCanExecuteMethod){}
 
         public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod)
         {

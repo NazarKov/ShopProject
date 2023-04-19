@@ -11,7 +11,8 @@ namespace ShopProject.DataBase.Model
         /// кількість
         /// </summary>
         public int count { get; set; }
-        public Product? product { get; set; }
-        public Order? order { get; set; }
+
+        public  Product Product { get; set; }
+        public virtual Order Order { get; set; }
     }
 }
