@@ -1,8 +1,10 @@
 ﻿using ShopProject.DataBase.Model;
+using ShopProject.Helpers.MiniServiceSigningFile;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -64,17 +66,12 @@ namespace ShopProject.ViewModel.SalePage
 
         private void SearchBarCodePrdocut()
         {
-            if (BarCodeSearch.Length > 8)
+            if (BarCodeSearch.Length > 0)
             {
                 var item = _model.Search(BarCodeSearch);
-
                 if (item != null)
                 {
-                    Product product = new Product();
-                    product = item;
-                    product.count = 1;
-
-
+                    item.count = 1;
                     List<Product> temp = new List<Product>();
                     temp = Products;
 
@@ -84,13 +81,10 @@ namespace ShopProject.ViewModel.SalePage
                     }
                     else
                     {
-                        temp.Add(product);
+                        temp.Add(item);
                     }
 
-                    //foreach(Product orderProduct in temp)
-                    //{
-                    //    SumaOrder = (orderProduct.price*orderProduct.count)+SumaOrder;
-                    //}
+                    CountingSumaOrder(temp);
 
                     Products = new List<Product>();
                     Products = temp;
@@ -99,15 +93,27 @@ namespace ShopProject.ViewModel.SalePage
             }
            
         }
+
+        private void CountingSumaOrder(List<Product> products)
+        {
+            SumaOrder = 0;
+            foreach (Product orderProduct in products)
+            {
+                SumaOrder += (orderProduct.price * orderProduct.count);
+            }
+        }
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
-            if(_model.SetOrderDataBase(Products,new Order() { created_at = DateTime.Now, sale=0,suma=0,rest=0,user=null }))
+            if(_model.SetOrderDataBase(Products,new Order() { created_at = DateTime.Now, sale=0,suma= (double)SumaOrder,rest=0,user=null }))
             {
+
                 //_model.PrintChek(Products);
-                MessageBox.Show("чек видано");
-                Products = new List<Product>();
-                BarCodeSearch = string.Empty;
+                //MessageBox.Show("чек видано");
+                //Products = new List<Product>();
+                //BarCodeSearch = string.Empty;
+                //SumaOrder = 0;
+
             }
         }
 

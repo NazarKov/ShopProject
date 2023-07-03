@@ -60,14 +60,7 @@ namespace ShopProject.Model.SalePage
 
         public Product Search(string barCode)
         {
-            _products = (List<Product>)_tableProducts.GetAll();
-
-            foreach(Product product in _products)
-            {
-                if (product.code == barCode)
-                    return product;
-            }
-            return null;
+            return (Product)_tableProducts.GetItem(barCode);
         }
 
         public void PrintChek(List<Product> products)
