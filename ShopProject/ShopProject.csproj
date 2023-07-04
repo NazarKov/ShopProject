@@ -13,7 +13,7 @@
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Google.Protobuf" Version="3.23.3" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.54.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.55.0" />
     <PackageReference Include="Grpc.Tools" Version="2.56.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,6 +23,10 @@
     <PackageReference Include="NPOI" Version="2.6.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     <PackageReference Include="ZXing.Net" Version="0.16.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="ExternalLibs\Protos\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,12 +43,12 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resource\BufferStorage\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Protobuf Include="ExternalLibs\Protos\greet.proto" GrpcServices="Client" />
-  </ItemGroup>
-
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <CoreCompileDependsOn>$(CoreCompileDependsOn);Protobuf_Compile</CoreCompileDependsOn>
+  </PropertyGroup>
+ 
 </Project>

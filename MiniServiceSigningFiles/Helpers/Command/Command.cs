@@ -30,7 +30,22 @@ namespace MiniServiceSigningFiles.Helpers.Command
         {
             if(IEUSignCP.IsInitialized())
             {
-                IEUSignCP.SignFile("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\MiniServiceSigningFiles\\2.xml", "D:\\Проекти\\Visual Studio\\Project\\ShopProject\\MiniServiceSigningFiles\\2.xml.p7s", false);
+                IEUSignCP.EU_CERT_OWNER_INFO info = new IEUSignCP.EU_CERT_OWNER_INFO();
+                IEUSignCP.ReadPrivateKeyFile("F:\\key_13100560_13100560.jks", "1234567zZ",out info);
+                IEUSignCP.SignFile("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", "D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s", false);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public static bool None()
+        {
+
+            if( IEUSignCP.IsInitialized())
+            {
+                
                 return true;
             }
             else

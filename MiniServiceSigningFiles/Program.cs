@@ -30,12 +30,12 @@ namespace MiniServiceSigningFiles
             listener.Start();
             Console.WriteLine("Сервер запущений. Очікування підключень...");
 
- 
+
             TcpClient client = listener.AcceptTcpClient();
             Console.WriteLine("Клієнт підключений!");
 
             NetworkStream stream = client.GetStream();
-          
+
             while (true)
             {
                 data = new byte[256];
@@ -46,56 +46,56 @@ namespace MiniServiceSigningFiles
                 switch (command.ToString())
                 {
                     case "None":
-                    {
-                        break;
-                    }
-                    case "Initialize":
-                    {
-                        string error = Command.Initialize(false);
-                        if (error == "OK")
                         {
-                            send(error, response, stream);
+                            break;
                         }
-                        else
+                    case "Initialize":
                         {
+                            string error = Command.Initialize(false);
+                            if (error == "OK")
+                            {
                                 send(error, response, stream);
                             }
-                        break;
-                    }
+                            else
+                            {
+                                send(error, response, stream);
+                            }
+                            break;
+                        }
                     case "IsInitialize":
-                    {
-                        bool error = Command.IsInitialize();
-                        if (error)
                         {
-                            send(error.ToString(), response, stream);
+                            bool error = Command.IsInitialize();
+                            if (error)
+                            {
+                                send(error.ToString(), response, stream);
+                            }
+                            else
+                            {
+                                send("Криптографічну бібліотеку не ініціалізовано.", response, stream);
+                            }
+                            break;
                         }
-                        else
-                        {
-                            send("Криптографічну бібліотеку не ініціалізовано.", response, stream);
-                        }
-                        break;
-                    }
                     case "SingFile":
-                    {
-                        if (Command.SignFile())
                         {
-                            send("Файл Успішно підписано", response, stream);
+                            if (Command.SignFile())
+                            {
+                                send("Файл Успішно підписано", response, stream);
+                            }
+                            else
+                            {
+                                send("Помилка підпису", response, stream);
+                            }
+                            break;
                         }
-                        else
-                        {
-                            send("Помилка підпису", response, stream);
-                        }
-                        break;
-                    }
                     case "Disconnect":
-                    {
-                        Command.Finalize();
-                        send("Сервіс закінчив роботу", response, stream);
-                        Environment.Exit(0);
-                        break;
-                    }
+                        {
+                            Command.Finalize();
+                            send("Сервіс закінчив роботу", response, stream);
+                            Environment.Exit(0);
+                            break;
+                        }
                 }
-                
+
 
             }
 

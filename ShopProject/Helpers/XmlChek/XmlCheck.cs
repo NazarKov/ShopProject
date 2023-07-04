@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml;
 
-namespace ConsoleApp7
+namespace ShopProject
 {
     internal class XmlCheck
     {
@@ -60,11 +60,10 @@ namespace ConsoleApp7
             }
         }
 
-        public void writeOpenCase(string path)
+        public void writeOpenСhange(string path,string time,string mac)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            // Створення XmlTextWriter з файловим потоком
             using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
             {
                 // Встановлення форматування XML
@@ -90,19 +89,17 @@ namespace ConsoleApp7
                 writer.WriteAttributeString("T", "108");
 
                 writer.WriteEndElement();
-                long s = this.СurrentCompDate();
-                writer.WriteElementString("TS", s.ToString());
+                writer.WriteElementString("TS", time);
+                writer.WriteElementString("MAC", mac);
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();
 
                 // Закриття XmlTextWriter
                 writer.Close();
             }
-
-            Console.WriteLine("Чек успішно записано в файл check.xml.");
         }
 
-        public void writeOpenChek(string path)
+        public void writeOpenChek(string path,string time , string mac)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -184,21 +181,10 @@ namespace ConsoleApp7
 
 
                 writer.WriteEndElement();
-                long s = this.СurrentCompDate();
-                writer.WriteElementString("TS", s.ToString());
+                writer.WriteElementString("TS", time);
                 writer.WriteEndElement();
 
-                writer.WriteStartElement("MAC");
-                writer.WriteAttributeString("DI", "0");
-                writer.WriteAttributeString("NT", "1");
-                string str = $"<DAT DI=\"0\" DT=\"0\" FN=\"{CashRegisterName}\" TN=\"ПН {Tin}\" V=\"1\" ZN=\"LV00000113\"><C T=\"0\" /><TS>{s}</TS></DAT>";
-       
-                byte[] mac = CalculateMAC(str);
-                string macBase64 = Convert.ToBase64String(mac);
-
-                Console.WriteLine("MAC (Base64): " + macBase64);
-
-                writer.WriteBase64(mac,0,mac.Length);
+                writer.WriteElementString("MAC", mac);
 
                 writer.WriteEndDocument();
 
@@ -209,21 +195,7 @@ namespace ConsoleApp7
             Console.WriteLine("Чек успішно записано в файл check.xml.");
         }
 
-        static byte[] CalculateMAC(string data)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-                byte[] hash = sha256.ComputeHash(dataBytes);
-
-                return hash;
-            }
-        }
-
-
-      
-
-        public void writeCloseCase(string path)
+        public void writeCloseCase(string path,string time,string mac)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -290,9 +262,9 @@ namespace ConsoleApp7
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
-                long s = this.СurrentCompDate();
-                writer.WriteElementString("TS", s.ToString());
-                writer.WriteElementString("MAC", "0");
+                
+                writer.WriteElementString("TS", time);
+                writer.WriteElementString("MAC", mac);
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();
 
@@ -302,18 +274,7 @@ namespace ConsoleApp7
 
             Console.WriteLine("Чек успішно записано в файл check.xml.");
         }
-        internal  long СurrentCompDate()
-        {
-            DateTime now = DateTime.Now;
-            return Convert.ToInt64(now.Year.ToString() + TwoSigns(now.Month.ToString()) + TwoSigns(now.Day.ToString()) + (now.Hour.ToString()) + (now.Minute.ToString()) + TwoSigns(now.Second.ToString()));
-        }
-
-        private  string TwoSigns(string OneSigns)
-        {
-            if (OneSigns.Length < 2)
-                OneSigns = "0" + OneSigns;
-            return OneSigns;
-        }
+       
     }
 }
     
