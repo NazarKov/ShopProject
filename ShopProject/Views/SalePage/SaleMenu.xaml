@@ -42,17 +42,22 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <Button x:Name="button" Content="Оплатити" HorizontalAlignment="Left" Margin="621,33,0,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding PrintingCheckCommand}"/>
-        
-        
-        
+        <Button x:Name="button" Content="Оплатити" HorizontalAlignment="Left" Margin="634,38,0,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding PrintingCheckCommand}"/>
+
+
+
         <Label x:Name="label3" Content="Одержанна сума" HorizontalAlignment="Left" Margin="248,18,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="248,44,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Visibility="Hidden"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="496,38,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SumaUser}" VerticalAlignment="Top" Width="120" />
 
         <Label x:Name="label1" Content="Сума" HorizontalAlignment="Left" Margin="727,43,0,0" Grid.Row="1" VerticalAlignment="Top"  />
         <Label x:Name="label2" Content="{Binding SumaOrder, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="738,64,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.213,-1.65" />
-        
-        
+
+
+        <ComboBox x:Name="comboBox" ItemsSource="{Binding TypeOplatu}" SelectedIndex="{Binding SelectIndex}" HorizontalAlignment="Left" Margin="368,35,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="button1" Command="{Binding OpenChangeCommand}" Content="Відкрити зміну" HorizontalAlignment="Left" Margin="15,69,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Button x:Name="button2" Command="{Binding CloseChangeCommand}" Content="Закрити зміну" HorizontalAlignment="Left" Margin="105,69,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.214,-0.297"/>
+
+
 
 
     </Grid>

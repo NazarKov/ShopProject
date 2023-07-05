@@ -18,7 +18,7 @@ namespace ShopProject.Model.SettingPage
 
         public void ChekConnection()
         {
-            _api.CloseShift();
+            _api.ping();
         }
         
     }

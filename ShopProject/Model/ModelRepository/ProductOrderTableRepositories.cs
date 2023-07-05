@@ -38,5 +38,17 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
+        public IEnumerable<object> GetAll()
+        {
+            using(ShopContext context = new ShopContext())
+            {
+                context.productOrders.Load();
+                if(context.products!=null)
+                {
+                    return context.products;
+                }
+                return Enumerable.Empty<object>();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ShopProject.DataBase.Model;
+using ShopProject.Helpers.DFSAPI;
 using ShopProject.Helpers.MiniServiceSigningFile;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
@@ -21,18 +22,34 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _searchBarCodeProdcutCommand;
         private ICommand _printingCheckCommand;
 
+
+        private ICommand _openChangeCommand;
+        private ICommand _closeChangeCommand;
+
+
         public SaleMenuViewModel() 
         {
             _model = new SaleMenuModel();
-
+      
             _searchBarCodeProdcutCommand = new DelegateCommand(SearchBarCodePrdocut);
             _printingCheckCommand = new DelegateCommand(PrintingCheck);
+
+            _openChangeCommand = new DelegateCommand(() => { _model.OpenChange(); });
+            _closeChangeCommand = new DelegateCommand(() => { _model.closeChange(); });
             
             _products = new List<Product>();
             _barCodeSearch = string.Empty;
             _sumaOrder = 0;
             _sumaUser = 0;
+            _selectIndex = 0;
+
+            _typeOplatu = new List<string>();
+            _typeOplatu.Add("готівкою");
+            _typeOplatu.Add("безготівкові форми оплати");
         }
+
+        public ICommand OpenChangeCommand => _openChangeCommand;
+        public ICommand CloseChangeCommand => _closeChangeCommand;
 
         private string _barCodeSearch;
         public string BarCodeSearch
@@ -60,6 +77,18 @@ namespace ShopProject.ViewModel.SalePage
         {
             get { return _sumaUser; }
             set { _sumaUser = value; OnPropertyChanged("_sumaUser"); }
+        }
+        private List<string> _typeOplatu;
+        public List<string> TypeOplatu
+        {
+            get { return _typeOplatu; }
+            set { _typeOplatu = value; OnPropertyChanged("_typeOplatu"); }
+        }
+        private int _selectIndex;
+        public int SelectIndex
+        {
+            get { return _selectIndex; }
+            set { _selectIndex = value;OnPropertyChanged("_selectIndex"); }
         }
 
         public ICommand SearchBarCodeProductCommand => _searchBarCodeProdcutCommand;
@@ -105,14 +134,18 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
-            if(_model.SetOrderDataBase(Products,new Order() { created_at = DateTime.Now, sale=0,suma= (double)SumaOrder,rest=0,user=null }))
+
+            double rest = ((double)(SumaUser - SumaOrder));
+            Order order = new Order() { created_at = DateTime.Now, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
+            if (_model.SetOrderDataBase(Products, order))
             {
+                _model.SendChek(Products,order);
 
                 //_model.PrintChek(Products);
-                //MessageBox.Show("чек видано");
-                //Products = new List<Product>();
-                //BarCodeSearch = string.Empty;
-                //SumaOrder = 0;
+                MessageBox.Show($"чек видано \n Решта:{rest}");
+                Products = new List<Product>();
+                BarCodeSearch = string.Empty;
+                SumaOrder = 0;
 
             }
         }

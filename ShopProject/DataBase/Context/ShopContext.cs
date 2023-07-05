@@ -20,5 +20,7 @@ namespace ShopProject.DataBase.Context
         public DbSet<CashRegister>? cashRegisters { get; set; }
         public DbSet<GiftCertificates>? GiftCertificates { get; set; }
 
+        public DbSet<OrderXML>? orderXML { get; set;}
+
     }
 }

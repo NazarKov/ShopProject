@@ -13,8 +13,6 @@ namespace ShopProject.Helpers
         internal static string GenerateSHA256File(string FilePathString, bool Old = true)
         {
             string shA256File;
-
-
             SHA256 shA256 = SHA256.Create();
             FileStream fileStream = File.Open(FilePathString, FileMode.Open);
             FileStream inputStream = fileStream;

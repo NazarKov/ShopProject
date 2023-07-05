@@ -84,14 +84,15 @@ namespace ShopProject.Model.ModelRepository
 
             using (ShopContext context = new ShopContext())
             {
-                context.orders.Load();
+                
                 if (context.orders != null)
                 {
+                    context.orders.Load();
                     return context.orders.ToList();
                 }
                 else
                 {
-                    throw new Exception("База даних пуста");
+                    return null;
                 }
 
             }

@@ -8,11 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml;
+using ShopProject.Helpers;
+using ShopProject.Model.ModelRepository;
+using ShopProject.DataBase.Model;
+using NPOI.SS.Formula.Functions;
 
 namespace ShopProject
 {
     internal class XmlCheck
     {
+        OrderXMLTableRepositories OrderXMLTableRepositories { get; set; }
 
         Guid Uid { get; set; } // <!--Унікальний ідентифікатор документа (GUID)-->
         public string Tin { get; set; } //ЄДРПОУ/ДРФО/№ паспорта продавця (10 символів)-->
@@ -46,7 +51,7 @@ namespace ShopProject
             Cashier = "КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ";
             Ver = 1;
             OrderTaxNum = "";
-           
+            OrderXMLTableRepositories = new OrderXMLTableRepositories();
         }
         static string ComputeHash(string filePath)
         {
@@ -60,9 +65,12 @@ namespace ShopProject
             }
         }
 
-        public void writeOpenСhange(string path,string time,string mac)
+        public void writeOpenСhange(string path,string time)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
+            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");//при пустій базі даних потрібно не вмикати викликає помилку
 
             using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
             {
@@ -90,7 +98,7 @@ namespace ShopProject
 
                 writer.WriteEndElement();
                 writer.WriteElementString("TS", time);
-                writer.WriteElementString("MAC", mac);
+                writer.WriteElementString("MAC",SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();
 
@@ -99,8 +107,12 @@ namespace ShopProject
             }
         }
 
-        public void writeOpenChek(string path,string time , string mac)
+        public void writeOpenChek(string path,string time,List<Product> products , Order order)
         {
+            XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
+            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
+
+
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             // Створення XmlTextWriter з файловим потоком
@@ -126,55 +138,37 @@ namespace ShopProject
                 writer.WriteStartElement("C");
                 writer.WriteAttributeString("T", "0");
 
-                //writer.WriteStartElement("L");
-                //writer.WriteAttributeString("N", "1");
-                //writer.WriteString("Comment");
-                //writer.WriteEndElement();
+
+                for(int i = 0; i<products.Count;i++)
+                {
+                      writer.WriteStartElement("P");//продажа
+                        writer.WriteAttributeString("N", (i + 1).ToString());//порядковий номер 
+                        writer.WriteAttributeString("C", "33");//код товару
+                        writer.WriteAttributeString("CD", products[i].code.ToString());//штрихкод товару
+                        writer.WriteAttributeString("NM", products[i].name);//назва товару або послуги
+                        writer.WriteAttributeString("SM", products[i].price.ToString());//Сума операції
+                        writer.WriteAttributeString("Q",  products[i].count.ToString());//кількість товару
+                        writer.WriteAttributeString("PRC", products[i].price.ToString());//Ціна товару
+                        writer.WriteAttributeString("TX", "0");//податок
+                        writer.WriteEndElement();
+                }       
+
+                writer.WriteStartElement("M");//оплата
+                writer.WriteAttributeString("N", (products.Count+1).ToString());//порядковий номер 
+                writer.WriteAttributeString("T", order.type_oplat.ToString());//тип опалати
+                writer.WriteAttributeString("SM", order.userSuma.ToString());//Сума до оплати що вноситьця покупцем
+                writer.WriteAttributeString("RM", order.rest.ToString());//Решта якщо немає то невказується;
+                writer.WriteEndElement();
 
 
-                //writer.WriteStartElement("P");
-                //writer.WriteAttributeString("N", "3");
-                //writer.WriteAttributeString("C", "33");
-                //writer.WriteAttributeString("NM", "3");
-                //writer.WriteAttributeString("SM", "3");
-                //writer.WriteAttributeString("TX", "3");
-                //writer.WriteEndElement();
-
-                //writer.WriteStartElement("D");
-                //writer.WriteAttributeString("N", "4");
-                //writer.WriteAttributeString("TR", "33");
-                //writer.WriteAttributeString("TY", "3");
-                //writer.WriteAttributeString("NI", "3");
-                //writer.WriteAttributeString("TX", "3");
-                //writer.WriteAttributeString("SM", "3");
-                //writer.WriteEndElement();
-
-                //writer.WriteStartElement("M");
-                //writer.WriteAttributeString("N", "5");
-                //writer.WriteAttributeString("T", "33");
-                //writer.WriteAttributeString("NM", "3");
-                //writer.WriteAttributeString("SM", "3");
-                //writer.WriteAttributeString("M", "3");
-                //writer.WriteAttributeString("RM", "3");
-                //writer.WriteEndElement();
-
-                //writer.WriteStartElement("E");
-                //writer.WriteAttributeString("N", "6");
-                //writer.WriteAttributeString("NO", "33");
-                //writer.WriteAttributeString("SM", "3");
-                //writer.WriteAttributeString("SE", "3");
-                //writer.WriteAttributeString("FN", "3");
-                //writer.WriteAttributeString("TS", "3");
-                //writer.WriteAttributeString("TX", "3");
-                //writer.WriteAttributeString("TXPR", "3");
-                //writer.WriteAttributeString("TXSM", "3");
-                //writer.WriteAttributeString("DTPR", "3");
-                //writer.WriteAttributeString("DTSM", "3");
-                //writer.WriteAttributeString("TXTY", "3");
-                //writer.WriteAttributeString("TXAL", "3");
-                //writer.WriteAttributeString("CS", "3");
-
-                ////writer.WriteEndElement();
+                writer.WriteStartElement("E");//закінчення чеку
+                writer.WriteAttributeString("N", (products.Count + 2).ToString());//порядковий номер
+                writer.WriteAttributeString("NO", order.LocalNumber.ToString());//номер фіксально чеку
+                writer.WriteAttributeString("SM", order.suma.ToString());//загальна сума чеку
+                writer.WriteAttributeString("FN", CashRegisterName);//фіксальний номер рро
+                writer.WriteAttributeString("TS", time);//дата та час
+                writer.WriteAttributeString("TX", "0");//податок
+                writer.WriteEndElement();
 
 
 
@@ -184,7 +178,7 @@ namespace ShopProject
                 writer.WriteElementString("TS", time);
                 writer.WriteEndElement();
 
-                writer.WriteElementString("MAC", mac);
+                writer.WriteElementString("MAC", SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
 
                 writer.WriteEndDocument();
 
@@ -195,9 +189,15 @@ namespace ShopProject
             Console.WriteLine("Чек успішно записано в файл check.xml.");
         }
 
-        public void writeCloseCase(string path,string time,string mac)
+        public void writeCloseCase(string path,string time,int count)
         {
+
+
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
+            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
+
 
             // Створення XmlTextWriter з файловим потоком
             using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
@@ -222,49 +222,50 @@ namespace ShopProject
                 writer.WriteAttributeString("ZN", "LV00000113");
 
                 writer.WriteStartElement("Z");
-                writer.WriteAttributeString("NO", "0");
+                //writer.WriteAttributeString("NO", "0");
 
-                writer.WriteStartElement("TXS");
-                writer.WriteAttributeString("TX", "0");
-                writer.WriteAttributeString("SMI", "0");
-                writer.WriteEndElement();
+                //writer.WriteStartElement("TXS");
+                //writer.WriteAttributeString("TX", "0");
+                //writer.WriteAttributeString("SMI", "0");
+                //writer.WriteEndElement();
 
-                writer.WriteStartElement("TXS");
-                writer.WriteAttributeString("TS", "0");
-                writer.WriteAttributeString("TSPR", "0");
-                writer.WriteAttributeString("TXI", "0");
-                writer.WriteAttributeString("TXO", "0");
-                writer.WriteAttributeString("DTPR", "0");
+                //writer.WriteStartElement("TXS");
+                //writer.WriteAttributeString("TS", "0");
+                //writer.WriteAttributeString("TSPR", "0");
+                //writer.WriteAttributeString("TXI", "0");
+                //writer.WriteAttributeString("TXO", "0");
+                //writer.WriteAttributeString("DTPR", "0");
 
-                writer.WriteAttributeString("DTI", "0");
-                writer.WriteAttributeString("DTO", "0");
-                writer.WriteAttributeString("TXTY", "0");
-                writer.WriteAttributeString("TXAL", "0");
-                writer.WriteAttributeString("SMI", "0");
-                writer.WriteAttributeString("SMO", "0");
-                writer.WriteEndElement();
+                //writer.WriteAttributeString("DTI", "0");
+                //writer.WriteAttributeString("DTO", "0");
+                //writer.WriteAttributeString("TXTY", "0");
+                //writer.WriteAttributeString("TXAL", "0");
+                //writer.WriteAttributeString("SMI", "0");
+                //writer.WriteAttributeString("SMO", "0");
+                //writer.WriteEndElement();
 
-                writer.WriteStartElement("M");
-                writer.WriteAttributeString("NM", "0");
-                writer.WriteAttributeString("SMI", "0");
-                writer.WriteAttributeString("SMO", "0");
-                writer.WriteEndElement();
+                //writer.WriteStartElement("M");
+                //writer.WriteAttributeString("NM", "0");
+                //writer.WriteAttributeString("SMI", "0");
+                //writer.WriteAttributeString("SMO", "0");
+                //writer.WriteEndElement();
 
-                writer.WriteStartElement("IO");
-                writer.WriteAttributeString("NM", "0");
-                writer.WriteAttributeString("SMI", "0");
-                writer.WriteAttributeString("SMO", "0");
-                writer.WriteEndElement();
+                //writer.WriteStartElement("IO");
+                //writer.WriteAttributeString("NM", "0");
+                //writer.WriteAttributeString("SMI", "0");
+                //writer.WriteAttributeString("SMO", "0");
+                //writer.WriteEndElement();
 
                 writer.WriteStartElement("NC");
-                writer.WriteAttributeString("NI", "0");
-                writer.WriteAttributeString("NO", "0");
+                writer.WriteAttributeString("NI", count.ToString());//кількість чеків продажу
+                //WriteAttributeString("NO", "0");
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
                 
                 writer.WriteElementString("TS", time);
-                writer.WriteElementString("MAC", mac);
+                writer.WriteElementString("MAC", SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
+
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();
 

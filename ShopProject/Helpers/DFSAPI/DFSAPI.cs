@@ -12,14 +12,24 @@ using Grpc.Core;
 using GreetClient;
 using System.Windows;
 using ShopProject.Helpers.MiniServiceSigningFile;
+using ShopProject.Model.ModelRepository;
+using System.Xml;
+using ShopProject.DataBase.Model;
 
 namespace ShopProject.Helpers.DFSAPI
 {
-    public class DFSAPI
-    { 
-        CallOptions callOptions;
+     internal class DFSAPI
+     {
+        private string addres = "https://prro.tax.gov.ua:443 ";//
+        private string testadress = "https://cabinet.tax.gov.ua:9443";//text
 
-        public DFSAPI() { }
+        CallOptions callOptions;
+        OrderXMLTableRepositories OrderXMLTableRepositories;
+
+        public DFSAPI() 
+        {
+            OrderXMLTableRepositories = new OrderXMLTableRepositories();
+        }
 
         private ByteString ReadFile(string path)
         {
@@ -29,84 +39,78 @@ namespace ShopProject.Helpers.DFSAPI
 
         public void OpenShift()
         {
-            long date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
-            XmlCheck xmlCheck = new XmlCheck();
-            xmlCheck.writeOpenСhange("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(), "");
-
             MainContoller mainContoller = new MainContoller();
+
             mainContoller.StartServise("..\\..\\..\\..\\..\\ShopProject\\MiniServiceSigningFiles\\bin\\Debug\\MiniServiceSigningFiles.exe");
             mainContoller.ConnectService();
             mainContoller.SendingCommand(TypeCommand.Initialize);
             mainContoller.ReceivingResult();
+
+            long date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
+            XmlCheck xmlCheck = new XmlCheck();
+            xmlCheck.writeOpenСhange("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString());
+
+            mainContoller.SendingCommand(TypeCommand.SingFile);
+            mainContoller.ReceivingResult();
+
+            CheckResponse check = SendMessages(date, Check.Types.Type.Servicechk,0);
+            if(check.Status==CheckResponse.Types.Status.Ok)
+            {
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+            }
+            mainContoller.SendingCommand(TypeCommand.Disconnect);
+        }
+        public void SendChek(List<Product> products, Order order)
+        {
+            MainContoller mainContoller = new MainContoller();
+
+            mainContoller.StartServise("..\\..\\..\\..\\..\\ShopProject\\MiniServiceSigningFiles\\bin\\Debug\\MiniServiceSigningFiles.exe");
+            mainContoller.ConnectService();
+            mainContoller.SendingCommand(TypeCommand.Initialize);
+            mainContoller.ReceivingResult();
+
+            long date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
+            XmlCheck xmlCheck = new XmlCheck();
+             
+            xmlCheck.writeOpenChek("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(),products,order);
+
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
 
             CheckResponse check = SendMessages(date, Check.Types.Type.Chk,0);
-    
-
-            mainContoller.SendingCommand(TypeCommand.SingFile);
-            mainContoller.ReceivingResult();
+            if (check.Status == CheckResponse.Types.Status.Ok)
+            {
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+            }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            SendMessages(date, Check.Types.Type.Servicechk,0);
         }
-        public void SendChek()
+        public void CloseShift(int count)
         {
-            long date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
-            XmlCheck xmlCheck = new XmlCheck();
-            xmlCheck.writeOpenСhange("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(), "");
-
             MainContoller mainContoller = new MainContoller();
+
             mainContoller.StartServise("..\\..\\..\\..\\..\\ShopProject\\MiniServiceSigningFiles\\bin\\Debug\\MiniServiceSigningFiles.exe");
             mainContoller.ConnectService();
             mainContoller.SendingCommand(TypeCommand.Initialize);
             mainContoller.ReceivingResult();
-            mainContoller.SendingCommand(TypeCommand.SingFile);
-            mainContoller.ReceivingResult();
 
-            CheckResponse check = SendMessages(date, Check.Types.Type.Chk,0);
-
-
-            date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
-            xmlCheck.writeOpenChek("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(), check.ErrorMessage.Split(" ")[3].ToString());
-
-
-
-            mainContoller.SendingCommand(TypeCommand.SingFile);
-            mainContoller.ReceivingResult();
-            mainContoller.SendingCommand(TypeCommand.Disconnect);
-            SendMessages(date, Check.Types.Type.Chk,0);
-        }
-        public void CloseShift()
-        {
             long date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
             XmlCheck xmlCheck = new XmlCheck();
-            xmlCheck.writeOpenСhange("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(),"");
 
-            MainContoller mainContoller = new MainContoller();
-            mainContoller.StartServise("..\\..\\..\\..\\..\\ShopProject\\MiniServiceSigningFiles\\bin\\Debug\\MiniServiceSigningFiles.exe");
-            mainContoller.ConnectService();
-            mainContoller.SendingCommand(TypeCommand.Initialize);
-            mainContoller.ReceivingResult();
+            xmlCheck.writeCloseCase("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(),count);
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
-      
-            CheckResponse check = SendMessages(date,Check.Types.Type.Chk,0);
 
-
-            date = long.Parse(DateTime.Now.ToString("yyyyMMddhhmmss"));
-            xmlCheck.writeCloseCase("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(), check.ErrorMessage.Split(" ")[3].ToString());
-
-        
-
-            mainContoller.SendingCommand(TypeCommand.SingFile);
-            mainContoller.ReceivingResult();
+            CheckResponse check = SendMessages(date, Check.Types.Type.Zreport, 0);
+            if (check.Status == CheckResponse.Types.Status.Ok)
+            {
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+            }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            SendMessages(date,Check.Types.Type.Zreport,0);
         }
 
         private CheckResponse SendMessages(long date,Check.Types.Type type , int localNumber)
         {
-            using var channel = GrpcChannel.ForAddress("https://cabinet.tax.gov.ua:9443");
+            using var channel = GrpcChannel.ForAddress(addres);
             callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
 
             var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
@@ -119,17 +123,33 @@ namespace ShopProject.Helpers.DFSAPI
                 CheckType = type,
                 DateTime = date,
                 RroFn = "4000512773",
-                LocalNumber = localNumber
+                LocalNumber = localNumber,
             }, callOptions);
             MessageBox.Show(reply.Status.ToString());
             return reply;
+        }
+
+        static string ReadXmlFileToString(string filePath)
+        {
+            // Загрузка XML из файла
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+
+            // Сохранение XML в строку
+            StringWriter stringWriter = new StringWriter();
+            XmlTextWriter xmlWriter = new XmlTextWriter(stringWriter);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlDoc.WriteTo(xmlWriter);
+
+            // Возвращение XML в виде строки
+            return stringWriter.ToString();
         }
 
 
 
         public void ping()
         {
-            using var channel = GrpcChannel.ForAddress("https://cabinet.tax.gov.ua:9443");
+            using var channel = GrpcChannel.ForAddress(addres);
             callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
 
             var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
