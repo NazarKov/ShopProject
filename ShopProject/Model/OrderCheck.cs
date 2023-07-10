@@ -1,6 +1,7 @@
 ﻿using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+
+using FontFamily = System.Windows.Media.FontFamily;
+using System.Windows.Media.Imaging;
+using QRCoder;
+using QRCode = QRCoder.QRCode;
+using Image = System.Windows.Controls.Image;
+using ShopProject.Helpers.DFSAPI;
 
 namespace ShopProject.Model
 {
@@ -63,7 +71,7 @@ namespace ShopProject.Model
             return sec;
         }
 
-        public void PrintChek(List<Product> products)
+        public void PrintChek(List<Product> products,string id,Order order ,Messe mac,DateTime dateTime)
         {
             try
             {
@@ -74,26 +82,60 @@ namespace ShopProject.Model
 
                 doc.Name = "FlowDoc";
 
-                // Add Section to FlowDocument  
-                doc.Blocks.Add(setTextChek("ФОП КОРНІЙЧУК Н.С."));
-
-                doc.Blocks.Add(setTextChek("Волинська ОБЛ.,М.РОЖИЩЕ,ВУЛ.НАЗВА ВУЛИЦІ"));
-
-                doc.Blocks.Add(setTextChek("ІД ЧЕКУ"));
-
-                doc.Blocks.Add(setTextChek("Касир: Корнійчук Н.С."));
-                doc.Blocks.Add(setTextChek("------------------------------------------"));
+                string str="";
 
                 foreach (Product product in products)
                 {
-                    doc.Blocks.Add(setTextChek(""+product.name+"  "+product.count+"x"+product.price+".00"));
+                    str += "\n     УКТ ЗЕД 9507";
+                    str += "\n     Штрих-код товару:" + product.code + "\n     " + product.name + "\n     " + product.count + ",000 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
                 }
-                doc.Blocks.Add(setTextChek("------------------------------------------"));
-                doc.Blocks.Add(setTextChek("Продаж"));
 
-                doc.Blocks.Add(setTextChek(@"Сума                   {}.00"));
+                // Add Section to FlowDocument  
+                doc.Blocks.Add(setTextChek("" +
+                    "\n        КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ        " +
+                    "\n                          Магазин Дім Рибалки            " +
+                    "\n      Волинська область, Луцький район, м.Рожище," +
+                    "\n                         вул.Героїв Упа, 2а, підвал" +
+                    "\n                                ІД " + id+"         " +
+                    "\n                          Касир КОРНІЙЧУК С. В.     "));
+
+                doc.Blocks.Add(setTextChek("" +
+                     "     --------------------------------------------------------------    "+str+"" +
+                     "\n     --------------------------------------------------------------     " +
+                     "\n     СУМА                                                          " + order.suma+",00" +
+                     "\n     Без ПДВ" +
+                     "\n     --------------------------------------------------------------     " +
+                    $"\n     ГОТІВКОВА                                                {order.userSuma}.00" +
+                    $"\n     Решта                                                            {order.rest}.00"));
 
 
+
+                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={mac.mac}&date={dateTime.ToString("yyyyMMdd")}&time={dateTime.ToString("HHmm")}&id={mac.id}&sm={order.suma}&fn=4000512773";
+
+                string qrtext = text; //считываем текст из TextBox'a
+
+                Bitmap btm = GenerateQRCode(text);
+                BitmapSource btmsourse = ConvertBitmapToBitmapSource(btm);
+                Image image = new Image
+                {
+                    Source = btmsourse,
+                    Height = 80,
+                    Width = 80,
+                    
+                };
+
+
+                BlockUIContainer blockUIContainer = new BlockUIContainer(image);
+                blockUIContainer.Margin = new Thickness() { Right = 150 };
+                doc.Blocks.Add(blockUIContainer);
+
+                //кюар код
+
+                doc.Blocks.Add(setTextChek($"" +
+                    $"\n     ФН чека:1234567899              10.07.2023 19:25:45" +
+                    $"\n     ФН ПРРО:1234567899       Режим роботи:онлайн" +
+                    $"\n                                ФІКСАЛЬНИЙ ЧЕК" +
+                    $"\n                                НАЗВА ПРОГРАМИ"));
 
                 //doc.Blocks.Add(sec);
 
@@ -106,6 +148,24 @@ namespace ShopProject.Model
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        public Bitmap GenerateQRCode(string data)
+        {
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+            
+            return qrCodeImage;
+        }
+        static BitmapSource ConvertBitmapToBitmapSource(Bitmap bitmap)
+        {
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
         }
     }
 }

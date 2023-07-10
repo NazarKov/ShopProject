@@ -39,7 +39,6 @@ namespace ShopProject.Helpers.MiniServiceSigningFile
         public void ConnectService()
         {
             tcpClient = new TcpClient(HOST, PORT);
-            MessageBox.Show("Підключено");
             networkStream = tcpClient.GetStream();
         }
         public void SendingCommand(TypeCommand command)
@@ -78,14 +77,12 @@ namespace ShopProject.Helpers.MiniServiceSigningFile
             networkStream = tcpClient.GetStream();
             byte[] data = Encoding.UTF8.GetBytes(command);
             networkStream.WriteAsync(data, 0, data.Length);
-            MessageBox.Show("Відправлено");
         }
         public async void ReceivingResult()
         {
             byte[] data = new byte[256];
             int bytesRead = networkStream.Read(data, 0, data.Length);
             string response = Encoding.UTF8.GetString(data, 0, bytesRead);
-            MessageBox.Show("Повідомлення від сервера: " + response);
         }
         public void DisconnectServise()
         {

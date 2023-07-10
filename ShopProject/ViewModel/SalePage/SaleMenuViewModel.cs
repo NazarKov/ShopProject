@@ -134,14 +134,15 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
+            DateTime time = DateTime.Now;
 
             double rest = ((double)(SumaUser - SumaOrder));
-            Order order = new Order() { created_at = DateTime.Now, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
+            Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
             if (_model.SetOrderDataBase(Products, order))
             {
-                _model.SendChek(Products,order);
+                Messe mes = _model.SendChek(Products,order,time);
 
-                //_model.PrintChek(Products);
+                _model.PrintChek(Products,order,mes,time);
                 MessageBox.Show($"чек видано \n Решта:{rest}");
                 Products = new List<Product>();
                 BarCodeSearch = string.Empty;

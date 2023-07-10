@@ -71,9 +71,9 @@ namespace ShopProject.Model.SalePage
             return (Product)_tableProducts.GetItem(barCode);
         }
 
-        public void PrintChek(List<Product> products)
+        public void PrintChek(List<Product> products,Order order,Messe mac,DateTime dateTime)
         {
-            _orderCheck.PrintChek(products);
+            _orderCheck.PrintChek(products,"12346578910",order,mac,dateTime);
         }
         public void closeChange()
         {
@@ -95,10 +95,11 @@ namespace ShopProject.Model.SalePage
         {
             _DFSAPI.OpenShift();
         }
-        public void SendChek(List<Product> products,Order order)
+        public Messe SendChek(List<Product> products,Order order,DateTime dateTime)
         {
             order.LocalNumber = localnumber.ToString();
-            _DFSAPI.SendChek(products, order);
+            long date = long.Parse(dateTime.ToString("yyyyMMddHHmmss"));
+            return _DFSAPI.SendChek(products, order,date);
         }
     }
 }

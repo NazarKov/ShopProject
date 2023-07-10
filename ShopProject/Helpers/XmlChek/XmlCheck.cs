@@ -53,17 +53,6 @@ namespace ShopProject
             OrderTaxNum = "";
             OrderXMLTableRepositories = new OrderXMLTableRepositories();
         }
-        static string ComputeHash(string filePath)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    byte[] hashBytes = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-                }
-            }
-        }
 
         public void writeOpenСhange(string path,string time)
         {
@@ -107,11 +96,12 @@ namespace ShopProject
             }
         }
 
-        public void writeOpenChek(string path,string time,List<Product> products , Order order)
+        public string writeOpenChek(string path,string time,List<Product> products , Order order)
         {
             XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
             doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
+            string mac = SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -143,19 +133,19 @@ namespace ShopProject
                 {
                       writer.WriteStartElement("P");//продажа
                         writer.WriteAttributeString("N", (i + 1).ToString());//порядковий номер 
-                        writer.WriteAttributeString("C", "33");//код товару
+                        writer.WriteAttributeString("C", "9507");//код товару
                         writer.WriteAttributeString("CD", products[i].code.ToString());//штрихкод товару
                         writer.WriteAttributeString("NM", products[i].name);//назва товару або послуги
-                        writer.WriteAttributeString("SM", products[i].price.ToString());//Сума операції
-                        writer.WriteAttributeString("Q",  products[i].count.ToString());//кількість товару
-                        writer.WriteAttributeString("PRC", products[i].price.ToString());//Ціна товару
+                        writer.WriteAttributeString("SM", Convert.ToDecimal(products[i].price).ToString());//Сума операції
+                        writer.WriteAttributeString("Q",  Convert.ToDecimal(products[i].count).ToString());//кількість товару
+                        writer.WriteAttributeString("PRC",Convert.ToDecimal(products[i].price).ToString());//Ціна товару
                         writer.WriteAttributeString("TX", "0");//податок
                         writer.WriteEndElement();
                 }       
 
                 writer.WriteStartElement("M");//оплата
                 writer.WriteAttributeString("N", (products.Count+1).ToString());//порядковий номер 
-                writer.WriteAttributeString("T", order.type_oplat.ToString());//тип опалати
+                writer.WriteAttributeString("T", "0");//тип опалати
                 writer.WriteAttributeString("SM", order.userSuma.ToString());//Сума до оплати що вноситьця покупцем
                 writer.WriteAttributeString("RM", order.rest.ToString());//Решта якщо немає то невказується;
                 writer.WriteEndElement();
@@ -164,7 +154,7 @@ namespace ShopProject
                 writer.WriteStartElement("E");//закінчення чеку
                 writer.WriteAttributeString("N", (products.Count + 2).ToString());//порядковий номер
                 writer.WriteAttributeString("NO", order.LocalNumber.ToString());//номер фіксально чеку
-                writer.WriteAttributeString("SM", order.suma.ToString());//загальна сума чеку
+                writer.WriteAttributeString("SM", Convert.ToDecimal(order.suma).ToString());//загальна сума чеку
                 writer.WriteAttributeString("FN", CashRegisterName);//фіксальний номер рро
                 writer.WriteAttributeString("TS", time);//дата та час
                 writer.WriteAttributeString("TX", "0");//податок
@@ -178,15 +168,14 @@ namespace ShopProject
                 writer.WriteElementString("TS", time);
                 writer.WriteEndElement();
 
-                writer.WriteElementString("MAC", SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
+                writer.WriteElementString("MAC",mac);
 
                 writer.WriteEndDocument();
 
                 // Закриття XmlTextWriter
                 writer.Close();
             }
-
-            Console.WriteLine("Чек успішно записано в файл check.xml.");
+            return mac;
         }
 
         public void writeCloseCase(string path,string time,int count)
@@ -273,7 +262,6 @@ namespace ShopProject
                 writer.Close();
             }
 
-            Console.WriteLine("Чек успішно записано в файл check.xml.");
         }
        
     }
