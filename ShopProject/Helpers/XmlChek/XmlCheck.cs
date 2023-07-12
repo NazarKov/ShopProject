@@ -59,7 +59,7 @@ namespace ShopProject
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
-            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");//при пустій базі даних потрібно не вмикати викликає помилку
+            doc.Save("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");//при пустій базі даних потрібно не вмикати викликає помилку
 
             using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
             {
@@ -87,7 +87,7 @@ namespace ShopProject
 
                 writer.WriteEndElement();
                 writer.WriteElementString("TS", time);
-                writer.WriteElementString("MAC",SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
+                writer.WriteElementString("MAC",SHA.GenerateSHA256File("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();
 
@@ -99,9 +99,9 @@ namespace ShopProject
         public string writeOpenChek(string path,string time,List<Product> products , Order order)
         {
             XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
-            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
+            doc.Save("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
-            string mac = SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
+            string mac = SHA.GenerateSHA256File("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -185,7 +185,7 @@ namespace ShopProject
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
-            doc.Save("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
+            doc.Save("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
 
             // Створення XmlTextWriter з файловим потоком
@@ -253,7 +253,7 @@ namespace ShopProject
                 writer.WriteEndElement();
                 
                 writer.WriteElementString("TS", time);
-                writer.WriteElementString("MAC", SHA.GenerateSHA256File("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
+                writer.WriteElementString("MAC", SHA.GenerateSHA256File("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml"));
 
                 // Закриття всіх відкритих елементів
                 writer.WriteEndDocument();

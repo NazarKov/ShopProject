@@ -16,6 +16,7 @@ using QRCoder;
 using QRCode = QRCoder.QRCode;
 using Image = System.Windows.Controls.Image;
 using ShopProject.Helpers.DFSAPI;
+using ZXing.QrCode.Internal;
 
 namespace ShopProject.Model
 {
@@ -63,7 +64,7 @@ namespace ShopProject.Model
 
             Run run = new Run(text);
             run.FontFamily = new FontFamily("Times New Roman");
-            run.FontSize = 10;
+            run.FontSize = 9;
 
             p1.Inlines.Add(run);
 
@@ -86,27 +87,38 @@ namespace ShopProject.Model
 
                 foreach (Product product in products)
                 {
-                    str += "\n     УКТ ЗЕД 9507";
-                    str += "\n     Штрих-код товару:" + product.code + "\n     " + product.name + "\n     " + product.count + ",000 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
+                    str += "\nУКТ ЗЕД 9507";
+                    str += "\nШтрих-код товару:" + product.code + "\n";
+                    if(product.name.Length >50)
+                    {
+                        string[] name = product.name.Split(" ");
+                        name[5] += "\n";
+                        str += name.ToString();
+                    }
+                    else
+                    {
+                        str += product.name + "\n";
+                    }
+                    str+=product.count + ",000 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
                 }
 
                 // Add Section to FlowDocument  
                 doc.Blocks.Add(setTextChek("" +
-                    "\n        КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ        " +
-                    "\n                          Магазин Дім Рибалки            " +
-                    "\n      Волинська область, Луцький район, м.Рожище," +
-                    "\n                         вул.Героїв Упа, 2а, підвал" +
-                    "\n                                ІД " + id+"         " +
-                    "\n                          Касир КОРНІЙЧУК С. В.     "));
+                    "\n   КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ        " +
+                    "\n                     Магазин Дім Рибалки            " +
+                    "\n Волинська область, Луцький район, м.Рожище," +
+                    "\n                    вул.Героїв Упа, 2а, підвал" +
+                    "\n                           ІД " + id+"         " +
+                    "\n                     Касир КОРНІЙЧУК С. В.     "));
 
                 doc.Blocks.Add(setTextChek("" +
-                     "     --------------------------------------------------------------    "+str+"" +
-                     "\n     --------------------------------------------------------------     " +
-                     "\n     СУМА                                                          " + order.suma+",00" +
-                     "\n     Без ПДВ" +
-                     "\n     --------------------------------------------------------------     " +
-                    $"\n     ГОТІВКОВА                                                {order.userSuma}.00" +
-                    $"\n     Решта                                                            {order.rest}.00"));
+                     "--------------------------------------------------------------    "+str+"" +
+                     "\n--------------------------------------------------------------     " +
+                     "\nСУМА                                                          " + order.suma+",00" +
+                     "\nБез ПДВ" +
+                     "\n--------------------------------------------------------------     " +
+                    $"\nГОТІВКОВА                                                {order.userSuma}.00" +
+                    $"\nРешта                                                            {order.rest}.00"));
 
 
 
@@ -114,34 +126,38 @@ namespace ShopProject.Model
 
                 string qrtext = text; //считываем текст из TextBox'a
 
+                
+
                 Bitmap btm = GenerateQRCode(text);
                 BitmapSource btmsourse = ConvertBitmapToBitmapSource(btm);
                 Image image = new Image
                 {
                     Source = btmsourse,
-                    Height = 80,
-                    Width = 80,
+                    Height = 50,
+                    Width = 50,
                     
                 };
 
 
                 BlockUIContainer blockUIContainer = new BlockUIContainer(image);
-                blockUIContainer.Margin = new Thickness() { Right = 150 };
+                //blockUIContainer.Padding = new Thickness() { Left=50 , Right=50 , Bottom = 50 , Top = 50};
+                blockUIContainer.Margin = new Thickness() { Right = 200 };
                 doc.Blocks.Add(blockUIContainer);
 
                 //кюар код
 
                 doc.Blocks.Add(setTextChek($"" +
-                    $"\n     ФН чека:1234567899              10.07.2023 19:25:45" +
-                    $"\n     ФН ПРРО:1234567899       Режим роботи:онлайн" +
-                    $"\n                                ФІКСАЛЬНИЙ ЧЕК" +
-                    $"\n                                НАЗВА ПРОГРАМИ"));
+                    $"\nФН чека:1234567899              10.07.2023 19:25:45" +
+                    $"\nФН ПРРО:1234567899       Режим роботи:онлайн" +
+                    $"\n                           ФІКСАЛЬНИЙ ЧЕК" +
+                    $"\n                           НАЗВА ПРОГРАМИ"));
 
                 //doc.Blocks.Add(sec);
 
                 // Create IDocumentPaginatorSource from FlowDocument  
                 IDocumentPaginatorSource idpSource = doc;
                 // Call PrintDocument method to send document to printer  
+                printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
                 printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
             }
             catch(Exception ex)
@@ -154,7 +170,7 @@ namespace ShopProject.Model
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            Bitmap qrCodeImage = qrCode.GetGraphic(100);
 
             
             return qrCodeImage;

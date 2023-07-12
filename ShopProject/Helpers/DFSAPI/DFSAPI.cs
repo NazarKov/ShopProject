@@ -28,6 +28,8 @@ namespace ShopProject.Helpers.DFSAPI
         private string addres = "https://prro.tax.gov.ua:443 ";//
         private string testadress = "https://cabinet.tax.gov.ua:9443";//text
 
+        private string pathxml = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
+
         CallOptions callOptions;
         OrderXMLTableRepositories OrderXMLTableRepositories;
 
@@ -53,15 +55,15 @@ namespace ShopProject.Helpers.DFSAPI
 
             long date = long.Parse(DateTime.Now.ToString("yyyyMMddHHmmss"));
             XmlCheck xmlCheck = new XmlCheck();
-            xmlCheck.writeOpenСhange("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString());
+            xmlCheck.writeOpenСhange(pathxml, date.ToString());
 
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
 
-            CheckResponse check = SendMessages(date, Check.Types.Type.Servicechk,0);
-            if(check.Status==CheckResponse.Types.Status.Ok)
+            CheckResponse check = SendMessages(date, Check.Types.Type.Servicechk, 0);
+            if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
         }
@@ -76,19 +78,19 @@ namespace ShopProject.Helpers.DFSAPI
 
             XmlCheck xmlCheck = new XmlCheck();
              
-            string mac = xmlCheck.writeOpenChek("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(),products,order);
+            string mac = xmlCheck.writeOpenChek(pathxml, date.ToString(),products,order);
 
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
 
-            CheckResponse check = SendMessages(date, Check.Types.Type.Chk,0);
+            CheckResponse check = SendMessages(date, Check.Types.Type.Chk, 0);
 
             if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            return new Messe() { mac = mac,id = check.Id };
+            return new Messe() { mac = mac,/*id = check.Id*/ };
         }
         public void CloseShift(int count)
         {
@@ -102,28 +104,28 @@ namespace ShopProject.Helpers.DFSAPI
             long date = long.Parse(DateTime.Now.ToString("yyyyMMddHHmmss"));
             XmlCheck xmlCheck = new XmlCheck();
 
-            xmlCheck.writeCloseCase("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", date.ToString(),count);
+            xmlCheck.writeCloseCase(pathxml, date.ToString(),count);
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
 
             CheckResponse check = SendMessages(date, Check.Types.Type.Zreport, 0);
             if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml") });
+                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
         }
 
-        private CheckResponse SendMessages(long date,Check.Types.Type type , int localNumber)
+        private CheckResponse SendMessages(long date, Check.Types.Type type, int localNumber)
         {
-            using var channel = GrpcChannel.ForAddress(addres);
+            using var channel = GrpcChannel.ForAddress(testadress);
             callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
 
             var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
 
-            ByteString bytes = ReadFile("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s");
+            ByteString bytes = ReadFile("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s");
 
-            
+
             var reply = client.sendChkV2(new Check()
             {
                 CheckSign = bytes,
@@ -132,7 +134,7 @@ namespace ShopProject.Helpers.DFSAPI
                 RroFn = "4000512773",
                 LocalNumber = localNumber,
             }, callOptions);
-            if(reply.Status!= CheckResponse.Types.Status.Ok)
+            if (reply.Status != CheckResponse.Types.Status.Ok)
             {
                 MessageBox.Show(reply.Status.ToString());
             }
@@ -166,7 +168,7 @@ namespace ShopProject.Helpers.DFSAPI
 
             var reply = client.ping(new Check()
             {
-                CheckSign = ReadFile("D:\\Проекти\\Visual Studio\\Project\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s"),
+                CheckSign = ReadFile("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s"),
                 CheckType = Check.Types.Type.Servicechk,
                 DateTime = long.Parse("2023070314812"),
                 RroFn = "4000512773",

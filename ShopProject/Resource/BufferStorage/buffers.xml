@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <RQ V="1">
   <DAT DI="0" DT="0" FN="4000512773" TN="ПН 2908905359" V="1" ZN="LV00000113">
-    <C T="108" />
-    <TS>20230710231916</TS>
-    <MAC>a7ae009caf97112e26684f0a019860b47da126b9e20ec43fde64eb264f5aec1f</MAC>
+    <C T="0">
+      <P N="1" C="9507" CD="4560262627668" NM="СИЛІКОН KEITECH Sexi Impact 2.8 PAL#09T:Violet" SM="24" Q="1" PRC="24" TX="0" />
+      <M N="2" T="0" SM="25" RM="1" />
+      <E N="3" NO="15" SM="24" FN="4000512773" TS="20230712161135" TX="0" />
+    </C>
+    <TS>20230712161135</TS>
   </DAT>
+  <MAC>acc3158d43e1755d888a2c52bb7c72700fbe040b99ab219d83ab8b7546106914</MAC>
 </RQ>

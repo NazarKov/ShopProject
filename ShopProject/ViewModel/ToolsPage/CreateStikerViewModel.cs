@@ -154,7 +154,7 @@ namespace ShopProject.ViewModel.ToolsPage
             Image image = new Image();
             image.Source = BarCode;
             PrintDialog printDialog = new PrintDialog();
-
+            printDialog.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "Xprinter XP-360B");
             if (printDialog.ShowDialog() == true)
             {
                 printDialog.PrintVisual(image, "file");
