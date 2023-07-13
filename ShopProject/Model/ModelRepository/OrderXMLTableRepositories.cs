@@ -32,7 +32,7 @@ namespace ShopProject.Model.ModelRepository
             using( ShopContext context = new ShopContext())
             {
                 context.orderXML.Load();
-                if (context.orderXML != null)
+                if (context.orderXML.Count() != 0)
                 {
                     return context.orderXML.OrderByDescending(item => item.ID).First();
                 }

@@ -36,7 +36,7 @@ namespace ShopProject.Model.SalePage
         }
         public bool SetOrderDataBase(List<Product> productList,Order order)
         {
-            localnumber= (Convert.ToInt32(((List<Order>)_tableOrders.GetAll()).Last().LocalNumber) + 1);
+            localnumber = (Convert.ToInt32(((List<Order>)_tableOrders.GetAll()).Last().LocalNumber) + 1);
             order.LocalNumber = localnumber.ToString();
             try
             {
@@ -87,7 +87,7 @@ namespace ShopProject.Model.SalePage
                     count++;
                 }
             }
-
+            count = 5;
 
             _DFSAPI.CloseShift(count);
         }

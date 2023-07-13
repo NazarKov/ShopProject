@@ -28,8 +28,8 @@ namespace ShopProject.Helpers.DFSAPI
         private string addres = "https://prro.tax.gov.ua:443 ";//
         private string testadress = "https://cabinet.tax.gov.ua:9443";//text
 
-        private string pathxml = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
-
+        private string pathxml = "C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
+        private string pathxml7ps = "C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
         CallOptions callOptions;
         OrderXMLTableRepositories OrderXMLTableRepositories;
 
@@ -123,7 +123,7 @@ namespace ShopProject.Helpers.DFSAPI
 
             var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
 
-            ByteString bytes = ReadFile("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s");
+            ByteString bytes = ReadFile(pathxml7ps);
 
 
             var reply = client.sendChkV2(new Check()
@@ -168,7 +168,7 @@ namespace ShopProject.Helpers.DFSAPI
 
             var reply = client.ping(new Check()
             {
-                CheckSign = ReadFile("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s"),
+                CheckSign = ReadFile(pathxml7ps),
                 CheckType = Check.Types.Type.Servicechk,
                 DateTime = long.Parse("2023070314812"),
                 RroFn = "4000512773",

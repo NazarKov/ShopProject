@@ -85,7 +85,7 @@ namespace ShopProject.Model.ModelRepository
             using (ShopContext context = new ShopContext())
             {
                 
-                if (context.orders != null)
+                if (context.orders.Count() != 0)
                 {
                     context.orders.Load();
                     return context.orders.ToList();

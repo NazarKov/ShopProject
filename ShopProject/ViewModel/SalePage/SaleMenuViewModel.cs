@@ -140,8 +140,9 @@ namespace ShopProject.ViewModel.SalePage
             Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
             if (_model.SetOrderDataBase(Products, order))
             {
-                Messe mes = _model.SendChek(Products,order,time);
-
+                Messe mes = new Messe() { id = "123", mac = "123" }; 
+                //Messe mes = _model.SendChek(Products,order,time);
+                
                 _model.PrintChek(Products,order,mes,time);
                 MessageBox.Show($"чек видано \n Решта:{rest}");
                 Products = new List<Product>();

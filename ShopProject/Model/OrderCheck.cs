@@ -17,6 +17,12 @@ using QRCode = QRCoder.QRCode;
 using Image = System.Windows.Controls.Image;
 using ShopProject.Helpers.DFSAPI;
 using ZXing.QrCode.Internal;
+using System.Windows.Media.Media3D;
+using ZXing;
+using System.IO;
+using ZXing.QrCode;
+using ZXing.Common;
+using Color = System.Drawing.Color;
 
 namespace ShopProject.Model
 {
@@ -99,7 +105,7 @@ namespace ShopProject.Model
                     {
                         str += product.name + "\n";
                     }
-                    str+=product.count + ",000 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
+                    str+=product.count + ",00 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
                 }
 
                 // Add Section to FlowDocument  
@@ -128,13 +134,13 @@ namespace ShopProject.Model
 
                 
 
-                Bitmap btm = GenerateQRCode(text);
+                Bitmap btm = qRcODE(text,20,20);
                 BitmapSource btmsourse = ConvertBitmapToBitmapSource(btm);
                 Image image = new Image
                 {
                     Source = btmsourse,
-                    Height = 150,
-                    Width = 150,
+                    Height = 50,
+                    Width = 50,
                     
                 };
 
@@ -157,7 +163,7 @@ namespace ShopProject.Model
                 // Create IDocumentPaginatorSource from FlowDocument  
                 IDocumentPaginatorSource idpSource = doc;
                 // Call PrintDocument method to send document to printer  
-                printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
+                //printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
                 printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
             }
             catch(Exception ex)
@@ -175,6 +181,15 @@ namespace ShopProject.Model
             
             return qrCodeImage;
         }
+        public Bitmap qRcODE(string inputText,int width , int height)
+        {
+            QRCodeWriter qRCodeWriter = new QRCodeWriter();
+            BitMatrix matrix= qRCodeWriter.encode(inputText,BarcodeFormat.QR_CODE,width,height);
+
+
+            var qrImage = ConvertBitMatrixToBitmap(matrix);
+            return qrImage;
+        }
         static BitmapSource ConvertBitmapToBitmapSource(Bitmap bitmap)
         {
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
@@ -182,6 +197,22 @@ namespace ShopProject.Model
                 IntPtr.Zero,
                 Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());
+        }
+        public Bitmap ConvertBitMatrixToBitmap(BitMatrix bitMatrix)
+        {
+            int width = bitMatrix.Width;
+            int height = bitMatrix.Height;
+            Bitmap bitmap = new Bitmap(width, height);
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    bitmap.SetPixel(x, y, bitMatrix[x, y] ? Color.Black : Color.White);
+                }
+            }
+
+            return bitmap;
         }
     }
 }
