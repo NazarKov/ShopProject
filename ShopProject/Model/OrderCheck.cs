@@ -108,7 +108,7 @@ namespace ShopProject.Model
                     "\n                     Магазин Дім Рибалки            " +
                     "\n Волинська область, Луцький район, м.Рожище," +
                     "\n                    вул.Героїв Упа, 2а, підвал" +
-                    "\n                           ІД " + id+"         " +
+                    "\n                           ІД " + mac.id+"         " +
                     "\n                     Касир КОРНІЙЧУК С. В.     "));
 
                 doc.Blocks.Add(setTextChek("" +
@@ -133,8 +133,8 @@ namespace ShopProject.Model
                 Image image = new Image
                 {
                     Source = btmsourse,
-                    Height = 50,
-                    Width = 50,
+                    Height = 150,
+                    Width = 150,
                     
                 };
 
@@ -147,8 +147,8 @@ namespace ShopProject.Model
                 //кюар код
 
                 doc.Blocks.Add(setTextChek($"" +
-                    $"\nФН чека:1234567899              10.07.2023 19:25:45" +
-                    $"\nФН ПРРО:1234567899       Режим роботи:онлайн" +
+                    $"\nФН чека:{order.LocalNumber}                        {dateTime.ToString("dd.MM.yyyy")} {dateTime.ToString("HH:mm:ss")}" +
+                    $"\nФН ПРРО:4000512773       Режим роботи:онлайн" +
                     $"\n                           ФІКСАЛЬНИЙ ЧЕК" +
                     $"\n                           НАЗВА ПРОГРАМИ"));
 

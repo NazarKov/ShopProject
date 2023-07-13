@@ -98,6 +98,7 @@ namespace ShopProject
 
         public string writeOpenChek(string path,string time,List<Product> products , Order order)
         {
+            decimal dec;
             XDocument doc = XDocument.Parse(OrderXMLTableRepositories.LastXML().XMLString.ToString());
             doc.Save("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\buffers.xml");
 
@@ -136,9 +137,12 @@ namespace ShopProject
                         writer.WriteAttributeString("C", "9507");//код товару
                         writer.WriteAttributeString("CD", products[i].code.ToString());//штрихкод товару
                         writer.WriteAttributeString("NM", products[i].name);//назва товару або послуги
-                        writer.WriteAttributeString("SM", Convert.ToDecimal(products[i].price).ToString());//Сума операції
-                        writer.WriteAttributeString("Q",  Convert.ToDecimal(products[i].count).ToString());//кількість товару
-                        writer.WriteAttributeString("PRC",Convert.ToDecimal(products[i].price).ToString());//Ціна товару
+                        dec = new decimal(Convert.ToInt64(products[i].price));
+                        writer.WriteAttributeString("SM", dec.ToString("N"));//Сума операції
+                        dec = new decimal(Convert.ToInt64(products[i].count));
+                        writer.WriteAttributeString("Q",  dec.ToString("N"));//кількість товару
+                        dec = new decimal(Convert.ToInt64(products[i].price));
+                        writer.WriteAttributeString("PRC", dec.ToString("N"));//Ціна товару
                         writer.WriteAttributeString("TX", "0");//податок
                         writer.WriteEndElement();
                 }       
@@ -146,15 +150,18 @@ namespace ShopProject
                 writer.WriteStartElement("M");//оплата
                 writer.WriteAttributeString("N", (products.Count+1).ToString());//порядковий номер 
                 writer.WriteAttributeString("T", "0");//тип опалати
-                writer.WriteAttributeString("SM", order.userSuma.ToString());//Сума до оплати що вноситьця покупцем
-                writer.WriteAttributeString("RM", order.rest.ToString());//Решта якщо немає то невказується;
+                dec = new decimal(Convert.ToInt64(order.suma));
+                writer.WriteAttributeString("SM", dec.ToString("N"));//Сума до оплати що вноситьця покупцем
+                dec = new decimal(Convert.ToInt64(order.rest));
+                writer.WriteAttributeString("RM", dec.ToString("N"));//Решта якщо немає то невказується;
                 writer.WriteEndElement();
 
 
                 writer.WriteStartElement("E");//закінчення чеку
                 writer.WriteAttributeString("N", (products.Count + 2).ToString());//порядковий номер
                 writer.WriteAttributeString("NO", order.LocalNumber.ToString());//номер фіксально чеку
-                writer.WriteAttributeString("SM", Convert.ToDecimal(order.suma).ToString());//загальна сума чеку
+                dec = new decimal(Convert.ToInt64(order.suma));
+                writer.WriteAttributeString("SM", dec.ToString("N"));//загальна сума чеку
                 writer.WriteAttributeString("FN", CashRegisterName);//фіксальний номер рро
                 writer.WriteAttributeString("TS", time);//дата та час
                 writer.WriteAttributeString("TX", "0");//податок
@@ -246,7 +253,7 @@ namespace ShopProject
                 //writer.WriteEndElement();
 
                 writer.WriteStartElement("NC");
-                writer.WriteAttributeString("NI", count.ToString());//кількість чеків продажу
+                writer.WriteAttributeString("NI","3"/* count.ToString()*/);//кількість чеків продажу
                 //WriteAttributeString("NO", "0");
                 writer.WriteEndElement();
 

@@ -90,7 +90,7 @@ namespace ShopProject.Helpers.DFSAPI
                 OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            return new Messe() { mac = mac,/*id = check.Id*/ };
+            return new Messe() { mac = mac,id = check.Id };
         }
         public void CloseShift(int count)
         {
@@ -118,7 +118,7 @@ namespace ShopProject.Helpers.DFSAPI
 
         private CheckResponse SendMessages(long date, Check.Types.Type type, int localNumber)
         {
-            using var channel = GrpcChannel.ForAddress(testadress);
+            using var channel = GrpcChannel.ForAddress(addres);
             callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
 
             var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
