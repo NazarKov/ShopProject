@@ -31,8 +31,8 @@ namespace MiniServiceSigningFiles.Helpers.Command
             if(IEUSignCP.IsInitialized())
             {
                 IEUSignCP.EU_CERT_OWNER_INFO info = new IEUSignCP.EU_CERT_OWNER_INFO();
-                IEUSignCP.ReadPrivateKeyFile("F:\\key_13100560_13100560.jks", "1234567zZ",out info);
-                IEUSignCP.SignFile("C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", "C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s", false);
+                IEUSignCP.ReadPrivateKeyFile("C:\\Users\\lesak\\key\\key_13100560_13100560.jks", "1234567zZ",out info);
+                IEUSignCP.SignFile("C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml", "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s", false);
                 return true;
             }
             else

@@ -134,13 +134,13 @@ namespace ShopProject.Model
 
                 
 
-                Bitmap btm = qRcODE(text,20,20);
+                Bitmap btm = GenerateQRCode(text);
                 BitmapSource btmsourse = ConvertBitmapToBitmapSource(btm);
                 Image image = new Image
                 {
                     Source = btmsourse,
-                    Height = 50,
-                    Width = 50,
+                    Height = 120,
+                    Width = 120,
                     
                 };
 
@@ -163,7 +163,7 @@ namespace ShopProject.Model
                 // Create IDocumentPaginatorSource from FlowDocument  
                 IDocumentPaginatorSource idpSource = doc;
                 // Call PrintDocument method to send document to printer  
-                //printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
+                printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
                 printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
             }
             catch(Exception ex)
@@ -176,7 +176,7 @@ namespace ShopProject.Model
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(100);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
             
             return qrCodeImage;

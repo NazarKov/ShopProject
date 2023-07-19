@@ -76,7 +76,7 @@ namespace ShopProject.ViewModel.SalePage
         public double? SumaUser
         {
             get { return _sumaUser; }
-            set { _sumaUser = value; OnPropertyChanged("_sumaUser"); }
+            set { _sumaUser = value; OnPropertyChanged("SumaUser"); }
         }
         private List<string> _typeOplatu;
         public List<string> TypeOplatu
@@ -95,30 +95,59 @@ namespace ShopProject.ViewModel.SalePage
 
         private void SearchBarCodePrdocut()
         {
-            if (BarCodeSearch.Length > 0)
+            List<Product> temp;
+            if (BarCodeSearch != "0000000000000")
             {
-                var item = _model.Search(BarCodeSearch);
-                if (item != null)
+                if (BarCodeSearch.Length > 12)
                 {
-                    item.count = 1;
-                    List<Product> temp = new List<Product>();
+                    var item = _model.Search(BarCodeSearch);
+                    if (item != null)
+                    {
+                        item.count = 1;
+                        temp = new List<Product>();
+                        temp = Products;
+
+                        if (temp.Find(pr => pr.code == item.code) != null)
+                        {
+                            temp.Find(pr => pr.code == item.code).count += 1;
+                        }
+                        else
+                        {
+                            temp.Add(item);
+                        }
+
+                        CountingSumaOrder(temp);
+
+                        Products = new List<Product>();
+                        Products = temp;
+                        BarCodeSearch = string.Empty;
+                    }
+                }
+            }
+            else
+            {
+                if (Products.ElementAt(Products.Count - 1).count == 1)
+                {
+                    temp = new List<Product>();
                     temp = Products;
 
-                    if (temp.Find(pr => pr.code == item.code) != null)
-                    {
-                        temp.Find(pr => pr.code == item.code).count += 1;
-                    }
-                    else
-                    {
-                        temp.Add(item);
-                    }
-
-                    CountingSumaOrder(temp);
-
+                    temp.Remove(temp.ElementAt(temp.Count - 1));
                     Products = new List<Product>();
                     Products = temp;
-                    BarCodeSearch = string.Empty;
+                    CountingSumaOrder(Products);
                 }
+                else
+                {
+                    temp = new List<Product>();
+                    temp = Products;
+
+
+                    temp.ElementAt(Products.Count - 1).count -= 1;
+                    Products = new List<Product>();
+                    Products = temp;
+                    CountingSumaOrder(Products);
+                }
+                BarCodeSearch = string.Empty;
             }
            
         }
@@ -140,13 +169,15 @@ namespace ShopProject.ViewModel.SalePage
             Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
             if (_model.SetOrderDataBase(Products, order))
             {
-                Messe mes = new Messe() { id = "123", mac = "123" }; 
-                //Messe mes = _model.SendChek(Products,order,time);
+                //Messe mes = new Messe() { id = "123", mac = "123" }; 
+                Messe mes = _model.SendChek(Products,order,time);
                 
                 _model.PrintChek(Products,order,mes,time);
                 MessageBox.Show($"чек видано \n Решта:{rest}");
                 Products = new List<Product>();
                 BarCodeSearch = string.Empty;
+                SumaUser = new double();
+                SumaUser = 0;
                 SumaOrder = 0;
 
             }
