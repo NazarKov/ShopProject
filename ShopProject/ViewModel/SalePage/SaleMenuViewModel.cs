@@ -163,23 +163,30 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
-            DateTime time = DateTime.Now;
-
-            double rest = ((double)(SumaUser - SumaOrder));
-            Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
-            if (_model.SetOrderDataBase(Products, order))
+            if (SumaUser >= SumaOrder)
             {
-                //Messe mes = new Messe() { id = "123", mac = "123" }; 
-                Messe mes = _model.SendChek(Products,order,time);
-                
-                _model.PrintChek(Products,order,mes,time);
-                MessageBox.Show($"чек видано \n Решта:{rest}");
-                Products = new List<Product>();
-                BarCodeSearch = string.Empty;
-                SumaUser = new double();
-                SumaUser = 0;
-                SumaOrder = 0;
+                DateTime time = DateTime.Now;
 
+                double rest = ((double)(SumaUser - SumaOrder));
+                Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
+                if (_model.SetOrderDataBase(Products, order))
+                {
+                    //Messe mes = new Messe() { id = "123", mac = "123" };
+                    Messe mes = _model.SendChek(Products, order, time);
+
+                    _model.PrintChek(Products, order, mes, time);
+                    MessageBox.Show($"чек видано \n Решта:{rest}");
+                    Products = new List<Product>();
+                    BarCodeSearch = string.Empty;
+                    SumaUser = new double();
+                    SumaUser = 0;
+                    SumaOrder = 0;
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Сума внеску неможе бути менша ніж сума чеку");
             }
         }
 

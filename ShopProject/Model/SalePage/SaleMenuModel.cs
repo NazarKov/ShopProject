@@ -90,6 +90,7 @@ namespace ShopProject.Model.SalePage
             count = 5;
 
             _DFSAPI.CloseShift(count);
+            MessageBox.Show("Зміна закрита");
         }
         public void OpenChange()
         {

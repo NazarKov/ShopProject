@@ -66,6 +66,7 @@ namespace ShopProject.Helpers.DFSAPI
                 OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
+            MessageBox.Show("зміна відкрита");
         }
         public Messe SendChek(List<Product> products, Order order, long date)
         {
