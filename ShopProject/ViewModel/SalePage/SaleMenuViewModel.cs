@@ -37,7 +37,7 @@ namespace ShopProject.ViewModel.SalePage
             _openChangeCommand = new DelegateCommand(() => { _model.OpenChange(); });
             _closeChangeCommand = new DelegateCommand(() => { _model.closeChange(); });
             
-            _products = new List<Product>();
+            _products = new List<Goods>();
             _barCodeSearch = string.Empty;
             _sumaOrder = 0;
             _sumaUser = 0;
@@ -58,8 +58,8 @@ namespace ShopProject.ViewModel.SalePage
             set { _barCodeSearch = value; OnPropertyChanged("BarCodeSearch"); }
         }
 
-        private List<Product> _products;
-        public List<Product> Products 
+        private List<Goods> _products;
+        public List<Goods> Products 
         {
             get {  return _products; }
             set { _products = value; OnPropertyChanged("Products");}
@@ -101,7 +101,7 @@ namespace ShopProject.ViewModel.SalePage
                 if (item != null)
                 {
                     item.count = 1;
-                    List<Product> temp = new List<Product>();
+                    List<Goods> temp = new List<Goods>();
                     temp = Products;
 
                     if (temp.Find(pr => pr.code == item.code) != null)
@@ -115,7 +115,7 @@ namespace ShopProject.ViewModel.SalePage
 
                     CountingSumaOrder(temp);
 
-                    Products = new List<Product>();
+                    Products = new List<Goods>();
                     Products = temp;
                     BarCodeSearch = string.Empty;
                 }
@@ -123,12 +123,12 @@ namespace ShopProject.ViewModel.SalePage
            
         }
 
-        private void CountingSumaOrder(List<Product> products)
+        private void CountingSumaOrder(List<Goods> products)
         {
             SumaOrder = 0;
-            foreach (Product orderProduct in products)
+            foreach (Goods orderProduct in products)
             {
-                SumaOrder += (orderProduct.price * orderProduct.count);
+                //SumaOrder += (orderProduct.price * orderProduct.count);
             }
         }
         public ICommand PrintingCheckCommand => _printingCheckCommand;
@@ -137,19 +137,19 @@ namespace ShopProject.ViewModel.SalePage
             DateTime time = DateTime.Now;
 
             double rest = ((double)(SumaUser - SumaOrder));
-            Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
-            if (_model.SetOrderDataBase(Products, order))
-            {
-                Messe mes = new Messe() { id = "123", mac = "123" }; 
-                //Messe mes = _model.SendChek(Products,order,time);
+            //Operation order = new Operation() { createdAt = time, discount = 0, sum = (double)SumaOrder, rest = rest, user = null, localNumber = "0", buyersAmount = (double)SumaUser, typeOplat = TypeOplatu.ElementAt(SelectIndex) };
+            //if (_model.SetOrderDataBase(Products, order))
+            //{
+            //    Messe mes = new Messe() { id = "123", mac = "123" }; 
+            //    //Messe mes = _model.SendChek(Products,order,time);
                 
-                _model.PrintChek(Products,order,mes,time);
-                MessageBox.Show($"чек видано \n Решта:{rest}");
-                Products = new List<Product>();
-                BarCodeSearch = string.Empty;
-                SumaOrder = 0;
+            //    _model.PrintChek(Products,order,mes,time);
+            //    MessageBox.Show($"чек видано \n Решта:{rest}");
+            //    Products = new List<Goods>();
+            //    BarCodeSearch = string.Empty;
+            //    SumaOrder = 0;
 
-            }
+            //}
         }
 
 

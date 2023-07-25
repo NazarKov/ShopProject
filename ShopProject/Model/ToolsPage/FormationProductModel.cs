@@ -16,18 +16,18 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class FormationProductModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _tableRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _tableRepository;
 
         public FormationProductModel()
         {
             _tableRepository = new ProductTableRepository();
         }
 
-        public Product GetProduct(string barCode)
+        public Goods GetProduct(string barCode)
         {
             try
             {
-                return (Product)_tableRepository.GetItem(barCode);
+                return (Goods)_tableRepository.GetItem(barCode);
             }
             catch(Exception ex)
             {
@@ -36,19 +36,19 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public void ContertToListProduct(IList list, List<Product> products)
+        public void ContertToListProduct(IList list, List<Goods> products)
         {
             foreach (var item in list)
             {
-                products.Add((Product)item);
+                products.Add((Goods)item);
             }
         }
 
-        public List<Product>? UpdateList(List<Product> productFormations, List<Product> removeProduct)
+        public List<Goods>? UpdateList(List<Goods> productFormations, List<Goods> removeProduct)
         {
             try
             {
-                List<Product> products = new List<Product>();
+                List<Goods> products = new List<Goods>();
                 products.AddRange(productFormations);
                 if (removeProduct.Count == 1)
                 {
@@ -57,7 +57,7 @@ namespace ShopProject.Model.ToolsPage
                 }
                 else
                 {
-                    foreach (Product product in removeProduct)
+                    foreach (Goods product in removeProduct)
                     {
                         products.Remove(product);
                     }
@@ -70,18 +70,18 @@ namespace ShopProject.Model.ToolsPage
                 return null;
             }
         }
-        public bool AddProduct(string name, string code, string articule, double price, int count, string units, List<Product> productsFormation)
+        public bool AddProduct(string name, string code, string articule, double price, int count, string units, List<Goods> productsFormation)
         {
             try
             {
                 if (Validation.TextField(name,code, articule,price,count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct")))
                 {
 
-                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Product>)_tableRepository.GetAll()))//перевірка на наявність товару по штрих коду
+                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Goods>)_tableRepository.GetAll()))//перевірка на наявність товару по штрих коду
                     {
                         throw new Exception("Товар існує");
                     }
-                    Product product = new Product();
+                    Goods product = new Goods();
                     product.code = code;
                     product.name = name;
                     product.articule = articule;

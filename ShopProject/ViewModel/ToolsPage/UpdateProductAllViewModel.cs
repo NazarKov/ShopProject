@@ -18,7 +18,7 @@ namespace ShopProject.ViewModel.ToolsPage
             model = new UpdateProductAllModel();
             upateProductDataBaseCommand = new DelegateCommand(UpdateProduct);
             
-            _products = new List<Product>();
+            _products = new List<Goods>();
             _textComboBox = new List<string>();
 
             TextComboBox = new List<string>();
@@ -43,8 +43,8 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _textComboBox = value; OnPropertyChanged("TextComboBox"); }
         }
 
-        private List<Product> _products;
-        public List<Product> Products
+        private List<Goods> _products;
+        public List<Goods> Products
         {
             get { return _products; }
             set { _products = value; OnPropertyChanged("Products"); }

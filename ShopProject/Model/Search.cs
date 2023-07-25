@@ -17,19 +17,19 @@ namespace ShopProject.Model
 
     internal static class Search
     {
-        private static Product? item;
-        private static List<Product>? searchResult;
-        private static List<ProductArchive>? searchResultArhive;
-        private static List<ProductsOutOfStock>? searchResultProductsOutOfStock;
+        private static Goods? item;
+        private static List<Goods>? searchResult;
+        private static List<GoodsArchive>? searchResultArhive;
+        private static List<GoodsOutOfStock>? searchResultProductsOutOfStock;
 
-        public static List<Product>? ProductDataBase(string itemSearch, TypeSearch type,List<Product> products)
+        public static List<Goods>? ProductDataBase(string itemSearch, TypeSearch type,List<Goods> products)
         {
-            searchResult = new List<Product>();
+            searchResult = new List<Goods>();
             switch (type)
             {
                 case TypeSearch.Code:
                     {
-                        foreach (Product product in products)
+                        foreach (Goods product in products)
                         {
                             if (product.code == itemSearch)
                             {
@@ -40,7 +40,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Name:
                     {
-                        foreach (Product product in products)
+                        foreach (Goods product in products)
                         {
                             if(product.name!=null)
                                 if (product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
@@ -53,7 +53,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Articule:
                     {
-                        foreach (Product product in products)
+                        foreach (Goods product in products)
                         {
                             if(product.articule !=null)
                                 if (product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
@@ -70,14 +70,14 @@ namespace ShopProject.Model
                     }
             }
         }
-        public static List<ProductArchive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<ProductArchive> archives)
+        public static List<GoodsArchive>? ArhiveDataBase(string itemSearch, TypeSearch type, List<GoodsArchive> archives)
         {
-            searchResultArhive = new List<ProductArchive>();
+            searchResultArhive = new List<GoodsArchive>();
             switch (type)
             {
                 case TypeSearch.Code:
                     {
-                        foreach (ProductArchive archive in archives)
+                        foreach (GoodsArchive archive in archives)
                         {
                             if (archive.Product != null)
                             {
@@ -91,7 +91,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Name:
                     {
-                        foreach (ProductArchive archive in archives)
+                        foreach (GoodsArchive archive in archives)
                         {
                             if (archive.Product != null)
                             {
@@ -107,7 +107,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Articule:
                     {
-                        foreach (ProductArchive archive in archives)
+                        foreach (GoodsArchive archive in archives)
                         {
                             if (archive.Product != null)
                                 if (archive.Product.articule != null)
@@ -125,14 +125,14 @@ namespace ShopProject.Model
                     }
             }
         }
-        public static List<ProductsOutOfStock>? OutOfStockProductDataBase(string itemSearch, TypeSearch type, List<ProductsOutOfStock> products)
+        public static List<GoodsOutOfStock>? OutOfStockProductDataBase(string itemSearch, TypeSearch type, List<GoodsOutOfStock> products)
         {
-            searchResultProductsOutOfStock = new List<ProductsOutOfStock>();
+            searchResultProductsOutOfStock = new List<GoodsOutOfStock>();
             switch (type)
             {
                 case TypeSearch.Code:
                     {
-                        foreach (ProductsOutOfStock product in products)
+                        foreach (GoodsOutOfStock product in products)
                         {
                             if (product.Product != null)
                             {
@@ -146,7 +146,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Name:
                     {
-                        foreach (ProductsOutOfStock product in products)
+                        foreach (GoodsOutOfStock product in products)
                         {
                             if (product.Product != null)
                                 if (product.Product.name != null)
@@ -160,7 +160,7 @@ namespace ShopProject.Model
                     }
                 case TypeSearch.Articule:
                     {
-                        foreach (ProductsOutOfStock product in products)
+                        foreach (GoodsOutOfStock product in products)
                         {
                             if (product.Product != null)
                                 if (product.Product.articule != null)

@@ -15,9 +15,9 @@ namespace ShopProject.Model.ModelRepository
         create_at = 0,
         product = 1,
     }
-    internal class OutOfStockTableRepositories : ITableRepository<ProductsOutOfStock,TypeParameterSetTableOutOfStock>
+    internal class OutOfStockTableRepositories : ITableRepository<GoodsOutOfStock,TypeParameterSetTableOutOfStock>
     {
-        public void Add(ProductsOutOfStock product)
+        public void Add(GoodsOutOfStock product)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -34,7 +34,7 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
-        public void Delete(ProductsOutOfStock product)
+        public void Delete(GoodsOutOfStock product)
         {
             using(ShopContext context = new ShopContext())
             {

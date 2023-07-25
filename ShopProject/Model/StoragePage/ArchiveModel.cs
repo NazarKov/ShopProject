@@ -11,8 +11,8 @@ namespace ShopProject.Model.StoragePage
 
     internal class ArchiveModel
     {
-        private ITableRepository<ProductArchive,TypeParameterSetTableProductArhive> _archiveRepository;
-        private ITableRepository<Product,TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<GoodsArchive,TypeParameterSetTableProductArhive> _archiveRepository;
+        private ITableRepository<Goods,TypeParameterSetTableProduct> _productRepository;
 
         public ArchiveModel()
         {
@@ -20,16 +20,16 @@ namespace ShopProject.Model.StoragePage
             _archiveRepository = new ArhiveTableRepositories();
         }
 
-        public List<ProductArchive> GetItems()
+        public List<GoodsArchive> GetItems()
         {
-            return (List<ProductArchive>)_archiveRepository.GetAll();
+            return (List<GoodsArchive>)_archiveRepository.GetAll();
         }
 
-        public List<ProductArchive>? SearchArhive(string itemSearch, TypeSearch type)
+        public List<GoodsArchive>? SearchArhive(string itemSearch, TypeSearch type)
         {
             try
             {
-                return Search.ArhiveDataBase(itemSearch, type, (List<ProductArchive>)_archiveRepository.GetAll());
+                return Search.ArhiveDataBase(itemSearch, type, (List<GoodsArchive>)_archiveRepository.GetAll());
             }
             catch(Exception ex)
             {
@@ -37,7 +37,7 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public bool DeleteRecordArhive(ProductArchive archive,Product product)
+        public bool DeleteRecordArhive(GoodsArchive archive,Goods product)
         {
             try
             {
@@ -52,16 +52,16 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public void ConvertToList(IList collection, List<ProductArchive> itemConver)
+        public void ConvertToList(IList collection, List<GoodsArchive> itemConver)
         {
             for (int i = 0; i < collection.Count; i++)
             {
-                itemConver.Add((ProductArchive)collection[i]);
-                itemConver[i].Product = ((ProductArchive)collection[i]).Product;
+                itemConver.Add((GoodsArchive)collection[i]);
+                itemConver[i].Product = ((GoodsArchive)collection[i]).Product;
             }
         }
         
-        public bool ReturnProductInStorage(ProductArchive archive)
+        public bool ReturnProductInStorage(GoodsArchive archive)
         {
             try
             {

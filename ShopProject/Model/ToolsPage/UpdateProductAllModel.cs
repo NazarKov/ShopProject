@@ -14,14 +14,14 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductAllModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductAllModel()
         {
             _productRepository = new ProductTableRepository();
         }
 
-        public bool UpdateProduct(List<Product> list)
+        public bool UpdateProduct(List<Goods> list)
         {
             try
             {

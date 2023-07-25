@@ -18,7 +18,7 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class CreateProductModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
 
         public CreateProductModel()
         {
@@ -31,11 +31,11 @@ namespace ShopProject.Model.ToolsPage
             {
                 if (Validation.TextField(name, code, articule, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
                 {
-                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Product>)_productRepository.GetAll()))//перевірка на наявність товару по штрих коду
+                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Goods>)_productRepository.GetAll()))//перевірка на наявність товару по штрих коду
                     {
                         throw new Exception("Товар існує");
                     }
-                    _productRepository.Add(new Product()
+                    _productRepository.Add(new Goods()
                     {
                         name = name,
                         code = code,

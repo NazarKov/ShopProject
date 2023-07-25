@@ -21,13 +21,13 @@ namespace ShopProject.ViewModel.StoragePage
 
         private ICommand _searchButton;
         private ICommand _visibileAllButton;
-        private List<ProductsOutOfStock> _productsOutOfStock;
+        private List<GoodsOutOfStock> _productsOutOfStock;
 
         public OutOfStockViewModel() 
         {
             _model = new OutOfStockModel();
-            _products = new List<ProductsOutOfStock>();
-            _productsOutOfStock = new List<ProductsOutOfStock>();
+            _products = new List<GoodsOutOfStock>();
+            _productsOutOfStock = new List<GoodsOutOfStock>();
 
             _visibileAllButton = new DelegateCommand(setFieldDataGrid);
 
@@ -49,8 +49,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<ProductsOutOfStock> _products;
-        public List<ProductsOutOfStock> Products
+        private List<GoodsOutOfStock> _products;
+        public List<GoodsOutOfStock> Products
         {
             get { return _products; }
             set { _products = value; OnPropertyChanged("Products"); }
@@ -107,7 +107,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _productsOutOfStock = new List<ProductsOutOfStock>();
+                _productsOutOfStock = new List<GoodsOutOfStock>();
                 if (_productsOutOfStock != null)
                 {
                     _model.ConvertToList((IList)parameter, _productsOutOfStock);
@@ -127,7 +127,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _productsOutOfStock = new List<ProductsOutOfStock>();
+                _productsOutOfStock = new List<GoodsOutOfStock>();
                 if (_productsOutOfStock != null)
                 {
                     _model.ConvertToList((IList)parameter, _productsOutOfStock);

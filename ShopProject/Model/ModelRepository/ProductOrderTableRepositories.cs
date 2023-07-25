@@ -14,10 +14,10 @@ namespace ShopProject.Model.ModelRepository
     {
 
     }
-    class ProductOrderTableRepositories : ITableRepository<ProductOrder,TypeParameterSetTableProductOrder>
+    class ProductOrderTableRepositories : ITableRepository<GoodsOperation,TypeParameterSetTableProductOrder>
     {
 
-        public void Add(ProductOrder productOrder)
+        public void Add(GoodsOperation productOrder)
         {
             using(ShopContext context = new ShopContext())
             {
@@ -25,7 +25,7 @@ namespace ShopProject.Model.ModelRepository
                 context.products.Load();
                 context.productOrders.Load();
 
-                ProductOrder productOrd = new ProductOrder();
+                GoodsOperation productOrd = new GoodsOperation();
 
                 productOrd.Order = context.orders.Find(productOrder.Order.ID);
                 productOrd.Product = context.products.Find(productOrder.Product.ID);

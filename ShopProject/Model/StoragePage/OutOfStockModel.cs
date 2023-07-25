@@ -14,24 +14,24 @@ namespace ShopProject.Model.StoragePage
 {
     internal class OutOfStockModel
     {
-        private ITableRepository<ProductsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockPeoductRepository;
-        private ITableRepository<Product,TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<GoodsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockPeoductRepository;
+        private ITableRepository<Goods,TypeParameterSetTableProduct> _productRepository;
        
         public OutOfStockModel() 
         {
             _outOfStockPeoductRepository = new OutOfStockTableRepositories();
             _productRepository = new ProductTableRepository();
         }
-        public List<ProductsOutOfStock> GetAll()
+        public List<GoodsOutOfStock> GetAll()
         {
-            return (List<ProductsOutOfStock>)_outOfStockPeoductRepository.GetAll();
+            return (List<GoodsOutOfStock>)_outOfStockPeoductRepository.GetAll();
         }
 
-        public List<ProductsOutOfStock>? SearchProducts(string itemSearch, TypeSearch type)
+        public List<GoodsOutOfStock>? SearchProducts(string itemSearch, TypeSearch type)
         {
             try
             {
-                return Search.OutOfStockProductDataBase(itemSearch, type, (List<ProductsOutOfStock>)_outOfStockPeoductRepository.GetAll());
+                return Search.OutOfStockProductDataBase(itemSearch, type, (List<GoodsOutOfStock>)_outOfStockPeoductRepository.GetAll());
             }
             catch (Exception ex)
             {
@@ -39,16 +39,16 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public void ConvertToList(IList collection, List<ProductsOutOfStock> itemConver)
+        public void ConvertToList(IList collection, List<GoodsOutOfStock> itemConver)
         {
             for (int i = 0; i < collection.Count; i++)
             {
-                itemConver.Add((ProductsOutOfStock)collection[i]);
-                itemConver[i].Product = ((ProductsOutOfStock)collection[i]).Product;
+                itemConver.Add((GoodsOutOfStock)collection[i]);
+                itemConver[i].Product = ((GoodsOutOfStock)collection[i]).Product;
             }
         }
 
-        public bool ReturnProductInStorage(ProductsOutOfStock productsOutOfStock)
+        public bool ReturnProductInStorage(GoodsOutOfStock productsOutOfStock)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool DeleteRecordArhive(ProductsOutOfStock productOutOfStock, Product product)
+        public bool DeleteRecordArhive(GoodsOutOfStock productOutOfStock, Goods product)
         {
             try
             {

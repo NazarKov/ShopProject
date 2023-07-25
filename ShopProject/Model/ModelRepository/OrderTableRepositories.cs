@@ -14,9 +14,9 @@ namespace ShopProject.Model.ModelRepository
     {
 
     }
-    internal class OrderTableRepositories : ITableRepository<Order, TypeParameterSetTableOrder>
+    internal class OrderTableRepositories : ITableRepository<Operation, TypeParameterSetTableOrder>
     {
-        public void Add(Order order)
+        public void Add(Operation order)
         {
             using(ShopContext context = new ShopContext())
             {
@@ -26,7 +26,7 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
-        public void Update(Order order)
+        public void Update(Operation order)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -45,7 +45,7 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
-        private void UpdateFieldOrder(Order updateOrder,Order dataOrder)
+        private void UpdateFieldOrder(Operation updateOrder,Operation dataOrder)
         {
             updateOrder.sale=dataOrder.sale;
             updateOrder.rest = dataOrder.rest;
@@ -53,7 +53,7 @@ namespace ShopProject.Model.ModelRepository
             updateOrder.suma=dataOrder.suma;
             updateOrder.created_at=dataOrder.created_at;
         }
-        public void Delete(Order order)
+        public void Delete(Operation order)
         {
             using(ShopContext context = new ShopContext())
             {

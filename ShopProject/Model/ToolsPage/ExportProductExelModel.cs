@@ -12,7 +12,7 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ExportProductExelModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
         private FileExel? fileExel;
 
         public ExportProductExelModel()
@@ -20,18 +20,18 @@ namespace ShopProject.Model.ToolsPage
             _productRepository = new ProductTableRepository();
         }
 
-        public Product? GetItem(string itemSearch)
+        public Goods? GetItem(string itemSearch)
         {
-            Product product = (Product)_productRepository.GetItem(itemSearch);
+            Goods product = (Goods)_productRepository.GetItem(itemSearch);
             return product;
         }
 
-        public List<Product> GetItems()
+        public List<Goods> GetItems()
         {
-            return (List<Product>)_productRepository.GetAll();
+            return (List<Goods>)_productRepository.GetAll();
         }
         
-        public bool Export(string path,List<Product> products)
+        public bool Export(string path,List<Goods> products)
         {
             try
             {

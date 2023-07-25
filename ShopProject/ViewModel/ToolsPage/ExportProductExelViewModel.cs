@@ -25,14 +25,14 @@ namespace ShopProject.ViewModel.ToolsPage
 
         public ExportProductExelViewModel()
         {
-            Products = new List<Product>();
+            Products = new List<Goods>();
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
            
             addProductList = new DelegateCommand(AddItemExportList);
             saveSelectItem = new DelegateCommand(SaveExprotItem);
             saveAllItem = new DelegateCommand(SaveExprotItemAll);
 
-            _products = new List<Product>();
+            _products = new List<Goods>();
             _code = string.Empty;
 
             SetFieldFileDialog();
@@ -49,8 +49,8 @@ namespace ShopProject.ViewModel.ToolsPage
             saveFileDialog.Filter = "Exel files(*.xlsx)|*.xlsx|All files(*.*)|*.*";
         }
 
-        private List<Product> _products;
-        public List<Product> Products
+        private List<Goods> _products;
+        public List<Goods> Products
         {
             get { return _products; }
             set { _products = value;  OnPropertyChanged("Products"); }
@@ -78,7 +78,7 @@ namespace ShopProject.ViewModel.ToolsPage
                 var resultProduct = model.GetItem(_code);
                 if (resultProduct != null)
                 {
-                    List<Product> tempProduct = new List<Product>();
+                    List<Goods> tempProduct = new List<Goods>();
 
                     tempProduct.AddRange(_products);
                     tempProduct.Add(resultProduct);
@@ -101,7 +101,7 @@ namespace ShopProject.ViewModel.ToolsPage
             if(model != null)
                Save(model.GetItems());
         }
-        private void Save(List<Product> products)
+        private void Save(List<Goods> products)
         {
             if (saveFileDialog != null)
             {

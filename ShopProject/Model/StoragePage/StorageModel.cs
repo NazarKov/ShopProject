@@ -10,10 +10,10 @@ namespace ShopProject.Model.StoragePage
 {
     internal class StorageModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productTableRepository;
-        private ITableRepository<ProductArchive,TypeParameterSetTableProductArhive> _arhiveTableRepositories;
-        private ITableRepository<ProductsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockRepositories;
-        private List<Product> _products;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productTableRepository;
+        private ITableRepository<GoodsArchive,TypeParameterSetTableProductArhive> _arhiveTableRepositories;
+        private ITableRepository<GoodsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockRepositories;
+        private List<Goods> _products;
 
         public StorageModel()
         {
@@ -21,16 +21,16 @@ namespace ShopProject.Model.StoragePage
             _arhiveTableRepositories = new ArhiveTableRepositories();
             _outOfStockRepositories = new OutOfStockTableRepositories();
 
-            _products = new List<Product>();
-            _products = (List<Product>)_productTableRepository.GetAll();
+            _products = new List<Goods>();
+            _products = (List<Goods>)_productTableRepository.GetAll();
 
         }
-        public List<Product> GetItems()
+        public List<Goods> GetItems()
         {
             return _products;
         }
 
-        public List<Product>? SearchProduct(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchProduct(string itemSearch, TypeSearch type)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool DeleteProduct(Product productDelete)
+        public bool DeleteProduct(Goods productDelete)
         {
             try
             {
@@ -57,20 +57,20 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public void ContertToListProduct(IList list, List<Product> products)
+        public void ContertToListProduct(IList list, List<Goods> products)
         {
             foreach (var item in list)
             {
-                products.Add((Product)item);
+                products.Add((Goods)item);
             }
         }
 
-        public bool SetProductInArhive(Product item)
+        public bool SetProductInArhive(Goods item)
         {
             try
             {
                 _productTableRepository.SetParameter(item.ID, "arhived", TypeParameterSetTableProduct.Status);
-                _arhiveTableRepositories.Add(new ProductArchive() { ID = item.ID ,created_at = DateTime.Now });
+                _arhiveTableRepositories.Add(new GoodsArchive() { ID = item.ID ,created_at = DateTime.Now });
                 return true;
             }
             catch (Exception ex)
@@ -79,12 +79,12 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public bool SetProductinOutOfStok(Product item)
+        public bool SetProductinOutOfStok(Goods item)
         {
             try
             {
                 _productTableRepository.SetParameter(item.ID, "out_of_stock", TypeParameterSetTableProduct.Status);
-                _outOfStockRepositories.Add(new ProductsOutOfStock() { ID=item.ID,created_at = DateTime.Now});
+                _outOfStockRepositories.Add(new GoodsOutOfStock() { ID=item.ID,created_at = DateTime.Now});
                 return true;
             }
             catch(Exception ex)

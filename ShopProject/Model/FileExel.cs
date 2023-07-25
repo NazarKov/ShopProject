@@ -49,7 +49,7 @@ namespace ShopProject.Model
             }
         }
 
-        public void Write(string path, List<Product> products)
+        public void Write(string path, List<Goods> products)
         {
             workbook = new XSSFWorkbook();
             CreateExelTable(products);
@@ -59,7 +59,7 @@ namespace ShopProject.Model
             sw.Close();
         
         }
-        private void CreateExelTable(List<Product> products)
+        private void CreateExelTable(List<Goods> products)
         {
             if (workbook != null)
             {
@@ -68,7 +68,7 @@ namespace ShopProject.Model
                 IRow row = sheet1.CreateRow(0);
                 CreateExelTableHeader(row);
                 int i = 1;
-                foreach (Product product in products)
+                foreach (Goods product in products)
                 {
                     row = sheet1.CreateRow(i);
                     row.CreateCell(0).SetCellValue(product.code);

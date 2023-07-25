@@ -35,7 +35,7 @@ namespace ShopProject.Model
         private string _title;
         private string _description;
         private string _price;
-        private List<Product> _products;
+        private List<Goods> _products;
 
         public OrderCheck()
         {
@@ -45,7 +45,7 @@ namespace ShopProject.Model
             _title = string.Empty;
             _description = string.Empty;
             _price = string.Empty;
-            _products = new List<Product>();
+            _products = new List<Goods>();
         }
 
         public void drawingChek()
@@ -78,7 +78,7 @@ namespace ShopProject.Model
             return sec;
         }
 
-        public void PrintChek(List<Product> products,string id,Order order ,Messe mac,DateTime dateTime)
+        public void PrintChek(List<Goods> products,string id,Operation order ,Messe mac,DateTime dateTime)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace ShopProject.Model
 
                 string str="";
 
-                foreach (Product product in products)
+                foreach (Goods product in products)
                 {
                     str += "\nУКТ ЗЕД 9507";
                     str += "\nШтрих-код товару:" + product.code + "\n";

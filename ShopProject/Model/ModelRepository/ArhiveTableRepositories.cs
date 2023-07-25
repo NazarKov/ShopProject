@@ -13,11 +13,11 @@ namespace ShopProject.Model.ModelRepository
         create_at = 0,
         product = 1,
     }
-    internal class ArhiveTableRepositories : ITableRepository<ProductArchive, TypeParameterSetTableProductArhive>
+    internal class ArhiveTableRepositories : ITableRepository<GoodsArchive, TypeParameterSetTableProductArhive>
     {
         public ArhiveTableRepositories(){}
 
-        public void Add(ProductArchive productArhive)
+        public void Add(GoodsArchive productArhive)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -35,7 +35,7 @@ namespace ShopProject.Model.ModelRepository
             }
         }
 
-        public void Delete(ProductArchive item)
+        public void Delete(GoodsArchive item)
         {
             using (ShopContext context = new ShopContext())
             {

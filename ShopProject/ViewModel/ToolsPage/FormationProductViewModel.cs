@@ -23,8 +23,8 @@ namespace ShopProject.ViewModel.ToolsPage
         private ICommand _addProudctDataBaseCommand;
 
         private FormationProductModel _model;
-        private List<Product> _productsSelectGridView;
-        private List<Product> _products;
+        private List<Goods> _productsSelectGridView;
+        private List<Goods> _products;
 
         public FormationProductViewModel() 
         {
@@ -38,14 +38,14 @@ namespace ShopProject.ViewModel.ToolsPage
             _price = 0;
             _units = new List<string>();
             _selcetUnits = 0;
-            _productsInFormedProduct = new List<Product>();
-            _productsSelectGridView = new List<Product>();
-            _products = new List<Product>();
+            _productsInFormedProduct = new List<Goods>();
+            _productsSelectGridView = new List<Goods>();
+            _products = new List<Goods>();
 
             _addProductInFormationCommand = new DelegateCommand(AddProductInFormation);
             _addProudctDataBaseCommand = new DelegateCommand(AddProductDataBase);
 
-            ProductsInFormedProduct = new List<Product>();
+            ProductsInFormedProduct = new List<Goods>();
             
             SetFieldComboBox();
         }
@@ -116,8 +116,8 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _selcetUnits = value;OnPropertyChanged("SelcetUnits"); }
         }
 
-        private List<Product> _productsInFormedProduct;
-        public List<Product> ProductsInFormedProduct
+        private List<Goods> _productsInFormedProduct;
+        public List<Goods> ProductsInFormedProduct
         {
             get { return _productsInFormedProduct; }
             set { _productsInFormedProduct = value; OnPropertyChanged("ProductsInFormedProduct"); }
@@ -130,7 +130,7 @@ namespace ShopProject.ViewModel.ToolsPage
             var item= _model.GetProduct(SearchCode);
             if (item != null)
             {
-                _products = new List<Product>();
+                _products = new List<Goods>();
                 _products.AddRange(_productsInFormedProduct);
                 _products.Add(item);
                 ProductsInFormedProduct = _products;
@@ -146,7 +146,7 @@ namespace ShopProject.ViewModel.ToolsPage
        
         private void UpdateProductsInFormedProduct(object parameter)
         {
-            _productsSelectGridView = new List<Product>();
+            _productsSelectGridView = new List<Goods>();
             if (_model != null)
             {
                 _model.ContertToListProduct((IList)parameter, _productsSelectGridView);

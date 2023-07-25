@@ -67,7 +67,7 @@ namespace ShopProject.Helpers.DFSAPI
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
         }
-        public Messe SendChek(List<Product> products, Order order, long date)
+        public Messe SendChek(List<Goods> products, Operation order, long date)
         {
             MainContoller mainContoller = new MainContoller();
 
@@ -78,7 +78,7 @@ namespace ShopProject.Helpers.DFSAPI
 
             XmlCheck xmlCheck = new XmlCheck();
              
-            string mac = xmlCheck.writeOpenChek(pathxml, date.ToString(),products,order);
+            //string mac = xmlCheck.writeOpenChek(pathxml, date.ToString(),products,order);
 
             mainContoller.SendingCommand(TypeCommand.SingFile);
             mainContoller.ReceivingResult();
@@ -90,7 +90,8 @@ namespace ShopProject.Helpers.DFSAPI
                 OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            return new Messe() { mac = mac,id = check.Id };
+
+            return null;
         }
         public void CloseShift(int count)
         {

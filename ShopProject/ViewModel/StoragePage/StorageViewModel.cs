@@ -20,11 +20,11 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _openCreateProductWindow;
         private ICommand _openFormationProductWindow;
 
-        private List<Product> _products;
+        private List<Goods> _products;
         
         public StorageViewModel()
         {
-            Products = new List<Product>();
+            Products = new List<Goods>();
             SearchTemplateName = new List<string>();
           
 
@@ -34,7 +34,7 @@ namespace ShopProject.ViewModel.StoragePage
             _openFormationProductWindow = new DelegateCommand(() => { new FormationProduct().Show(); });
 
             SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
-            _products = new List<Product>();
+            _products = new List<Goods>();
 
             _nameSearch = string.Empty;
             _searchTemplateName = new List<string>();
@@ -52,8 +52,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<Product>? _product;
-        public List<Product>? Products
+        private List<Goods>? _product;
+        public List<Goods>? Products
         {
             get { return _product; }
             set{ _product = value; OnPropertyChanged("Products"); }
@@ -122,7 +122,7 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
         private void EditingProduct(object parameter)
         {
-            _products = new List<Product>();
+            _products = new List<Goods>();
             if (_storageModel != null)
                 _storageModel.ContertToListProduct((IList)parameter, _products);
 
@@ -144,7 +144,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Product>();
+                _products = new List<Goods>();
                 if (_storageModel != null)
                     _storageModel.ContertToListProduct((IList)parameter, _products);
                 if (_products.Count == 1)
@@ -164,7 +164,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Product>();
+                _products = new List<Goods>();
                 if (_storageModel != null)
                 {
                     _storageModel.ContertToListProduct((IList)parameter, _products);
@@ -181,7 +181,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Product>();
+                _products = new List<Goods>();
                 if (_storageModel != null)
                 {
                     _storageModel.ContertToListProduct((IList)parameter, _products);
@@ -196,7 +196,7 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand OpenWindoiwCreateStiker{ get => new DelegateParameterCommand(ShowWindowCreateStiker, CanRegister); }
         private void ShowWindowCreateStiker(object parameter)
         {
-            _products = new List<Product>();
+            _products = new List<Goods>();
             if (_storageModel != null)
                 _storageModel.ContertToListProduct((IList)parameter, _products);
 

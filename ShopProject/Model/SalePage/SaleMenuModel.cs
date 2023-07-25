@@ -16,17 +16,17 @@ namespace ShopProject.Model.SalePage
     internal class SaleMenuModel
     {
         private DFSAPI _DFSAPI;
-        private List<Product> _products;
-        private ITableRepository<Product,TypeParameterSetTableProduct> _tableProducts;
-        private ITableRepository<Order,TypeParameterSetTableOrder> _tableOrders;
-        private ITableRepository<ProductOrder,TypeParameterSetTableProductOrder> _tableProductOrders;
+        private List<Goods> _products;
+        private ITableRepository<Goods,TypeParameterSetTableProduct> _tableProducts;
+        private ITableRepository<Operation,TypeParameterSetTableOrder> _tableOrders;
+        private ITableRepository<GoodsOperation,TypeParameterSetTableProductOrder> _tableProductOrders;
 
         private OrderCheck _orderCheck;
         public int localnumber;
 
         public SaleMenuModel()
         {
-            _products = new List<Product>();
+            _products = new List<Goods>();
             _tableProducts = new ProductTableRepository();
             _tableOrders = new OrderTableRepositories();
             _tableProductOrders = new ProductOrderTableRepositories();
@@ -34,9 +34,9 @@ namespace ShopProject.Model.SalePage
             _orderCheck = new OrderCheck();
             localnumber = 0;
         }
-        public bool SetOrderDataBase(List<Product> productList,Order order)
+        public bool SetOrderDataBase(List<Goods> productList,Operation order)
         {
-            localnumber = (Convert.ToInt32(((List<Order>)_tableOrders.GetAll()).Last().LocalNumber) + 1);
+            localnumber = (Convert.ToInt32(((List<Operation>)_tableOrders.GetAll()).Last().LocalNumber) + 1);
             order.LocalNumber = localnumber.ToString();
             try
             {
@@ -45,9 +45,9 @@ namespace ShopProject.Model.SalePage
                     _tableOrders.Add(order);
                     if(productList != null)
                     {
-                        foreach (Product product in productList)
+                        foreach (Goods product in productList)
                         {
-                            _tableProductOrders.Add(new ProductOrder()
+                            _tableProductOrders.Add(new GoodsOperation()
                             {
                                 Order = order,
                                 Product = product,
@@ -66,18 +66,18 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public Product Search(string barCode)
+        public Goods Search(string barCode)
         {
-            return (Product)_tableProducts.GetItem(barCode);
+            return (Goods)_tableProducts.GetItem(barCode);
         }
 
-        public void PrintChek(List<Product> products,Order order,Messe mac,DateTime dateTime)
+        public void PrintChek(List<Goods> products,Operation order,Messe mac,DateTime dateTime)
         {
             _orderCheck.PrintChek(products,"12346578910",order,mac,dateTime);
         }
         public void closeChange()
         {
-            List<Order> orders = (List<Order>)_tableOrders.GetAll();
+            List<Operation> orders = (List<Operation>)_tableOrders.GetAll();
 
             int count = 0;
             for(int i = 0; i < orders.Count; i++)
@@ -95,7 +95,7 @@ namespace ShopProject.Model.SalePage
         {
             _DFSAPI.OpenShift();
         }
-        public Messe SendChek(List<Product> products,Order order,DateTime dateTime)
+        public Messe SendChek(List<Goods> products,Operation order,DateTime dateTime)
         {
             order.LocalNumber = localnumber.ToString();
             long date = long.Parse(dateTime.ToString("yyyyMMddHHmmss"));

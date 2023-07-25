@@ -12,7 +12,7 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductModel
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductModel()
         {
@@ -25,7 +25,7 @@ namespace ShopProject.Model.ToolsPage
             {
                 if(Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct")))
                 {
-                    _productRepository.Update(new Product()
+                    _productRepository.Update(new Goods()
                     {
                         ID = id,
                         name=name,

@@ -22,11 +22,11 @@ namespace ShopProject.Model.ModelRepository
         Sale = 6,
         Status = 7,
     }
-    class ProductTableRepository : ITableRepository<Product, TypeParameterSetTableProduct>
+    class ProductTableRepository : ITableRepository<Goods, TypeParameterSetTableProduct>
     {
         public ProductTableRepository(){}
        
-        public void Add(Product product)
+        public void Add(Goods product)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -37,7 +37,7 @@ namespace ShopProject.Model.ModelRepository
             }
         }
 
-        public void AddRange(List<Product> products)
+        public void AddRange(List<Goods> products)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -47,7 +47,7 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
-        public void Update(Product product)
+        public void Update(Goods product)
         {
             using(ShopContext context = new ShopContext())
             {
@@ -66,7 +66,7 @@ namespace ShopProject.Model.ModelRepository
                 context.SaveChanges();
             }
         }
-        private void UpdateFieldProduct(Product productUpdate,Product product)
+        private void UpdateFieldProduct(Goods productUpdate,Goods product)
         {
             productUpdate.code = product.code;
             productUpdate.price = product.price;
@@ -77,7 +77,7 @@ namespace ShopProject.Model.ModelRepository
             productUpdate.name = product.name;
         }
         
-        public void Delete(Product item)
+        public void Delete(Goods item)
         {
             using (ShopContext context = new ShopContext())
             {
@@ -153,7 +153,7 @@ namespace ShopProject.Model.ModelRepository
                 if (context.products != null)
                 {
 
-                    Product product = new Product();
+                    Goods product = new Goods();
                     product = context.products.Find(ID);
 
                     if (product != null)

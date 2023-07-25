@@ -15,11 +15,11 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ImportProductExelModel 
     {
-        private ITableRepository<Product, TypeParameterSetTableProduct> _productRepository;
+        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
         private FileExel? fileExel;
-        private List<Product> products;
+        private List<Goods> products;
         private string path;
-        private Product product;
+        private Goods product;
 
         public ImportProductExelModel()
         {
@@ -71,19 +71,19 @@ namespace ShopProject.Model.ToolsPage
         {
             int i = Validation.ChekNull(indexTop);
             int max = Validation.ChekNull(intdexBottom, dataTable.Rows.Count);
-            products = new List<Product>();
+            products = new List<Goods>();
 
             try
             {
                 for (; i < max; i++)
                 {
-                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), (IEnumerable<Product>)_productRepository.GetAll()))
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), (IEnumerable<Goods>)_productRepository.GetAll()))
                     {
                         SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
                     }
                     else
                     {
-                        product = new Product();
+                        product = new Goods();
                         product.code = Validation.ChekParamsIsNull(code, i, dataTable);
                         product.name = Validation.ChekParamsIsNull(name, i, dataTable);
                         product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
@@ -106,7 +106,7 @@ namespace ShopProject.Model.ToolsPage
 
         private void SetCountItem(int code,int count, int i , DataTable dataTable)
         {
-            Product product = (Product)_productRepository.GetItem(Validation.ChekParamsIsNull(code, i, dataTable));
+            Goods product = (Goods)_productRepository.GetItem(Validation.ChekParamsIsNull(code, i, dataTable));
             _productRepository.SetParameter(product.ID, (product.count + count), TypeParameterSetTableProduct.Count);
         }
     }

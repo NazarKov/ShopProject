@@ -18,7 +18,7 @@ namespace ShopProject.ViewModel.ToolsPage
         private ICommand saveProduct;
 
         private UpdateProductModel update;
-        private Product? product;
+        private Goods? product;
 
         public UpdateProductViewModel()
         {

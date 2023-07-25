@@ -10,8 +10,8 @@ namespace ShopProject.Model
     internal static class StaticResourse
     {
        public static string nameCompany = "Дім рибалки";
-       public static Product? product { get; set; } 
-       public static List<Product>? products { get; set; }
+       public static Goods? product { get; set; } 
+       public static List<Goods>? products { get; set; }
 
        public static void Clear()
        {
