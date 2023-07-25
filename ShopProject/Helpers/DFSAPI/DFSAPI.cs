@@ -28,8 +28,8 @@ namespace ShopProject.Helpers.DFSAPI
         private string addres = "https://prro.tax.gov.ua:443 ";//
         private string testadress = "https://cabinet.tax.gov.ua:9443";//text
 
-        private string pathxml = "C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
-        private string pathxml7ps = "C:\\Users\\Nazar\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
+        private string pathxml = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
+        private string pathxml7ps = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
         CallOptions callOptions;
         OrderXMLTableRepositories OrderXMLTableRepositories;
 
@@ -66,6 +66,7 @@ namespace ShopProject.Helpers.DFSAPI
                 OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
+            MessageBox.Show("зміна відкрита");
         }
         public Messe SendChek(List<Goods> products, Operation order, long date)
         {
@@ -90,8 +91,7 @@ namespace ShopProject.Helpers.DFSAPI
                 OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-
-            return null;
+            return new Messe() { mac = mac, id = check.Id };
         }
         public void CloseShift(int count)
         {

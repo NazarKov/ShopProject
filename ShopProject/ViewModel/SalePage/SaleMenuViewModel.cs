@@ -76,7 +76,7 @@ namespace ShopProject.ViewModel.SalePage
         public double? SumaUser
         {
             get { return _sumaUser; }
-            set { _sumaUser = value; OnPropertyChanged("_sumaUser"); }
+            set { _sumaUser = value; OnPropertyChanged("SumaUser"); }
         }
         private List<string> _typeOplatu;
         public List<string> TypeOplatu
@@ -95,30 +95,57 @@ namespace ShopProject.ViewModel.SalePage
 
         private void SearchBarCodePrdocut()
         {
-            if (BarCodeSearch.Length > 0)
+            List<Product> temp;
+            if (BarCodeSearch != "0000000000000")
             {
                 var item = _model.Search(BarCodeSearch);
                 if (item != null)
                 {
                     item.count = 1;
-                    List<Goods> temp = new List<Goods>();
+                    List<Product> temp = new List<Product>();
                     temp = Products;
 
-                    if (temp.Find(pr => pr.code == item.code) != null)
-                    {
-                        temp.Find(pr => pr.code == item.code).count += 1;
-                    }
-                    else
-                    {
-                        temp.Add(item);
-                    }
+                        if (temp.Find(pr => pr.code == item.code) != null)
+                        {
+                            temp.Find(pr => pr.code == item.code).count += 1;
+                        }
+                        else
+                        {
+                            temp.Add(item);
+                        }
 
-                    CountingSumaOrder(temp);
+                        CountingSumaOrder(temp);
 
-                    Products = new List<Goods>();
-                    Products = temp;
-                    BarCodeSearch = string.Empty;
+                        Products = new List<Product>();
+                        Products = temp;
+                        BarCodeSearch = string.Empty;
+                    }
                 }
+            }
+            else
+            {
+                if (Products.ElementAt(Products.Count - 1).count == 1)
+                {
+                    temp = new List<Product>();
+                    temp = Products;
+
+                    temp.Remove(temp.ElementAt(temp.Count - 1));
+                    Products = new List<Product>();
+                    Products = temp;
+                    CountingSumaOrder(Products);
+                }
+                else
+                {
+                    temp = new List<Product>();
+                    temp = Products;
+
+
+                    temp.ElementAt(Products.Count - 1).count -= 1;
+                    Products = new List<Product>();
+                    Products = temp;
+                    CountingSumaOrder(Products);
+                }
+                BarCodeSearch = string.Empty;
             }
            
         }
@@ -134,22 +161,31 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
-            DateTime time = DateTime.Now;
+            if (SumaUser >= SumaOrder)
+            {
+                DateTime time = DateTime.Now;
 
-            double rest = ((double)(SumaUser - SumaOrder));
-            //Operation order = new Operation() { createdAt = time, discount = 0, sum = (double)SumaOrder, rest = rest, user = null, localNumber = "0", buyersAmount = (double)SumaUser, typeOplat = TypeOplatu.ElementAt(SelectIndex) };
-            //if (_model.SetOrderDataBase(Products, order))
-            //{
-            //    Messe mes = new Messe() { id = "123", mac = "123" }; 
-            //    //Messe mes = _model.SendChek(Products,order,time);
-                
-            //    _model.PrintChek(Products,order,mes,time);
-            //    MessageBox.Show($"чек видано \n Решта:{rest}");
-            //    Products = new List<Goods>();
-            //    BarCodeSearch = string.Empty;
-            //    SumaOrder = 0;
+                double rest = ((double)(SumaUser - SumaOrder));
+                Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
+                if (_model.SetOrderDataBase(Products, order))
+                {
+                    //Messe mes = new Messe() { id = "123", mac = "123" };
+                    Messe mes = _model.SendChek(Products, order, time);
 
-            //}
+                    _model.PrintChek(Products, order, mes, time);
+                    MessageBox.Show($"чек видано \n Решта:{rest}");
+                    Products = new List<Product>();
+                    BarCodeSearch = string.Empty;
+                    SumaUser = new double();
+                    SumaUser = 0;
+                    SumaOrder = 0;
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Сума внеску неможе бути менша ніж сума чеку");
+            }
         }
 
 
