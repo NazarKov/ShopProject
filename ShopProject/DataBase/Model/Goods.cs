@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class Product
+    internal class Goods
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public int id { get; set; }
         /// <summary>
         /// Штрих код товару
         /// </summary>
@@ -24,11 +24,11 @@ namespace ShopProject.DataBase.Model
         /// <summary>
         /// ціна товару
         /// </summary>
-        public double? price { get; set; }
+        public decimal? price { get; set; }
         /// <summary>
         /// кількість товару
         /// </summary>
-        public int? count { get; set; }
+        public decimal? count { get; set; }
         /// <summary>
         /// одиниці виміру ддя товару
         /// </summary>
@@ -44,12 +44,27 @@ namespace ShopProject.DataBase.Model
         /// <summary>
         /// дата створення товару
         /// </summary>
-        public DateTimeOffset? created_at { get; set; }
-
-        public ProductArchive ProductArchive { get; set; }
-        public ProductsOutOfStock productsOutStock { get; set; }
-
-        public ICollection<ProductOrder> OrderItem { get; set; }
+        public DateTimeOffset? createdAt { get; set; }
+        /// <summary>
+        /// архівований товар
+        /// </summary>
+        public GoodsArchive productArchive { get; set; }
+        /// <summary>
+        /// товар який закінчився 
+        /// </summary>
+        public GoodsOutOfStock productsOutStock { get; set; }
+        /// <summary>
+        /// одиниці
+        /// </summary>
+        public GoodsUnit goodsUnit { get; set; }
+        /// <summary>
+        /// код УКТЗЕД
+        /// </summary>
+        public CodeUKTZED codeUKTZED { get; set; }
+        /// <summary>
+        /// проміжна таблиця
+        /// </summary>
+        public ICollection<GoodsOperation> orderItem { get; set; }
         
     }
 }

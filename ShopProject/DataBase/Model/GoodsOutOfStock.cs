@@ -8,12 +8,18 @@ using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class ProductsOutOfStock
+    internal class GoodsOutOfStock
     {
         [Key]
         [ForeignKey("Product")]
         public int ID { get; set; }
-        public Product? Product { get; set; }
-        public DateTimeOffset? created_at { get; set; }
+        /// <summary>
+        /// товар який закінчився
+        /// </summary>
+        public Goods? product { get; set; }
+        /// <summary>
+        /// дата коли товар закінчився
+        /// </summary>
+        public DateTimeOffset? createdAt { get; set; }
     }
 }

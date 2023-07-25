@@ -7,7 +7,7 @@ namespace ShopProject.DataBase.Model
     internal class CashRegister
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public int id { get; set; }
         public double begin_day { get; set; }
         public double end_day { get; set; }
         public double sum { get; set; } 
