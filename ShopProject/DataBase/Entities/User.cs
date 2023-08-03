@@ -4,7 +4,7 @@ using System;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class User
+    public class User
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }

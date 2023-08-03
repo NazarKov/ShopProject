@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class GoodsOutOfStock
+    public class GoodsOutOfStock
     {
         [Key]
-        [ForeignKey("Product")]
-        public int ID { get; set; }
+        [ForeignKey("goods")]
+        public Guid id { get; set; }
         /// <summary>
         /// товар який закінчився
         /// </summary>
-        public Goods? product { get; set; }
+        public Goods? goods { get; set; }
         /// <summary>
         /// дата коли товар закінчився
         /// </summary>

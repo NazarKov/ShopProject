@@ -3,18 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class GoodsOperation
+    public class GoodsOperation
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// кількість
+        /// кількість товару
         /// </summary>
         public int count { get; set; }
         /// <summary>
         /// товар
         /// </summary>
-        public  Goods product { get; set; }
+        public  Goods goods { get; set; }
         /// <summary>
         /// операція до якої належить товар
         /// </summary>

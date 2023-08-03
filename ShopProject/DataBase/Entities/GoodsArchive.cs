@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class GoodsArchive
+    public class GoodsArchive
     {
         [Key]
-        [ForeignKey("Product")]
-        public int id { get; set; }
+        [ForeignKey("goods")]
+        public Guid id { get; set; }
         /// <summary>
         /// товар якй архівовано
         /// </summary>
-        public Goods? product { get; set; }
+        public Goods? goods { get; set; }
         /// <summary>
         /// дата архівації
         /// </summary>

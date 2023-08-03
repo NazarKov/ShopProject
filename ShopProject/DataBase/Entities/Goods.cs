@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class Goods
+    public class Goods
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
+        public Guid id { get; set; }
         /// <summary>
         /// Штрих код товару
         /// </summary>
@@ -29,10 +29,6 @@ namespace ShopProject.DataBase.Model
         /// кількість товару
         /// </summary>
         public decimal? count { get; set; }
-        /// <summary>
-        /// одиниці виміру ддя товару
-        /// </summary>
-        public string? units { get; set; }
         /// <summary>
         /// знижка
         /// </summary>
@@ -56,7 +52,7 @@ namespace ShopProject.DataBase.Model
         /// <summary>
         /// одиниці
         /// </summary>
-        public GoodsUnit goodsUnit { get; set; }
+        public GoodsUnit unit { get; set; }
         /// <summary>
         /// код УКТЗЕД
         /// </summary>

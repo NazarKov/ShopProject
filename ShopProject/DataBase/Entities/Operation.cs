@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class Operation
+    public class Operation
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }

@@ -8,23 +8,19 @@ using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class GoodsUnit
+    public class CodeUKTZED
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         /// <summary>
-        /// неповна назва одиниці
+        /// назва коду УКТЗЕД
         /// </summary>
         public string name { get; set; }
         /// <summary>
-        /// Повна назва одиниці
+        /// код УКТЗЕД
         /// </summary>
-        public string shortName { get; set; }
-        /// <summary>
-        /// номер одиниці
-        /// </summary>
-        public int number { get; set; }
+        public string code { get; set; }
 
-        public ICollection<Goods> goods { get; set;}
+        public ICollection<Goods> goods { get; set; }
     }
 }
