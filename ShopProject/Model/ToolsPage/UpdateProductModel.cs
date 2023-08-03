@@ -1,7 +1,6 @@
 ﻿using ShopProject.DataBase.Context;
+using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
-using ShopProject.Interfaces.InterfacesRepository;
-using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -12,11 +11,11 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductModel
     {
-        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
+        //private IEntityAccessor<Goods, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductModel()
         {
-            _productRepository = new ProductTableRepository();
+          //  _productRepository = new ProductTableRepository();
         }
       
         public bool UpdateProduct(int id,string name, string code,string articule, double price, int count, string units)
@@ -25,16 +24,16 @@ namespace ShopProject.Model.ToolsPage
             {
                 if(Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct")))
                 {
-                    _productRepository.Update(new Goods()
-                    {
-                        ID = id,
-                        name=name,
-                        code=code,
-                        articule=articule,
-                        price=price,
-                        count=count,
-                        units=units
-                    });
+                    //_productRepository.Update(new Goods()
+                    //{
+                    //    id = id,
+                    //    name=name,
+                    //    code=code,
+                    //    articule=articule,
+                    //    price=(decimal)price,
+                    //    count=count,
+                    //    units=units
+                    //});
                 }
                 return true;
             }

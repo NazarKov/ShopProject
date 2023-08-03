@@ -11,36 +11,30 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
-    internal class CreateProductViewModel : ViewModel<CreateProductViewModel>
+    internal class CreateGoodsViewModel : ViewModel<CreateGoodsViewModel>
     {
-        private readonly ICommand saveProduct;
-        private readonly ICommand clearWindow;
+        private readonly ICommand _saveGoodsCommand;
+        private readonly ICommand _clearWindowCommand;
 
-        CreateProductModel productModel;
+        CreateGoodsModel _model;
 
-        public CreateProductViewModel()
+        public CreateGoodsViewModel()
         {
-            productModel = new CreateProductModel();
+            _model = new CreateGoodsModel();
+            Units = new List<string>();
 
-            saveProduct = new DelegateCommand(SaveAndCreateProductDataBase);
-            clearWindow = new DelegateCommand(ClearTextWindow);
+            _saveGoodsCommand = new DelegateCommand(SaveAndCreateProductDataBase);
+            _clearWindowCommand = new DelegateCommand(ClearTextWindow);
 
             _code = string.Empty;
             _name = string.Empty;
             _articule = string.Empty;
             _units = null;
             _selectUnits = string.Empty;
+            _selectCodeUKTZED = string.Empty;
 
-            SetFieldComboBox();
-        }
-
-        private void SetFieldComboBox()
-        {
-            Units = new List<string>();
-            Units.Add("Шт");
-            Units.Add("кг");
-            Units.Add("пачка");
-            Units.Add("ящик");
+            Units = _model.GetUnitList();
+            CodeUKTZED = _model.GetCodeUKTZEDList();
         }
 
         private string _code;
@@ -88,12 +82,25 @@ namespace ShopProject.ViewModel.ToolsPage
         private string _selectUnits;
         public string SelectUnits
         {
-            get { return _selectUnits;}
+            get { return _selectUnits; }
             set { _selectUnits = value; OnPropertyChanged("SelectUnits"); }
         }
 
-    
-        public ICommand ExitWindow { get => new DelegateParameterCommand(WindowClose,CanRegister); }
+        private List<string>? _codeUKTZED;
+        public List<string>? CodeUKTZED
+        {
+            get { return _codeUKTZED; }
+            set { _codeUKTZED = value; OnPropertyChanged(""); }
+        }
+        private string _selectCodeUKTZED;
+        public string SelcetCodeUKTZED
+        {
+            get { return _selectCodeUKTZED; }
+            set { _selectCodeUKTZED = value; OnPropertyChanged(""); }
+        }
+
+
+        public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose,CanRegister); }
         private void WindowClose(object parameter)
         {
             Window? window = parameter as Window;
@@ -102,7 +109,7 @@ namespace ShopProject.ViewModel.ToolsPage
         private bool CanRegister(object parameter) => true;
 
         
-        public ICommand ClearWindow => clearWindow;
+        public ICommand ClearWindowCommand => _clearWindowCommand;
 
         private void ClearTextWindow()
         {
@@ -112,11 +119,11 @@ namespace ShopProject.ViewModel.ToolsPage
             Price = 0;
         }
 
-        public ICommand SaveProduct => saveProduct;
+        public ICommand SaveProductCommand => _saveGoodsCommand;
 
         private void SaveAndCreateProductDataBase()
         {
-           if (productModel.SaveItemDataBase(_name, _code, _articule, _price, _count, _selectUnits))
+           if (_model.SaveItemDataBase(_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
            {
                 MessageBox.Show("товар добавлений");
            }

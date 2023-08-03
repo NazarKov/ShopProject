@@ -134,11 +134,11 @@ namespace ShopProject.ViewModel.StoragePage
 
                     if (_productsOutOfStock.Count == 1)
                     {
-                        if (_model.DeleteRecordArhive(_productsOutOfStock[0], _productsOutOfStock[0].Product))
-                        {
-                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
-                            new Thread(new ThreadStart(setFieldDataGrid)).Start();
-                        }
+                        //if (_model.DeleteRecordArhive(_productsOutOfStock[0], _productsOutOfStock[0].Product))
+                        //{
+                        //    MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+                        //    new Thread(new ThreadStart(setFieldDataGrid)).Start();
+                        //}
 
                     }
                 }

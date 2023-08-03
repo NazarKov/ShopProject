@@ -79,13 +79,13 @@ namespace ShopProject.Model
                     {
                         foreach (GoodsArchive archive in archives)
                         {
-                            if (archive.Product != null)
-                            {
-                                if (archive.Product.code == itemSearch)
-                                {
-                                    searchResultArhive.Add(archive);
-                                }
-                            }
+                            //if (archive.goods != null)
+                            //{
+                            //    if (archive.goods.code == itemSearch)
+                            //    {
+                            //        searchResultArhive.Add(archive);
+                            //    }
+                            //}
                         }
                         return searchResultArhive;
                     }
@@ -93,15 +93,15 @@ namespace ShopProject.Model
                     {
                         foreach (GoodsArchive archive in archives)
                         {
-                            if (archive.Product != null)
-                            {
-                                if (archive.Product.name != null)
-                                    if (archive.Product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                    {
-                                        searchResultArhive.Add(archive);
-                                    }
+                            //if (archive.goods != null)
+                            //{
+                            //    if (archive.goods.name != null)
+                            //        if (archive.goods.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                            //        {
+                            //            searchResultArhive.Add(archive);
+                            //        }
 
-                            }
+                            //}
                         }
                         return searchResultArhive;
                     }
@@ -109,12 +109,12 @@ namespace ShopProject.Model
                     {
                         foreach (GoodsArchive archive in archives)
                         {
-                            if (archive.Product != null)
-                                if (archive.Product.articule != null)
-                                    if (archive.Product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                    {
-                                        searchResultArhive.Add(archive);
-                                    }
+                            //if (archive.goods != null)
+                            //    if (archive.goods.articule != null)
+                            //        if (archive.goods.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                            //        {
+                            //            searchResultArhive.Add(archive);
+                            //        }
                         }
 
                         return searchResultArhive;
@@ -133,27 +133,27 @@ namespace ShopProject.Model
                 case TypeSearch.Code:
                     {
                         foreach (GoodsOutOfStock product in products)
-                        {
-                            if (product.Product != null)
-                            {
-                                if (product.Product.code == itemSearch)
-                                {
-                                    searchResultProductsOutOfStock.Add(product);
-                                }
-                            }
+                        {   
+                            //if (product.goods != null)
+                            //{
+                            //    if (product.goods.code == itemSearch)
+                            //    {
+                            //        searchResultProductsOutOfStock.Add(product);
+                            //    }
+                            //}
                         }
                         return searchResultProductsOutOfStock;
                     }
                 case TypeSearch.Name:
                     {
-                        foreach (GoodsOutOfStock product in products)
-                        {
-                            if (product.Product != null)
-                                if (product.Product.name != null)
-                                    if (product.Product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                    {
-                                        searchResultProductsOutOfStock.Add(product);
-                                    }
+                        foreach (GoodsOutOfStock product in products) { 
+                        //{
+                        //    if (product.goods != null)
+                        //        if (product.goods.name != null)
+                        //            if (product.goods.name.ToLower().ToString().Contains(itemSearch.ToLower()))
+                        //            {
+                        //                searchResultProductsOutOfStock.Add(product);
+                        //            }
                         }
 
                         return searchResultProductsOutOfStock;
@@ -162,12 +162,12 @@ namespace ShopProject.Model
                     {
                         foreach (GoodsOutOfStock product in products)
                         {
-                            if (product.Product != null)
-                                if (product.Product.articule != null)
-                                    if (product.Product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                    {
-                                        searchResultProductsOutOfStock.Add(product);
-                                    }
+                            //if (product.goods != null)
+                            //    if (product.goods.articule != null)
+                            //        if (product.goods.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
+                            //        {
+                            //            searchResultProductsOutOfStock.Add(product);
+                            //        }
                         }
 
                         return searchResultProductsOutOfStock;

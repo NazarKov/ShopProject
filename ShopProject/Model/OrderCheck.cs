@@ -120,15 +120,15 @@ namespace ShopProject.Model
                 doc.Blocks.Add(setTextChek("" +
                      "--------------------------------------------------------------    "+str+"" +
                      "\n--------------------------------------------------------------     " +
-                     "\nСУМА                                                          " + order.suma+",00" +
+                     "\nСУМА                                                          " + order.sum+",00" +
                      "\nБез ПДВ" +
                      "\n--------------------------------------------------------------     " +
-                    $"\nГОТІВКОВА                                                {order.userSuma}.00" +
+                    $"\nГОТІВКОВА                                                {order.buyersAmount}.00" +
                     $"\nРешта                                                            {order.rest}.00"));
 
 
 
-                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={mac.mac}&date={dateTime.ToString("yyyyMMdd")}&time={dateTime.ToString("HHmm")}&id={mac.id}&sm={order.suma}&fn=4000512773";
+                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={mac.mac}&date={dateTime.ToString("yyyyMMdd")}&time={dateTime.ToString("HHmm")}&id={mac.id}&sm={order.sum}&fn=4000512773";
 
                 string qrtext = text; //считываем текст из TextBox'a
 
@@ -153,7 +153,7 @@ namespace ShopProject.Model
                 //кюар код
 
                 doc.Blocks.Add(setTextChek($"" +
-                    $"\nФН чека:{order.LocalNumber}                        {dateTime.ToString("dd.MM.yyyy")} {dateTime.ToString("HH:mm:ss")}" +
+                    $"\nФН чека:{order.localNumber}                        {dateTime.ToString("dd.MM.yyyy")} {dateTime.ToString("HH:mm:ss")}" +
                     $"\nФН ПРРО:4000512773       Режим роботи:онлайн" +
                     $"\n                           ФІКСАЛЬНИЙ ЧЕК" +
                     $"\n                           НАЗВА ПРОГРАМИ"));

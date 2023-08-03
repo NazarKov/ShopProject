@@ -1,7 +1,6 @@
 ﻿
+using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
-using ShopProject.Interfaces.InterfacesRepository;
-using ShopProject.Model.ModelRepository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,11 +13,11 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductAllModel
     {
-        private ITableRepository<Goods, TypeParameterSetTableProduct> _productRepository;
+        //private IEntityAccessor<Goods, TypeParameterSetTableProduct> _productRepository;
 
         public UpdateProductAllModel()
         {
-            _productRepository = new ProductTableRepository();
+           // _productRepository = new ProductTableRepository();
         }
 
         public bool UpdateProduct(List<Goods> list)
@@ -27,7 +26,7 @@ namespace ShopProject.Model.ToolsPage
             {
                 for(int i  = 0; i < list.Count;i++)
                 {
-                    _productRepository.Update(list[i]);
+                  //  _productRepository.Update(list[i]);
                 }
                 return true;
             }

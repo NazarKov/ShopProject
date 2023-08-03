@@ -12,7 +12,6 @@ using Grpc.Core;
 using GreetClient;
 using System.Windows;
 using ShopProject.Helpers.MiniServiceSigningFile;
-using ShopProject.Model.ModelRepository;
 using System.Xml;
 using ShopProject.DataBase.Model;
 
@@ -31,11 +30,11 @@ namespace ShopProject.Helpers.DFSAPI
         private string pathxml = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml";
         private string pathxml7ps = "C:\\Users\\lesak\\Source\\Repos\\NazarKov\\ShopProject\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
         CallOptions callOptions;
-        OrderXMLTableRepositories OrderXMLTableRepositories;
+        //OrderXMLTableRepositories OrderXMLTableRepositories;
 
         public DFSAPI() 
         {
-            OrderXMLTableRepositories = new OrderXMLTableRepositories();
+            //OrderXMLTableRepositories = new OrderXMLTableRepositories();
         }
 
         private ByteString ReadFile(string path)
@@ -63,7 +62,7 @@ namespace ShopProject.Helpers.DFSAPI
             CheckResponse check = SendMessages(date, Check.Types.Type.Servicechk, 0);
             if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
+               // OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
             MessageBox.Show("зміна відкрита");
@@ -88,10 +87,10 @@ namespace ShopProject.Helpers.DFSAPI
 
             if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
+              //  OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
-            return new Messe() { mac = mac, id = check.Id };
+            return new Messe() { mac = "mac", id = check.Id };
         }
         public void CloseShift(int count)
         {
@@ -112,7 +111,7 @@ namespace ShopProject.Helpers.DFSAPI
             CheckResponse check = SendMessages(date, Check.Types.Type.Zreport, 0);
             if (check.Status == CheckResponse.Types.Status.Ok)
             {
-                OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
+              //  OrderXMLTableRepositories.Add(new DataBase.Model.OrderXML() { XMLString = DFSAPI.ReadXmlFileToString(pathxml) });
             }
             mainContoller.SendingCommand(TypeCommand.Disconnect);
         }

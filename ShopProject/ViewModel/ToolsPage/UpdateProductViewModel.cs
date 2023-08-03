@@ -41,23 +41,23 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void SetFieldText()
         {
-            if (product != null)
-            {
-                if(product.ID!=0)
-                    _id = product.ID;
-                if (product.code != null)
-                    Code = product.code;
-                if (product.name != null)
-                    Name = product.name;
-                if (product.articule != null)
-                    Articule = product.articule;
-                if (product.price != null)
-                    Price = (double)product.price;
-                if (product.count != null)
-                    Count = (int)product.count;
-                if (product.units != null)
-                    SelectUnits = product.units;
-            }
+            //if (product != null)
+            //{
+            //    if(product.ID!=0)
+            //        _id = product.ID;
+            //    if (product.code != null)
+            //        Code = product.code;
+            //    if (product.name != null)
+            //        Name = product.name;
+            //    if (product.articule != null)
+            //        Articule = product.articule;
+            //    if (product.price != null)
+            //        Price = (double)product.price;
+            //    if (product.count != null)
+            //        Count = (int)product.count;
+            //    if (product.units != null)
+            //        SelectUnits = product.units;
+            //}
           
         }
         private void SetFieldComboBox()

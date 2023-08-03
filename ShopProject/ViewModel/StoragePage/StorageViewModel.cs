@@ -20,21 +20,21 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _openCreateProductWindow;
         private ICommand _openFormationProductWindow;
 
-        private List<Goods> _products;
+        private List<Goods> _goods;
         
         public StorageViewModel()
         {
-            Products = new List<Goods>();
+            GoodsList = new List<Goods>();
             SearchTemplateName = new List<string>();
           
 
             _searchButton = new DelegateCommand(SearchProductInCodeAndName);
             _visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
-            _openCreateProductWindow = new DelegateCommand(() => { new CreateProductPage().Show(); });
+            _openCreateProductWindow = new DelegateCommand(() => { new CreateGoodsPage().Show(); });
             _openFormationProductWindow = new DelegateCommand(() => { new FormationProduct().Show(); });
 
             SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
-            _products = new List<Goods>();
+            _goods = new List<Goods>();
 
             _nameSearch = string.Empty;
             _searchTemplateName = new List<string>();
@@ -44,19 +44,13 @@ namespace ShopProject.ViewModel.StoragePage
             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
         }
 
-        private void SetFieldTextComboBox()
-        {
-            SearchTemplateName.Add("ШтрихКод");
-            SearchTemplateName.Add("Назва");
-            SearchTemplateName.Add("Артикуль");
-            SelectedIndexSearch = 0;
-        }
+      
 
-        private List<Goods>? _product;
-        public List<Goods>? Products
+        private List<Goods>? _goodslist;
+        public List<Goods>? GoodsList
         {
-            get { return _product; }
-            set{ _product = value; OnPropertyChanged("Products"); }
+            get { return _goodslist; }
+            set{ _goodslist = value; OnPropertyChanged("GoodsList"); }
         }
 
         private double _sizeDataGrid;
@@ -86,6 +80,14 @@ namespace ShopProject.ViewModel.StoragePage
             set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
 
+        private void SetFieldTextComboBox()
+        {
+            SearchTemplateName.Add("ШтрихКод");
+            SearchTemplateName.Add("Назва");
+            SearchTemplateName.Add("Артикуль");
+            SelectedIndexSearch = 0;
+        }
+
         public ICommand SearchButton => _searchButton;
 
         void SearchProductInCodeAndName()
@@ -95,17 +97,17 @@ namespace ShopProject.ViewModel.StoragePage
                 {
                     case 0:
                         {
-                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
                             break;
                         }
                     case 1:
                         {
-                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
+                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
                             break;
                         }
                     case 2:
                         {
-                            Products = _storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
+                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
                             break;
                         }
                 }
@@ -114,26 +116,26 @@ namespace ShopProject.ViewModel.StoragePage
 
         void SetFieldItemDataGridThread()
         {
-            Products = null;
+            GoodsList = null;
             _storageModel = new StorageModel();
-            Products = _storageModel.GetItems();
+            GoodsList = _storageModel.GetItems();
         }
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
         private void EditingProduct(object parameter)
         {
-            _products = new List<Goods>();
+            _goods = new List<Goods>();
             if (_storageModel != null)
-                _storageModel.ContertToListProduct((IList)parameter, _products);
+                _storageModel.ContertToListProduct((IList)parameter, _goods);
 
-            if (_products.Count == 1)
+            if (_goods.Count == 1)
             {
-                StaticResourse.product = _products[0];
+                StaticResourse.product = _goods[0];
                 new UpdateProduct().ShowDialog();
             }
             else
             {
-                StaticResourse.products = _products;
+                StaticResourse.products = _goods;
                 new UpdateProductAll().ShowDialog();
             }
             
@@ -144,15 +146,15 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Goods>();
+                _goods = new List<Goods>();
                 if (_storageModel != null)
-                    _storageModel.ContertToListProduct((IList)parameter, _products);
-                if (_products.Count == 1)
+                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                if (_goods.Count == 1)
                 {
-                    if (_products[0] != null)
+                    if (_goods[0] != null)
                         if (_storageModel != null)
                         {
-                            if (_storageModel.DeleteProduct(_products[0]))
+                            if (_storageModel.DeleteProduct(_goods[0]))
                                 new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                         }
                 }
@@ -164,13 +166,13 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Goods>();
+                _goods = new List<Goods>();
                 if (_storageModel != null)
                 {
-                    _storageModel.ContertToListProduct((IList)parameter, _products);
-                    if (_products.Count == 1)
+                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                    if (_goods.Count == 1)
                     {
-                        if(_storageModel.SetProductInArhive(_products[0]))
+                        if(_storageModel.SetProductInArhive(_goods[0]))
                             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
@@ -181,13 +183,13 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<Goods>();
+                _goods = new List<Goods>();
                 if (_storageModel != null)
                 {
-                    _storageModel.ContertToListProduct((IList)parameter, _products);
-                    if (_products.Count == 1)
+                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                    if (_goods.Count == 1)
                     {
-                        if (_storageModel.SetProductinOutOfStok(_products[0]))
+                        if (_storageModel.SetProductinOutOfStok(_goods[0]))
                             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
@@ -196,13 +198,13 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand OpenWindoiwCreateStiker{ get => new DelegateParameterCommand(ShowWindowCreateStiker, CanRegister); }
         private void ShowWindowCreateStiker(object parameter)
         {
-            _products = new List<Goods>();
+            _goods = new List<Goods>();
             if (_storageModel != null)
-                _storageModel.ContertToListProduct((IList)parameter, _products);
+                _storageModel.ContertToListProduct((IList)parameter, _goods);
 
-            if (_products.Count == 1)
+            if (_goods.Count == 1)
             {
-                StaticResourse.product = _products[0];
+                StaticResourse.product = _goods[0];
                 new CreateStiker().Show();
             }
         }

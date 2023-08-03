@@ -1,6 +1,6 @@
 ﻿using ShopProject.DataBase.Context;
-using ShopProject.Interfaces.InterfacesContextDatabase;
-using ShopProject.Model.DataBase;
+using ShopProject.DataBase.DataAccess.DBAccess;
+using ShopProject.DataBase.Interfaces;
 using ShopProject.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -17,10 +17,10 @@ namespace ShopProject.Model.SettingPage
     internal class SettingDataBaseModel 
     {
       
-        private IContextDataBase _contextDataBase;
+        private IDataAccess _contextDataBase;
         public SettingDataBaseModel()
         {
-            _contextDataBase = new DataContext();
+            _contextDataBase = new DataBaseAceess();
         }
 
         public bool CreateDataBase(string name,int typeConnections)

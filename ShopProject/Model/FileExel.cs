@@ -78,7 +78,7 @@ namespace ShopProject.Model
                         row.CreateCell(3).SetCellValue((double)product.price);
                     if (product.count != null)
                         row.CreateCell(4).SetCellValue((double)product.count);
-                    row.CreateCell(5).SetCellValue(product.units);
+                   // row.CreateCell(5).SetCellValue(product.units);
                     if (product.sales != null)
                         row.CreateCell(6).SetCellValue((double)product.sales);
                     i++;
