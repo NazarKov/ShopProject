@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProject.DataBase.Context;
 using ShopProject.DataBase.DataAccess.DBAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
@@ -20,8 +21,13 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context!=null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if (context.goods != null)
                     {
+                        item.unit = context.goodsUnits.Find(item.unit.id);
+                        item.codeUKTZED = context.codeUKTZED.Find(item.codeUKTZED.id);
+
                         context.goods.Add(item);
                     }
                     context.SaveChanges();
@@ -98,6 +104,8 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context!=null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if(context.goods != null)
                     {
                         if(context.goods.Count()!=0)
@@ -181,18 +189,20 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context !=null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if(context.goods != null)
                     {
                         if(item!=null)
                         {
-                            UpdateFieldGood(context.goods.Find(item.id),item);
+                            UpdateFieldGood(context.goods.Find(item.id), item,context.goodsUnits.Find(item.unit.id),context.codeUKTZED.Find(item.codeUKTZED.id));
                         }
                         else
                         {
                             throw new Exception("Товар не заповнено");
                         }
                     }
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
@@ -209,13 +219,15 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if (context != null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if (context.goods != null)
                     {
                         if (items != null)
                         {
                             foreach (var item in items)
                             {
-                                UpdateFieldGood(context.goods.Find(item.id), item);
+                                 UpdateFieldGood(context.goods.Find(item.id), item, context.goodsUnits.Find(item.unit.id), context.codeUKTZED.Find(item.codeUKTZED.id));
                             }
                         }
                         else
@@ -223,12 +235,12 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                             throw new Exception("Товар не заповнено");
                         }
                     }
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
 
-        private void UpdateFieldGood(Goods goodsUpdate, Goods goods)
+        private void UpdateFieldGood(Goods goodsUpdate, Goods goods,GoodsUnit unit,CodeUKTZED codeUKTZED)
         {
             goodsUpdate.code = goods.code;
             goodsUpdate.name = goods.name;
@@ -237,8 +249,8 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             goodsUpdate.status = goods.status;
             goodsUpdate.articule = goods.articule;
             goodsUpdate.count = goods.count;
-            goodsUpdate.codeUKTZED = goods.codeUKTZED;
-            goodsUpdate.unit = goods.unit;
+            goodsUpdate.codeUKTZED = codeUKTZED;
+            goodsUpdate.unit = unit;
         }
     }
 }

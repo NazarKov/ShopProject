@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace ShopProject.Views.ToolsPage
 {
     /// <summary>
-    /// Interaction logic for UpdateProduct.xaml
+    /// Interaction logic for UpdateGoodsRange.xaml
     /// </summary>
-    public partial class UpdateProduct : Window
+    public partial class UpdateGoodsRange : Window
     {
-        public UpdateProduct()
+        public UpdateGoodsRange()
         {
             InitializeComponent();
         }

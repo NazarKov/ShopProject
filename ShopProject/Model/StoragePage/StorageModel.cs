@@ -42,8 +42,9 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                return null;
-                //return Search.ProductDataBase(itemSearch, type, _products);
+                _goods.Clear();
+                _goods = (List<Goods>)_goodsRepository.GetAll();
+                return Search.ProductDataBase(itemSearch, type, _goods);
             }
             catch (Exception ex)
             {

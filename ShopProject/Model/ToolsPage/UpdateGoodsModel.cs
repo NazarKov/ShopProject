@@ -4,12 +4,13 @@ using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Windows;
 
 namespace ShopProject.Model.ToolsPage
 {
-    internal class CreateGoodsModel
+    internal class UpdateGoodsModel
     {
         private IEntityAccessor<Goods> _goodsRepository;
         private IEntityAccessor<GoodsUnit> _goodsUnitRepository;
@@ -18,7 +19,7 @@ namespace ShopProject.Model.ToolsPage
         private List<GoodsUnit> _goodsUnitsList;
         private List<CodeUKTZED> _codesUKTZEDList;
 
-        public CreateGoodsModel()
+        public UpdateGoodsModel()
         {
             _goodsUnitsList = new List<GoodsUnit>();
             _codesUKTZEDList = new List<CodeUKTZED>();
@@ -27,26 +28,22 @@ namespace ShopProject.Model.ToolsPage
             _goodsUnitRepository = new UnitTableAccess();
             _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
         }
-
-        public bool SaveItemDataBase(string name, string code, string articule, decimal price, decimal count, string units,string codeUKTZED)
+      
+        public bool UpdateItemDataBase(Guid id,string name, string code,string articule, decimal price, decimal count, string units,string codeUKTZED)
         {
             try
             {
-                if (Validation.TextField(name, code, articule, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
+                if (Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct")))
                 {
-                    if (_goodsRepository.GetItemBarCode(code)!=null)//перевірка на наявність товару по штрих коду
-                    {
-                        throw new Exception("Товар існує");
-                    }
-
                     var unit = _goodsUnitsList.Where(item => item.shortName == units).FirstOrDefault();
-                    var UKTZED = _codesUKTZEDList.Where(item => item.name==codeUKTZED).FirstOrDefault();
+                    var UKTZED = _codesUKTZEDList.Where(item => item.name == codeUKTZED).FirstOrDefault();
                     if (unit != null)
                     {
                         if (UKTZED != null)
                         {
-                            _goodsRepository.Add(new Goods()
+                            _goodsRepository.Update(new Goods()
                             {
+                                id =id,
                                 name = name,
                                 code = code,
                                 articule = articule,
@@ -54,9 +51,9 @@ namespace ShopProject.Model.ToolsPage
                                 count = count,
                                 unit = unit,
                                 codeUKTZED = UKTZED,
-                                createdAt = DateTime.Now,
+                                sales = 0,
                                 status = "in_stock",
-                                sales = 0
+                                
                             });
                         }
                     }
@@ -81,7 +78,7 @@ namespace ShopProject.Model.ToolsPage
                 }
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
@@ -93,18 +90,19 @@ namespace ShopProject.Model.ToolsPage
             {
                 List<string> result = new List<string>();
                 _codesUKTZEDList = (List<CodeUKTZED>)_codeUKTZEDRepository.GetAll();
-                foreach(CodeUKTZED code in  _codesUKTZEDList)
+                foreach (CodeUKTZED code in _codesUKTZEDList)
                 {
                     result.Add(code.name.ToString());
                 }
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Помилка",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
-       
+
+
     }
 }

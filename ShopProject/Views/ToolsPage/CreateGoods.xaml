@@ -35,10 +35,10 @@
         <TextBox x:Name="Code" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Code,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
         <Label x:Name="Pricelabel" Content="Ціна товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="Price"  HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+        <TextBox x:Name="Price"  HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="170"/>
 
         <Label x:Name="countlabel" Content="Кількість товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+        <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="170"/>
 
         <Label x:Name="unitlabel" Content="Одиниці товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top" SelectedIndex="0" SelectedValue="{Binding SelectUnits}" ItemsSource="{Binding Units }" Width="170"/>

@@ -23,7 +23,7 @@ namespace ShopProject.ViewModel.ToolsPage
             _model = new CreateGoodsModel();
             Units = new List<string>();
 
-            _saveGoodsCommand = new DelegateCommand(SaveAndCreateProductDataBase);
+            _saveGoodsCommand = new DelegateCommand(SaveAndCreateGoodsDataBase);
             _clearWindowCommand = new DelegateCommand(ClearTextWindow);
 
             _code = string.Empty;
@@ -32,6 +32,9 @@ namespace ShopProject.ViewModel.ToolsPage
             _units = null;
             _selectUnits = string.Empty;
             _selectCodeUKTZED = string.Empty;
+
+            _price = 0m;
+            _count = 0m;
 
             Units = _model.GetUnitList();
             CodeUKTZED = _model.GetCodeUKTZEDList();
@@ -58,15 +61,15 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _articule = value; OnPropertyChanged("Articule"); }
         }
 
-        private double _price;
-        public double Price
+        private decimal _price;
+        public decimal Price
         {
             get { return _price; }
             set { _price= value; OnPropertyChanged("Price"); } 
         }
 
-        private int _count;
-        public int Count 
+        private decimal _count;
+        public decimal Count 
         {
             get { return _count; }
             set { _count = value; OnPropertyChanged("Count"); }
@@ -76,27 +79,27 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string>? Units
         {
             get { return _units; }
-            set { _units = value; OnPropertyChanged("Units"); }
+            set { _units = value; }
         }
 
         private string _selectUnits;
         public string SelectUnits
         {
             get { return _selectUnits; }
-            set { _selectUnits = value; OnPropertyChanged("SelectUnits"); }
+            set { _selectUnits = value; }
         }
 
         private List<string>? _codeUKTZED;
         public List<string>? CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; OnPropertyChanged(""); }
+            set { _codeUKTZED = value; }
         }
         private string _selectCodeUKTZED;
         public string SelcetCodeUKTZED
         {
             get { return _selectCodeUKTZED; }
-            set { _selectCodeUKTZED = value; OnPropertyChanged(""); }
+            set { _selectCodeUKTZED = value; }
         }
 
 
@@ -115,17 +118,17 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             Name = string.Empty;
             Code = string.Empty;
-            Count = 0;
-            Price = 0;
+            Count = 0m;
+            Price = 0m;
         }
 
         public ICommand SaveProductCommand => _saveGoodsCommand;
 
-        private void SaveAndCreateProductDataBase()
+        private void SaveAndCreateGoodsDataBase()
         {
            if (_model.SaveItemDataBase(_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
            {
-                MessageBox.Show("товар добавлений");
+                MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
            }
         }
 

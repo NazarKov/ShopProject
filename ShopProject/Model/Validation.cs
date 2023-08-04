@@ -13,15 +13,15 @@ namespace ShopProject.Model
 {
     internal static class Validation
     {
-        public static bool TextField(string name, string code, string articule, double price, int count, string units, bool validation)
+        public static bool TextField(string name, string code, string articule, decimal price, decimal count, string units, bool validation)
         {
             if (validation)
             {
                 ItemChekIsNull(name, typeof(string), "Назва").ToString();
                 ItemChekIsNull(code, typeof(string), "Штрихкод").ToString();
                 ItemChekIsNull(articule, typeof(string), "Артикуль").ToString();
-                ItemChekIsNull(price, typeof(double), "Ціна");
-                ItemChekIsNull(count, typeof(int), "Кількість"); ;
+                ItemChekIsNull(price, typeof(decimal), "Ціна");
+                ItemChekIsNull(count, typeof(decimal), "Кількість"); ;
                 ItemChekIsNull(units, typeof(string), "Одиниці").ToString();
                 return true;
             }
@@ -44,6 +44,10 @@ namespace ShopProject.Model
                     return item;
                 }
                 else if (type.Equals(typeof(double)) && (double)item != 0)
+                {
+                    return item;
+                }
+                else if (type.Equals(typeof(decimal)) && (decimal)item != 0)
                 {
                     return item;
                 }

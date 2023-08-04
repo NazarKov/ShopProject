@@ -74,31 +74,31 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-                if (Validation.TextField(name,code, articule,price,count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct")))
-                {
+                //if (Validation.TextField(name,code, articule,price,count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct")))
+                //{
 
-                    //if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Goods>)_tableRepository.GetAll()))//перевірка на наявність товару по штрих коду
-                    //{
-                    //    throw new Exception("Товар існує");
-                    //}
-                    Goods product = new Goods();
-                    product.code = code;
-                    product.name = name;
-                    product.articule = articule;
-                    product.price = (decimal)price;
-                    product.count = count;
-                   // product.units = units;
-                    product.createdAt = DateTime.Now;
-                    product.status = "in_stock";
-                    product.sales = 0;
+                //    //if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Goods>)_tableRepository.GetAll()))//перевірка на наявність товару по штрих коду
+                //    //{
+                //    //    throw new Exception("Товар існує");
+                //    //}
+                //    Goods product = new Goods();
+                //    product.code = code;
+                //    product.name = name;
+                //    product.articule = articule;
+                //    product.price = (decimal)price;
+                //    product.count = count;
+                //   // product.units = units;
+                //    product.createdAt = DateTime.Now;
+                //    product.status = "in_stock";
+                //    product.sales = 0;
 
 
-                   // _tableRepository.Add(product);
-                    foreach (var item in productsFormation)
-                    {
-                        //_tableRepository.SetParameter(item.id, (item.count - 1), TypeParameterSetTableProduct.Count);
-                    }
-                }
+                //   // _tableRepository.Add(product);
+                //    foreach (var item in productsFormation)
+                //    {
+                //        //_tableRepository.SetParameter(item.id, (item.count - 1), TypeParameterSetTableProduct.Count);
+                //    }
+                //}
                 return true;
             }
             catch(Exception ex)

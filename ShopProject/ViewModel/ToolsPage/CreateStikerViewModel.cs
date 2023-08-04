@@ -40,7 +40,7 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void SetFeildTextBox()
         {
-            if (StaticResourse.product == null)
+            if (StaticResourse.goods == null)
             {
                 NameCompany = StaticResourse.nameCompany;
 
@@ -52,11 +52,11 @@ namespace ShopProject.ViewModel.ToolsPage
             else
             {
                 NameCompany = StaticResourse.nameCompany;
-                if (StaticResourse.product.code != null)
-                    Code = StaticResourse.product.code.ToString();
-                if (StaticResourse.product.name != null)
+                if (StaticResourse.goods.code != null)
+                    Code = StaticResourse.goods.code.ToString();
+                if (StaticResourse.goods.name != null)
                 {
-                    string[] splitName = StaticResourse.product.name.ToString().Split(' ');
+                    string[] splitName = StaticResourse.goods.name.ToString().Split(' ');
                     if (splitName.Length < 2)
                     {
                         NameProduct = splitName[0];

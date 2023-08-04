@@ -3,8 +3,11 @@ using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Views.ToolsPage;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -13,7 +16,7 @@ namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
-        private StorageModel? _storageModel;
+        private StorageModel? _model;
 
         private ICommand _searchButton;
         private ICommand _visibileAllButton;
@@ -26,7 +29,6 @@ namespace ShopProject.ViewModel.StoragePage
         {
             GoodsList = new List<Goods>();
             SearchTemplateName = new List<string>();
-          
 
             _searchButton = new DelegateCommand(SearchProductInCodeAndName);
             _visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
@@ -43,8 +45,6 @@ namespace ShopProject.ViewModel.StoragePage
 
             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
         }
-
-      
 
         private List<Goods>? _goodslist;
         public List<Goods>? GoodsList
@@ -92,22 +92,25 @@ namespace ShopProject.ViewModel.StoragePage
 
         void SearchProductInCodeAndName()
         {
-            if (_storageModel != null)
+            if (_model != null)
                 switch (_selectedIndexSearch)
                 {
                     case 0:
                         {
-                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Code);
+                            GoodsList.Clear();
+                            GoodsList = _model.SearchProduct(_nameSearch, TypeSearch.Code);
                             break;
                         }
                     case 1:
                         {
-                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Name);
+                            GoodsList.Clear();
+                            GoodsList = _model.SearchProduct(_nameSearch, TypeSearch.Name);
                             break;
                         }
                     case 2:
                         {
-                            GoodsList = _storageModel.SearchProduct(_nameSearch, TypeSearch.Articule);
+                            GoodsList.Clear();
+                            GoodsList = _model.SearchProduct(_nameSearch, TypeSearch.Articule);
                             break;
                         }
                 }
@@ -116,27 +119,28 @@ namespace ShopProject.ViewModel.StoragePage
 
         void SetFieldItemDataGridThread()
         {
-            GoodsList = null;
-            _storageModel = new StorageModel();
-            GoodsList = _storageModel.GetItems();
+            GoodsList.Clear();
+            _model = new StorageModel();
+            GoodsList = _model.GetItems();
         }
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(EditingProduct, CanRegister); }
         private void EditingProduct(object parameter)
         {
             _goods = new List<Goods>();
-            if (_storageModel != null)
-                _storageModel.ContertToListProduct((IList)parameter, _goods);
-
+            if (_model != null)
+                _model.ContertToListProduct((IList)parameter, _goods);
+                
             if (_goods.Count == 1)
             {
-                StaticResourse.product = _goods[0];
-                new UpdateProduct().ShowDialog();
+                StaticResourse.goods = _goods[0];
+                new UpdateGoods().ShowDialog();
+                SearchProductInCodeAndName();
             }
             else
             {
-                StaticResourse.products = _goods;
-                new UpdateProductAll().ShowDialog();
+                StaticResourse.goodsList = _goods;
+                new UpdateGoodsRange().ShowDialog();
             }
             
         }
@@ -147,14 +151,14 @@ namespace ShopProject.ViewModel.StoragePage
             if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 _goods = new List<Goods>();
-                if (_storageModel != null)
-                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                if (_model != null)
+                    _model.ContertToListProduct((IList)parameter, _goods);
                 if (_goods.Count == 1)
                 {
                     if (_goods[0] != null)
-                        if (_storageModel != null)
+                        if (_model != null)
                         {
-                            if (_storageModel.DeleteProduct(_goods[0]))
+                            if (_model.DeleteProduct(_goods[0]))
                                 new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                         }
                 }
@@ -167,12 +171,12 @@ namespace ShopProject.ViewModel.StoragePage
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 _goods = new List<Goods>();
-                if (_storageModel != null)
+                if (_model != null)
                 {
-                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                    _model.ContertToListProduct((IList)parameter, _goods);
                     if (_goods.Count == 1)
                     {
-                        if(_storageModel.SetProductInArhive(_goods[0]))
+                        if(_model.SetProductInArhive(_goods[0]))
                             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
@@ -184,12 +188,12 @@ namespace ShopProject.ViewModel.StoragePage
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 _goods = new List<Goods>();
-                if (_storageModel != null)
+                if (_model != null)
                 {
-                    _storageModel.ContertToListProduct((IList)parameter, _goods);
+                    _model.ContertToListProduct((IList)parameter, _goods);
                     if (_goods.Count == 1)
                     {
-                        if (_storageModel.SetProductinOutOfStok(_goods[0]))
+                        if (_model.SetProductinOutOfStok(_goods[0]))
                             new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
                     }
                 }
@@ -199,12 +203,12 @@ namespace ShopProject.ViewModel.StoragePage
         private void ShowWindowCreateStiker(object parameter)
         {
             _goods = new List<Goods>();
-            if (_storageModel != null)
-                _storageModel.ContertToListProduct((IList)parameter, _goods);
+            if (_model != null)
+                _model.ContertToListProduct((IList)parameter, _goods);
 
             if (_goods.Count == 1)
             {
-                StaticResourse.product = _goods[0];
+                StaticResourse.goods = _goods[0];
                 new CreateStiker().Show();
             }
         }
