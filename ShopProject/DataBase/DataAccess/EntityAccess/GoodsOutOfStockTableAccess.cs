@@ -1,7 +1,9 @@
-﻿using ShopProject.DataBase.Interfaces;
+﻿using ShopProject.DataBase.Context;
+using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +14,21 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
     {
         public void Add(GoodsOutOfStock item)
         {
-            throw new NotImplementedException();
+            using (ContextDataBase conext = new ContextDataBase())
+            {
+                if (conext != null)
+                {
+                    conext.goodsOutOfStocks.ToList();
+                    if (item != null)
+                    {
+                        if (conext.goodsOutOfStocks != null)
+                        {
+                            conext.goodsOutOfStocks.Add(item);
+                        }
+                    }
+                }
+                conext.SaveChanges();
+            }
         }
 
         public void AddRange(List<GoodsOutOfStock> items)
@@ -50,7 +66,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             throw new NotImplementedException();
         }
 
-        public void UpdateParameter(GoodsOutOfStock item, string nameParameter, object valueParameter)
+        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
             throw new NotImplementedException();
         }

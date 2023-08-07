@@ -62,14 +62,14 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                     {
                         if (item != null)
                         {
-                            context.goods.Remove(item);
+                            context.goods.Remove(context.goods.Find(item.id));
                         }
                         else
                         {
                             throw new Exception("Товар не знайдено");
                         }
                     }
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
@@ -207,9 +207,28 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             }
         }
      
-        public void UpdateParameter(Goods item, string nameParameter, object valueParameter)
+        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
-            throw new NotImplementedException();
+            switch(nameParameter)
+            {
+                case "status":
+                    {
+                        using (ContextDataBase context = new ContextDataBase())
+                        {
+                            if (context != null)
+                            {
+                                context.goods.Load();
+                                if (context.goods.Count() != 0)
+                                {
+                                    var item = context.goods.Find(id);
+                                    item.status = valueParameter.ToString();
+                                }
+                            }
+                            context.SaveChanges();
+                        }
+                        break;
+                    }
+            }
         }
 
         public void UpdateRange(List<Goods> items)

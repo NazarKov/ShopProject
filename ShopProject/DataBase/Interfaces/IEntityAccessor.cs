@@ -16,7 +16,7 @@ namespace ShopProject.DataBase.Interfaces
 
         public void UpdateRange(List<T> items);
 
-        public void UpdateParameter(T item, string nameParameter, object valueParameter);
+        public void UpdateParameter(Guid id, string nameParameter, object valueParameter);
 
         public void Delete(T item);
 

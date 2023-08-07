@@ -78,7 +78,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             throw new NotImplementedException();
         }
 
-        public void UpdateParameter(GoodsUnit item, string nameParameter, object valueParameter)
+        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
             throw new NotImplementedException();
         }

@@ -1,7 +1,9 @@
-﻿using ShopProject.DataBase.Interfaces;
+﻿using ShopProject.DataBase.Context;
+using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +14,22 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
     {
         public void Add(GoodsArchive item)
         {
-            throw new NotImplementedException();
+            using (ContextDataBase conext = new ContextDataBase())
+            {
+                if(conext != null)
+                {
+                    conext.goods.ToList();
+                    conext.goodsArchives.ToList();
+                    if (item != null)
+                    {
+                        if (conext.goodsArchives != null)
+                        {
+                            conext.goodsArchives.Add(item);
+                        }
+                    }
+                }
+                conext.SaveChanges();
+            }
         }
 
         public void AddRange(List<GoodsArchive> items)
@@ -50,7 +67,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             throw new NotImplementedException();
         }
 
-        public void UpdateParameter(GoodsArchive item, string nameParameter, object valueParameter)
+        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
             throw new NotImplementedException();
         }

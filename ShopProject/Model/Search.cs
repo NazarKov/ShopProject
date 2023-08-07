@@ -22,7 +22,7 @@ namespace ShopProject.Model
         private static List<GoodsArchive>? searchResultArhive;
         private static List<GoodsOutOfStock>? searchResultProductsOutOfStock;
 
-        public static List<Goods>? ProductDataBase(string itemSearch, TypeSearch type,List<Goods> products)
+        public static List<Goods>? GoodsDataBase(string itemSearch, TypeSearch type,List<Goods> products)
         {
             searchResult = new List<Goods>();
             switch (type)

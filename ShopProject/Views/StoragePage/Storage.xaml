@@ -18,8 +18,8 @@
     <Grid>
         <Grid.ContextMenu>
             <ContextMenu Name="context">
-                <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
-                <MenuItem Header="Сфомувати товар" Command="{Binding OpenFormationProductWindow}"></MenuItem>
+                <MenuItem Header="Добавити товар" Command="{Binding OpenCreateGoodsWindowCommand}"/>
+                <MenuItem Header="Сфомувати товар" Command="{Binding OpenFormationGoodsWindowCommand}"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Grid.RowDefinitions>
@@ -42,8 +42,8 @@
             <Label Grid.Column="1"  Content="Назва продукту" Margin="20,0,0,0"/>
             <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Left" Margin="20,25,0,0" TextWrapping="Wrap" Text="{Binding NameSearch}" VerticalAlignment="Top" Width="120"/>
    
-            <Button x:Name="button" Grid.Column="2" Content="Пошук" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="150" Command="{Binding SearchButton}"/>
-            <Button x:Name="button1" Grid.Column="2" Content="Відобразити всі продукти" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="150" Command="{Binding VisibileAllButton}"/>
+            <Button x:Name="button" Grid.Column="2" Content="Пошук" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="150" Command="{Binding SearchCommand}"/>
+            <Button x:Name="button1" Grid.Column="2" Content="Відобразити всі продукти" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="150" Command="{Binding VisibileAllCommand}"/>
 
 
         </Grid>
@@ -65,25 +65,25 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindow}"/>
+                    <MenuItem Header="Добавити товар" Command="{Binding OpenCreateGoodsWindowCommand}"/>
                     <MenuItem
                         Header="Редагувати товар"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding UpdateProductCommand}" />
+                        Command="{Binding UpdateGoodsCommand}" />
                     <MenuItem 
                         Header="Видалити товар" 
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding DeleteProductCommand}"/>
+                        Command="{Binding DeleteGoodsCommand}"/>
                     <Separator></Separator>
                     <MenuItem Header="Перенести в архів"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding AddProductArhiveCommand}" />
+                        Command="{Binding AddGoodsArhiveCommand}" />
                     <MenuItem Header="Товар закінчився"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding AddOutOfStockProductCommand}" />
+                        Command="{Binding AddOutOfStockGoodsCommand}" />
                     <MenuItem Header="Роздрукувати етикетку"
                         CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                        Command="{Binding OpenWindoiwCreateStiker}" />
+                        Command="{Binding OpenWindoiwCreateStikerCommand}" />
                     <Separator></Separator>
                     
                 </ContextMenu>

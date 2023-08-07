@@ -11,15 +11,15 @@ namespace ShopProject.Model.StoragePage
     internal class StorageModel
     {
         private IEntityAccessor<Goods> _goodsRepository;
-        //private IEntityAccessor<GoodsArchive, TypeParameterSetTableProductArhive> _arhiveTableRepositories;
-        //private IEntityAccessor<GoodsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockRepositories;
-        private List<Goods> _goods;
+        private IEntityAccessor<GoodsArchive> _arhiveRepositories;
+        private IEntityAccessor<GoodsOutOfStock> _outOfStockRepositories;
+        private List<Goods>? _goods;
 
         public StorageModel()
         { 
             _goodsRepository = new GoodsTableAccess();
-            //_arhiveTableRepositories = new ArhiveTableRepositories();
-            //_outOfStockRepositories = new OutOfStockTableRepositories();
+            _arhiveRepositories = new GoodsArhiveTableAccess();
+            _outOfStockRepositories = new GoodsOutOfStockTableAccess();
 
             try
             {
@@ -30,21 +30,19 @@ namespace ShopProject.Model.StoragePage
             {
                 MessageBox.Show(ex.Message);
             }
-
-
         }
         public List<Goods> GetItems()
         {
             return _goods;
         }
 
-        public List<Goods>? SearchProduct(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchGoods(string itemSearch, TypeSearch type)
         {
             try
             {
                 _goods.Clear();
                 _goods = (List<Goods>)_goodsRepository.GetAll();
-                return Search.ProductDataBase(itemSearch, type, _goods);
+                return Search.GoodsDataBase(itemSearch, type, _goods);
             }
             catch (Exception ex)
             {
@@ -53,11 +51,11 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool DeleteProduct(Goods productDelete)
+        public bool DeleteGoods(Goods productDelete)
         {
             try
             {
-                //_productTableRepository.Delete(productDelete);
+                _goodsRepository.Delete(productDelete);
                 return true;
             }
             catch (Exception ex)
@@ -67,20 +65,12 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public void ContertToListProduct(IList list, List<Goods> products)
-        {
-            foreach (var item in list)
-            {
-                products.Add((Goods)item);
-            }
-        }
-
-        public bool SetProductInArhive(Goods item)
+        public bool SetGoodsInArhive(Goods item)
         {
             try
             {
-                //_productTableRepository.SetParameter( item.id, "arhived", TypeParameterSetTableProduct.Status);
-                //_arhiveTableRepositories.Add(new GoodsArchive() { id = item.id ,createdAt = DateTime.Now });
+                _goodsRepository.UpdateParameter(item.id, "status", "arhived");
+                _arhiveRepositories.Add(new GoodsArchive() { id = item.id ,createdAt = DateTime.Now });
                 return true;
             }
             catch (Exception ex)
@@ -89,18 +79,25 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public bool SetProductinOutOfStok(Goods item)
+        public bool SetGoodsOutOfStok(Goods item)
         {
             try
             {
-            ////    _productTableRepository.SetParameter(item.id, "out_of_stock", TypeParameterSetTableProduct.Status);
-            ////    _outOfStockRepositories.Add(new GoodsOutOfStock() { ID=item.id,createdAt = DateTime.Now});
+                _goodsRepository.UpdateParameter(item.id, "status", "arhived");
+                _outOfStockRepositories.Add(new GoodsOutOfStock() { id = item.id ,createdAt = DateTime.Now});
                 return true;
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
                 return false;
+            }
+        }
+        public void ContertToListGoods(IList list, List<Goods> goods)
+        {
+            foreach(Goods item in list)
+            {
+                goods.Add(item);
             }
         }
     }
