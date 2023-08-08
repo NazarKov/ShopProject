@@ -35,8 +35,8 @@
             <Label Grid.Column="1"  Content="Назва продукту" Margin="20,0,0,0"/>
             <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Left" Margin="20,25,0,0" TextWrapping="Wrap" Text="{Binding NameSearch}" VerticalAlignment="Top" Width="120"/>
 
-            <Button x:Name="button" Grid.Column="2" Content="Пошук" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="150" Command="{Binding SearchButton}"/>
-            <Button x:Name="button1" Grid.Column="2" Content="Відобразити всі продукти" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="150" Command="{Binding VisibileAllButton}"/>
+            <Button x:Name="button" Grid.Column="2" Content="Пошук" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="150" Command="{Binding SearchCommand}"/>
+            <Button x:Name="button1" Grid.Column="2" Content="Відобразити всі продукти" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="150" Command="{Binding VisibileAllCommand}"/>
 
 
         </Grid>
@@ -47,24 +47,23 @@
                   VerticalAlignment="Stretch" MaxWidth="{Binding SizeDataGrid}" Width="{Binding SizeDataGrid}" ColumnWidth="*"
                   CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Product.ID}" />
-                <DataGridTextColumn Header="Штрих код"  Binding="{Binding Product.code}" />
-                <DataGridTextColumn Header="Артикуль" Binding="{Binding Product.articule}" />
-                <DataGridTextColumn Header="Назва"  Binding="{Binding Product.name}" />
-                <DataGridTextColumn Header="Ціна"  Binding="{Binding Product.price}" />
-                <DataGridTextColumn Header="Кількість" Binding="{Binding Product.count}"/>
-                <DataGridTextColumn Header="Одиниці" Binding="{Binding  Product.units}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Дата списання" Binding="{Binding created_at}" />
+                <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
+                <DataGridTextColumn Header="Артикуль" Binding="{Binding articule}" />
+                <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
+                <DataGridTextColumn Header="Кількість" Binding="{Binding count}"/>
+                <DataGridTextColumn Header="Одиниці" Binding="{Binding  unit.shortName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Дата списання" Binding="{Binding arhivedAt}" />
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Повернути на склад"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
-                              Command="{Binding ReturnProductInStorageCommand }"></MenuItem>
+                              Command="{Binding ReturnGoodsInStorageCommand }"></MenuItem>
                     <Separator></Separator>
                     <MenuItem Header="Видалити"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems , RelativeSource={RelativeSource FindAncestor , AncestorType={x:Type ContextMenu}}}"
-                              Command="{Binding DeleteArhiveAndProductCommand }"></MenuItem>
+                              Command="{Binding DeleteArhiveAndGoodsCommand }"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
 

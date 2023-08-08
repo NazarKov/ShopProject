@@ -12,8 +12,6 @@ namespace ShopProject.DataBase.Context
         public DbSet<Goods>? goods { get; set; }
         internal DbSet<Operation>? operations { get; set; }
         internal DbSet<GoodsOperation>? goodsOperations { get; set; }
-        internal DbSet<GoodsArchive>? goodsArchives { get; set; }
-        internal DbSet<GoodsOutOfStock>? goodsOutOfStocks { get; set; }
         public DbSet<GoodsUnit>? goodsUnits { get; set; }
         public DbSet<CodeUKTZED>? codeUKTZED { get; set; }
         

@@ -97,7 +97,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             }
         }
 
-        public IEnumerable<Goods> GetAll()
+        public IEnumerable<Goods> GetAll(string status)
         {
             using(ContextDataBase context = new ContextDataBase())
             {
@@ -110,7 +110,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                     {
                         if(context.goods.Count()!=0)
                         {
-                            return context.goods.Where(item => item.status == "in_stock").ToList();
+                            return context.goods.Where(item => item.status == status).ToList();
                         }
                         else
                         {
@@ -125,6 +125,11 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 }
                 else { throw new Exception(); }
             }
+        }
+
+        public IEnumerable<Goods> GetAll()
+        {
+            throw new NotImplementedException();
         }
 
         public Goods? GetItemBarCode(string barCode)
@@ -222,6 +227,56 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                                 {
                                     var item = context.goods.Find(id);
                                     item.status = valueParameter.ToString();
+                                }
+                            }
+                            context.SaveChanges();
+                        }
+                        break;
+                    }
+                case "arhived":
+                    {
+                        using (ContextDataBase context = new ContextDataBase())
+                        {
+                            if (context != null)
+                            {
+                                context.goods.Load();
+                                if (context.goods.Count() != 0)
+                                {
+                                    var item = context.goods.Find(id);
+                                    if (valueParameter == null)
+                                    {
+                                        item.arhivedAt = new DateTimeOffset();
+                                    }
+                                    else
+                                    {
+
+                                        item.arhivedAt = (DateTime)valueParameter;
+                                    }
+                                }
+                            }
+                            context.SaveChanges();
+                        }
+                        break;
+                    }
+                case "outStock":
+                    {
+                        using (ContextDataBase context = new ContextDataBase())
+                        {
+                            if (context != null)
+                            {
+                                context.goods.Load();
+                                if (context.goods.Count() != 0)
+                                {
+                                    var item = context.goods.Find(id);
+                                    if (valueParameter == null)
+                                    {
+                                        item.outStockAt = new DateTimeOffset();
+                                    }
+                                    else
+                                    {
+
+                                        item.outStockAt = (DateTime)valueParameter;
+                                    }
                                 }
                             }
                             context.SaveChanges();

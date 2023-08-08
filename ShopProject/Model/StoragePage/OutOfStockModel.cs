@@ -1,6 +1,8 @@
 ﻿using NPOI.SS.Formula.Functions;
+using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
+using ShopProject.Views.StoragePage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,26 +15,34 @@ namespace ShopProject.Model.StoragePage
 {
     internal class OutOfStockModel
     {
-        //private IEntityAccessor<GoodsOutOfStock, TypeParameterSetTableOutOfStock> _outOfStockPeoductRepository;
-        //private IEntityAccessor<Goods,TypeParameterSetTableProduct> _productRepository;
+        private IEntityAccessor<Goods> _goodsRepository;
+        private List<Goods> _goodsList;
        
         public OutOfStockModel() 
         {
-            ////_outOfStockPeoductRepository = new OutOfStockTableRepositories();
-            ////_productRepository = new ProductTableRepository();
+            _goodsList = new List<Goods>();
+            _goodsRepository = new GoodsTableAccess();
+
+            try
+            {
+                _goodsList = (List<Goods>)_goodsRepository.GetAll("outStock");    
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,"Erorr",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+
         }
-        public List<GoodsOutOfStock> GetAll()
+        public List<Goods> GetAll()
         {
-            return null;
-           // return (List<GoodsOutOfStock>)_outOfStockPeoductRepository.GetAll();
+            return _goodsList;
         }
 
-        public List<GoodsOutOfStock>? SearchProducts(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchGoods(string itemSearch, TypeSearch type)
         {
             try
             {
-                return null;
-                //return Search.OutOfStockProductDataBase(itemSearch, type, (List<GoodsOutOfStock>)_outOfStockPeoductRepository.GetAll());
+                return Search.GoodsDataBase(itemSearch, type, (List<Goods>)_goodsRepository.GetAll("outStock"));
             }
             catch (Exception ex)
             {
@@ -40,21 +50,21 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public void ConvertToList(IList collection, List<GoodsOutOfStock> itemConver)
+        public void ConvertToList(IList collection , List<Goods> itemConver)
         {
-            for (int i = 0; i < collection.Count; i++)
+            foreach (Goods item in collection)
             {
-                itemConver.Add((GoodsOutOfStock)collection[i]);
-                //itemConver[i].goods = ((GoodsOutOfStock)collection[i]).goods;
+                itemConver.Add(item);
             }
         }
 
-        public bool ReturnProductInStorage(GoodsOutOfStock productsOutOfStock)
+        public bool ReturnGoodsInStorage(Goods goodsOutOfStock)
         {
             try
             {
-                //_productRepository.SetParameter(productsOutOfStock.ID, "in_stock", TypeParameterSetTableProduct.Status);
-                //_outOfStockPeoductRepository.Delete(productsOutOfStock);
+                _goodsRepository.UpdateParameter(goodsOutOfStock.id, "status", "in_stock");
+                _goodsRepository.UpdateParameter(goodsOutOfStock.id, "outStock", null);
+
                 return true;
             }
             catch (Exception ex)
@@ -64,14 +74,12 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool DeleteRecordArhive(GoodsOutOfStock productOutOfStock, Goods product)
+        public bool DeleteRecordArhive(Goods goods)
         {
-            try { 
-            //{
-            //    _outOfStockPeoductRepository.Delete(productOutOfStock);
-            //    _productRepository.Delete(product);
+            try 
+            {
+                _goodsRepository.Delete(goods);
                 return true;
-                throw new Exception("Помилка видалення");
             }
             catch (Exception ex)
             {

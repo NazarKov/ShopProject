@@ -48,8 +48,6 @@ namespace ShopProject.DataBase.DataAccess.DBAccess
             using (ContextDataBase context = new ContextDataBase())
             {
                 context.goodsOperations.RemoveRange(context.goodsOperations);
-                context.goodsArchives.RemoveRange(context.goodsArchives);
-                context.goodsOutOfStocks.RemoveRange(context.goodsOutOfStocks);
                 context.operations.RemoveRange(context.operations);
                 context.goods.RemoveRange(context.goods);
 

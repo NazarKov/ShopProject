@@ -63,6 +63,11 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             }
         }
 
+        public IEnumerable<GoodsUnit> GetAll(string statusGoods)
+        {
+            throw new NotImplementedException();
+        }
+
         public GoodsUnit GetItemBarCode(string barCode)
         {
             throw new NotImplementedException();

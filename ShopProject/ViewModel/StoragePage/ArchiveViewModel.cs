@@ -18,20 +18,20 @@ namespace ShopProject.ViewModel.StoragePage
 {
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
-        private ArchiveModel? archiveModel;
-        private List<GoodsArchive> archives;
+        private ArchiveModel? _model;
+        private List<Goods> _goodsList;
 
-        private ICommand searchButton;
-        private ICommand visibileAllButton;
+        private ICommand _searchCommand;
+        private ICommand _visibileAllCommand;
 
         public ArchiveViewModel()
         {
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
-            searchButton = new DelegateCommand(SearchArhive);
-            visibileAllButton = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
+            _searchCommand = new DelegateCommand(SearchArhive);
+            _visibileAllCommand = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
 
-            archives = new List<GoodsArchive>();
-            _archives = new List<GoodsArchive>();
+            _goodsList = new List<Goods>();
+            _archives = new List<Goods>();
             _searchTemplateName = new List<string>();
             _nameSearch = string.Empty;
 
@@ -40,8 +40,8 @@ namespace ShopProject.ViewModel.StoragePage
         }
         private void SetFieldGridView()
         {
-            archiveModel = new ArchiveModel();
-            Archives = archiveModel.GetItems();
+            _model = new ArchiveModel();
+            Archives = _model.GetItems();
         }
 
         private void SetFieldComboBox()
@@ -53,8 +53,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<GoodsArchive> _archives;
-        public List<GoodsArchive> Archives
+        private List<Goods> _archives;
+        public List<Goods> Archives
         {
             get { return _archives; }
             set { _archives = value; OnPropertyChanged("Archives"); }
@@ -87,7 +87,7 @@ namespace ShopProject.ViewModel.StoragePage
             set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
 
-        public ICommand SearchButton => searchButton;
+        public ICommand SearchCommand => _searchCommand;
 
         private void SearchArhive()
         {
@@ -95,37 +95,37 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 case 0:
                     {
-                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Code);
+                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Code);
                         break;
                     }
                 case 1:
                     {
-                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Name);
+                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Name);
                         break;
                     }
                 case 2:
                     {
-                        Archives = archiveModel.SearchArhive(_nameSearch, TypeSearch.Articule);
+                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Articule);
                         break;
                     }
 
             }
         }
 
-        public ICommand VisibileAllButton => visibileAllButton;
+        public ICommand VisibileAllCommand => _visibileAllCommand;
 
-        public ICommand ReturnProductInStorageCommand { get => new DelegateParameterCommand (ReturnProductInStorage,(object parameter)=>true); }
-        private void ReturnProductInStorage(object parameter)
-        {
+        public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand (ReturnGoodsInStorage,(object parameter)=>true); }
+        private void ReturnGoodsInStorage(object parameter)
+        {   
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                archives = new List<GoodsArchive>();
-                if (archiveModel != null)
+                _goodsList = new List<Goods>();
+                if (_model != null)
                 {
-                    archiveModel.ConvertToList((IList)parameter,archives);
-                    if(archives.Count == 1)
+                    _model.ConvertToList((IList)parameter, _goodsList);
+                    if (_goodsList.Count == 1)
                     {
-                        if(archiveModel.ReturnProductInStorage(archives[0]))
+                        if (_model.ReturnGoodsInStorage(_goodsList[0]))
                         {
                             new Thread(new ThreadStart(SetFieldGridView)).Start();
                         }
@@ -134,23 +134,23 @@ namespace ShopProject.ViewModel.StoragePage
             }
         }
 
-        public ICommand DeleteArhiveAndProductCommand { get => new DelegateParameterCommand(DeleteArhiveAndProduct, (object parameter) => true); }
-        private void DeleteArhiveAndProduct(object parameter)
+        public ICommand DeleteArhiveAndGoodsCommand { get => new DelegateParameterCommand(DeleteArhiveAndGoods, (object parameter) => true); }
+        private void DeleteArhiveAndGoods(object parameter)
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                archives = new List<GoodsArchive>();
-                if (archiveModel != null)
+                _goodsList = new List<Goods>();
+                if (_model != null)
                 {
-                    archiveModel.ConvertToList((IList)parameter, archives);
+                    _model.ConvertToList((IList)parameter, _goodsList);
 
-                    if (archives.Count == 1)
+                    if (_goodsList.Count == 1)
                     {
-                        ////if (archiveModel.DeleteRecordArhive(archives[0], archives[0].goods))
-                        ////{
-                        ////    MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
-                        ////    new Thread(new ThreadStart(SetFieldGridView)).Start();
-                        ////}
+                        if (_model.DeleteRecordArhive(_goodsList[0]))
+                        {
+                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+                            new Thread(new ThreadStart(SetFieldGridView)).Start();
+                        }
 
                     }
                 }

@@ -26,6 +26,7 @@ namespace ShopProject.DataBase.Interfaces
 
         public T GetItemBarCode(string barCode);
 
+        public IEnumerable<T> GetAll(string statusGoods);
         public IEnumerable<T> GetAll();
     }
 }

@@ -19,25 +19,24 @@ namespace ShopProject.ViewModel.StoragePage
     {
         private OutOfStockModel _model;
 
-        private ICommand _searchButton;
-        private ICommand _visibileAllButton;
-        private List<GoodsOutOfStock> _productsOutOfStock;
+        private ICommand _searchCommand;
+        private ICommand _visibileAllCommand;
+        private List<Goods> _goodsList;
 
         public OutOfStockViewModel() 
         {
             _model = new OutOfStockModel();
-            _products = new List<GoodsOutOfStock>();
-            _productsOutOfStock = new List<GoodsOutOfStock>();
+            _goods = new List<Goods>();
+            _goodsList = new List<Goods>();
 
-            _visibileAllButton = new DelegateCommand(setFieldDataGrid);
-
-            _searchButton = new DelegateCommand(SearchProductInCodeAndName);
+            _visibileAllCommand = new DelegateCommand(setFieldDataGrid);
+            _searchCommand = new DelegateCommand(SearchProductInCodeAndName);
             setFieldDataGrid();
             SetFieldTextComboBox();
         }
         private void setFieldDataGrid()
         {
-            Products = _model.GetAll();   
+            Goods = _model.GetAll();   
         }
 
         private void SetFieldTextComboBox()
@@ -49,11 +48,11 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<GoodsOutOfStock> _products;
-        public List<GoodsOutOfStock> Products
+        private List<Goods> _goods;
+        public List<Goods> Goods
         {
-            get { return _products; }
-            set { _products = value; OnPropertyChanged("Products"); }
+            get { return _goods; }
+            set { _goods = value; OnPropertyChanged("Goods"); }
         }
 
         private List<string> _searchTemplateName;
@@ -76,7 +75,7 @@ namespace ShopProject.ViewModel.StoragePage
             set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
         }
 
-        public ICommand SearchButton => _searchButton;
+        public ICommand SearchCommand => _searchCommand;
 
         void SearchProductInCodeAndName()
         {
@@ -85,35 +84,35 @@ namespace ShopProject.ViewModel.StoragePage
                 {
                     case 0:
                         {
-                            Products = _model.SearchProducts(_nameSearch, TypeSearch.Code);
+                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Code);
                             break;
                         }
                     case 1:
                         {
-                            Products = _model.SearchProducts(_nameSearch, TypeSearch.Name);
+                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Name);
                             break;
                         }
                     case 2:
                         {
-                            Products = _model.SearchProducts(_nameSearch, TypeSearch.Articule);
+                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Articule);
                             break;
                         }
                 }
         }
-        public ICommand VisibileAllButton => _visibileAllButton;
+        public ICommand VisibileAllCommand => _visibileAllCommand;
 
-        public ICommand ReturnProductInStorageCommand { get => new DelegateParameterCommand(ReturnProductInStorage, (object parameter) => true); }
-        private void ReturnProductInStorage(object parameter)
+        public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand(ReturnGoodsInStorage, (object parameter) => true); }
+        private void ReturnGoodsInStorage(object parameter)
         {
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _productsOutOfStock = new List<GoodsOutOfStock>();
-                if (_productsOutOfStock != null)
+                _goodsList = new List<Goods>();
+                if (_goodsList != null)
                 {
-                    _model.ConvertToList((IList)parameter, _productsOutOfStock);
-                    if (_productsOutOfStock.Count == 1)
+                    _model.ConvertToList((IList)parameter, _goodsList);
+                    if (_goodsList.Count == 1)
                     {
-                        if (_model.ReturnProductInStorage(_productsOutOfStock[0]))
+                        if (_model.ReturnGoodsInStorage(_goodsList[0]))
                         {
                             new Thread(new ThreadStart(setFieldDataGrid)).Start();
                         }
@@ -122,23 +121,23 @@ namespace ShopProject.ViewModel.StoragePage
             }
         }
 
-        public ICommand DeleteProductOutOfStockAndProductCommand { get => new DelegateParameterCommand(DeleteArhiveAndProduct, (object parameter) => true); }
-        private void DeleteArhiveAndProduct(object parameter)
+        public ICommand DeleteGoodsOutOfStockCommand { get => new DelegateParameterCommand(DeleteGoods, (object parameter) => true); }
+        private void DeleteGoods(object parameter)
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _productsOutOfStock = new List<GoodsOutOfStock>();
-                if (_productsOutOfStock != null)
+                _goodsList = new List<Goods>();
+                if (_goodsList != null)
                 {
-                    _model.ConvertToList((IList)parameter, _productsOutOfStock);
+                    _model.ConvertToList((IList)parameter, _goodsList);
 
-                    if (_productsOutOfStock.Count == 1)
+                    if (_goodsList.Count == 1)
                     {
-                        //if (_model.DeleteRecordArhive(_productsOutOfStock[0], _productsOutOfStock[0].Product))
-                        //{
-                        //    MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
-                        //    new Thread(new ThreadStart(setFieldDataGrid)).Start();
-                        //}
+                        if (_model.DeleteRecordArhive(_goodsList[0]))
+                        {
+                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+                            new Thread(new ThreadStart(setFieldDataGrid)).Start();
+                        }
 
                     }
                 }

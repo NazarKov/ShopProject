@@ -44,11 +44,11 @@ namespace ShopProject.DataBase.Model
         /// <summary>
         /// архівований товар
         /// </summary>
-        public GoodsArchive productArchive { get; set; }
+        public DateTimeOffset arhivedAt { get; set; }
         /// <summary>
         /// товар який закінчився 
         /// </summary>
-        public GoodsOutOfStock productsOutStock { get; set; }
+        public DateTimeOffset outStockAt { get; set; }
         /// <summary>
         /// одиниці
         /// </summary>

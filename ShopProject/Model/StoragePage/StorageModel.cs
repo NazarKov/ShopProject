@@ -11,20 +11,16 @@ namespace ShopProject.Model.StoragePage
     internal class StorageModel
     {
         private IEntityAccessor<Goods> _goodsRepository;
-        private IEntityAccessor<GoodsArchive> _arhiveRepositories;
-        private IEntityAccessor<GoodsOutOfStock> _outOfStockRepositories;
         private List<Goods>? _goods;
 
         public StorageModel()
         { 
             _goodsRepository = new GoodsTableAccess();
-            _arhiveRepositories = new GoodsArhiveTableAccess();
-            _outOfStockRepositories = new GoodsOutOfStockTableAccess();
 
             try
             {
                 _goods = new List<Goods>();
-                _goods = (List<Goods>)_goodsRepository.GetAll();
+                _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
             }
             catch(Exception ex)
             {
@@ -41,7 +37,7 @@ namespace ShopProject.Model.StoragePage
             try
             {
                 _goods.Clear();
-                _goods = (List<Goods>)_goodsRepository.GetAll();
+                _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
                 return Search.GoodsDataBase(itemSearch, type, _goods);
             }
             catch (Exception ex)
@@ -70,7 +66,8 @@ namespace ShopProject.Model.StoragePage
             try
             {
                 _goodsRepository.UpdateParameter(item.id, "status", "arhived");
-                _arhiveRepositories.Add(new GoodsArchive() { id = item.id ,createdAt = DateTime.Now });
+                _goodsRepository.UpdateParameter(item.id, "arhived", DateTime.Now);
+
                 return true;
             }
             catch (Exception ex)
@@ -83,8 +80,9 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                _goodsRepository.UpdateParameter(item.id, "status", "arhived");
-                _outOfStockRepositories.Add(new GoodsOutOfStock() { id = item.id ,createdAt = DateTime.Now});
+                _goodsRepository.UpdateParameter(item.id, "status", "outStock");
+                _goodsRepository.UpdateParameter(item.id, "outStock", DateTime.Now);
+
                 return true;
             }
             catch(Exception ex)

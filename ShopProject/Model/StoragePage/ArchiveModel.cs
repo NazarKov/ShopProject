@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Interfaces;
+﻿using ShopProject.DataBase.DataAccess.EntityAccess;
+using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using System;
 using System.Collections;
@@ -10,27 +11,33 @@ namespace ShopProject.Model.StoragePage
 
     internal class ArchiveModel
     {
-        //private IEntityAccessor<GoodsArchive,TypeParameterSetTableProductArhive> _archiveRepository;
-        //private IEntityAccessor<Goods,TypeParameterSetTableProduct> _productRepository;
+        private IEntityAccessor<Goods> _goodsRepository;
+        private List<Goods> _arhiveGoods;
 
         public ArchiveModel()
         {
-            //_productRepository = new ProductTableRepository();
-            //_archiveRepository = new ArhiveTableRepositories();
+            _goodsRepository = new GoodsTableAccess();
+            _arhiveGoods = new List<Goods>();
+            try
+            {
+                _arhiveGoods = (List<Goods>)_goodsRepository.GetAll("arhived");
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message,"Error",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
         }
 
-        public List<GoodsArchive> GetItems()
+        public List<Goods> GetItems()
         {
-            // (List<GoodsArchive>)_archiveRepository.GetAll();
-            return null;
+            return _arhiveGoods;
         }
 
-        public List<GoodsArchive>? SearchArhive(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchArhive(string itemSearch, TypeSearch type)
         {
             try
             {
-                return null;
-                //return Search.ArhiveDataBase(itemSearch, type, (List<GoodsArchive>)_archiveRepository.GetAll());
+                return Search.GoodsDataBase(itemSearch, type, (List<Goods>) _goodsRepository.GetAll("arhived"));
             }
             catch(Exception ex)
             {
@@ -38,14 +45,12 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public bool DeleteRecordArhive(GoodsArchive archive,Goods product)
+        public bool DeleteRecordArhive(Goods product)
         {
             try
             {
-                //_archiveRepository.Delete(archive);
-                //_productRepository.Delete(product);
+                _goodsRepository.Delete(product);
                 return true;
-                throw new Exception("Помилка видалення");
             }
             catch(Exception ex)
             {
@@ -53,21 +58,20 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public void ConvertToList(IList collection, List<GoodsArchive> itemConver)
+        public void ConvertToList(IList collection, List<Goods> itemConver)
         {
-            for (int i = 0; i < collection.Count; i++)
+            foreach(Goods item in collection)
             {
-                itemConver.Add((GoodsArchive)collection[i]);
-                //itemConver[i].goods = ((GoodsArchive)collection[i]).goods;
+                itemConver.Add(item);
             }
         }
         
-        public bool ReturnProductInStorage(GoodsArchive archive)
+        public bool ReturnGoodsInStorage(Goods archive)
         {
             try
             {
-                //_productRepository.SetParameter(archive.id, "in_stock", TypeParameterSetTableProduct.Status);
-                //_archiveRepository.Delete(archive);
+                _goodsRepository.UpdateParameter(archive.id, "status", "in_stock");
+                _goodsRepository.UpdateParameter(archive.id, "arhived", null);
                 return true;
             }
             catch (Exception ex)
