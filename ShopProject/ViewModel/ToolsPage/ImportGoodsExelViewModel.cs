@@ -16,16 +16,16 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
-    internal class ImportProductExelViewModel : ViewModel<ImportProductExelViewModel>
+    internal class ImportGoodsExelViewModel : ViewModel<ImportGoodsExelViewModel>
     {
-        private ImportProductExelModel importProductExelModel;
+        private ImportGoodsExelModel importProductExelModel;
         private ICommand openFileExel;
         private ICommand saveItemDb;
         private ICommand updateTablePage;
 
-        public ImportProductExelViewModel()
+        public ImportGoodsExelViewModel()
         {
-            importProductExelModel = new ImportProductExelModel();
+            importProductExelModel = new ImportGoodsExelModel();
             openFileExel = new DelegateCommand(SetItemDataGrid);
             saveItemDb = new DelegateCommand(SaveItem);
             updateTablePage = new DelegateCommand(UpdatePage);

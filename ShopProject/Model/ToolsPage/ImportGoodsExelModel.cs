@@ -1,4 +1,5 @@
 ﻿using ShopProject.DataBase.Context;
+using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using System;
@@ -12,17 +13,17 @@ using System.Windows;
 
 namespace ShopProject.Model.ToolsPage
 {
-    internal class ImportProductExelModel 
+    internal class ImportGoodsExelModel 
     {
-        // IEntityAccessor<Goods, TypeParameterSetTableProduct> _productRepository;
+         IEntityAccessor<Goods> _goodsRepository;
         private FileExel? fileExel;
         private List<Goods> products;
         private string path;
         private Goods product;
 
-        public ImportProductExelModel()
+        public ImportGoodsExelModel()
         {
-            //_productRepository = new ProductTableRepository();
+            _goodsRepository = new GoodsTableAccess();
             path = string.Empty;
         }
 
@@ -76,26 +77,25 @@ namespace ShopProject.Model.ToolsPage
             {
                 for (; i < max; i++)
                 {
-                    //if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),/* (IEnumerable<Goods>)_productRepository.GetAll())*/new IEnumerable(Goods))
-                    //{
-                    //    SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
-                    //}
-                    //else
-                    //{
-                    //    product = new Goods();
-                    //    product.code = Validation.ChekParamsIsNull(code, i, dataTable);
-                    //    product.name = Validation.ChekParamsIsNull(name, i, dataTable);
-                    //    product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
-                    //    product.price = (decimal)Validation.ChekEmpty(price, i, dataTable);
-                    //    product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
-                    //   // product.units = Validation.ChekParamsIsNull(units, i, dataTable);
-                    //    product.createdAt = DateTime.Now;
-                    //    product.status = "in_stock";
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),_goodsRepository.GetAll()))
+                    {
+                        SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
+                    }
+                    else
+                    {
+                        product = new Goods();
+                        product.code = Validation.ChekParamsIsNull(code, i, dataTable);
+                        product.name = Validation.ChekParamsIsNull(name, i, dataTable);
+                        product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
+                        product.price = (decimal)Validation.ChekEmpty(price, i, dataTable);
+                        product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+                        product.createdAt = DateTime.Now;
+                        product.status = "in_stock";
 
-                    //    products.Add(product);
-                    //}
+                        products.Add(product);
+                    }
                 }
-               // _productRepository.AddRange(products);
+                _goodsRepository.AddRange(products);
             }
             catch(Exception ex)
             {
@@ -105,8 +105,8 @@ namespace ShopProject.Model.ToolsPage
 
         private void SetCountItem(int code,int count, int i , DataTable dataTable)
         {
-           // Goods product = (Goods)_productRepository.GetItem(Validation.ChekParamsIsNull(code, i, dataTable));
-            //_productRepository.SetParameter(product.id, (product.count + count), TypeParameterSetTableProduct.Count);
+             Goods product = (Goods)_goodsRepository.GetItemBarCode(Validation.ChekParamsIsNull(code, i, dataTable));
+            _goodsRepository.UpdateParameter(product.id,"count", count);
         }
     }
 }

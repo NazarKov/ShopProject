@@ -216,6 +216,23 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
         {
             switch(nameParameter)
             {
+                case "count":
+                    {
+                        using (ContextDataBase context = new ContextDataBase())
+                        {
+                            if(context!=null)
+                            {
+                                context.goods.Load();
+                                if (context.goods.Count() != 0)
+                                {
+                                    var item = context.goods.Find(id);
+                                    item.count += (decimal)valueParameter;
+                                }
+                            }
+                            context.SaveChanges();
+                        }
+                        break;
+                    }
                 case "status":
                     {
                         using (ContextDataBase context = new ContextDataBase())

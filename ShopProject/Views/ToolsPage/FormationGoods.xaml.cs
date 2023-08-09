@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace ShopProject.Views.ToolsPage
 {
     /// <summary>
-    /// Interaction logic for ImportProductExel.xaml
+    /// Interaction logic for FormationGoods.xaml
     /// </summary>
-    public partial class ImportProductExel : Window
+    public partial class FormationGoods : Window
     {
-        public ImportProductExel()
+        public FormationGoods()
         {
             InitializeComponent();
         }

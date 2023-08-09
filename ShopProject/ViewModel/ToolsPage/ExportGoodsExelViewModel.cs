@@ -14,16 +14,16 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
-    internal class ExportProductExelViewModel : ViewModel<ExportProductExelViewModel>
+    internal class ExportGoodsExelViewModel : ViewModel<ExportGoodsExelViewModel>
     {
-        private ExportProductExelModel? model;
+        private ExportGoodsExelModel? model;
         private SaveFileDialog? saveFileDialog;
         private ICommand addProductList;
         private ICommand saveSelectItem;
         private ICommand saveAllItem;
        
 
-        public ExportProductExelViewModel()
+        public ExportGoodsExelViewModel()
         {
             Products = new List<Goods>();
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -40,7 +40,7 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void startModelThread()
         {
-            model = new ExportProductExelModel();
+            model = new ExportGoodsExelModel();
         }
         private void SetFieldFileDialog()
         {

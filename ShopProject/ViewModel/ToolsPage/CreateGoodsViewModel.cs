@@ -122,7 +122,7 @@ namespace ShopProject.ViewModel.ToolsPage
             Price = 0m;
         }
 
-        public ICommand SaveProductCommand => _saveGoodsCommand;
+        public ICommand SaveGoodsCommand => _saveGoodsCommand;
 
         private void SaveAndCreateGoodsDataBase()
         {

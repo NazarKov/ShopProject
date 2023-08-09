@@ -1,4 +1,4 @@
-﻿<Window x:Class="ShopProject.Views.ToolsPage.ExportProductExel"
+﻿<Window x:Class="ShopProject.Views.ToolsPage.ExportGoodsExel"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Експорт в Exel" Height="450" Width="1000" ResizeMode="NoResize">
     <Window.Resources>
-        <local:ExportProductExelViewModel x:Key="VM"></local:ExportProductExelViewModel>
+        <local:ExportGoodsExelViewModel x:Key="VM"></local:ExportGoodsExelViewModel>
     </Window.Resources>
     <Window.DataContext>
         <Binding Source="{StaticResource VM}"></Binding>

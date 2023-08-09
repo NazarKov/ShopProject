@@ -173,7 +173,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void AddProductDataBase()
         {
-            if(_model.AddProduct(Name,Code,Articule,Price,Count,Units.ElementAt(SelcetUnits),ProductsInFormedProduct))
+            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelcetUnits),ProductsInFormedProduct))
             {
                 MessageBox.Show("товар добавлено");
             }
