@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopProject.DataBase.Model
 {
-    internal class CashRegister
+    public class CashRegister
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }

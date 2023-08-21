@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Org.BouncyCastle.Bcpg;
 
 namespace ShopProject.DataBase.Model
 {
@@ -10,45 +11,74 @@ namespace ShopProject.DataBase.Model
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         /// <summary>
-        /// сума операції
+        /// фіксальний номер рро
         /// </summary>
-        public double sum { get; set; }
+        public string fiscalNumberRRO { get; set; }
         /// <summary>
-        ///внесена сума користувачем 
+        /// податковий номер
         /// </summary>
-        public double buyersAmount { get; set; }
+        public string taxNumber { get;set; }
         /// <summary>
-        /// решта
+        /// Заводьській номер рро
         /// </summary>
-        public double rest { get; set; }
+        public string factoryNumberRRO { get; set; }
         /// <summary>
-        /// знижка
+        /// індифікатор пакету даних
         /// </summary>
-        public double discount { get; set; }
+        public decimal dataPacketIdentifier { get;set; }
         /// <summary>
-        /// статус операції
+        /// Тип рро
         /// </summary>
-        public string status { get; set; }
+        public decimal typeRRO { get; set; }
         /// <summary>
-        /// локальний номер за день
+        /// версія пакету даних = 1
         /// </summary>
-        public string localNumber { get; set; }
+        public decimal versionDataPaket { get; set; }
         /// <summary>
-        /// тип оплати
+        /// тип чеку 0 - чек продажі 108 - відкриття зміни 
         /// </summary>
-        public string typeOplat { get; set; }
+        public decimal typeOperation { get; set; }
         /// <summary>
-        /// час створення операції
+        /// форма оплати 0 - готівка ,не 0 - безготівка
         /// </summary>
-        public DateTimeOffset? createdAt { get; set; }
+        public decimal formOfPayment { get; set; }
+        /// <summary>
+        /// сума оплати що вноситься касиром
+        /// </summary>
+        public decimal buyersAmount { get; set; }
+        /// <summary>
+        /// решта 
+        /// </summary>
+        public decimal restPayment { get; set; }
+        /// <summary>
+        /// номер фіксального чеку
+        /// </summary>
+        public string numberPayment { get; set; }
+        /// <summary>
+        /// загальна сума чеку
+        /// </summary>
+        public decimal totalPayment { get; set; }
+        /// <summary>
+        /// податок на товари в чеку 0 - без податку 
+        /// </summary>
+        public string goodsTax { get; set; }
+        /// <summary>
+        /// кількість чеків продажу
+        /// </summary>
+        public decimal numberOfSalesReceipts { get; set; }
+        /// <summary>
+        /// код підтвердження на сервері
+        /// </summary>
+        public string mac { get; set; }
+        /// <summary>
+        /// час створення чеку
+        /// </summary>
+        public DateTime createdAt { get; set; }
         /// <summary>
         /// користувач
         /// </summary>
         public User? user { get; set; }
-        /// <summary>
-        /// номер пристрою розрахункових операцій якій проводить операцію
-        /// </summary>
-        public string deviceSettlementOperationsNumber { get; set; }
+
 
         public ICollection<GoodsOperation> orderItem { get; set; }
 

@@ -31,7 +31,7 @@ namespace ShopProject.ViewModel.StoragePage
             _searchCommand = new DelegateCommand(SearchGoodsInCodeAndName);
             _visibileAllCommand = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
             _openCreateGoodsWindowCommand = new DelegateCommand(() => { new CreateGoodsPage().Show(); });
-            _openFormationGoodsWindowCommand = new DelegateCommand(() => { new FormationProduct().Show(); });
+            _openFormationGoodsWindowCommand = new DelegateCommand(() => { new FormationGoods().Show(); });
 
             SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
             _goods = new List<Goods>();

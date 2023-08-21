@@ -139,6 +139,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context!=null)
                 {
                     context.goods.Load();
+                    context.codeUKTZED.Load();
                     if(context.goods!=null)
                     {
                         if (context.goods.Count() == 0)

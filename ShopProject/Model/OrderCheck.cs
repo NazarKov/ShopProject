@@ -15,7 +15,6 @@ using System.Windows.Media.Imaging;
 using QRCoder;
 using QRCode = QRCoder.QRCode;
 using Image = System.Windows.Controls.Image;
-using ShopProject.Helpers.DFSAPI;
 using ZXing.QrCode.Internal;
 using System.Windows.Media.Media3D;
 using ZXing;
@@ -28,24 +27,22 @@ namespace ShopProject.Model
 {
     internal class OrderCheck
     {
-        private string _numberChek;
-        private string _stringCheck;
         private string _nameShop;
         private string _nameSeller;
-        private string _title;
-        private string _description;
-        private string _price;
-        private List<Goods> _products;
+        private string _nameFop;
+        private string region ,district, city , street ,house;
 
         public OrderCheck()
         {
-            _stringCheck = string.Empty;
-            _nameShop = string.Empty;
-            _nameSeller = string.Empty;
-            _title = string.Empty;
-            _description = string.Empty;
-            _price = string.Empty;
-            _products = new List<Goods>();
+            _nameShop = AppSettingsManager.GetParameterFiles("NameShop").ToString();
+            _nameSeller = AppSettingsManager.GetParameterFiles("NameSeller").ToString();
+            _nameFop = AppSettingsManager.GetParameterFiles("NameFop").ToString();
+            region = AppSettingsManager.GetParameterFiles("Region").ToString();
+            district = AppSettingsManager.GetParameterFiles("District").ToString();
+            city = AppSettingsManager.GetParameterFiles("Citi").ToString();
+            street = AppSettingsManager.GetParameterFiles("Streer").ToString();
+            house = AppSettingsManager.GetParameterFiles("House").ToString();
+
         }
 
         public void drawingChek()
@@ -53,9 +50,6 @@ namespace ShopProject.Model
             try
             {
                 FlowDocument document = new FlowDocument();
-                
-
-
             }
             catch(Exception ex)
             {
@@ -78,7 +72,7 @@ namespace ShopProject.Model
             return sec;
         }
 
-        public void PrintChek(List<Goods> products,string id,Operation order ,Messe mac,DateTime dateTime)
+        public void PrintChek(List<Goods> products,string id,Operation order)
         {
             try
             {
@@ -93,7 +87,7 @@ namespace ShopProject.Model
 
                 foreach (Goods product in products)
                 {
-                    str += "\nУКТ ЗЕД 9507";
+                    str += "\nУКТ ЗЕД "+product.codeUKTZED.code;
                     str += "\nШтрих-код товару:" + product.code + "\n";
                     if(product.name.Length >50)
                     {
@@ -105,30 +99,30 @@ namespace ShopProject.Model
                     {
                         str += product.name + "\n";
                     }
-                    str+=product.count + ",00 X " + product.price + ",00" + "                                               " + (product.count * product.price)+",00";
+                    str+=product.count +" X " + product.price +"                                               " + (product.count * product.price);
                 }
 
                 // Add Section to FlowDocument  
                 doc.Blocks.Add(setTextChek("" +
-                    "\n   КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ        " +
-                    "\n                     Магазин Дім Рибалки            " +
-                    "\n Волинська область, Луцький район, м.Рожище," +
-                    "\n                    вул.Героїв Упа, 2а, підвал" +
-                    "\n                           ІД " + mac.id+"         " +
-                    "\n                     Касир КОРНІЙЧУК С. В.     "));
+                    $"\n   {_nameFop}        " +
+                    $"\n                     {_nameShop}            " +
+                    $"\n {region}, {district}, {city}," +
+                    $"\n                    {street}, {house}" +
+                    $"\n                           ІД " + id+"         " +
+                    $"\n                     Касир {_nameSeller}     "));
 
                 doc.Blocks.Add(setTextChek("" +
                      "--------------------------------------------------------------    "+str+"" +
                      "\n--------------------------------------------------------------     " +
-                     "\nСУМА                                                          " + order.sum+",00" +
+                     "\nСУМА                                                       " + order.totalPayment +
                      "\nБез ПДВ" +
                      "\n--------------------------------------------------------------     " +
-                    $"\nГОТІВКОВА                                                {order.buyersAmount}.00" +
-                    $"\nРешта                                                            {order.rest}.00"));
+                    $"\nГОТІВКОВА                                             {order.buyersAmount}" +
+                    $"\nРешта                                                         {order.restPayment}"));
 
 
 
-                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={mac.mac}&date={dateTime.ToString("yyyyMMdd")}&time={dateTime.ToString("HHmm")}&id={mac.id}&sm={order.sum}&fn=4000512773";
+                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={order.mac}&date={order.createdAt.ToString("yyyyMMdd")}&time={order.createdAt.ToString("HHmm")}&id={id}&sm={order.totalPayment}&fn={order.fiscalNumberRRO}";
 
                 string qrtext = text; //считываем текст из TextBox'a
 
@@ -153,17 +147,17 @@ namespace ShopProject.Model
                 //кюар код
 
                 doc.Blocks.Add(setTextChek($"" +
-                    $"\nФН чека:{order.localNumber}                        {dateTime.ToString("dd.MM.yyyy")} {dateTime.ToString("HH:mm:ss")}" +
-                    $"\nФН ПРРО:4000512773       Режим роботи:онлайн" +
-                    $"\n                           ФІКСАЛЬНИЙ ЧЕК" +
-                    $"\n                           НАЗВА ПРОГРАМИ"));
+                    $"\nФН чека:{order.numberPayment}                        {order.createdAt.ToString("dd.MM.yyyy")} {order.createdAt.ToString("HH:mm:ss")}" +
+                    $"\nФН ПРРО:{order.fiscalNumberRRO}       Режим роботи:онлайн" +
+                    $"\n                           ФІКСАЛЬНИЙ ЧЕК"));
+                    //$"\n                           НАЗВА ПРОГРАМИ"));
 
                 //doc.Blocks.Add(sec);
 
                 // Create IDocumentPaginatorSource from FlowDocument  
                 IDocumentPaginatorSource idpSource = doc;
                 // Call PrintDocument method to send document to printer  
-                printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
+                //printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "58mm Series Printer");
                 printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
             }
             catch(Exception ex)

@@ -1,24 +1,41 @@
-﻿using ShopProject.Helpers.DFSAPI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ShopProject.Model.SettingPage
 {
     internal class SettingDeviceSettlementOperationsModel
     {
-        DFSAPI _api;
-
         public SettingDeviceSettlementOperationsModel()
         {
-            _api = new DFSAPI();
+
         }
 
         public void ChekConnection()
         {
-            _api.ping();
+            
+        }
+
+        public void SaveFieldSetting(string key,string value)
+        {
+            AppSettingsManager.SetParameterFile(key, value);
+        }
+        public string GetSettingSetting(string key)
+        {
+            var setting = AppSettingsManager.GetParameterFiles(key).ToString();
+            if(setting == string.Empty||setting==null)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return setting;
+            }
+
         }
         
     }

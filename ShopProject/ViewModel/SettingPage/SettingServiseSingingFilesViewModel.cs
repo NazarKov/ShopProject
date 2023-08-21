@@ -24,12 +24,12 @@ namespace ShopProject.ViewModel.SettingPage
         public SettingServiseSingingFilesViewModel() 
         {
             MainContoller mainContoller = new MainContoller();
-            mainContoller.StartServise(pathservise);
-            startServise = new DelegateCommand(() => { mainContoller.StartServise(pathservise); mainContoller.ConnectService(); });
+            mainContoller.StartServise();
+            startServise = new DelegateCommand(() => { mainContoller.StartServise(); mainContoller.ConnectService(); });
             stopServise = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.Disconnect); });
-            initializingSingingFiles = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.Initialize); mainContoller.ReceivingResult(); });
-            isInitializing = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.IsInitialize); mainContoller.ReceivingResult(); });
-            singFile = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.SingFile); mainContoller.ReceivingResult(); });
+            initializingSingingFiles = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.Initialize);});
+            isInitializing = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.IsInitialize); });
+            singFile = new DelegateCommand(() => { mainContoller.SendingCommand(TypeCommand.SingFile);  });
         }
 
 

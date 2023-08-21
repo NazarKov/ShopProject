@@ -1,6 +1,7 @@
 ﻿using ShopProject.DataBase.Model;
-using ShopProject.Helpers.DFSAPI;
+using ShopProject.Helpers;
 using ShopProject.Helpers.MiniServiceSigningFile;
+using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using System;
@@ -19,7 +20,7 @@ namespace ShopProject.ViewModel.SalePage
     {
         private SaleMenuModel _model;
 
-        private ICommand _searchBarCodeProdcutCommand;
+        private ICommand _searchBarCodeGoodsCommand;
         private ICommand _printingCheckCommand;
 
 
@@ -31,11 +32,24 @@ namespace ShopProject.ViewModel.SalePage
         {
             _model = new SaleMenuModel();
       
-            //_searchBarCodeProdcutCommand = new DelegateCommand(SearchBarCodePrdocut);
+            _searchBarCodeGoodsCommand = new DelegateCommand(SearchBarCodeGoods);
             _printingCheckCommand = new DelegateCommand(PrintingCheck);
 
-            _openChangeCommand = new DelegateCommand(() => { _model.OpenChange(); });
-            _closeChangeCommand = new DelegateCommand(() => { _model.closeChange(); });
+            _openChangeCommand = new DelegateCommand(() => { OpenChange(); });
+
+            _closeChangeCommand = new DelegateCommand(() => { _model.CloseChange(new Operation
+            {
+                dataPacketIdentifier = 1,
+                typeRRO = 0,
+                fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                factoryNumberRRO = "v1",
+                mac = _model.GetMac(true),
+                createdAt = DateTime.Now,
+                numberPayment = _model.GetLocalNumber(),
+                numberOfSalesReceipts = Convert.ToDecimal(_model.GetLocalNumber()),
+
+            }); });
             
             _products = new List<Goods>();
             _barCodeSearch = string.Empty;
@@ -47,8 +61,6 @@ namespace ShopProject.ViewModel.SalePage
             _typeOplatu.Add("готівкою");
             _typeOplatu.Add("безготівкові форми оплати");
         }
-
-        public ICommand OpenChangeCommand => _openChangeCommand;
         public ICommand CloseChangeCommand => _closeChangeCommand;
 
         private string _barCodeSearch;
@@ -65,15 +77,15 @@ namespace ShopProject.ViewModel.SalePage
             set { _products = value; OnPropertyChanged("Products");}
         }
 
-        private double? _sumaOrder;
-        public double? SumaOrder
+        private decimal? _sumaOrder;
+        public decimal? SumaOrder
         {
             get { return _sumaOrder; }
             set { _sumaOrder = value;OnPropertyChanged("SumaOrder"); }
         }
 
-        private double? _sumaUser;
-        public double? SumaUser
+        private decimal? _sumaUser;
+        public decimal? SumaUser
         {
             get { return _sumaUser; }
             set { _sumaUser = value; OnPropertyChanged("SumaUser"); }
@@ -91,71 +103,72 @@ namespace ShopProject.ViewModel.SalePage
             set { _selectIndex = value;OnPropertyChanged("_selectIndex"); }
         }
 
-        public ICommand SearchBarCodeProductCommand => _searchBarCodeProdcutCommand;
+        public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
-        //private void SearchBarCodePrdocut()
-        //{
-        //    List<Product> temp;
-        //    if (BarCodeSearch != "0000000000000")
-        //    {
-        //        var item = _model.Search(BarCodeSearch);
-        //        if (item != null)
-        //        {
-        //            item.count = 1;
-        //            List<Product> temp = new List<Product>();
-        //            temp = Products;
+        private void SearchBarCodeGoods()
+        {
+            List<Goods> temp;
+            if (BarCodeSearch != "2")
+            {
+                var item = _model.Search(BarCodeSearch);
+                if (item != null)
+                {
+                    item.count = 1;
+                    temp = new List<Goods>();
+                    temp = Products;
 
-        //                if (temp.Find(pr => pr.code == item.code) != null)
-        //                {
-        //                    temp.Find(pr => pr.code == item.code).count += 1;
-        //                }
-        //                else
-        //                {
-        //                    temp.Add(item);
-        //                }
+                    if (temp.Find(pr => pr.code == item.code) != null)
+                    {
+                        temp.Find(pr => pr.code == item.code).count += 1;
+                    }
+                    else
+                    {
+                        temp.Add(item);
+                    }
 
-        //                CountingSumaOrder(temp);
+                    CountingSumaOrder(temp);
 
-        //                Products = new List<Product>();
-        //                Products = temp;
-        //                BarCodeSearch = string.Empty;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (Products.ElementAt(Products.Count - 1).count == 1)
-        //        {
-        //            temp = new List<Product>();
-        //            temp = Products;
+                    Products = new List<Goods>();
+                    Products = temp;
+                    BarCodeSearch = string.Empty;
+                }
+            }
+            else
+            {
+                if (Products.Count() != 0)
+                {
+                    if (Products.ElementAt(Products.Count - 1).count == 1)
+                    {
+                        temp = new List<Goods>();
+                        temp = Products;
 
-        //            temp.Remove(temp.ElementAt(temp.Count - 1));
-        //            Products = new List<Product>();
-        //            Products = temp;
-        //            CountingSumaOrder(Products);
-        //        }
-        //        else
-        //        {
-        //            temp = new List<Product>();
-        //            temp = Products;
+                        temp.Remove(temp.ElementAt(temp.Count - 1));
+                        Products = new List<Goods>();
+                        Products = temp;
+                        CountingSumaOrder(Products);
+                    }
+                    else
+                    {
+                        temp = new List<Goods>();
+                        temp = Products;
 
 
-        //            temp.ElementAt(Products.Count - 1).count -= 1;
-        //            Products = new List<Product>();
-        //            Products = temp;
-        //            CountingSumaOrder(Products);
-        //        }
-        //        BarCodeSearch = string.Empty;
-        //    }
-           
-        //}
+                        temp.ElementAt(Products.Count - 1).count -= 1;
+                        Products = new List<Goods>();
+                        Products = temp;
+                        CountingSumaOrder(Products);
+                    }
+                    BarCodeSearch = string.Empty;
+                }
+            }
+        }
 
         private void CountingSumaOrder(List<Goods> products)
         {
             SumaOrder = 0;
             foreach (Goods orderProduct in products)
             {
-                //SumaOrder += (orderProduct.price * orderProduct.count);
+                SumaOrder += (orderProduct.price * orderProduct.count);
             }
         }
         public ICommand PrintingCheckCommand => _printingCheckCommand;
@@ -163,24 +176,34 @@ namespace ShopProject.ViewModel.SalePage
         {
             if (SumaUser >= SumaOrder)
             {
-                DateTime time = DateTime.Now;
+                double rest = ((double)(SumaUser - SumaOrder));
 
-                //double rest = ((double)(SumaUser - SumaOrder));
-                //Order order = new Order() { created_at = time, sale = 0, suma = (double)SumaOrder, rest = rest, user = null, LocalNumber = "0", userSuma = (double)SumaUser, type_oplat = TypeOplatu.ElementAt(SelectIndex) };
-                //if (_model.SetOrderDataBase(Products, order))
-                //{
-                //    //Messe mes = new Messe() { id = "123", mac = "123" };
-                //    Messe mes = _model.SendChek(Products, order, time);
-
-                //    _model.PrintChek(Products, order, mes, time);
-                //    MessageBox.Show($"чек видано \n Решта:{rest}");
-                //    Products = new List<Product>();
-                //    BarCodeSearch = string.Empty;
-                //    SumaUser = new double();
-                //    SumaUser = 0;
-                //    SumaOrder = 0;
-
-                //}
+                if(_model.SendChek(Products, new Operation()
+                {
+                    dataPacketIdentifier = 1,
+                    typeRRO = 0,
+                    fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                    taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                    factoryNumberRRO = "v1",
+                    typeOperation = 0,
+                    mac = _model.GetMac(true),
+                    createdAt = DateTime.Now,
+                    numberPayment = _model.GetLocalNumber(),
+                    goodsTax = "0",
+                    restPayment = Convert.ToDecimal(rest),
+                    totalPayment = (decimal)SumaOrder,
+                    buyersAmount = (decimal)SumaUser,
+                    formOfPayment = SelectIndex,
+                }))
+                {
+                    MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Products = new List<Goods>();
+                    BarCodeSearch = string.Empty;
+                    SumaUser = new decimal();
+                    SumaUser = 0;
+                    SumaOrder = 0;
+                }
+                
             }
             else
             {
@@ -188,6 +211,24 @@ namespace ShopProject.ViewModel.SalePage
             }
         }
 
+        public ICommand OpenChangeCommand => _openChangeCommand;
+        private void OpenChange()
+        {
+            Operation operation = new Operation
+            {
+                dataPacketIdentifier = 1,
+                typeRRO = 0,
+                fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                factoryNumberRRO = "v1",
+                typeOperation = 108,
+                createdAt = DateTime.Now,
+                numberPayment = "0",
+                mac = _model.GetMac(false),
+            };
+          
+            _model.OpenChange(operation, true);
+        }
 
     }
 }

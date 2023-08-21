@@ -38,7 +38,7 @@ namespace ShopProject.ViewModel.HomePage
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
             openExportProduct = new DelegateCommand(() => { new ExportGoodsExel().Show(); });
-            opemImportProduct = new DelegateCommand(() => { new ImportProductExel().Show(); });
+            opemImportProduct = new DelegateCommand(() => { new ImportGoodsExel().Show(); });
             openCreateStiker = new DelegateCommand(() => { new CreateStiker().Show(); });
             openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
             openSaleMenu = new DelegateCommand(() => { Page = new SaleMenu(); });
