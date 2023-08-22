@@ -118,11 +118,11 @@ namespace ShopProject.Model
                      "\nБез ПДВ" +
                      "\n--------------------------------------------------------------     " +
                     $"\nГОТІВКОВА                                             {order.buyersAmount}" +
-                    $"\nРешта                                                         {order.restPayment}"));
+                    $"\nРешта                                                         {order.restPayment.ToString("0.00")}"));
 
 
 
-                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={order.mac}&date={order.createdAt.ToString("yyyyMMdd")}&time={order.createdAt.ToString("HHmm")}&id={id}&sm={order.totalPayment}&fn={order.fiscalNumberRRO}";
+                string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={order.mac}&date={order.createdAt.ToString("yyyyMMdd")}&time={order.createdAt.ToString("HHmm")}&id={id}&sm={order.totalPayment.ToString("0")}&fn={order.fiscalNumberRRO}";
 
                 string qrtext = text; //считываем текст из TextBox'a
 

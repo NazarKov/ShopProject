@@ -55,7 +55,7 @@
                     <TextBox x:Name="textBox1" Grid.Column="2" Text="{Binding TaxNumber}" HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Width="90"/>
                     
                     <Button x:Name="button1" Grid.Column="3" Grid.Row="0" Content="Зберегти" Command="{Binding SaveFiscalNumberCommand}" HorizontalAlignment="Center" Width="120" VerticalAlignment="Center"/>
-                    <Button x:Name="button2" Grid.Column="3" Grid.Row="1" Content="Зберегти" Command="{Binding sa}" HorizontalAlignment="Center" Width="120" VerticalAlignment="Center"/>
+                    <Button x:Name="button2" Grid.Column="3" Grid.Row="1" Content="Зберегти" Command="{Binding SaveTaxNumberCommand}" HorizontalAlignment="Center" Width="120" VerticalAlignment="Center"/>
 
 
 

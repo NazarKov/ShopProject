@@ -77,7 +77,7 @@ namespace ShopProject.Model.ToolsPage
             {
                 for (; i < max; i++)
                 {
-                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),_goodsRepository.GetAll()))
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),_goodsRepository.GetAll("in_stock")))
                     {
                         SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
                     }
@@ -89,9 +89,22 @@ namespace ShopProject.Model.ToolsPage
                         product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
                         product.price = (decimal)Validation.ChekEmpty(price, i, dataTable);
                         product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
+                        if (Validation.ChekParamsIsNull(units, i, dataTable) == "Шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "шт")
+                        {
+                            product.unit = new GoodsUnit()
+                            {
+                                number = 2009,
+                                name = "шт",
+                                shortName = "Штука",
+                            };
+                        }
+                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "пачка")
+                        {
+                            product.unit = new GoodsUnit() { number = 2112, name = "пач", shortName = "Пачка" };
+                        }
                         product.createdAt = DateTime.Now;
                         product.status = "in_stock";
-
+                        product.codeUKTZED = new CodeUKTZED() { code = "9507" };
                         products.Add(product);
                     }
                 }
@@ -106,7 +119,7 @@ namespace ShopProject.Model.ToolsPage
         private void SetCountItem(int code,int count, int i , DataTable dataTable)
         {
              Goods product = (Goods)_goodsRepository.GetItemBarCode(Validation.ChekParamsIsNull(code, i, dataTable));
-            _goodsRepository.UpdateParameter(product.id,"count", count);
+            //_goodsRepository.UpdateParameter(product.id,"count", count);
         }
     }
 }

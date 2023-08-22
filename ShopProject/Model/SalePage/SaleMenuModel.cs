@@ -172,7 +172,7 @@ namespace ShopProject.Model.SalePage
         {
             try
             {
-                ChekedOpenChange();
+                //ChekedOpenChange();
                 SendChek(operation, goods);
                 return true;
             }

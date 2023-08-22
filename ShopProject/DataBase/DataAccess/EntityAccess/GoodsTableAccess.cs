@@ -25,6 +25,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                     context.codeUKTZED.Load();
                     if (context.goods != null)
                     {
+
                         item.unit = context.goodsUnits.Find(item.unit.id);
                         item.codeUKTZED = context.codeUKTZED.Find(item.codeUKTZED.id);
 
@@ -42,11 +43,19 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if (context != null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if (context.goods != null)
                     {
-                        context.goods.AddRange(items);
+                        foreach (Goods item in items)
+                        {
+                            item.unit = context.goodsUnits.FirstOrDefault(unit => unit.number == item.unit.number);
+                            item.codeUKTZED = context.codeUKTZED.FirstOrDefault(unit => unit.code == item.codeUKTZED.code);
+
+                            context.goods.Add(item);
+                        }
                     }
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
@@ -114,6 +123,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                         }
                         else
                         {
+                            return new List<Goods>();
                             throw new Exception("База даних не містить товарів.\nСтворіть товар");
                         }
                     }
