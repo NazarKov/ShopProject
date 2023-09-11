@@ -12,6 +12,7 @@ using ShopProject.Views.StoragePage;
 using ShopProject.Views.ToolsPage;
 using ShopProject.Model.Command;
 using ShopProject.Views.SalePage;
+using System.Windows.Forms;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -28,12 +29,19 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openOutOfStock;
         private ICommand openSaleMenu;
 
-        HomeModel homeModel;
+        private HomeModel _homeModel;
 
         public HomeViewModel()
         {
+            _widht = 0;
+            _height = 0;
 
-            exitApp = new DelegateCommand(() => { Application.Current.MainWindow.Close();});
+            _homeModel = new HomeModel();
+
+            Width = Screen.PrimaryScreen.Bounds.Width;
+            Height = Screen.PrimaryScreen.Bounds.Height;
+
+            exitApp = new DelegateCommand(() => {/* Application.Current.MainWindow.Close();*/});
             openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); });
             openArchive = new DelegateCommand(() => { Page = new Archive(); });
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
@@ -43,15 +51,23 @@ namespace ShopProject.ViewModel.HomePage
             openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
             openSaleMenu = new DelegateCommand(() => { Page = new SaleMenu(); });
 
-            newModels();
-
         }
 
-        void newModels()
+
+
+        private int _widht;
+        public int Width
         {
-            homeModel = new HomeModel();
-            _dbConnect = new List<string>();
+            get { return _widht; } 
+            set{ _widht = value;OnPropertyChanged("Width"); }
         }
+        private int _height;
+        public int Height
+        {
+            get { return _height; } 
+            set { _height = value; OnPropertyChanged("Height"); }
+        }
+
 
         #region
         private string _name;

@@ -25,6 +25,10 @@ namespace ShopProject.Views.HomePage
             InitializeComponent();
         }
 
-    
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.frame.Width = this.ActualWidth;
+            this.frame.Height = this.ActualHeight;
+        }
     }
 }

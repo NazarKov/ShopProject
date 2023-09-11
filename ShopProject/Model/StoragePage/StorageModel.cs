@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
@@ -14,31 +15,26 @@ namespace ShopProject.Model.StoragePage
         private List<Goods>? _goods;
 
         public StorageModel()
-        { 
-            _goodsRepository = new GoodsTableAccess();
-
-            try
-            {
-                _goods = new List<Goods>();
-                _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        public List<Goods> GetItems()
         {
-            return _goods;
+            _goods = new List<Goods>();
+            _goodsRepository = new GoodsTableAccess();
+            new Thread(new ThreadStart(ChekedGoodinCountNull)).Start();
         }
 
-        public List<Goods>? SearchGoods(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchGoods(string item)
         {
             try
             {
                 _goods.Clear();
                 _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
-                return Search.GoodsDataBase(itemSearch, type, _goods);
+                if (item != "")
+                {
+                    return Search.GoodsDataBase(item, _goods);
+                }
+                else
+                {
+                    return _goods;
+                }
             }
             catch (Exception ex)
             {
@@ -82,6 +78,7 @@ namespace ShopProject.Model.StoragePage
             {
                 _goodsRepository.UpdateParameter(item.id, "status", "outStock");
                 _goodsRepository.UpdateParameter(item.id, "outStock", DateTime.Now);
+                _goodsRepository.UpdateParameter(item.id, "count", 0);
 
                 return true;
             }
@@ -96,6 +93,17 @@ namespace ShopProject.Model.StoragePage
             foreach(Goods item in list)
             {
                 goods.Add(item);
+            }
+        }
+
+        private void ChekedGoodinCountNull()
+        {
+            foreach(var item in _goodsRepository.GetAll("in_stock"))
+            {
+                if(item.count<=0)
+                {
+                    SetGoodsOutOfStok(item);
+                }
             }
         }
     }

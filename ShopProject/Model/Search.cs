@@ -8,65 +8,30 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model
 {
-    public enum TypeSearch
-    {
-        Name = 0,
-        Code = 1,
-        Articule = 2,
-    };
-
     internal static class Search
     {
-        private static Goods? item;
         private static List<Goods>? searchResult;
 
-        public static List<Goods>? GoodsDataBase(string itemSearch, TypeSearch type,List<Goods> products)
+        public static List<Goods>? GoodsDataBase(string itemSearch,List<Goods> goods)
         {
             searchResult = new List<Goods>();
-            switch (type)
+
+            var item = goods.Where(item => item.code.Contains(itemSearch)).ToList();
+            if(item.Count != 0 && item!=null)
             {
-                case TypeSearch.Code:
-                    {
-                        foreach (Goods product in products)
-                        {
-                            if (product.code == itemSearch)
-                            {
-                                searchResult.Add(product);
-                            }
-                        }
-                        return searchResult;
-                    }
-                case TypeSearch.Name:
-                    {
-                        foreach (Goods product in products)
-                        {
-                            if(product.name!=null)
-                                if (product.name.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                {
-                                    searchResult.Add(product);
-                                }
-                        }
-
-                        return searchResult;
-                    }
-                case TypeSearch.Articule:
-                    {
-                        foreach (Goods product in products)
-                        {
-                            if(product.articule !=null)
-                                if (product.articule.ToLower().ToString().Contains(itemSearch.ToLower()))
-                                {
-                                    searchResult.Add(product);
-                                }
-                        }
-
-                        return searchResult;
-                    }
-                default:
-                    {
-                        throw new Exception("Товар не знайдено");
-                    }
+                searchResult.AddRange(item);
             }
+            item = goods.Where(item => item.name.ToLower().Contains(itemSearch.ToLower())).ToList();
+            if(item.Count != 0 && item != null)
+            {
+                searchResult.AddRange(item);
+            }
+            item = goods.Where(item => item.articule.ToLower().Contains(itemSearch.ToLower())).ToList();
+            if (item.Count != 0 && item != null)
+            {
+                searchResult.AddRange(item);
+            }
+            return searchResult;
         }
 
     }

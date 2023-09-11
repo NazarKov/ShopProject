@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Model;
+﻿using Org.BouncyCastle.Asn1.X509;
+using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
@@ -9,118 +10,96 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
-        private StorageModel? _model;
+        private static ManualResetEventSlim _eventSlim = new ManualResetEventSlim(true);
 
-        private ICommand _searchCommand;
-        private ICommand _visibileAllCommand;
+        private StorageModel? _model;
+        private string _nameSearch;
+
         private ICommand _openCreateGoodsWindowCommand;
         private ICommand _openFormationGoodsWindowCommand;
+        private ICommand _updateSizeGridCommand;
 
         private List<Goods> _goods;
-        
+
         public StorageViewModel()
         {
-            GoodsList = new List<Goods>();
-            SearchTemplateName = new List<string>();
-
-            _searchCommand = new DelegateCommand(SearchGoodsInCodeAndName);
-            _visibileAllCommand = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start(); });
             _openCreateGoodsWindowCommand = new DelegateCommand(() => { new CreateGoodsPage().Show(); });
             _openFormationGoodsWindowCommand = new DelegateCommand(() => { new FormationGoods().Show(); });
+            _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
 
-            SizeDataGrid = (double)SystemParameters.PrimaryScreenWidth;
+            _model = new StorageModel();
             _goods = new List<Goods>();
-
+            
             _nameSearch = string.Empty;
-            _searchTemplateName = new List<string>();
+            _statusBarCountGoods = string.Empty;
+            
+            GoodsList = new List<Goods>();
 
-            SetFieldTextComboBox();
-
-            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+            SearchGoods("");
         }
+        public ICommand UpdateSize => _updateSizeGridCommand;
 
         private List<Goods>? _goodslist;
         public List<Goods>? GoodsList
         {
             get { return _goodslist; }
-            set{ _goodslist = value; OnPropertyChanged("GoodsList"); }
+            set { _goodslist = value; OnPropertyChanged("GoodsList"); }
         }
 
-        private double _sizeDataGrid;
-        public double SizeDataGrid
+        private int _width;
+        public int Width
         {
-            set{ _sizeDataGrid = value; OnPropertyChanged("SizeDataGrid"); }
+            get { return _width; }
+            set { _width = value; OnPropertyChanged("Width"); }
         }
 
-        private List<string> _searchTemplateName;
-        public List<string> SearchTemplateName
+        private int _heigth;
+        public int Heigth
         {
-            get { return _searchTemplateName; }
-            set { _searchTemplateName = value; OnPropertyChanged("SearchTemplateName"); }
+            get { return _heigth; }
+            set { _heigth = value; OnPropertyChanged("Heigth"); }
         }
 
-        private int _selectedIndexSearch;
-        public int SelectedIndexSearch
+
+        private string _statusBarCountGoods;
+        public string StatusBarCountGoods
         {
-            get { return _selectedIndexSearch; }
-            set { _selectedIndexSearch = value; OnPropertyChanged("SelectedIndexSearch"); }
+            get { return _statusBarCountGoods; }
+            set { _statusBarCountGoods = value; OnPropertyChanged("StatusBarCountGoods"); }
         }
 
-        private string _nameSearch;
-        public string NameSearch
+        private void UpdateSizes()
         {
-            get { return _nameSearch; }
-            set { _nameSearch = value; OnPropertyChanged("NameSearch"); }
+            Width = (int)Application.Current.MainWindow.ActualWidth;
+            Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
         }
 
-        private void SetFieldTextComboBox()
-        {
-            SearchTemplateName.Add("ШтрихКод");
-            SearchTemplateName.Add("Назва");
-            SearchTemplateName.Add("Артикуль");
-            SelectedIndexSearch = 0;
-        }
+        public ICommand SearchCommand { get => new DelegateParameterCommand(SearchGoods, CanRegister); }
 
-        public ICommand SearchCommand => _searchCommand;
-
-        void SearchGoodsInCodeAndName()
+        private void SearchGoods(object parameter)
         {
-            if (_model != null)
-                switch (_selectedIndexSearch)
+            
+            _nameSearch = parameter.ToString();
+            new Thread(() =>
+            {  
+                if (GoodsList.Count != 0)
                 {
-                    case 0:
-                        {
-                            GoodsList.Clear();
-                            GoodsList = _model.SearchGoods(_nameSearch, TypeSearch.Code);
-                            break;
-                        }
-                    case 1:
-                        {
-                            GoodsList.Clear();
-                            GoodsList = _model.SearchGoods(_nameSearch, TypeSearch.Name);
-                            break;
-                        }
-                    case 2:
-                        {
-                            GoodsList.Clear();
-                            GoodsList = _model.SearchGoods(_nameSearch, TypeSearch.Articule);
-                            break;
-                        }
+                    GoodsList.Clear();
                 }
+                GoodsList = _model.SearchGoods(parameter.ToString());
+                StatusBarCountGoods = "Кілкісь товарі: " + GoodsList.Count;
+            }).Start();
+            _eventSlim.Wait();
+            _eventSlim.Set();
         }
-        public ICommand VisibileAllCommand => _visibileAllCommand;
-
-        void SetFieldItemDataGridThread()
-        {
-            GoodsList.Clear();
-            _model = new StorageModel();
-            GoodsList = _model.GetItems();
-        }
+  
 
         public ICommand UpdateGoodsCommand { get => new DelegateParameterCommand(UpdateGoods, CanRegister); }
         private void UpdateGoods(object parameter)
@@ -133,18 +112,18 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 StaticResourse.goods = _goods[0];
                 new UpdateGoods().ShowDialog();
-                if(NameSearch!=string.Empty) 
+                if(_nameSearch!=string.Empty) 
                 {
-                    SearchGoodsInCodeAndName();
+                    SearchGoods(_nameSearch);
                 }
             }
             else
             {
                 StaticResourse.goodsList = _goods;
                 new UpdateGoodsRange().ShowDialog();
-                if(NameSearch !=string.Empty)
+                if (_nameSearch != string.Empty)
                 {
-                    SearchGoodsInCodeAndName();
+                    SearchGoods(_nameSearch);
                 }
             }
             
@@ -165,14 +144,13 @@ namespace ShopProject.ViewModel.StoragePage
                         {
                             if (_model.DeleteGoods(_goods[0]))
                             {
-                                if (NameSearch != string.Empty)
+                                if (_nameSearch != string.Empty)
                                 {
-                                    SearchGoodsInCodeAndName();
+                                    SearchGoods(_nameSearch);
                                 }
                                 else
                                 {
-                                    new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
-
+                                    SearchGoods(_nameSearch);
                                 }
                             }
                         }
@@ -192,11 +170,21 @@ namespace ShopProject.ViewModel.StoragePage
                     if (_goods.Count == 1)
                     {
                         if(_model.SetGoodsInArhive(_goods[0]))
-                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                        {
+                            if(_nameSearch != string.Empty)
+                            {
+                                SearchGoods(_nameSearch);
+                            }
+                            else
+                            {
+                                SearchGoods(_nameSearch);
+                            }
+                        }
                     }
                 }
             }
         }
+        
         public ICommand AddOutOfStockGoodsCommand { get => new DelegateParameterCommand(AddOutOfStockGoods, CanRegister); }
         private void AddOutOfStockGoods(object parameter)
         {
@@ -209,11 +197,21 @@ namespace ShopProject.ViewModel.StoragePage
                     if (_goods.Count == 1)
                     {
                         if (_model.SetGoodsOutOfStok(_goods[0]))
-                            new Thread(new ThreadStart(SetFieldItemDataGridThread)).Start();
+                        {
+                            if (_nameSearch != string.Empty)
+                            {
+                                SearchGoods(_nameSearch);
+                            }
+                            else
+                            {
+                                SearchGoods(_nameSearch);
+                            }
+                        }
                     }
                 }
             }
         }
+        
         public ICommand OpenWindoiwCreateStikerCommand{ get => new DelegateParameterCommand(ShowWindowCreateStikerCommand, CanRegister); }
         private void ShowWindowCreateStikerCommand(object parameter)
         {
@@ -227,6 +225,7 @@ namespace ShopProject.ViewModel.StoragePage
                 new CreateStiker().Show();
             }
         }
+        
         private bool CanRegister(object parameter) => true;
 
         public ICommand OpenCreateGoodsWindowCommand => _openCreateGoodsWindowCommand;
