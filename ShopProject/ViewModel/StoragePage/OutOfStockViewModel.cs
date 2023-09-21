@@ -84,17 +84,17 @@ namespace ShopProject.ViewModel.StoragePage
                 {
                     case 0:
                         {
-                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Code);
+                            Goods = _model.SearchGoods(_nameSearch);
                             break;
                         }
                     case 1:
                         {
-                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Name);
+                            Goods = _model.SearchGoods(_nameSearch);
                             break;
                         }
                     case 2:
                         {
-                            Goods = _model.SearchGoods(_nameSearch, TypeSearch.Articule);
+                            Goods = _model.SearchGoods(_nameSearch);
                             break;
                         }
                 }

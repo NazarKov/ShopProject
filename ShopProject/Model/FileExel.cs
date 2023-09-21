@@ -2,6 +2,7 @@
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using ShopProject.DataBase.Model;
+using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -49,17 +50,17 @@ namespace ShopProject.Model
             }
         }
 
-        public void Write(string path, List<Goods> products)
+        public void Write(string path, List<HelperClassExportGoodsInFile> Goods)
         {
             workbook = new XSSFWorkbook();
-            CreateExelTable(products);
+            CreateExelTable(Goods);
            
             FileStream sw = File.Create(path);
             workbook.Write(sw,true);
             sw.Close();
         
         }
-        private void CreateExelTable(List<Goods> products)
+        private void CreateExelTable(List<HelperClassExportGoodsInFile> Goods)
         {
             if (workbook != null)
             {
@@ -68,19 +69,17 @@ namespace ShopProject.Model
                 IRow row = sheet1.CreateRow(0);
                 CreateExelTableHeader(row);
                 int i = 1;
-                foreach (Goods product in products)
+                foreach (var item in Goods)
                 {
                     row = sheet1.CreateRow(i);
-                    row.CreateCell(0).SetCellValue(product.code);
-                    row.CreateCell(1).SetCellValue(product.name);
-                    row.CreateCell(2).SetCellValue(product.articule);
-                   if(product.price!=null)
-                        row.CreateCell(3).SetCellValue((double)product.price);
-                    if (product.count != null)
-                        row.CreateCell(4).SetCellValue((double)product.count);
-                   // row.CreateCell(5).SetCellValue(product.units);
-                    if (product.sales != null)
-                        row.CreateCell(6).SetCellValue((double)product.sales);
+                    row.CreateCell(0).SetCellValue(item.goods.code);
+                    row.CreateCell(1).SetCellValue(item.goods.name);
+                    row.CreateCell(2).SetCellValue(item.goods.articule);
+                   if(item.goods.price!=null)
+                        row.CreateCell(3).SetCellValue(item.goods.price.ToString());
+                    if (item.goods.count != null)
+                        row.CreateCell(4).SetCellValue(item.goodsCount.ToString());
+                    row.CreateCell(5).SetCellValue(item.goods.unit.shortName);
                     i++;
                 }
 

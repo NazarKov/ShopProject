@@ -16,23 +16,33 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class FormationProductModel
     {
-        private IEntityAccessor<Goods> _tableRepository;
+        private IEntityAccessor<Goods> _goodsRepository;
+        private IEntityAccessor<GoodsUnit> _goodsUnitRepository;
+        private IEntityAccessor<CodeUKTZED> _codeUKTZEDRepository;
+
+        private List<GoodsUnit> _goodsUnitsList;
+        private List<CodeUKTZED> _codesUKTZEDList;
+
 
         public FormationProductModel()
         {
-            _tableRepository = new GoodsTableAccess();
+            _goodsUnitsList = new List<GoodsUnit>();
+            _codesUKTZEDList = new List<CodeUKTZED>();
+
+            _goodsRepository = new GoodsTableAccess();
+            _goodsUnitRepository = new UnitTableAccess();
+            _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
         }
 
-        public Goods GetProduct(string barCode)
+        public Goods Search(string barCode)
         {
             try
             {
-                
-                return (Goods)_tableRepository.GetItemBarCode(barCode);
+                return _goodsRepository.GetItemBarCode(barCode);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
@@ -71,34 +81,52 @@ namespace ShopProject.Model.ToolsPage
                 return null;
             }
         }
-        public bool AddProduct(string name, string code, string articule, decimal price, int count, string units, List<Goods> productsFormation)
+        public bool AddProduct(string name, string code, string articule, decimal price, int count, string units,string codeUKTZED, List<Goods> goodsFormation)
         {
             try
             {
                 if (Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct")))
                 {
 
-                    if (Validation.CodeCoincidenceinDatabase(code, (IEnumerable<Goods>)_tableRepository.GetAll()))//перевірка на наявність товару по штрих коду
+                    if (Validation.CodeCoincidenceinDatabase(code,_goodsRepository.GetAll("in_stock")))
                     {
                         throw new Exception("Товар існує");
                     }
-                    Goods product = new Goods();
-                    product.code = code;
-                    product.name = name;
-                    product.articule = articule;
-                    product.price = (decimal)price;
-                    product.count = count;
-                    // product.units = units;
-                    product.createdAt = DateTime.Now;
-                    product.status = "in_stock";
-                    product.sales = 0;
+                    var unit = _goodsUnitsList.Where(item => item.shortName == units).FirstOrDefault();
+                    var UKTZED = _codesUKTZEDList.Where(item => item.name == codeUKTZED).FirstOrDefault();
 
+                    if(unit!=null)
+                    {
+                        if(UKTZED!=null)
+                        {
+                            Goods goods = new Goods();
+                            
+                            goods.code = code;
+                            goods.name = name;
+                            goods.articule = articule;
+                            goods.price = price;
+                            goods.count = count;
+                            goods.unit = unit;
+                            goods.codeUKTZED = UKTZED;
+                            goods.createdAt = DateTime.Now;
+                            goods.status = "in_stock";
+                            goods.sales = 0;
 
-                     _tableRepository.Add(product);
-                    //foreach (var item in productsFormation)
-                    //{
-                    //    _tableRepository.SetParameter(item.id, (item.count - 1), TypeParameterSetTableProduct.Count);
-                    //}
+                            _goodsRepository.Add(goods);
+                        }
+                    }
+
+                    if (goodsFormation.Count != 0)
+                    {
+                        foreach(var item in goodsFormation)
+                        {
+                            var itemCount = item.count * count;
+                            if (itemCount != null)
+                            {
+                                _goodsRepository.UpdateParameter(item.id, "count", -itemCount);
+                            }
+                        }
+                    }
                 }
                 return true;
             }
@@ -106,6 +134,42 @@ namespace ShopProject.Model.ToolsPage
             {
                 MessageBox.Show(ex.Message);
                 return false;
+            }
+        }
+        public List<string>? GetUnitList()
+        {
+            try
+            {
+                List<string> result = new List<string>();
+                _goodsUnitsList = (List<GoodsUnit>)_goodsUnitRepository.GetAll();
+                foreach (GoodsUnit unit in _goodsUnitsList)
+                {
+                    result.Add(unit.shortName.ToString());
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+        public List<string>? GetCodeUKTZEDList()
+        {
+            try
+            {
+                List<string> result = new List<string>();
+                _codesUKTZEDList = (List<CodeUKTZED>)_codeUKTZEDRepository.GetAll();
+                foreach (CodeUKTZED code in _codesUKTZEDList)
+                {
+                    result.Add(code.name.ToString());
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
         }
     }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,12 +20,11 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class FormationProductViewModel : ViewModel<FormationProductViewModel>
     {
-        private ICommand _addProductInFormationCommand;
-        private ICommand _addProudctDataBaseCommand;
+        private ICommand _addGoodsDataBaseCommand;
+        private ICommand _searchBarCodeGoodsCommand;
 
         private FormationProductModel _model;
         private List<Goods> _productsSelectGridView;
-        private List<Goods> _products;
 
         public FormationProductViewModel() 
         {
@@ -37,27 +37,24 @@ namespace ShopProject.ViewModel.ToolsPage
             _count = 0;
             _price = 0;
             _units = new List<string>();
-            _selcetUnits = 0;
-            _productsInFormedProduct = new List<Goods>();
+            _selectUnits = 0;
+            _goodsList = new List<Goods>();
             _productsSelectGridView = new List<Goods>();
-            _products = new List<Goods>();
 
-            _addProductInFormationCommand = new DelegateCommand(AddProductInFormation);
-            _addProudctDataBaseCommand = new DelegateCommand(AddProductDataBase);
+            _addGoodsDataBaseCommand = new DelegateCommand(AddProductDataBase);
+            _searchBarCodeGoodsCommand = new DelegateCommand(SearchGoods);
 
-            ProductsInFormedProduct = new List<Goods>();
+            _goodsList = new List<Goods>();
             
-            SetFieldComboBox();
+            new Thread(new ThreadStart(SetFieldComboBox)).Start();
         }
         private void SetFieldComboBox()
         {
-            Units = new List<string>();
-            Units.Add("Шт");
-            Units.Add("кг");
-            Units.Add("пачка");
-            Units.Add("ящик");
-
-            SelcetUnits = 0;
+            Units = _model.GetUnitList();
+            CodeUKTZED = _model.GetCodeUKTZEDList();
+            
+            SelectUnits = 0;
+            SelectCodeUKTZED = 0;
         }
 
         private string _searchCode;
@@ -109,36 +106,89 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _units = value;  OnPropertyChanged("Units"); }
         }
 
-        private int _selcetUnits;
-        public int SelcetUnits
+        private int _selectUnits;
+        public int SelectUnits
         {
-            get { return _selcetUnits; }
-            set { _selcetUnits = value;OnPropertyChanged("SelcetUnits"); }
+            get { return _selectUnits; }
+            set { _selectUnits = value;OnPropertyChanged("SelectUnits"); }
         }
 
-        private List<Goods> _productsInFormedProduct;
-        public List<Goods> ProductsInFormedProduct
+        private List<string> _codeUKTZED;
+        public List<string> CodeUKTZED
         {
-            get { return _productsInFormedProduct; }
-            set { _productsInFormedProduct = value; OnPropertyChanged("ProductsInFormedProduct"); }
+            get { return _codeUKTZED; }
+            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
+        }
+        private int _selectCodeUKTZED;
+        public int SelectCodeUKTZED
+        {
+            get { return _selectCodeUKTZED; }
+            set { _selectCodeUKTZED = value; OnPropertyChanged("SelectCodeUKTZED"); }
         }
 
-        public ICommand AddProductInFormationCommand => _addProductInFormationCommand;
-
-        private void AddProductInFormation()
+        private List<Goods> _goodsList;
+        public List<Goods> GoodsList
         {
-            var item= _model.GetProduct(SearchCode);
-            if (item != null)
+            get { return _goodsList; }
+            set { _goodsList = value; OnPropertyChanged("GoodsList"); }
+        }
+
+        public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
+
+        private void SearchGoods()
+        {
+            List<Goods> temp;
+            if (SearchCode.Length > 12)
             {
-                _products = new List<Goods>();
-                _products.AddRange(_productsInFormedProduct);
-                _products.Add(item);
-                ProductsInFormedProduct = _products;
-                SearchCode = string.Empty;
-            }
-            else
-            {
-                MessageBox.Show("Товар не знайдено");
+                if (SearchCode != "0000000000000")//винести в настройки
+                {
+                    var item = _model.Search(SearchCode);
+                    if (item != null)
+                    {
+                        item.count = 1;
+                        temp = new List<Goods>();
+                        temp = GoodsList;
+
+                        if (temp.Find(pr => pr.code == item.code) != null)
+                        {
+                            temp.Find(pr => pr.code == item.code).count += 1;
+                        }
+                        else
+                        {
+                            temp.Add(item);
+                        }
+
+                        GoodsList = new List<Goods>();
+                        GoodsList = temp;
+                        SearchCode = string.Empty;
+                    }
+                }
+                else
+                {
+                    if (GoodsList.Count() != 0)
+                    {
+                        if (GoodsList.ElementAt(GoodsList.Count - 1).count == 1)
+                        {
+                            temp = new List<Goods>();
+                            temp = GoodsList;
+
+                            temp.Remove(temp.ElementAt(temp.Count - 1));
+                            GoodsList = new List<Goods>();
+                            GoodsList = temp;
+                        }
+                        else
+                        {
+                            temp = new List<Goods>();
+                            temp = GoodsList;
+
+
+                            temp.ElementAt(GoodsList.Count - 1).count -= 1;
+                            GoodsList = new List<Goods>();
+                            GoodsList = temp;
+                        }
+                        SearchCode = string.Empty;
+                    }
+                }
             }
         }
 
@@ -151,11 +201,11 @@ namespace ShopProject.ViewModel.ToolsPage
             {
                 _model.ContertToListProduct((IList)parameter, _productsSelectGridView);
                 
-                var list = _model.UpdateList(ProductsInFormedProduct, _productsSelectGridView);
+                var list = _model.UpdateList(_goodsList, _productsSelectGridView);
                 
                 if (list != null)
                 {
-                    ProductsInFormedProduct = list;
+                    GoodsList = list;
                 }
             } 
         }
@@ -169,13 +219,13 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private bool CanRegister(object parameter) => true;
 
-        public ICommand AddProductDataBaseCommand => _addProudctDataBaseCommand;
+        public ICommand AddGoodsDataBaseCommand => _addGoodsDataBaseCommand;
 
         private void AddProductDataBase()
         {
-            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelcetUnits),ProductsInFormedProduct))
+            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelectUnits),CodeUKTZED.ElementAt(SelectCodeUKTZED),GoodsList))
             {
-                MessageBox.Show("товар добавлено");
+                MessageBox.Show("Товар добавлено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

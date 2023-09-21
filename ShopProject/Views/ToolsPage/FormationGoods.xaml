@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="FormationProduct" Height="450" Width="900" ResizeMode="NoResize" Name="window">
     <Window.DataContext>
@@ -45,11 +46,14 @@
         <TextBox x:Name="textBox_Copy3" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" Margin="0,15,0,0" TextWrapping="Wrap" Text="{Binding Articule}" VerticalAlignment="Center" Width="120"/>
 
         <Label x:Name="label5" Grid.Column="0" Grid.Row="5" Content="Одиниці товару" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="5" VerticalAlignment="Center" Width="120" ItemsSource="{Binding Units}" SelectedIndex="{Binding SelcetUnits}"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Center" Margin="0,15,0,0" Grid.Row="5" VerticalAlignment="Center" Width="120" ItemsSource="{Binding Units}" SelectedIndex="{Binding SelectUnits}"/>
+
+        <Label x:Name="label8" Grid.Column="0" Grid.Row="6" Content="Код УКТЗЕД" HorizontalAlignment="Left" Margin="35,0,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Row="6" VerticalAlignment="top" Width="120" ItemsSource="{Binding CodeUKTZED}" SelectedIndex="{Binding SelectCodeUKTZED}"/>
 
         <Label x:Name="label6" Grid.Column="1" Content="Товари з яких фомується товар" HorizontalAlignment="Left" Margin="35,0,0,0" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
 
-        <DataGrid x:Name="datagrid" Grid.Row="1" Grid.Column="1" Margin="35,0,35,0" Grid.ColumnSpan="5" Grid.RowSpan="5" ItemsSource="{Binding ProductsInFormedProduct ,UpdateSourceTrigger=PropertyChanged}"
+        <DataGrid x:Name="datagrid" Grid.Row="1" Grid.Column="1" Margin="35,0,35,0" Grid.ColumnSpan="5" Grid.RowSpan="5" ItemsSource="{Binding GoodsList ,UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False"
                   HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
                   HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
@@ -77,12 +81,16 @@
 
         <Label x:Name="label7" Grid.Column="2" Content="Штрихкод" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center"/>
 
-        <TextBox x:Name="textBox1" Grid.Column="3"  HorizontalAlignment="Right" Margin="0,0,0,0" TextWrapping="Wrap" Text="{Binding SearchCode}" VerticalAlignment="Center" Width="120"/>
-
-        <Button x:Name="button" Grid.Column="4" Grid.ColumnSpan="2" Content="добавити товар для формування" HorizontalAlignment="Right" Margin="0,0,35,0" VerticalAlignment="Center" Command="{Binding AddProductInFormationCommand}"/>
+        <TextBox x:Name="textBox1" Grid.Column="3"  HorizontalAlignment="Right" Margin="0,0,0,0" TextWrapping="Wrap" Text="{Binding SearchCode , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="120">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding SearchBarCodeGoodsCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
 
         <Button x:Name="button1" Grid.Column="5" Content="Вийти" HorizontalAlignment="Right" Margin="0,15,35,0" Grid.Row="6" VerticalAlignment="Top" Command="{Binding ExitWindow}" CommandParameter="{Binding ElementName=window, Mode=OneWay}"/>
-        <Button x:Name="button2" Grid.Column="4" Content="Добавити товар" HorizontalAlignment="Right" Margin="0,15,15,0" Grid.Row="6" VerticalAlignment="Top" Command="{Binding AddProductDataBaseCommand}"/>
+        <Button x:Name="button2" Grid.Column="4" Content="Добавити товар" HorizontalAlignment="Right" Margin="0,15,15,0" Grid.Row="6" VerticalAlignment="Top" Command="{Binding AddGoodsDataBaseCommand}"/>
 
 
     </Grid>

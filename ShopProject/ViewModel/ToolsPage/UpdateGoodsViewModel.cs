@@ -38,13 +38,18 @@ namespace ShopProject.ViewModel.ToolsPage
 
             Units = new List<string>();
             CodeUKTZED = new List<string>();
+            ClearResourses();
+            SetFieldText();
+            new Thread(new ThreadStart(setFiledWindow)).Start();
+        }
+
+        private void setFiledWindow()
+        {
             Units = _model.GetUnitList();
             CodeUKTZED = _model.GetCodeUKTZEDList();
-
-            SetFieldText();
-            ClearResourses();
+            
         }
-    
+
         private Guid _id;
 
         private string _code;
@@ -85,7 +90,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string>? Units
         {
             get { return _units; }
-            set { _units = value; }
+            set { _units = value; OnPropertyChanged("Units"); }
         }
 
         private string _selectUnits;
@@ -99,7 +104,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string> CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; }
+            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
         }
         private string? _selectCodeUKTZED;
         public string? SelcetCodeUKTZED
@@ -147,10 +152,12 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void UpdateGoodsDataBase()
         {
-            if (_model.UpdateItemDataBase(_id,_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
-            {
-                MessageBox.Show("Товар редаговано","Інформація",MessageBoxButton.OK,MessageBoxImage.Information);
-            }
+            new Thread(new ThreadStart(() => {
+                if (_model.UpdateItemDataBase(_id,_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
+                {
+                    MessageBox.Show("Товар редаговано","Інформація",MessageBoxButton.OK,MessageBoxImage.Information);
+                }
+            })).Start();
         }
     }
 }

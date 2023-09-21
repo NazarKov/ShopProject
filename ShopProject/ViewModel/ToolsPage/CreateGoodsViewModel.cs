@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -22,23 +23,28 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             _model = new CreateGoodsModel();
             Units = new List<string>();
+            CodeUKTZED = new List<string>();
 
             _saveGoodsCommand = new DelegateCommand(SaveAndCreateGoodsDataBase);
             _clearWindowCommand = new DelegateCommand(ClearTextWindow);
 
             _code = string.Empty;
             _name = string.Empty;
-            _articule = string.Empty;
+            _articled = string.Empty;
             _units = null;
             _selectUnits = string.Empty;
             _selectCodeUKTZED = string.Empty;
 
             _price = 0m;
             _count = 0m;
-
+            new Thread(new ThreadStart(setFiledWindow)).Start();
+        }
+        private void setFiledWindow()
+        {
             Units = _model.GetUnitList();
             CodeUKTZED = _model.GetCodeUKTZEDList();
         }
+
 
         private string _code;
         public string Code
@@ -54,22 +60,22 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _name = value; OnPropertyChanged("Name"); }
         }
 
-        private string _articule;
-        public string Articule 
+        private string _articled;
+        public string Articled
         {
-            get { return _articule; }
-            set { _articule = value; OnPropertyChanged("Articule"); }
+            get { return _articled; }
+            set { _articled = value; OnPropertyChanged("Articled"); }
         }
 
         private decimal _price;
         public decimal Price
         {
             get { return _price; }
-            set { _price= value; OnPropertyChanged("Price"); } 
+            set { _price = value; OnPropertyChanged("Price"); }
         }
 
         private decimal _count;
-        public decimal Count 
+        public decimal Count
         {
             get { return _count; }
             set { _count = value; OnPropertyChanged("Count"); }
@@ -79,7 +85,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string>? Units
         {
             get { return _units; }
-            set { _units = value; }
+            set { _units = value; OnPropertyChanged("Units"); }
         }
 
         private string _selectUnits;
@@ -93,10 +99,10 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string>? CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; }
+            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
         }
         private string _selectCodeUKTZED;
-        public string SelcetCodeUKTZED
+        public string SelectCodeUKTZED
         {
             get { return _selectCodeUKTZED; }
             set { _selectCodeUKTZED = value; }
@@ -126,10 +132,12 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void SaveAndCreateGoodsDataBase()
         {
-           if (_model.SaveItemDataBase(_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
-           {
-                MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-           }
+            new Thread(new ThreadStart(() => { 
+                if (_model.SaveItemDataBase(_name, _code, _articled, _price, _count, _selectUnits,_selectCodeUKTZED ))
+                {
+                     MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            })).Start();
         }
 
     }

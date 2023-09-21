@@ -28,11 +28,11 @@ namespace ShopProject.Model.ToolsPage
             _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
         }
 
-        public bool SaveItemDataBase(string name, string code, string articule, decimal price, decimal count, string units,string codeUKTZED)
+        public bool SaveItemDataBase(string name, string code, string articled, decimal price, decimal count, string units,string codeUKTZED)
         {
             try
             {
-                if (Validation.TextField(name, code, articule, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
+                if (Validation.TextField(name, code, articled, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
                 {
                     if (_goodsRepository.GetItemBarCode(code)!=null)//перевірка на наявність товару по штрих коду
                     {
@@ -49,7 +49,7 @@ namespace ShopProject.Model.ToolsPage
                             {
                                 name = name,
                                 code = code,
-                                articule = articule,
+                                articule = articled,
                                 price = price,
                                 count = count,
                                 unit = unit,

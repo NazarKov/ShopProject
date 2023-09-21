@@ -33,11 +33,11 @@ namespace ShopProject.Model.StoragePage
             return _arhiveGoods;
         }
 
-        public List<Goods>? SearchArhive(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchArhive(string itemSearch)
         {
             try
             {
-                return Search.GoodsDataBase(itemSearch, type, (List<Goods>) _goodsRepository.GetAll("arhived"));
+                return Search.GoodsDataBase(itemSearch, (List<Goods>) _goodsRepository.GetAll("arhived"));
             }
             catch(Exception ex)
             {

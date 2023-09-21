@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using ShopProject.DataBase.Model;
+using ShopProject.Helpers;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
@@ -16,110 +17,135 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class ExportGoodsExelViewModel : ViewModel<ExportGoodsExelViewModel>
     {
-        private ExportGoodsExelModel? model;
-        private SaveFileDialog? saveFileDialog;
-        private ICommand addProductList;
-        private ICommand saveSelectItem;
-        private ICommand saveAllItem;
-       
+        private ExportGoodsExelModel? _model;
+        private SaveFileDialog? _saveFileDialog;
+        private ICommand _addGoodsCommand;
+        private ICommand _saveItemInFileCommand;
+        private ICommand _saveAllItemInFileCommand;
+
+      
 
         public ExportGoodsExelViewModel()
         {
-            Products = new List<Goods>();
-            SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
-           
-            addProductList = new DelegateCommand(AddItemExportList);
-            saveSelectItem = new DelegateCommand(SaveExprotItem);
-            saveAllItem = new DelegateCommand(SaveExprotItemAll);
+            _model = new ExportGoodsExelModel();
 
-            _products = new List<Goods>();
-            _code = string.Empty;
+    
+            _addGoodsCommand = new DelegateCommand(AddItemExportList);
+            _saveItemInFileCommand = new DelegateCommand(SaveExprotItem);
+            _saveAllItemInFileCommand = new DelegateCommand(SaveExprotItemAll);
+
+            Goods = new List<HelperClassExportGoodsInFile>();
+
+            _goods = new List<HelperClassExportGoodsInFile>();
+            _searchCode = string.Empty;
 
             SetFieldFileDialog();
-            new Thread(new ThreadStart(startModelThread)).Start();
         }
-        private void startModelThread()
-        {
-            model = new ExportGoodsExelModel();
-        }
+    
         private void SetFieldFileDialog()
         {
-            saveFileDialog = new SaveFileDialog();
-            saveFileDialog.DefaultExt = ".xlsx";
-            saveFileDialog.Filter = "Exel files(*.xlsx)|*.xlsx|All files(*.*)|*.*";
+            _saveFileDialog = new SaveFileDialog();
+            _saveFileDialog.DefaultExt = ".xlsx";
+            _saveFileDialog.Filter = "Excel files(*.xlsx)|*.xlsx|All files(*.*)|*.*";
         }
 
-        private List<Goods> _products;
-        public List<Goods> Products
+        private List<HelperClassExportGoodsInFile> _goods;
+        public List<HelperClassExportGoodsInFile> Goods
         {
-            get { return _products; }
-            set { _products = value;  OnPropertyChanged("Products"); }
+            get { return _goods; }
+            set { _goods = value;  OnPropertyChanged("Goods"); }
         }
 
-        private int _sizeDataGrid;
-        public int SizeDataGrid
+
+        private string _searchCode;
+        public string SearchCode 
         {
-            set { _sizeDataGrid = value;  OnPropertyChanged("SizeDataGrid"); }
+            get { return _searchCode; } 
+            set { _searchCode = value; OnPropertyChanged("SearchCode"); }
         }
 
-        private string _code;
-        public string Code 
-        {
-            get { return _code; } 
-            set { _code = value; OnPropertyChanged("Code"); }
-        }
-
-        public ICommand AddProductList => addProductList;
+        public ICommand AddGoodsCommand => _addGoodsCommand;
 
         private void AddItemExportList()
         {
-            if (model != null)
-            {
-                var resultProduct = model.GetItem(_code);
-                if (resultProduct != null)
-                {
-                    List<Goods> tempProduct = new List<Goods>();
+            List<HelperClassExportGoodsInFile> _tempGoods = new List<HelperClassExportGoodsInFile>();
 
-                    tempProduct.AddRange(_products);
-                    tempProduct.Add(resultProduct);
-                    Products = tempProduct;
+
+            if (SearchCode.Length > 12)
+            {
+                if (_model != null)
+                {
+                    if (SearchCode != "0000000000000")
+                    {
+                        var resultGoods = _model.GetItem(SearchCode);
+                        if (resultGoods.goodsCount != 0)
+                        {
+                            _tempGoods.AddRange(Goods);
+
+                            if (_tempGoods.Count != 0)
+                            {
+                                if (_tempGoods.Where(item => item.goods.id == resultGoods.goods.id).FirstOrDefault() != null)
+                                {
+                                    _tempGoods.Where(item => item.goods.id == resultGoods.goods.id).FirstOrDefault().goodsCount += 1;
+                                }
+                                else
+                                {
+                                    _tempGoods.Add(resultGoods);
+                                }
+                            }
+                            else
+                            {
+                                _tempGoods.Add(resultGoods);
+                            }
+
+
+                            Goods.Clear();
+                            Goods = _tempGoods;
+
+                            SearchCode = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        _tempGoods.AddRange(Goods);
+                        
+                        if (_tempGoods.Count != 0)
+                        {
+                            _tempGoods.RemoveAt(_tempGoods.Count - 1);
+                        }
+
+                        Goods.Clear();
+                        Goods = _tempGoods;
+
+                        SearchCode = string.Empty;
+                    }
+                   
                 }
             }
         }
 
-        public ICommand SaveSelectItem => saveSelectItem;
+        public ICommand SaveItemInFileCommand => _saveItemInFileCommand;
 
         private void SaveExprotItem()
         {
-            Save(_products);
+            _saveFileDialog.ShowDialog();
+            if (_model != null)
+            {
+                _model.Save(Goods, _saveFileDialog.FileName);
+            }
         }
 
-        public ICommand SaveAllItem => saveAllItem;
+        public ICommand SaveAllItemInFileCommand => _saveAllItemInFileCommand;
 
         private void SaveExprotItemAll()
         {
-            if(model != null)
-               Save(model.GetItems());
-        }
-        private void Save(List<Goods> products)
-        {
-            if (saveFileDialog != null)
+            _saveFileDialog.ShowDialog();
+            if(_model!=null)
             {
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    string path = saveFileDialog.FileName;
-                    if(model!=null)
-                       if (model.Export(path, products))
-                       {
-                           MessageBox.Show("товар успішно експортовано");
-                       }
-                       else
-                       {
-                           MessageBox.Show("товар не експортовано");
-                       }
-                }
+                _model.Save(_saveFileDialog.FileName);
             }
         }
+     
 
     }
 }

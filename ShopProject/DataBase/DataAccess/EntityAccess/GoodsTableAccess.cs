@@ -149,6 +149,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context!=null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
                     context.codeUKTZED.Load();
                     if(context.goods!=null)
                     {
@@ -178,9 +179,11 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 if(context!=null)
                 {
                     context.goods.Load();
+                    context.goodsUnits.Load();
+                    context.codeUKTZED.Load();
                     if(context.goods != null)
                     {
-                        if(context.goods.Count()!=0)
+                        if(context.goods.Count()==0)
                         {
                             throw new Exception("База даних не містить товари");
                         }
@@ -211,7 +214,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                     {
                         if(item!=null)
                         {
-                            UpdateFieldGood(context.goods.Find(item.id), item,context.goodsUnits.Find(item.unit.id),context.codeUKTZED.Find(item.codeUKTZED.id));
+                            UpdateFieldGoods(context.goods.Find(item.id), item,context.goodsUnits.Find(item.unit.id),context.codeUKTZED.Find(item.codeUKTZED.id));
                         }
                         else
                         {
@@ -329,7 +332,9 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                         {
                             foreach (var item in items)
                             {
-                                 UpdateFieldGood(context.goods.Find(item.id), item, context.goodsUnits.Find(item.unit.id), context.codeUKTZED.Find(item.codeUKTZED.id));
+                                UpdateFieldGoods(context.goods.Find(item.id), item, 
+                                    context.goodsUnits.Where(unit=>unit.shortName==item.unit.shortName).FirstOrDefault(),
+                                    context.codeUKTZED.Where(code => code.name == item.codeUKTZED.name).FirstOrDefault());
                             }
                         }
                         else
@@ -342,7 +347,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
             }
         }
 
-        private void UpdateFieldGood(Goods goodsUpdate, Goods goods,GoodsUnit unit,CodeUKTZED codeUKTZED)
+        private void UpdateFieldGoods(Goods goodsUpdate, Goods goods,GoodsUnit unit,CodeUKTZED codeUKTZED)
         {
             goodsUpdate.code = goods.code;
             goodsUpdate.name = goods.name;

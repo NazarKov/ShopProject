@@ -30,6 +30,23 @@ namespace ShopProject.Model.ToolsPage
             _goodsUnitRepository = new UnitTableAccess();
             _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
         }
+        public List<Goods> GetItem(List<Goods> items)
+        {
+            try
+            {
+                var result = new List<Goods>();
+                foreach (var item in items)
+                {
+                    result.Add(_goodsRepository.GetItemId(item.id));
+                }
+                return result;
+            }
+            catch(Exception ex) 
+            {
+                MessageBox.Show(ex.Message, "Error" , MessageBoxButton.OK,MessageBoxImage.Error);
+                return new List<Goods>();
+            }
+        }
 
         public bool UpdateGoods(List<Goods> items)
         {

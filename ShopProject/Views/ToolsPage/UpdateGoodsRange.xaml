@@ -10,6 +10,8 @@
         <local:UpdateGoodsRangeViewModel x:Key="VM"  ></local:UpdateGoodsRangeViewModel>
         <CollectionViewSource x:Key="Units" Source="{Binding GoodsUnits}"></CollectionViewSource>
         <CollectionViewSource x:Key="CodeUKTZED" Source="{Binding GoodsCodeUKTZED}"></CollectionViewSource>
+     
+        
     </Window.Resources>
     <Window.DataContext>
         <Binding Source="{StaticResource VM}"></Binding>
@@ -33,12 +35,13 @@
                 <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
-                <DataGridComboBoxColumn Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" SelectedItemBinding="{Binding unit.shortName}"/>
-                <DataGridComboBoxColumn Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" SelectedItemBinding="{Binding codeUKTZED.name}"/>
-                <DataGridTextColumn Header="Скідка"  Binding="{Binding sales}" />
+                <DataGridComboBoxColumn x:Name="combobox1" Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" 
+                                        SelectedItemBinding="{Binding unit.shortName, UpdateSourceTrigger=PropertyChanged }"/>
+                <DataGridComboBoxColumn x:Name="combobox2" Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" SelectedItemBinding="{Binding codeUKTZED.name, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"/>
+               
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="button1" Content="Зберегти" Width="70" HorizontalAlignment="Right" Margin="0,0,100,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpateGoodsDataBaseCommand}"/>
+        <Button x:Name="button1" Content="Зберегти" Width="70" HorizontalAlignment="Right" Margin="0,0,100,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpdateGoodsCommand}"/>
         <Button x:Name="button2" Content="Вийти" Width="70" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="1" VerticalAlignment="Top" CommandParameter="{Binding ElementName=window}" Command="{Binding ExitWindowCommand}"/>
         
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -136,14 +137,14 @@ namespace ShopProject.ViewModel.ToolsPage
 
         public ICommand SaveItemDb => saveItemDb;
         private void SaveItem()
-        {
+        { 
             if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexName, _indexArticule, _indexPrice ,_indexCount, _indexUnit,_indexTop,_indexBottom))
             {
-                MessageBox.Show("Товари добалено");
+                MessageBox.Show("Товари добалено","Informations",MessageBoxButton.OK,MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("Помилка добавленя");
+                MessageBox.Show("Помилка добавленя", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

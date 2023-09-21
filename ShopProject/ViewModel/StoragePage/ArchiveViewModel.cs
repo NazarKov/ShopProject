@@ -95,17 +95,17 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 case 0:
                     {
-                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Code);
+                        Archives = _model.SearchArhive(_nameSearch);
                         break;
                     }
                 case 1:
                     {
-                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Name);
+                        Archives = _model.SearchArhive(_nameSearch);
                         break;
                     }
                 case 2:
                     {
-                        Archives = _model.SearchArhive(_nameSearch, TypeSearch.Articule);
+                        Archives = _model.SearchArhive(_nameSearch);
                         break;
                     }
 

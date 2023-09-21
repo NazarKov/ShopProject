@@ -38,11 +38,11 @@ namespace ShopProject.Model.StoragePage
             return _goodsList;
         }
 
-        public List<Goods>? SearchGoods(string itemSearch, TypeSearch type)
+        public List<Goods>? SearchGoods(string itemSearch )
         {
             try
             {
-                return Search.GoodsDataBase(itemSearch, type, (List<Goods>)_goodsRepository.GetAll("outStock"));
+                return Search.GoodsDataBase(itemSearch, (List<Goods>)_goodsRepository.GetAll("outStock"));
             }
             catch (Exception ex)
             {

@@ -3,6 +3,7 @@ using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,28 +12,35 @@ namespace ShopProject.ViewModel.ToolsPage
     internal class UpdateGoodsRangeViewModel : ViewModel<UpdateGoodsRangeViewModel>
     {
         private UpdateGoodsRangeModel _model;
-        private ICommand _upateGoodsDataBaseCommand;
+        private ICommand _updateGoodsCommand;
 
         public UpdateGoodsRangeViewModel()
         {
             _model = new UpdateGoodsRangeModel();
-            _upateGoodsDataBaseCommand = new DelegateCommand(UpdateProduct);
+            _updateGoodsCommand = new DelegateCommand(UpdateGoods);
             
             _goodsList = new List<Goods>();
             _goodsUnits = new List<string>();
             _goodsCodeUKTZED = new List<string>();
 
             GoodsUnits = new List<string>();
-            GoodsUnits = _model.GetUnitList();
-            GoodsCodeUKTZED = _model.GetCodeUKTZEDList();
-
-            SetFieldDataGrid();
+            
+            new Thread(new ThreadStart(SetField)).Start();
         }
 
-        private void SetFieldDataGrid()
+        private void SetField()
         {
-            if(StaticResourse.goodsList !=null)
-                GoodsList = StaticResourse.goodsList;
+            if(_model!= null)
+            {
+                GoodsUnits = _model.GetUnitList();
+                GoodsCodeUKTZED = _model.GetCodeUKTZEDList();
+            }
+
+            if (StaticResourse.goodsList != null)
+            {
+                GoodsList = _model.GetItem(StaticResourse.goodsList);
+            }
+
         }
 
         private List<string> _goodsUnits;
@@ -46,7 +54,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<string> GoodsCodeUKTZED
         {
             get { return _goodsCodeUKTZED; }
-            set { _goodsCodeUKTZED = value; OnPropertyChanged("GoodsUnits"); }
+            set { _goodsCodeUKTZED = value; OnPropertyChanged("GoodsCodeUKTZED"); }
         }
 
         private List<Goods> _goodsList;
@@ -64,8 +72,8 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private bool CanRegister(object parameter) => true;
 
-        public ICommand UpateGoodsDataBaseCommand => _upateGoodsDataBaseCommand;
-        private void UpdateProduct()
+        public ICommand UpdateGoodsCommand => _updateGoodsCommand;
+        private void UpdateGoods()
         {
             if (_model.UpdateGoods(GoodsList))
             {

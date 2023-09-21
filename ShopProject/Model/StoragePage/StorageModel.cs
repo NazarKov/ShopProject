@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using NPOI.SS.Formula.Functions;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
@@ -13,6 +16,7 @@ namespace ShopProject.Model.StoragePage
     {
         private IEntityAccessor<Goods> _goodsRepository;
         private List<Goods>? _goods;
+        private Thread _threadSearch;
 
         public StorageModel()
         {
@@ -21,11 +25,14 @@ namespace ShopProject.Model.StoragePage
             new Thread(new ThreadStart(ChekedGoodinCountNull)).Start();
         }
 
-        public List<Goods>? SearchGoods(string item)
+        public List<Goods> SearchGoods(string item)
         {
             try
             {
-                _goods.Clear();
+                if (_goods.Count != 0)
+                {
+                    _goods.Clear();
+                }
                 _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
                 if (item != "")
                 {
@@ -39,8 +46,12 @@ namespace ShopProject.Model.StoragePage
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return null;
+                return new List<Goods>();
             }
+        }
+        public int GetCount()
+        {
+            return _goodsRepository.GetAll("in_stock").Count();
         }
 
         public bool DeleteGoods(Goods productDelete)
@@ -98,13 +109,14 @@ namespace ShopProject.Model.StoragePage
 
         private void ChekedGoodinCountNull()
         {
-            foreach(var item in _goodsRepository.GetAll("in_stock"))
+            Parallel.ForEach(_goodsRepository.GetAll("in_stock"), item =>
             {
-                if(item.count<=0)
+                if (item.count<=0)
                 {
                     SetGoodsOutOfStok(item);
                 }
-            }
+            });
+
         }
     }
 }

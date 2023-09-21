@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.X509;
-using ShopProject.DataBase.Model;
+﻿using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
@@ -7,17 +6,17 @@ using ShopProject.Views.ToolsPage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
+using System.Windows.Threading;
 
 namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
     {
-        private static ManualResetEventSlim _eventSlim = new ManualResetEventSlim(true);
 
         private StorageModel? _model;
         private string _nameSearch;
@@ -41,15 +40,27 @@ namespace ShopProject.ViewModel.StoragePage
             _statusBarCountGoods = string.Empty;
             
             GoodsList = new List<Goods>();
-
+           
             SearchGoods("");
+            SetFiledStatusBar();
         }
+        private async void SetFiledStatusBar()
+        {
+            await Task.Run(() =>
+            {
+                StatusBarCountGoods = "Кілкісь товарі: " + _model.GetCount();
+            });
+
+        }
+
+ 
+
         public ICommand UpdateSize => _updateSizeGridCommand;
 
         private List<Goods>? _goodslist;
         public List<Goods>? GoodsList
         {
-            get { return _goodslist; }
+            get {  return _goodslist;  }
             set { _goodslist = value; OnPropertyChanged("GoodsList"); }
         }
 
@@ -83,23 +94,30 @@ namespace ShopProject.ViewModel.StoragePage
 
         public ICommand SearchCommand { get => new DelegateParameterCommand(SearchGoods, CanRegister); }
 
-        private void SearchGoods(object parameter)
+        private async void SearchGoods(object parameter)
         {
-            
-            _nameSearch = parameter.ToString();
-            new Thread(() =>
-            {  
+            await Task.Run(() =>
+            {
+                _nameSearch = parameter.ToString();
                 if (GoodsList.Count != 0)
                 {
                     GoodsList.Clear();
                 }
-                GoodsList = _model.SearchGoods(parameter.ToString());
-                StatusBarCountGoods = "Кілкісь товарі: " + GoodsList.Count;
-            }).Start();
-            _eventSlim.Wait();
-            _eventSlim.Set();
+                var result = _model.SearchGoods(parameter.ToString());
+                result.Reverse();
+                if (result.Count > 100)
+                {
+                    GoodsList = result.Take(100).ToList();//100 це кілкьість елементів на екрані 
+                }
+                else
+                {
+                    GoodsList = result;
+                }
+            });
+
+           
         }
-  
+
 
         public ICommand UpdateGoodsCommand { get => new DelegateParameterCommand(UpdateGoods, CanRegister); }
         private void UpdateGoods(object parameter)
@@ -112,19 +130,15 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 StaticResourse.goods = _goods[0];
                 new UpdateGoods().ShowDialog();
-                if(_nameSearch!=string.Empty) 
-                {
-                    SearchGoods(_nameSearch);
-                }
+                SearchGoods(_nameSearch);
+               
             }
             else
             {
                 StaticResourse.goodsList = _goods;
                 new UpdateGoodsRange().ShowDialog();
-                if (_nameSearch != string.Empty)
-                {
-                    SearchGoods(_nameSearch);
-                }
+                SearchGoods(_nameSearch);
+                
             }
             
         }

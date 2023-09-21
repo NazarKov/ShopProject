@@ -108,57 +108,60 @@ namespace ShopProject.ViewModel.SalePage
         private void SearchBarCodeGoods()
         {
             List<Goods> temp;
-            if (BarCodeSearch != "2")
+            if (BarCodeSearch.Length > 12)
             {
-                var item = _model.Search(BarCodeSearch);
-                if (item != null)
+                if (BarCodeSearch != "2")
                 {
-                    item.count = 1;
-                    temp = new List<Goods>();
-                    temp = Products;
-
-                    if (temp.Find(pr => pr.code == item.code) != null)
+                    var item = _model.Search(BarCodeSearch);
+                    if (item != null)
                     {
-                        temp.Find(pr => pr.code == item.code).count += 1;
-                    }
-                    else
-                    {
-                        temp.Add(item);
-                    }
+                        item.count = 1;
+                        temp = new List<Goods>();
+                        temp = Products;
 
-                    CountingSumaOrder(temp);
+                        if (temp.Find(pr => pr.code == item.code) != null)
+                        {
+                            temp.Find(pr => pr.code == item.code).count += 1;
+                        }
+                        else
+                        {
+                            temp.Add(item);
+                        }
 
-                    Products = new List<Goods>();
-                    Products = temp;
-                    BarCodeSearch = string.Empty;
+                        CountingSumaOrder(temp);
+
+                        Products = new List<Goods>();
+                        Products = temp;
+                        BarCodeSearch = string.Empty;
+                    }
                 }
-            }
-            else
-            {
-                if (Products.Count() != 0)
+                else
                 {
-                    if (Products.ElementAt(Products.Count - 1).count == 1)
+                    if (Products.Count() != 0)
                     {
-                        temp = new List<Goods>();
-                        temp = Products;
+                        if (Products.ElementAt(Products.Count - 1).count == 1)
+                        {
+                            temp = new List<Goods>();
+                            temp = Products;
 
-                        temp.Remove(temp.ElementAt(temp.Count - 1));
-                        Products = new List<Goods>();
-                        Products = temp;
-                        CountingSumaOrder(Products);
+                            temp.Remove(temp.ElementAt(temp.Count - 1));
+                            Products = new List<Goods>();
+                            Products = temp;
+                            CountingSumaOrder(Products);
+                        }
+                        else
+                        {
+                            temp = new List<Goods>();
+                            temp = Products;
+
+
+                            temp.ElementAt(Products.Count - 1).count -= 1;
+                            Products = new List<Goods>();
+                            Products = temp;
+                            CountingSumaOrder(Products);
+                        }
+                        BarCodeSearch = string.Empty;
                     }
-                    else
-                    {
-                        temp = new List<Goods>();
-                        temp = Products;
-
-
-                        temp.ElementAt(Products.Count - 1).count -= 1;
-                        Products = new List<Goods>();
-                        Products = temp;
-                        CountingSumaOrder(Products);
-                    }
-                    BarCodeSearch = string.Empty;
                 }
             }
         }

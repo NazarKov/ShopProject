@@ -15,9 +15,9 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ImportGoodsExelModel 
     {
-         IEntityAccessor<Goods> _goodsRepository;
+        private IEntityAccessor<Goods> _goodsRepository;
         private FileExel? fileExel;
-        private List<Goods> products;
+        private List<Goods> _goods;
         private string path;
         private Goods product;
 
@@ -71,13 +71,15 @@ namespace ShopProject.Model.ToolsPage
         {
             int i = Validation.ChekNull(indexTop);
             int max = Validation.ChekNull(intdexBottom, dataTable.Rows.Count);
-            products = new List<Goods>();
+            _goods = new List<Goods>();
+
+            var goodslistAll =_goodsRepository.GetAll("in_stock");
 
             try
             {
                 for (; i < max; i++)
                 {
-                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),_goodsRepository.GetAll("in_stock")))
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),goodslistAll))
                     {
                         SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
                     }
@@ -89,7 +91,8 @@ namespace ShopProject.Model.ToolsPage
                         product.articule = Validation.ChekParamsIsNull(articule, i, dataTable);
                         product.price = (decimal)Validation.ChekEmpty(price, i, dataTable);
                         product.count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
-                        if (Validation.ChekParamsIsNull(units, i, dataTable) == "Шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "шт")
+
+                        if (Validation.ChekParamsIsNull(units, i, dataTable) == "Шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "Штука")
                         {
                             product.unit = new GoodsUnit()
                             {
@@ -98,17 +101,28 @@ namespace ShopProject.Model.ToolsPage
                                 shortName = "Штука",
                             };
                         }
-                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "пачка")
+                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "пачка"|| Validation.ChekParamsIsNull(units, i, dataTable) == "Пачка"|| Validation.ChekParamsIsNull(units, i, dataTable) == "пач")
                         {
                             product.unit = new GoodsUnit() { number = 2112, name = "пач", shortName = "Пачка" };
                         }
+                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "кг" || Validation.ChekParamsIsNull(units, i, dataTable) == "Кілограм")
+                        {
+                            product.unit = new GoodsUnit() { number = 0301, name = "кг", shortName = "Кілограм" };
+                        }
+                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "ящ" || Validation.ChekParamsIsNull(units, i, dataTable) == "Ящик")
+                        {
+                            product.unit = new GoodsUnit() { number = 2075, name = "ящ", shortName = "Ящик" };
+
+                        }
+
                         product.createdAt = DateTime.Now;
                         product.status = "in_stock";
                         product.codeUKTZED = new CodeUKTZED() { code = "9507" };
-                        products.Add(product);
+                        
+                        _goods.Add(product);
                     }
                 }
-                _goodsRepository.AddRange(products);
+                _goodsRepository.AddRange(_goods);
             }
             catch(Exception ex)
             {

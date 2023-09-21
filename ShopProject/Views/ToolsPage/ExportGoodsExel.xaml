@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="Експорт в Exel" Height="450" Width="1000" ResizeMode="NoResize">
     <Window.Resources>
@@ -25,28 +26,33 @@
         </Grid.RowDefinitions>
 
         <Label x:Name="label" Content="Пошук по штрихкоду" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox"  Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="15,40,0,0" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="button" Grid.Column="1" Grid.Row="0" Content="Добавити в список" HorizontalAlignment="Left" Margin="15,40,0,0" Command="{Binding AddProductList}" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox"  Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="15,40,0,0" TextWrapping="Wrap" Text="{Binding SearchCode , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding AddGoodsCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+        
+        <Button x:Name="button1" Grid.Column="3" Grid.Row="0" Content="Експортувати вибрані" HorizontalAlignment="Right" Margin="15,40,120,0" VerticalAlignment="Top" Command="{Binding SaveItemInFileCommand}"/>
+        <Button x:Name="button2" Grid.Column="3" Grid.Row="0" Content="Експортвати всі" HorizontalAlignment="Right" Margin="15,40,15,0" VerticalAlignment="Top" Command="{Binding SaveAllItemInFileCommand}"/>
 
-        <Button x:Name="button1" Grid.Column="3" Grid.Row="0" Content="Експортувати вибрані" HorizontalAlignment="Right" Margin="15,40,120,0" VerticalAlignment="Top" Command="{Binding SaveSelectItem}"/>
-        <Button x:Name="button2" Grid.Column="3" Grid.Row="0" Content="Експортвати всі" HorizontalAlignment="Right" Margin="15,40,15,0" VerticalAlignment="Top" Command="{Binding SaveAllItem}"/>
-
-         <DataGrid x:Name="dataGrid" 
-                 Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Products ,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+        <DataGrid x:Name="dataGrid" 
+                 Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Goods ,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                   HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
                   HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
-                  VerticalAlignment="Stretch" MaxWidth="{Binding SizeDataGrid}" Width="{Binding SizeDataGrid}" ColumnWidth="*"
-                  CanUserAddRows="False"
-                  SelectedItem="{Binding ProdcutSelectedProduct,UpdateSourceTrigger=PropertyChanged}">
+                  VerticalAlignment="Stretch" ColumnWidth="*"
+                  CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
-                <DataGridTextColumn Header="Штрих код"  Binding="{Binding code}" />
-                <DataGridTextColumn Header="Назва"  Binding="{Binding name}" />
-                <DataGridTextColumn Header="Опис" Binding="{Binding articule}" />
-                <DataGridTextColumn Header="Ціна"  Binding="{Binding price}" />
-                <DataGridTextColumn Header="Кількість" Binding="{Binding count}" />
-                <DataGridTextColumn Header="Одниці"  Binding="{Binding units}" />
-                <DataGridTextColumn Header="Знижка"  Binding="{Binding sales}" />
+                <DataGridTextColumn Header="ID" Binding="{Binding goods.id}" />
+                <DataGridTextColumn Header="Штрих код"  Binding="{Binding goods.code}" />
+                <DataGridTextColumn Header="Назва"  Binding="{Binding goods.name}" />
+                <DataGridTextColumn Header="Артикуль" Binding="{Binding goods.articule}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding goods.price,StringFormat='0.00'}" />
+                <DataGridTextColumn Header="Кількість на складі" Binding="{Binding goods.count,StringFormat='0.00'}" />
+                <DataGridTextColumn Header="Кількість для експорту" Binding="{Binding goodsCount,StringFormat='0.00'}" />
+                <DataGridTextColumn Header="Одниці"  Binding="{Binding goods.unit.shortName}" />
+                
             </DataGrid.Columns>
         </DataGrid>
 

@@ -1,7 +1,9 @@
-﻿using ShopProject.DataBase.Context;
+﻿using NPOI.SS.Formula.Functions;
+using ShopProject.DataBase.Context;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
+using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -20,17 +22,21 @@ namespace ShopProject.Model.ToolsPage
             _goodsRepository = new GoodsTableAccess();
         }
 
-        public Goods? GetItem(string itemSearch)
+        public HelperClassExportGoodsInFile GetItem(string itemSearch)
         {
 
             try
             {
-                return _goodsRepository.GetItemBarCode(itemSearch);
+                return  new HelperClassExportGoodsInFile() 
+                {
+                    goods = _goodsRepository.GetItemBarCode(itemSearch),
+                    goodsCount = 1
+                };
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Erorr",MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return new HelperClassExportGoodsInFile();
             }
         }
 
@@ -42,12 +48,46 @@ namespace ShopProject.Model.ToolsPage
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Erorr", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
-        
-        public bool Export(string path,List<Goods> goods)
+        public void Save(List<HelperClassExportGoodsInFile> products ,string path)
+        {
+            if (Export(path, products))
+            {
+                MessageBox.Show("Товар успішно експортовано","informations",MessageBoxButton.OK,MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        public void Save(string path)
+        {
+
+            List<HelperClassExportGoodsInFile> goods = new List<HelperClassExportGoodsInFile>();
+
+            var list = GetItems();
+            if (list != null)
+            {
+                foreach (var item in list)
+                {
+                    goods.Add(new HelperClassExportGoodsInFile() { goods = item,goodsCount = item.count });
+                }
+            }
+
+            if (Export(path, goods))
+            {
+                MessageBox.Show("товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        public bool Export(string path,List<HelperClassExportGoodsInFile> goods)
         {
             try
             {
@@ -57,7 +97,7 @@ namespace ShopProject.Model.ToolsPage
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK,MessageBoxImage.Error);
                 return false;
             }
         }
