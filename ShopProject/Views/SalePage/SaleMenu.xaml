@@ -11,15 +11,24 @@
         <local:SaleMenuViewModel></local:SaleMenuViewModel>
     </Page.DataContext>
 
-    <Grid>
+    <Grid x:Name="Grid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding Widght, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*"></RowDefinition>
+            <RowDefinition Height="{Binding Height , UpdateSourceTrigger=PropertyChanged}"></RowDefinition>
             <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
-        <DataGrid x:Name="dataGrid" ItemsSource="{Binding Products,UpdateSourceTrigger=PropertyChanged}"
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding ElementName=Grid}">
+                <i:InvokeCommandAction Command="{Binding UpdateSize}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+
+
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding Goods,UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False"
                   VerticalAlignment="Stretch"
                   ColumnWidth="*">
@@ -27,38 +36,59 @@
                 <DataGridTextColumn Header="Штрихкод" Binding="{Binding  code}"/>
                 <DataGridTextColumn Header="Назва товару" Binding="{Binding name}"/>
                 <DataGridTextColumn Header="Артикуль" Binding="{Binding articule}"/>
-                <DataGridTextColumn Header="Кілкість" Binding="{Binding count}"/>
-                <DataGridTextColumn Header="Одиниці" Binding="{Binding units}"/>
+                <DataGridTextColumn Header="Кількість" Binding="{Binding count}"/>
+                <DataGridTextColumn Header="Одиниці" Binding="{Binding unit.shortName}"/>
                 <DataGridTextColumn Header="Ціна" Binding="{Binding price}"/>
                 <DataGridTextColumn Header="Знижка" Binding="{Binding sales}"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <Label x:Name="label" Content="Штрихкод" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="15,35,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding BarCodeSearch, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="150">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200*" MaxWidth="200"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="150*" MaxWidth="150"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+        
+
+        <Label x:Name="label" Content="Штрихкод" HorizontalAlignment="Left" FontSize="18" Grid.Row="0" VerticalAlignment="Center"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Stretch" Grid.Row="1" FontSize="18" Text="{Binding BarCodeSearch, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding SearchBarCodeGoodsCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <Button x:Name="button" Content="Оплатити" HorizontalAlignment="Left" Margin="634,38,0,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding PrintingCheckCommand}"/>
+        
+        <Button x:Name="button" Content="Оплатити" HorizontalAlignment="Center" Height="35" Width="135" Margin="0,0,0,0" Grid.Row="0" Grid.Column="7" VerticalAlignment="Center" Command="{Binding PrintingCheckCommand}" MinWidth="100"/>
+        <Button x:Name="button1" Content="Очистити чек" Grid.Row="1" Grid.Column="7" Height="35" Width="135" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding ClearFieldDataGid}"/>
 
 
 
-        <Label x:Name="label3" Content="Одержанна сума" HorizontalAlignment="Left" Margin="248,18,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="496,38,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SumaUser,UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="120" />
+        <Label x:Name="label3" Content="Одержанна сума" HorizontalAlignment="Left" Grid.Row="1" FontSize="18" Grid.Column="5" VerticalAlignment="Center"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Stretch" Height="25" Grid.Column="6" TextAlignment="Right" FontSize="18" Grid.Row="1" Text="{Binding SumaUser,UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Center"/>
 
-        <Label x:Name="label1" Content="Сума" HorizontalAlignment="Left" Margin="727,43,0,0" Grid.Row="1" VerticalAlignment="Top"  />
-        <Label x:Name="label2" Content="{Binding SumaOrder, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="738,64,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.213,-1.65" />
-
-
-        <ComboBox x:Name="comboBox" ItemsSource="{Binding TypeOplatu}" SelectedIndex="{Binding SelectIndex}" HorizontalAlignment="Left" Margin="368,35,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="button1" Command="{Binding OpenChangeCommand}" Content="Відкрити зміну" HorizontalAlignment="Left" Margin="15,69,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Button x:Name="button2" Command="{Binding CloseChangeCommand}" Content="Закрити зміну" HorizontalAlignment="Left" Margin="105,69,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.214,-0.297"/>
+            
+        <Label x:Name="label1" Content="Сума чеку:" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="5" FontSize="18" VerticalAlignment="Center"  />
+        <Label x:Name="label2" Content="{Binding SumaOrder, UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" Grid.Row="0" Grid.Column="6"  FontSize="18" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Center" />
 
 
+        <ComboBox x:Name="comboBox" ItemsSource="{Binding TypeOplatu}" SelectedIndex="{Binding SelectIndex}" Grid.Column="1" FontSize="18" HorizontalAlignment="Stretch" Grid.Row="0" VerticalAlignment="Center"/>
+        
+        <CheckBox x:Name="checkBox" Grid.Row="1" Grid.Column="1" IsChecked="{Binding DrawingCheck}" Content="Друкувати чек" HorizontalAlignment="Left" Margin="5,10,0,0" Grid.RowSpan="2" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox1" Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsFiscalCheck}" Content="Фіксальний чек" HorizontalAlignment="Left" Margin="5,30,0,0"  Grid.RowSpan="2" VerticalAlignment="Top"/>
 
+
+        </Grid>
 
     </Grid>
 </Page>

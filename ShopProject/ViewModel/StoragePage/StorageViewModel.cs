@@ -24,6 +24,8 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _openCreateGoodsWindowCommand;
         private ICommand _openFormationGoodsWindowCommand;
         private ICommand _updateSizeGridCommand;
+        private ICommand _updateItemDataGridView;
+        private ICommand _openDeliveriOfGoodsCommand;
 
         private List<Goods> _goods;
 
@@ -32,6 +34,8 @@ namespace ShopProject.ViewModel.StoragePage
             _openCreateGoodsWindowCommand = new DelegateCommand(() => { new CreateGoodsPage().Show(); });
             _openFormationGoodsWindowCommand = new DelegateCommand(() => { new FormationGoods().Show(); });
             _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
+            _updateItemDataGridView = new DelegateCommand(() => { SearchGoods(""); });
+            _openDeliveriOfGoodsCommand = new DelegateCommand(() => { new DeliveryOfGoods().Show(); });
 
             _model = new StorageModel();
             _goods = new List<Goods>();
@@ -64,12 +68,6 @@ namespace ShopProject.ViewModel.StoragePage
             set { _goodslist = value; OnPropertyChanged("GoodsList"); }
         }
 
-        private int _width;
-        public int Width
-        {
-            get { return _width; }
-            set { _width = value; OnPropertyChanged("Width"); }
-        }
 
         private int _heigth;
         public int Heigth
@@ -88,10 +86,9 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void UpdateSizes()
         {
-            Width = (int)Application.Current.MainWindow.ActualWidth;
             Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
         }
-
+        public ICommand UpdateItemDataGridView => _updateItemDataGridView;
         public ICommand SearchCommand { get => new DelegateParameterCommand(SearchGoods, CanRegister); }
 
         private async void SearchGoods(object parameter)
@@ -236,7 +233,7 @@ namespace ShopProject.ViewModel.StoragePage
             if (_goods.Count == 1)
             {
                 StaticResourse.goods = _goods[0];
-                new CreateStiker().Show();
+                new CreateSticker().Show();
             }
         }
         
@@ -244,6 +241,7 @@ namespace ShopProject.ViewModel.StoragePage
 
         public ICommand OpenCreateGoodsWindowCommand => _openCreateGoodsWindowCommand;
         public ICommand OpenFormationGoodsWindowCommand => _openFormationGoodsWindowCommand;
+        public ICommand OpenDeliveriOfGoodsCommand => _openDeliveriOfGoodsCommand;
 
     }
 }

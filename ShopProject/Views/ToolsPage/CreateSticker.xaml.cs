@@ -17,9 +17,9 @@ namespace ShopProject.Views.ToolsPage
     /// <summary>
     /// Interaction logic for CreateStiker.xaml
     /// </summary>
-    public partial class CreateStiker : Window
+    public partial class CreateSticker : Window
     {
-        public CreateStiker()
+        public CreateSticker()
         {
             InitializeComponent();
         }

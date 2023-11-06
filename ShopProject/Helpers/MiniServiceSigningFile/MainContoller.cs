@@ -115,6 +115,14 @@ namespace ShopProject.Helpers.MiniServiceSigningFile
                 tcpClient.Close();
             }
         }
+        public void SignFiles()
+        {
+            StartServise();
+            ConnectService();
+            SendingCommand(TypeCommand.Initialize);
+            SendingCommand(TypeCommand.SingFile);
+            SendingCommand(TypeCommand.Disconnect);
+        }
 
 
     }

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Images\reboot.png" />
     <None Remove="Resource\Images\Search.png" />
   </ItemGroup>
 
@@ -16,6 +17,7 @@
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
@@ -50,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Images\reboot.png" />
     <Resource Include="Resource\Images\Search.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

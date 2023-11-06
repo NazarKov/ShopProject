@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Helpers.HelperForPrinting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,11 @@ namespace ShopProject.Model.SettingPage
 {
     internal class SettingPrintingCheckModel
     {
-        public SettingPrintingCheckModel() { }
+        private PrintingFiscalCheck _ordererCheck;
+        public SettingPrintingCheckModel() 
+        {
+            _ordererCheck = new PrintingFiscalCheck();
+        }
 
         public void Save(params string[] item)
         {
@@ -20,6 +25,7 @@ namespace ShopProject.Model.SettingPage
             AppSettingsManager.SetParameterFile("Citi", item[5]);
             AppSettingsManager.SetParameterFile("Streer", item[6]);
             AppSettingsManager.SetParameterFile("House", item[7]);
+            AppSettingsManager.SetParameterFile("PrinterCheck", item[8]);
         }
         public List<string> Get()
         {
@@ -33,7 +39,29 @@ namespace ShopProject.Model.SettingPage
                 AppSettingsManager.GetParameterFiles("Citi").ToString(),
                 AppSettingsManager.GetParameterFiles("Streer").ToString(),
                 AppSettingsManager.GetParameterFiles("House").ToString(),
+                AppSettingsManager.GetParameterFiles("PrinterCheck").ToString(),
             };
+        }
+        public void PrintTest()
+        {
+            _ordererCheck.PrintCheck(new List<DataBase.Model.Goods>() {
+                new DataBase.Model.Goods()
+                {
+                    code = "123456789101",
+                    name = "Товар №1",
+                    codeUKTZED = new DataBase.Model.CodeUKTZED(){ code = "8855"},
+                    price = 100,
+                    count = 5,
+                },
+                new DataBase.Model.Goods()
+                {
+                    code = "987654321101",
+                    name = "Товар №2",
+                    codeUKTZED = new DataBase.Model.CodeUKTZED(){ code = "8865"},
+                    price = 200,
+                    count = 5,
+                }
+            },"123", new DataBase.Model.Operation());
         }
     }
 }

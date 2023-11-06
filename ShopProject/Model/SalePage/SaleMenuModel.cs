@@ -1,9 +1,10 @@
 ﻿using FiscalServerApi;
-using NPOI.SS.Formula.Functions;
+using FiscalServerApi.ExceptionServer;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using ShopProject.Helpers;
+using ShopProject.Helpers.HelperForPrinting;
 using ShopProject.Helpers.MiniServiceSigningFile;
 using ShopProject.Model.Command;
 using System;
@@ -28,10 +29,14 @@ namespace ShopProject.Model.SalePage
 
         private MainContoller _mainContoller;
         private FiscalServerController _serverController;
-        private OrderCheck _ordererCheck;
-        
+        private PrintingFiscalCheck _printingFiscalCheck;
+        private bool _isDrawingChek;
+
+        public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
+
+
         string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
-        
+
         public SaleMenuModel()
         {
             _goods = new List<Goods>();
@@ -41,9 +46,10 @@ namespace ShopProject.Model.SalePage
 
             _mainContoller = new MainContoller();
             _serverController = new FiscalServerController();
-            _ordererCheck = new OrderCheck();
+            _printingFiscalCheck = new PrintingFiscalCheck();
+            _isDrawingChek = true;
         }
-
+        
         public Goods Search(string barCode)
         {
             try
@@ -107,67 +113,6 @@ namespace ShopProject.Model.SalePage
 
         }
         
-        private void SingFile()
-        {
-            _mainContoller.StartServise();
-            _mainContoller.ConnectService();
-            _mainContoller.SendingCommand(TypeCommand.Initialize);
-            _mainContoller.SendingCommand(TypeCommand.SingFile);
-            _mainContoller.SendingCommand(TypeCommand.Disconnect);
-
-        }
-        
-        public void OpenChange(Operation operation,bool cheked)
-        {
-            try
-            {
-                if (cheked&&operation.mac!=null)
-                {
-                    ChekedCloseChange();
-                }
-                if (operation.mac != null)
-                {
-                    OpenChange(operation);
-                }
-                else
-                {
-                    operation.mac = adjustmentHash(operation, "servise");
-                    OpenChange(operation);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (ex.Message == "Невірний хеш попереднього чеку")
-                    {
-                        operation.mac = adjustmentHash(operation, "servise");
-                        OpenChange(operation);
-                    }
-                    else
-                    {
-                        MessageBox.Show(ex.Message,"Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-        }
-        
-        private void OpenChange(Operation operation)
-        {
-            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), true,pathxml);
-            SingFile();
-            if (_serverController.SendServicechk(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment),operation.fiscalNumberRRO) != null)
-            {
-                SaveDataBase(operation, new List<Goods>());
-                MessageBox.Show("зміна відкрита","Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        
         public bool SendChek(List<Goods> goods,Operation operation)
         {
             try
@@ -176,106 +121,56 @@ namespace ShopProject.Model.SalePage
                 SendChek(operation, goods);
                 return true;
             }
-            catch(Exception ex)
+            catch (ExceptionBadHashPrev exbadHas)
             {
-                try
-                {
-                    if (ex.Message == "Невірний хеш попереднього чеку")
-                    {
-                        operation.mac = adjustmentHash(operation, "chek");
-                        SendChek(operation,goods);
-                        return true;
-                    }
-                    else
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                operation.mac = exbadHas.Mac;
+                SendChek(operation, goods);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
         }      
         
         private void SendChek(Operation operation,List<Goods> goods)
         {
-            RecordingOperationXmlFile.WriteXmlFile(operation, goods, true, pathxml);
-            SingFile();
-            var  id = _serverController.SendChek(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO);
-            if (id != null)
+            if (operation.typeOperation == 0)
+            {
+                RecordingOperationXmlFile.WriteXmlFile(operation, goods, true, pathxml);
+
+
+                _mainContoller.SignFiles();
+
+
+                var id =  _serverController.SendFiscalCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO , true);
+                
+                if (id != null)
+                {
+                    SaveDataBase(operation, goods);
+                    if (IsDrawinfChek)
+                    {
+                        PrintChek(goods, operation, id);
+                    }
+                }
+            }
+            else
             {
                 SaveDataBase(operation, goods);
-                PrintChek(goods, operation, id);
             }
+
+
         }
         public void PrintChek(List<Goods> products, Operation order,string id)
         {
-            _ordererCheck.PrintChek(products,id,order);
+            _printingFiscalCheck.PrintCheck(products,id,order);
         }
 
-        public void CloseChange(Operation operation)
-        {
-            try
-            {
-                ChekedOpenChange();
-                closeChange(operation);
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    if (ex.Message == "Невірний хеш попереднього чеку")
-                    {
-                        operation.mac = adjustmentHash(operation, "zreport");
-                        closeChange(operation);
-                    }
-                    else
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-        }
-        
-        private void closeChange(Operation operation)
-        {
-            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), false, pathxml);
-
-            SingFile();
-            if (_serverController.SendZreport(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberOfSalesReceipts), operation.fiscalNumberRRO))
-            {
-                SaveDataBase(operation, new List<Goods>());
-                MessageBox.Show("Зміна закрита", "information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        
-        private void ChekedOpenChange()
-        {
-            Operation operation = GetLastChek();
-            if (operation.numberPayment == "0"&& operation.typeOperation!=108)
-            {
-                throw new Exception("Зміна не відкрита");
-            }
-        }
-        
-        private void ChekedCloseChange()
-        {
-            Operation operation = GetLastChek();
-            if ((int)operation.numberOfSalesReceipts == 0)
-            {
-                throw new Exception("Зміна не закрита");
-            }
-        }
         
         private Operation GetLastChek()
         {
-            var operationList = _operationRepository.GetAll();
+            var operationList = _operationRepository.GetAll().Where(item => item.typeOperation == 0);
             if(operationList!=null)
             {
                 return operationList.ElementAt(operationList.Count() - 1);
@@ -286,44 +181,7 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        private string adjustmentHash(Operation operation,string type)
-        {
-            try
-            {
-               
-                switch(type)
-                {
-                    case "servise":
-                        {
-                            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), true, pathxml);
-                            SingFile();
-                            return _serverController.SendServiseChekAdjustmentHash(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), operation.fiscalNumberRRO);
-                            break;
-                        }
-                    case "chek":
-                        {
-                            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), true, pathxml);
-                            SingFile();
-                            return _serverController.SendChekAdjustmentHash(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), operation.fiscalNumberRRO);
-                            break;
-                        }
-                    case "zreport":
-                        {
-                            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), false, pathxml);
-                            SingFile();
-                            return _serverController.SendZtreportAdjustmentHash(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), operation.fiscalNumberRRO);
-                            break;
-                        }
-                }
-                return string.Empty;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return string.Empty;
-            }
-            
-        }
+       
 
     }
 }

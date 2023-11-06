@@ -2,6 +2,7 @@
 using ShopProject.Model.SettingPage;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ namespace ShopProject.ViewModel.SettingPage
         SettingPrintingCheckModel _model;
 
         private ICommand _saveSettingCommand;
+        private ICommand _printTestCheck;
 
         public SettingPrintingCheckViewModel()
         {
             _saveSettingCommand = new DelegateCommand(SaveSetting);
+            _printTestCheck = new DelegateCommand(() => { _model.PrintTest(); });
 
             _model = new SettingPrintingCheckModel();
             SetFieldTextBox();
@@ -34,6 +37,8 @@ namespace ShopProject.ViewModel.SettingPage
             City = setting[5];
             Street = setting[6];
             House = setting[7];
+            Printer = PrinterSettings.InstalledPrinters.Cast<string>().ToList();
+            SelectedPrinter = setting[8];
         }
 
         private string _nameShop;
@@ -85,14 +90,27 @@ namespace ShopProject.ViewModel.SettingPage
             get { return _house; }
             set { _house = value; OnPropertyChanged("House"); }
         }
+        private List<string> _printer;
+        public List<string> Printer
+        {
+            get { return _printer; }
+            set { _printer = value;OnPropertyChanged("Printer"); }
+        }
+        private string _selectedPrinter;
+        public string SelectedPrinter
+        {
+            get { return _selectedPrinter; }
+            set { _selectedPrinter = value; OnPropertyChanged("SelectedPrinter"); }
+        }
 
         public ICommand SaveSettingCommand => _saveSettingCommand;
 
         private void SaveSetting()
         {
-            _model.Save(NameShop, NameSeller, NameFop, Region, District, City, Street, House);
+            _model.Save(NameShop, NameSeller, NameFop, Region, District, City, Street, House, SelectedPrinter);
             MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        public ICommand PrintTestCheck => _printTestCheck;
 
     }
 }

@@ -9,16 +9,16 @@ using Image = System.Windows.Controls.Image;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
-    internal class CreateStikerViewModel : ViewModel<CreateStikerViewModel>
+    internal class CreateStickerViewModel : ViewModel<CreateStickerViewModel>
     {
         private ICommand createStikerCommand;
         private ICommand printStikerCommand;
         private ICommand clearStikerCommand;
-        private CreateStikerModel model;
+        private CreateStickerModel model;
 
-        public CreateStikerViewModel()
+        public CreateStickerViewModel()
         {
-            model = new CreateStikerModel();
+            model = new CreateStickerModel();
 
             createStikerCommand = new DelegateCommand(CreateStiker);
             printStikerCommand = new DelegateCommand(Print);
@@ -151,14 +151,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void Print()
         {
-            Image image = new Image();
-            image.Source = BarCode;
-            PrintDialog printDialog = new PrintDialog();
-            printDialog.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), "Xprinter XP-360B");
-            if (printDialog.ShowDialog() == true)
-            {
-                printDialog.PrintVisual(image, "file");
-            }
+            model.Print();
         }
 
         public ICommand ClearStikerCommand => clearStikerCommand;

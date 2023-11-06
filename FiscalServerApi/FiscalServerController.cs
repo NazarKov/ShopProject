@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using FiscalServerApi.ExceptionServer;
+using Google.Protobuf;
 using GreetClient;
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -8,8 +9,8 @@ namespace FiscalServerApi
     public class FiscalServerController
     {
 
-        private string _apiAdress = "https://prro.tax.gov.ua:443";
-        private string _apiTestAdress = "https://cabinet.tax.gov.ua:9443";
+        private string _apiAddress = "https://prro.tax.gov.ua:443";
+        private string _apiTestAddress = "https://cabinet.tax.gov.ua:9443";
 
         private string _pathFile = "..\\..\\..\\..\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
 
@@ -17,14 +18,54 @@ namespace FiscalServerApi
 
         public FiscalServerController() { }
 
-        public string SendChek(long date, int localNumber, string rroFN)
+        private CheckResponse SendMessage(Messages message)
         {
-            CheckResponse response = SendMessages(new ChekMesseges()
+            string api = string.Empty;
+            if(message.test)
+            {
+                api = _apiTestAddress;
+            }
+            else
+            {
+                api = _apiAddress;
+            }
+
+            if (api != string.Empty)
+            {
+                using (var channel = GrpcChannel.ForAddress(api))
+                {
+
+                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
+
+                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
+
+                    ByteString CheckSign = ReadFile(_pathFile);
+
+                    var reply = client.sendChkV2(new Check()
+                    {
+                        CheckSign = CheckSign,
+                        CheckType = message.type,
+                        DateTime = message.date,
+                        RroFn = message.rroFn,
+                        LocalNumber = message.localNumber,
+                    }, _callOptions);
+
+                    return reply;
+                }
+            }
+            return new CheckResponse();
+        }
+
+
+        public string SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
+        {
+            CheckResponse response = SendMessage(new Messages() 
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
-                type = Check.Types.Type.Chk,
+                test = test,
+                type = Check.Types.Type.Chk
             });
 
             if (AuditErrorServer(response) == "OK")
@@ -33,13 +74,15 @@ namespace FiscalServerApi
             }
             return string.Empty;
         }
-        public bool SendServicechk(long date, int localNumber, string rroFN)
+
+        public bool SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessages(new ChekMesseges()
+            CheckResponse response = SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
+                test = test,
                 type = Check.Types.Type.Servicechk,
             });
 
@@ -49,13 +92,14 @@ namespace FiscalServerApi
             }
             return false;
         }
-        public bool SendZreport(long date, int localNumber, string rroFN)
+        public bool SendZreport(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessages(new ChekMesseges()
+            CheckResponse response = SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
+                test = test,
                 type = Check.Types.Type.Zreport,
             });
 
@@ -65,13 +109,15 @@ namespace FiscalServerApi
             }
             return false;
         }
-        public bool Ping(long date, int localNumber, string rroFN)
+        
+        public bool Ping(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = Ping(new ChekMesseges()
+            CheckResponse response = Ping(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
+                test = test,
                 type = Check.Types.Type.Zreport,
             });
 
@@ -82,87 +128,44 @@ namespace FiscalServerApi
             return false;
         }
 
-        private CheckResponse SendMessages(ChekMesseges messeges)
+
+        private CheckResponse Ping(Messages messege)
         {
-            using (var channel = GrpcChannel.ForAddress(_apiTestAdress))
+            string api = string.Empty;
+            if (messege.test)
             {
-
-                _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
-
-                var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
-
-                ByteString CheckSign = ReadFile(_pathFile);
-
-                var reply = client.sendChkV2(new Check()
-                {
-                    CheckSign = CheckSign,
-                    CheckType = messeges.type,
-                    DateTime = messeges.date,
-                    RroFn = messeges.rroFn,
-                    LocalNumber = messeges.localNumber,
-                }, _callOptions);
-                return reply;
+                api = _apiTestAddress;
             }
-        }
-        private CheckResponse Ping(ChekMesseges messeges)
-        {
-            using (var channel = GrpcChannel.ForAddress(_apiTestAdress))
+            else
             {
-
-                _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
-
-                var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
-
-                ByteString CheckSign = ReadFile(_pathFile);
-
-                var reply = client.ping(new Check()
-                {
-                    CheckSign = CheckSign,
-                    CheckType = messeges.type,
-                    DateTime = messeges.date,
-                    RroFn = messeges.rroFn,
-                    LocalNumber = messeges.localNumber,
-                }, _callOptions);
-                return reply;
+                api = _apiAddress;
             }
-        }
-        public string SendServiseChekAdjustmentHash(long date,string rroFN)
-        {
-            CheckResponse response = SendMessages(new ChekMesseges()
+
+            if(api !=string.Empty)
             {
-                date = date,
-                localNumber = 0,
-                rroFn = rroFN,
-                type = Check.Types.Type.Servicechk,
-            });
+                using (var channel = GrpcChannel.ForAddress(api))
+                {
 
-            return response.ErrorMessage.Split(" ").ElementAt(3);
+                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
+
+                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
+
+                    ByteString CheckSign = ReadFile(_pathFile);
+
+                    var reply = client.ping(new Check()
+                    {
+                        CheckSign = CheckSign,
+                        CheckType = messege.type,
+                        DateTime = messege.date,
+                        RroFn = messege.rroFn,
+                        LocalNumber = messege.localNumber,
+                    }, _callOptions);
+                    return reply;
+                }
+            }
+            return new CheckResponse();
+           
         }
-        public string SendChekAdjustmentHash(long date, string rroFN)
-        {
-            CheckResponse response = SendMessages(new ChekMesseges()
-            {
-                date = date,
-                localNumber = 0,
-                rroFn = rroFN,
-                type = Check.Types.Type.Chk,
-            });
-
-            return response.ErrorMessage.Split(" ").ElementAt(3);
-        }
-        public string SendZtreportAdjustmentHash(long date, string rroFN)
-        {
-            CheckResponse response = SendMessages(new ChekMesseges()
-            {
-                date = date,
-                localNumber = 0,
-                rroFn = rroFN,
-                type = Check.Types.Type.Zreport,
-            });
-
-            return response.ErrorMessage.Split(" ").ElementAt(3);
-        }
-
 
         private string AuditErrorServer(CheckResponse response)
         {
@@ -237,7 +240,8 @@ namespace FiscalServerApi
                         }
                     case CheckResponse.Types.Status.ErrorBadHashPrev:
                         {
-                            throw new Exception("Невірний хеш попереднього чеку");
+
+                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку") { Mac = response.ErrorMessage.Split(" ")[3] };
                             break;
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredRro:
@@ -277,5 +281,13 @@ namespace FiscalServerApi
             return ByteString.CopyFrom(bytes);
         }
 
+    }
+    public struct Messages
+    {
+        public Check.Types.Type type;
+        public long date;
+        public string rroFn;
+        public int localNumber;
+        public bool test; 
     }
 }

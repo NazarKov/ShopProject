@@ -10,7 +10,7 @@
     <Page.DataContext>
         <local:SettingPrintingCheckViewModel></local:SettingPrintingCheckViewModel>
     </Page.DataContext>
-    
+
     <Border BorderBrush="White" BorderThickness="0.3">
         <Grid>
             <Grid.RowDefinitions>
@@ -39,9 +39,11 @@
             <Label x:Name="Tittle" Content="Налаштування друку чеків" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" Grid.Row="0"/>
             <Separator Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Top" Margin="225,16,0,0"></Separator>
 
-            <GroupBox Header="Дані для пристрою" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="9">
+            <GroupBox Header="Дані для пристрою" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="11">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="30*"></RowDefinition>
+                        <RowDefinition Height="30*"></RowDefinition>
                         <RowDefinition Height="30*"></RowDefinition>
                         <RowDefinition Height="30*"></RowDefinition>
                         <RowDefinition Height="30*"></RowDefinition>
@@ -79,34 +81,21 @@
                     <TextBox x:Name="textBox6" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Street}" HorizontalAlignment="Right" Grid.Row="6" VerticalAlignment="Center" Width="250"/>
                     <TextBox x:Name="textBox7" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding House}" HorizontalAlignment="Right" Grid.Row="7" VerticalAlignment="Center" Width="250"/>
 
-                    <Button x:Name="button1" Grid.Column="3" Grid.Row="9" Content="Зберегти" Command="{Binding SaveSettingCommand}" HorizontalAlignment="Center" Width="120" VerticalAlignment="Center"/>
-                    
+                    <Button x:Name="button1" Grid.Column="3" Grid.Row="8" Content="Зберегти" Command="{Binding SaveSettingCommand}" HorizontalAlignment="Center" Width="120" VerticalAlignment="Center"/>
+
+                    <Label x:Name="label8" Content="Принтер для друку чеків" HorizontalAlignment="Left" Grid.Row="9" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+
+                    <ComboBox x:Name="comboBox" ItemsSource="{Binding Printer}" Grid.Column="2" SelectedItem="{Binding SelectedPrinter}" Grid.ColumnSpan="2" HorizontalAlignment="Right" Grid.Row="9" VerticalAlignment="Top" Width="120"/>
+
+                    <Button x:Name="button2" Grid.Column="2" Command="{Binding PrintTestCheck}" Content="Друк пробної сторінки" Grid.ColumnSpan="2"  HorizontalAlignment="Stretch" Grid.Row="10" VerticalAlignment="Center"/>
 
 
 
-                </Grid>
-            </GroupBox>
 
-
-            <GroupBox Header="Налаштування роботи" Grid.Row="9" Grid.ColumnSpan="4" Grid.RowSpan="3" Visibility="Hidden" >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30*"></RowDefinition>
-                        <RowDefinition Height="30*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="125"></ColumnDefinition>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-                        <ColumnDefinition Width="100"></ColumnDefinition>
-                        <ColumnDefinition Width="120"></ColumnDefinition>
-                        <ColumnDefinition Width="5"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="label" Grid.Column="0" Grid.Row="0" Content="Перевірка завязку" HorizontalAlignment="Left" Margin="0,0,0,0"/>
-                    <Button x:Name="button" Content="Перевірити" Grid.Column="3" Grid.Row="0" Width="120" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding ChekConnectionServerCommand}"/>
                 </Grid>
             </GroupBox>
 
 
         </Grid>
-        </Border>
+    </Border>
 </Page>

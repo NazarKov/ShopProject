@@ -28,10 +28,7 @@
             <Menu Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <MenuItem Header="Програма">
                     <MenuItem Header="Настройки" Command="{Binding OpenSetting}" ></MenuItem>
-                    <MenuItem Header="хз" >
-                        <MenuItem Header="WinForms"></MenuItem>
-                        <MenuItem Header="WPF" ></MenuItem>
-                    </MenuItem>
+                    <MenuItem Header="Користувачі"  Command="{Binding OpenUserCommand}"></MenuItem>
                     <Separator />
                     <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
                 </MenuItem>
@@ -41,7 +38,10 @@
                     <MenuItem Header="Список товарів які закінчилися" Command="{Binding OpenOutOfStock}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Інструменти" >
+                    <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoods}"></MenuItem>
+                    <Separator></Separator>
                     <MenuItem Header="Роздрукувати Етикетку" Command="{Binding OpenCreateStiker }"></MenuItem>
+                    <Separator></Separator>
                     <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProduct}"></MenuItem>
                     <MenuItem Header="Імпортувати товари" Command="{Binding OpenImportProduct}"></MenuItem>
                 </MenuItem>

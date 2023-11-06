@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProject", "ShopProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniServiceSigningFiles", "MiniServiceSigningFiles\MiniServiceSigningFiles.csproj", "{E33AA310-3707-41C1-B361-EB6A489AB71B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalServerApi", "FiscalServerApi\FiscalServerApi.csproj", "{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalServerApi", "FiscalServerApi\FiscalServerApi.csproj", "{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

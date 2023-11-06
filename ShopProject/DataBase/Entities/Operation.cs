@@ -35,7 +35,7 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public decimal versionDataPaket { get; set; }
         /// <summary>
-        /// тип чеку 0 - чек продажі 108 - відкриття зміни 
+        /// тип чеку 0 - чек продажі 108 - відкриття зміни  100 - 200 фіксальний чек 200 - 300 не фіксальний чек   
         /// </summary>
         public decimal typeOperation { get; set; }
         /// <summary>

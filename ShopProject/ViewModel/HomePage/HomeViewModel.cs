@@ -13,6 +13,7 @@ using ShopProject.Views.ToolsPage;
 using ShopProject.Model.Command;
 using ShopProject.Views.SalePage;
 using System.Windows.Forms;
+using ShopProject.Views.UserPage;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -28,6 +29,8 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openCreateStiker;
         private ICommand openOutOfStock;
         private ICommand openSaleMenu;
+        private ICommand openDeliveryOfGoods;
+        private ICommand openUserPageCommand;
 
         private HomeModel _homeModel;
 
@@ -47,10 +50,11 @@ namespace ShopProject.ViewModel.HomePage
             openStorage = new DelegateCommand(() => { Page = new Storage(); });
             openExportProduct = new DelegateCommand(() => { new ExportGoodsExel().Show(); });
             opemImportProduct = new DelegateCommand(() => { new ImportGoodsExel().Show(); });
-            openCreateStiker = new DelegateCommand(() => { new CreateStiker().Show(); });
+            openCreateStiker = new DelegateCommand(() => { new CreateSticker().Show(); });
             openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
-            openSaleMenu = new DelegateCommand(() => { Page = new SaleMenu(); });
-
+            openSaleMenu = new DelegateCommand(() => { Page = new WorkShiftMenu(); });
+            openDeliveryOfGoods = new DelegateCommand(() => { new DeliveryOfGoods().Show(); });
+            openUserPageCommand = new DelegateCommand(() => { Page = new User(); });
         }
 
 
@@ -67,58 +71,6 @@ namespace ShopProject.ViewModel.HomePage
             get { return _height; } 
             set { _height = value; OnPropertyChanged("Height"); }
         }
-
-
-        #region
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                OnPropertyChanged("Number1");
-            }
-        }
-
-        private string _password;
-        public string Password
-        {
-            get { return _password; }
-            set
-            {
-                _password = value;
-                OnPropertyChanged("Number2");
-            }
-        }
-        private List<string> _dbConnect;
-        public List<string> DbConnect
-        {
-            get { return _dbConnect; }
-            set { _dbConnect = value; }
-        }
-
-        private string _dbConnectSelectedItem;
-        public string DbConnectSelectedItem
-        {
-            get { return _dbConnectSelectedItem; }
-            set { _dbConnectSelectedItem = value; }
-        }
-
-        private string _visibleCanvasAuthorization;
-        public string VisibleCanvasAuthorization
-        {
-            get { return _visibleCanvasAuthorization; }
-            set
-            {
-                _visibleCanvasAuthorization = value;
-                OnPropertyChanged("VisibleCanvasAuthorization");
-            }
-        }
-
-
-
-        #endregion
 
         private Page _page;
         public Page Page
@@ -140,5 +92,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenCreateStiker => openCreateStiker;
         public ICommand OpenOutOfStock => openOutOfStock;
         public ICommand OpenSaleMenu => openSaleMenu;
+        public ICommand OpenDeliveryOfGoods => openDeliveryOfGoods;
+        public ICommand OpenUserCommand => openUserPageCommand;
     }
 }

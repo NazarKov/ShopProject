@@ -1,4 +1,4 @@
-﻿<Window x:Class="ShopProject.Views.ToolsPage.CreateStiker"
+﻿<Window x:Class="ShopProject.Views.ToolsPage.CreateSticker"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Створення наліпок" Height="370" Width="800"  Name="window" ResizeMode="NoResize">
     <Window.DataContext>
-        <local:CreateStikerViewModel x:Name="VM"></local:CreateStikerViewModel>
+        <local:CreateStickerViewModel x:Name="VM"></local:CreateStickerViewModel>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -34,7 +34,7 @@
 
         <CheckBox x:Name="BarCodecheckBox" IsChecked="{Binding IsShowProductBarCode}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1"/>
         <Label x:Name="label" Content="Шрихкод" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Margin="0,22,0,0" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Top" Width="180"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Margin="0,22,0,0" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Top" Width="180" />
 
         <CheckBox x:Name="NamecheckBox" IsChecked="{Binding IsShowProductName}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="2"/>
         <Label x:Name="label1" Content="Назва товару" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="top"/>
