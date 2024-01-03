@@ -44,6 +44,7 @@ namespace ShopProject.ViewModel.SalePage
             _typeOplatu.Add("безготівкові форми оплати");
 
             DrawingCheck = _model.IsDrawinfChek;
+            IsFiscalCheck = true;
 
             ClearField();
         }
@@ -223,7 +224,7 @@ namespace ShopProject.ViewModel.SalePage
                     typeOperration = 200;
                 }
 
-                if(_model.SendChek(Goods, new Operation()
+                if(_model.SendCheck(Goods, new Operation()
                 {
                     dataPacketIdentifier = 1,
                     typeRRO = 0,
@@ -252,7 +253,7 @@ namespace ShopProject.ViewModel.SalePage
             }
             else
             {
-                MessageBox.Show("Сума внеску неможе бути менша ніж сума чеку");
+                MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
             }
         }
 

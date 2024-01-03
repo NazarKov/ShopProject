@@ -12,12 +12,14 @@ using ShopProject.DataBase.Model;
 
 namespace ShopProject.Model.StoragePage
 {
+
     internal class StorageModel
     {
         private IEntityAccessor<Goods> _goodsRepository;
-        private List<Goods>? _goods;
+        private static List<Goods>? _goods;
         private Thread _threadSearch;
-
+        private static Timer timer;
+        private static string temp;
         public StorageModel()
         {
             _goods = new List<Goods>();

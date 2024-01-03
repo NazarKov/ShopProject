@@ -1,8 +1,10 @@
 ﻿using FiscalServerApi.ExceptionServer;
+using FiscalServerApi.Helpers;
 using Google.Protobuf;
 using GreetClient;
 using Grpc.Core;
 using Grpc.Net.Client;
+using static GreetClient.ChkIncomeService;
 
 namespace FiscalServerApi
 {
@@ -16,11 +18,13 @@ namespace FiscalServerApi
 
         private CallOptions _callOptions;
 
-        public FiscalServerController() { }
-
-        private CheckResponse SendMessage(Messages message)
+        public FiscalServerController() 
         {
-            string api = string.Empty;
+
+        }
+
+        private CheckResponse SendMessage(Messages message,TypeMessage types, string api = "")
+        {
             if(message.test)
             {
                 api = _apiTestAddress;
@@ -29,35 +33,77 @@ namespace FiscalServerApi
             {
                 api = _apiAddress;
             }
-
-            if (api != string.Empty)
+            
+            return SendMessageRecursive(api,message,types,10,0,5);
+        }
+        private CheckResponse SendMessageRecursive(string api, Messages message, TypeMessage types, double second, int depth, int maxDepth)
+        {
+            try
             {
+                if (depth >= maxDepth)
+                {
+                    return new CheckResponse();
+                }
+
                 using (var channel = GrpcChannel.ForAddress(api))
                 {
 
-                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
+                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
 
                     var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
 
                     ByteString CheckSign = ReadFile(_pathFile);
 
-                    var reply = client.sendChkV2(new Check()
+                    switch(types)
                     {
-                        CheckSign = CheckSign,
-                        CheckType = message.type,
-                        DateTime = message.date,
-                        RroFn = message.rroFn,
-                        LocalNumber = message.localNumber,
-                    }, _callOptions);
-
-                    return reply;
+                        case TypeMessage.sendChk2:
+                            {
+                                return sendChkV2(message, client, CheckSign);
+                            }
+                        case TypeMessage.ping:
+                            {
+                                return ping(message, client, CheckSign);
+                            }
+                    }
                 }
+                return null;
             }
-            return new CheckResponse();
+            catch(Grpc.Core.RpcException)
+            {
+                throw new Exception("Відсутьнє підключення до інтернету\nперевірте підключення до інтернету");
+            }
+            catch (Exception)
+            {
+                return SendMessageRecursive(api,message,types,second + 5,depth + 1,5);
+            }
+        }
+        private CheckResponse sendChkV2(Messages message, ChkIncomeServiceClient client, ByteString CheckSign)
+        {
+            var reply = client.sendChkV2(new Check()
+            {
+                CheckSign = CheckSign,
+                CheckType = message.type,
+                DateTime = message.date,
+                RroFn = message.rroFn,
+                LocalNumber = message.localNumber,
+            }, _callOptions);
+            return reply;
+        }
+        private CheckResponse ping(Messages message, ChkIncomeServiceClient client, ByteString CheckSign)
+        {
+            var reply = client.ping(new Check()
+            {
+                CheckSign = CheckSign,
+                CheckType = message.type,
+                DateTime = message.date,
+                RroFn = message.rroFn,
+                LocalNumber = message.localNumber,
+            }, _callOptions);
+            return reply;
         }
 
 
-        public string SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
+        public void SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages() 
             {
@@ -66,16 +112,12 @@ namespace FiscalServerApi
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Chk
-            });
+            },TypeMessage.sendChk2);
 
-            if (AuditErrorServer(response) == "OK")
-            {
-                return response.Id;
-            }
-            return string.Empty;
+            AuditErrorServer(response);
         }
 
-        public bool SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
+        public void SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages()
             {
@@ -84,15 +126,13 @@ namespace FiscalServerApi
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Servicechk,
-            });
+            }, TypeMessage.sendChk2);
 
-            if (AuditErrorServer(response) == "OK")
-            {
-                return true;
-            }
-            return false;
+            AuditErrorServer(response);
+
         }
-        public bool SendZreport(long date, int localNumber, string rroFN , bool test = true)
+        
+        public void SendZReport(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages()
             {
@@ -101,73 +141,26 @@ namespace FiscalServerApi
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Zreport,
-            });
+            }, TypeMessage.sendChk2);
 
-            if (AuditErrorServer(response) == "OK")
-            {
-                return true;
-            }
-            return false;
+            AuditErrorServer(response);
         }
         
-        public bool Ping(long date, int localNumber, string rroFN , bool test = true)
+        public void Ping(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = Ping(new Messages()
+            CheckResponse response = SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Zreport,
-            });
+            }, TypeMessage.ping);
 
-            if (AuditErrorServer(response) == "OK")
-            {
-                return true;
-            }
-            return false;
+            AuditErrorServer(response);
         }
 
-
-        private CheckResponse Ping(Messages messege)
-        {
-            string api = string.Empty;
-            if (messege.test)
-            {
-                api = _apiTestAddress;
-            }
-            else
-            {
-                api = _apiAddress;
-            }
-
-            if(api !=string.Empty)
-            {
-                using (var channel = GrpcChannel.ForAddress(api))
-                {
-
-                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(10));
-
-                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
-
-                    ByteString CheckSign = ReadFile(_pathFile);
-
-                    var reply = client.ping(new Check()
-                    {
-                        CheckSign = CheckSign,
-                        CheckType = messege.type,
-                        DateTime = messege.date,
-                        RroFn = messege.rroFn,
-                        LocalNumber = messege.localNumber,
-                    }, _callOptions);
-                    return reply;
-                }
-            }
-            return new CheckResponse();
-           
-        }
-
-        private string AuditErrorServer(CheckResponse response)
+        private void AuditErrorServer(CheckResponse response)
         {
             if (response != null)
             {
@@ -175,101 +168,108 @@ namespace FiscalServerApi
                 {
                     case CheckResponse.Types.Status.Unknown:
                         {
-                            throw new Exception("Не визначений");
-                            break;
+                            throw new Exception("Не вдалося відправити чек");
                         }
                     case CheckResponse.Types.Status.Ok:
                         {
-                            return "OK";
-                            break;
+                            throw new ExceptionOK("OK",response.Id);
                         }
                     case CheckResponse.Types.Status.ErrorVerefy:
                         {
-                            throw new Exception("Чек фіскалізовано, надано номер");
-                            break;
+                            throw new Exception("Помилка перевірки підпису,перевірте наявність встановленого ключа ФОП");
                         }
                     case CheckResponse.Types.Status.ErrorCheck:
                         {
-                            throw new Exception("помилка перевірки РРО");
-                            break;
+                            switch (response.ErrorMessage)
+                            {
+                                case ExceptionCheck.ShiftIsAlreadyOpen:
+                                    {
+                                        throw new ExceptionCheck("Зміна вже відкрита");
+                                    }
+                                case ExceptionCheck.ThereCanBeOnlyOneSignatoryWithinAShift:
+                                    {
+                                        throw new ExceptionCheck("У зміні може бути лише один підписант");
+                                    }
+                                case ExceptionCheck.ThereCanBeOnlyOneSignatoryWithinAShiftClosingCanBeASenior:
+                                    {
+                                        throw new ExceptionCheck("У зміні може бути лише один підписант,\n закриття зміни може бути здійснене старшим касиром");
+                                    }
+                                case ExceptionCheck.ThisKeyOpensAShiftOnAnotherDeviceFn:
+                                    {
+                                        throw new ExceptionCheck("Цим підписом відкрита зміна на іншому ПРРО");
+                                    }
+                                case ExceptionCheck.PermittedToUseOnlyAfter:
+                                    {
+                                        throw new ExceptionCheck("можливо використовувати тільки з 01.10. 2021");
+                                    }
+                            }
+                            throw new ExceptionCheck("Помилка перевірки РРО");
                         }
                     case CheckResponse.Types.Status.ErrorSave:
                         {
+                            if (response.ErrorMessage.Equals(ExceptionSave.IncorrectHash))
+                            {
+                                throw new ExceptionSave("Невірний хеш попереднього чеку,\n або дубль чека", response.ErrorMessage);
+                            }
                             throw new Exception("Помилка запису");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorUnknown:
                         {
                             throw new Exception("Загальна помилка");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorType:
                         {
                             throw new Exception("Помилка типу посилки");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorNotPrevZreport:
                         {
                             throw new Exception("Нема Z-звіту за попередній день");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorXml:
                         {
                             throw new Exception("Невірний формат XML ( структура , фіскальний номер)");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorXmlDate:
                         {
-                            throw new Exception("Невірний формат XML дата не відповідає Check.date");
-                            break;
+                            throw new Exception("Невірний формат XML дата не відповідає Check.date \nПеревірте чи підключений ключ ФОП до програми");
                         }
                     case CheckResponse.Types.Status.ErrorXmlChk:
                         {
                             throw new Exception("Невірний формат XML чеку");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorXmlZreport:
                         {
                             throw new Exception("Невірний формат Z-звіту");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorOffline168:
                         {
                             throw new Exception("РРО заблокований, перевищено ліміт 168 годин офлайну");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorBadHashPrev:
                         {
 
-                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку") { Mac = response.ErrorMessage.Split(" ")[3] };
-                            break;
+                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку",response.ErrorMessage);
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredRro:
                         {
                             throw new Exception("Не зареєстровано ПРРО");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredSigner:
                         {
                             throw new Exception("Не зареєстрований підписант");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorNotOpenShift:
                         {
                             throw new Exception("Не відкрита зміна");
-                            break;
                         }
                     case CheckResponse.Types.Status.ErrorOfflineId:
                         {
-                            throw new Exception("Невірний оффлайн ID");
-                            break;
+                            throw new Exception("Невірний офлайн ID");
                         }
 
 
                 }
-
             }
-            return null;
         }
         private ByteString ReadFile(string path)
         {
@@ -282,12 +282,5 @@ namespace FiscalServerApi
         }
 
     }
-    public struct Messages
-    {
-        public Check.Types.Type type;
-        public long date;
-        public string rroFn;
-        public int localNumber;
-        public bool test; 
-    }
+   
 }

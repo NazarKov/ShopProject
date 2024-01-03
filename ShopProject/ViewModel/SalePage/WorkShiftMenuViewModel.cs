@@ -139,18 +139,20 @@ namespace ShopProject.ViewModel.SalePage
                 mac = _model.GetMac(false),
             };
 
-            _model.OpenChange(operation, true);
-            StatusShift = "Зміна відкрита";
-            StatusColor = "Green";
-            AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-            StatusOnline = "з " + DateTime.Now.ToString("g");
-            AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+            if (_model.OpenShift(operation, false))
+            {
+                StatusShift = "Зміна відкрита";
+                StatusColor = "Green";
+                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                StatusOnline = "з " + DateTime.Now.ToString("g");
+                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+            }
         }
 
         public ICommand CloseShiftCommand => _closeShiftCommand;
         private void CloseShift()
         {
-            _model.CloseChange(new Operation
+            Operation operation = new Operation
             {
                 dataPacketIdentifier = 1,
                 typeRRO = 0,
@@ -162,13 +164,17 @@ namespace ShopProject.ViewModel.SalePage
                 numberPayment = _model.GetLocalNumber(),
                 numberOfSalesReceipts = Convert.ToDecimal(_model.GetLocalNumber()),
 
-            });
+            };
 
-            StatusShift = "Зміна закрита";
-            StatusColor = "Red";
-            AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-            StatusOnline = string.Empty;
-            AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+            if(_model.CloseShift(operation,false))
+            {
+                StatusShift = "Зміна закрита";
+                StatusColor = "Red";
+                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                StatusOnline = string.Empty;
+                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+            }
+
 
         }
 

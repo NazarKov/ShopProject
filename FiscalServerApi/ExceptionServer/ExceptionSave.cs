@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 
 namespace FiscalServerApi.ExceptionServer
 {
-    public class ExceptionBadHashPrev : Exception
+    public class ExceptionSave : Exception
     {
-        public ExceptionBadHashPrev() { }
-        public ExceptionBadHashPrev(string message) : base(message) { }
-        public ExceptionBadHashPrev(string message, string error) : this(message)
+        public const string IncorrectHash = "incorrect hash";
+
+        public ExceptionSave() { }
+        public ExceptionSave(string message): base(message) { }
+        public ExceptionSave(string message,string error) : base(message)
         {
             _error = error;
         }
-
+        
         private string? _error;
         public string? Error
         {
             get { return _error; }
         }
+
+
     }
 }

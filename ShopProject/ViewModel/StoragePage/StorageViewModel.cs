@@ -19,7 +19,8 @@ namespace ShopProject.ViewModel.StoragePage
     {
 
         private StorageModel? _model;
-        private string _nameSearch;
+        private static Timer timer;
+        private static string? _nameSearch;
 
         private ICommand _openCreateGoodsWindowCommand;
         private ICommand _openFormationGoodsWindowCommand;
@@ -44,9 +45,12 @@ namespace ShopProject.ViewModel.StoragePage
             _statusBarCountGoods = string.Empty;
             
             GoodsList = new List<Goods>();
+            
+            timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
            
             SearchGoods("");
             SetFiledStatusBar();
+
         }
         private async void SetFiledStatusBar()
         {
@@ -91,28 +95,42 @@ namespace ShopProject.ViewModel.StoragePage
         public ICommand UpdateItemDataGridView => _updateItemDataGridView;
         public ICommand SearchCommand { get => new DelegateParameterCommand(SearchGoods, CanRegister); }
 
-        private async void SearchGoods(object parameter)
+        private void SearchGoods(object parameter)
+        {
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _nameSearch = parameter.ToString();
+
+            timer.Change(2000, Timeout.Infinite);// 2000 затримка в дві секунди для продовження ведення тексту
+        }
+        private void OnInputStopped(object state)
+        {
+            UpdateDataGrid(_nameSearch);
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+        private async void UpdateDataGrid(string parameter)
         {
             await Task.Run(() =>
             {
                 _nameSearch = parameter.ToString();
+
+                var result = _model.SearchGoods(parameter.ToString());
+                result.Reverse();
+
                 if (GoodsList.Count != 0)
                 {
                     GoodsList.Clear();
                 }
-                var result = _model.SearchGoods(parameter.ToString());
-                result.Reverse();
+
                 if (result.Count > 100)
                 {
-                    GoodsList = result.Take(100).ToList();//100 це кілкьість елементів на екрані 
+                    GoodsList = result.Take(100).ToList();//100 це кількість елементів на екрані 
                 }
                 else
                 {
                     GoodsList = result;
                 }
             });
-
-           
+            
         }
 
 
