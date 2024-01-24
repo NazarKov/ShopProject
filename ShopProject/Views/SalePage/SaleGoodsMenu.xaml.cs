@@ -18,9 +18,9 @@ namespace ShopProject.Views.SalePage
     /// <summary>
     /// Interaction logic for SaleMenu.xaml
     /// </summary>
-    public partial class SaleMenu : Page
+    public partial class SaleGoodsMenu : Page
     {
-        public SaleMenu()
+        public SaleGoodsMenu()
         {
             InitializeComponent();
         }

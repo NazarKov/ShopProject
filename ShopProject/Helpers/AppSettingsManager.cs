@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static NPOI.SS.Formula.PTG.ArrayPtg;
 
-namespace ShopProject.Model
+namespace ShopProject.Helpers
 {
     public enum TypeConnections
     {
@@ -18,9 +18,9 @@ namespace ShopProject.Model
 
     internal static class AppSettingsManager
     {
-        public static void SetConnectionDataBase(string name,TypeConnections type)
+        public static void SetConnectionDataBase(string name, TypeConnections type)
         {
-            switch(type)
+            switch (type)
             {
                 case TypeConnections.DEVELOPER:
                     {

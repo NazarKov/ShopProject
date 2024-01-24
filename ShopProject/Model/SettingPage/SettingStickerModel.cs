@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers.HelperForPrinting;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.HelperForPrinting;
 using System;
 using System.Collections.Generic;
 using System.Linq;

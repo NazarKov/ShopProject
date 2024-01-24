@@ -67,6 +67,34 @@ namespace ShopProject.DataBase.Model
         /// </summary>
         public decimal numberOfSalesReceipts { get; set; }
         /// <summary>
+        /// кількість чеків повернення
+        /// </summary>
+        public decimal numberOfPendingReturns { get; set; }
+        /// <summary>
+        /// сума отриманих коштів (службове внесення)
+        /// </summary>
+        public decimal amountOfFundsReceived { get; set; }
+        /// <summary>
+        /// сума отриманих коштів (службова видача)
+        /// </summary>
+        public decimal amountOfIssuedFunds { get; set; }
+        /// <summary>
+        /// сума отриманих коштів готівка
+        /// </summary>
+        public decimal amountReceivedCash { get;set; }
+        /// <summary>
+        /// сума виданих коштів готівка
+        /// </summary>
+        public decimal amountIssuedCash { get; set; }
+        /// <summary>
+        /// сума отриманих коштів картка
+        /// </summary>
+        public decimal amountReceivedCard { get; set; }
+        /// <summary>
+        /// сума виданих коштів картка
+        /// </summary>
+        public decimal amountIssuedCard { get; set; }
+        /// <summary>
         /// код підтвердження на сервері
         /// </summary>
         public string mac { get; set; }

@@ -1,7 +1,6 @@
 ﻿using NPOI.SS.Formula.Functions;
 using QRCoder;
 using ShopProject.DataBase.Model;
-using ShopProject.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

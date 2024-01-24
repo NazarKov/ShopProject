@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.Model
+namespace ShopProject.Helpers
 {
     internal static class Search
     {
@@ -26,7 +26,7 @@ namespace ShopProject.Model
                 {
                     searchResult.Add(goods[i]);
                 }
-                else if (goods[i].articule.ToLower().ToLower().Contains(itemSearch.ToLower())) 
+                else if (goods[i].articule.ToLower().ToLower().Contains(itemSearch.ToLower()))
                 {
                     searchResult.Add(goods[i]);
                 }

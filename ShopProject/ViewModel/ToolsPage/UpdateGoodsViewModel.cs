@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows;
 using ShopProject.Model.ToolsPage;
 using System.Threading;
-using ShopProject.Model;
+using ShopProject.Helpers;
 
 namespace ShopProject.ViewModel.ToolsPage
 {

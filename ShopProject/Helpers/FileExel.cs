@@ -2,7 +2,6 @@
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +10,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace ShopProject.Model
+namespace ShopProject.Helpers
 {
     internal class FileExel
     {
@@ -40,11 +39,11 @@ namespace ShopProject.Model
                             UseHeaderRow = true
                         }
                     });
-                    this.tableCollection = db.Tables;
+                    tableCollection = db.Tables;
                     stream.Close();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -54,11 +53,11 @@ namespace ShopProject.Model
         {
             workbook = new XSSFWorkbook();
             CreateExelTable(Goods);
-           
+
             FileStream sw = File.Create(path);
-            workbook.Write(sw,true);
+            workbook.Write(sw, true);
             sw.Close();
-        
+
         }
         private void CreateExelTable(List<HelperClassExportGoodsInFile> Goods)
         {
@@ -75,7 +74,7 @@ namespace ShopProject.Model
                     row.CreateCell(0).SetCellValue(item.goods.code);
                     row.CreateCell(1).SetCellValue(item.goods.name);
                     row.CreateCell(2).SetCellValue(item.goods.articule);
-                   if(item.goods.price!=null)
+                    if (item.goods.price != null)
                         row.CreateCell(3).SetCellValue(item.goods.price.ToString());
                     if (item.goods.count != null)
                         row.CreateCell(4).SetCellValue(item.goodsCount.ToString());
@@ -98,8 +97,8 @@ namespace ShopProject.Model
 
         public DataTable? GetTabel(int i)
         {
-            if (this.tableCollection != null)
-                return this.tableCollection[i];
+            if (tableCollection != null)
+                return tableCollection[i];
             else
                 return null;
         }
@@ -107,11 +106,11 @@ namespace ShopProject.Model
         public List<string> GetTableName()
         {
             List<string> tableName = new List<string>();
-            if(tableCollection!= null)
-            foreach (DataTable table in tableCollection)
-            {
-                tableName.Add(table.TableName);
-            }
+            if (tableCollection != null)
+                foreach (DataTable table in tableCollection)
+                {
+                    tableName.Add(table.TableName);
+                }
             return tableName;
         }
     }

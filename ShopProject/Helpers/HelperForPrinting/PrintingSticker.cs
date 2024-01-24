@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ZXing.Common;
 using ZXing;
-using ShopProject.Model;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Drawing.Drawing2D;
@@ -17,7 +16,7 @@ using System.IO;
 using System.Numerics;
 using System.Windows.Controls;
 using Image = System.Windows.Controls.Image;
-using Validation = ShopProject.Model.Validation;
+using Validation = ShopProject.Helpers.Validation;
 
 namespace ShopProject.Helpers.HelperForPrinting
 {

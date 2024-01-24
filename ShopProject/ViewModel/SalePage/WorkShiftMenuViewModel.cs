@@ -1,13 +1,12 @@
 ﻿using ShopProject.DataBase.Model;
-using ShopProject.Model;
+using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.Views.SalePage;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +20,20 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _openShiftCommand;
         private ICommand _closeShiftCommand;
 
-        private ICommand _updateSize;
+        private ICommand _updateSizeCommand;
+        private ICommand _openNewCheckCommand;
+        private ICommand _openReturnGoodsMenuCommand;
+
+        private ICommand _officialDepositMoneyCommand;
+        private ICommand _officialReceivedMoneyCommand;
+
+        private ICommand _okFirstDialogsWindowCommand;
+        private ICommand _cancelFirstDialogsWindowCommand;
+
+        private ICommand _okSecondDialogsWindowCommand;
+        private ICommand _cancelSecondDialogsWindowCommand;
+
+
 
         public WorkShiftMenuViewModel ()
         {
@@ -29,11 +41,28 @@ namespace ShopProject.ViewModel.SalePage
 
             _openShiftCommand = new DelegateCommand(OpenShift);
             _closeShiftCommand = new DelegateCommand(CloseShift);
-            _updateSize = new DelegateCommand(UpdateSizes);
+            _updateSizeCommand = new DelegateCommand(UpdateSizes);
+            _openNewCheckCommand = new DelegateCommand(openNewCheck);
+            _openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
+
+
+            _officialDepositMoneyCommand = new DelegateCommand(OfficialDepositMoney);
+            _officialReceivedMoneyCommand = new DelegateCommand(OfficialIssuanceModey);
+
+            _okFirstDialogsWindowCommand = new DelegateCommand(OkFirstDialogWindow);
+            _cancelFirstDialogsWindowCommand = new DelegateCommand(CancelFirstDialogWindow);
+
+
+            _okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
+            _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
 
             _statusShift = string.Empty;
             _statusColor = string.Empty;
+            _tabs = new ObservableCollection<TabItem>();
 
+            VisibleFirstDialogWindow = "Hidden";
+            VisibleSecondDialogWindow = "Hidden";
+            Cash = 0;
             setFieldPage();
         }
 
@@ -43,41 +72,40 @@ namespace ShopProject.ViewModel.SalePage
             get { return _statusShift; }
             set { _statusShift = value; OnPropertyChanged("StatusShift"); }
         }
+
         private string _statusColor;
         public string StatusColor
         {
             get { return _statusColor; }
             set { _statusColor = value; OnPropertyChanged("StatusColor"); }
         }
+
         private string _fnNumber;
         public string FNumber
         {
             get { return _fnNumber; }
             set { _fnNumber = value;OnPropertyChanged("FNumber"); }
         }
+
         private string _economicUnit;
         public string EconomicUnit
         {
             get { return _economicUnit; }
             set { _economicUnit = value; OnPropertyChanged("EconomicUnit"); }
         }
+
         private string _seller;
         public string Seller
         {
             get { return _seller; }
             set { _seller = value; OnPropertyChanged("Seller"); }
         }
+
         private string _statusOnline;
         public string StatusOnline
         {
             get { return _statusOnline; }
             set { _statusOnline = value; OnPropertyChanged("StatusOnline"); }
-        }
-        private Page _salePage;
-        public Page SalePage
-        {
-            get { return _salePage; }
-            set { _salePage = value;OnPropertyChanged("SalePage"); }
         }
 
         private int _widght;
@@ -87,7 +115,6 @@ namespace ShopProject.ViewModel.SalePage
             set { _widght = value; OnPropertyChanged("Widght"); }
         }
 
-
         private int _height;
         public int Height
         {
@@ -95,7 +122,41 @@ namespace ShopProject.ViewModel.SalePage
             set { _height = value; OnPropertyChanged("Height"); }
         }
 
-        public ICommand UpdateSize => _updateSize;
+        private ObservableCollection<TabItem> _tabs;
+        public ObservableCollection<TabItem> Tabs
+        {
+            get { return _tabs; }
+            set { _tabs = value; OnPropertyChanged("Tabs"); }
+        }
+        private int _selectedTabItem;
+        public int SelectedTabItem
+        {
+            get { return _selectedTabItem; }
+            set { _selectedTabItem = value;OnPropertyChanged("SelectedTabItem"); }
+        }
+
+        private string _visibleFirstDialogWindow;
+        public string VisibleFirstDialogWindow
+        {
+            get { return _visibleFirstDialogWindow; }
+            set { _visibleFirstDialogWindow = value; OnPropertyChanged("VisibleFirstDialogWindow"); }
+        }
+
+        private string _visibleSecondDialogWindow;
+        public string VisibleSecondDialogWindow
+        {
+            get { return _visibleSecondDialogWindow; }
+            set { _visibleSecondDialogWindow = value; OnPropertyChanged("VisibleSecondDialogWindow"); }
+        }
+
+        private decimal _cash;
+        public decimal Cash
+        {
+            get { return _cash; }
+            set { _cash = value; OnPropertyChanged("Cash"); }
+        }
+
+        public ICommand UpdateSizeCommand => _updateSizeCommand;
 
         private void UpdateSizes()
         {
@@ -106,7 +167,28 @@ namespace ShopProject.ViewModel.SalePage
 
         private void setFieldPage()
         {
-            SalePage = new SaleMenu();
+            if (StaticResourse.tabs.Count == 0)
+            {
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new SaleGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+            }
+            else
+            {
+                Tabs = new ObservableCollection<TabItem>();
+                for(int i = 0;i<StaticResourse.tabs.Count;i++)
+                {
+                    Tabs.Add(StaticResourse.tabs[i]);
+                }
+
+                SelectedTabItem = StaticResourse.tabs.Where(item=>item.IsSelected==true).FirstOrDefault().TabIndex;
+                
+                OnPropertyChanged("Tabs");
+            }
+
             StatusShift = AppSettingsManager.GetParameterFiles("StatusWorkShift").ToString();
             if (StatusShift == "Зміна відкрита")
             {
@@ -128,6 +210,7 @@ namespace ShopProject.ViewModel.SalePage
         {
             Operation operation = new Operation
             {
+                versionDataPaket = 1,
                 dataPacketIdentifier = 1,
                 typeRRO = 0,
                 fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
@@ -136,7 +219,7 @@ namespace ShopProject.ViewModel.SalePage
                 typeOperation = 108,
                 createdAt = DateTime.Now,
                 numberPayment = "0",
-                mac = _model.GetMac(false),
+                mac = _model.GetMac(),
             };
 
             if (_model.OpenShift(operation, false))
@@ -154,16 +237,24 @@ namespace ShopProject.ViewModel.SalePage
         {
             Operation operation = new Operation
             {
+                typeOperation = 113,
                 dataPacketIdentifier = 1,
                 typeRRO = 0,
                 fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
                 taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
                 factoryNumberRRO = "v1",
-                mac = _model.GetMac(true),
+                mac = _model.GetMac(),
                 createdAt = DateTime.Now,
-                numberPayment = _model.GetLocalNumber(),
-                numberOfSalesReceipts = Convert.ToDecimal(_model.GetLocalNumber()),
+                numberPayment = string.Empty,
 
+                amountOfFundsReceived = _model.GetTotalFundsReceived(),
+                amountOfIssuedFunds = _model.GetTotalFundsIssued(),
+
+                amountReceivedCash = _model.GetTotalBuyersAmount(),
+                amountIssuedCash = _model.GetTotalRest(),
+
+                numberOfSalesReceipts = _model.GetNumberFiscalCheck(),
+                numberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
             };
 
             if(_model.CloseShift(operation,false))
@@ -177,6 +268,170 @@ namespace ShopProject.ViewModel.SalePage
 
 
         }
+        public ICommand OpenNewCheck => _openNewCheckCommand;
+        
+        private void openNewCheck()
+        {
+            if ( ((Frame)Tabs.ElementAt(0).Content).Content.GetType() != typeof(SaleGoodsMenu))
+            {
+                Tabs.Clear();
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new SaleGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+            }
+            else
+            {
+                int maxCount = 15;
+                TabItem newTabItem = new TabItem();
+                int count = Tabs.Count;
+
+                if (count <= maxCount)
+                {
+
+                    newTabItem.Header = "Новий чек №" + count;
+                    newTabItem.TabIndex = count;
+                    newTabItem.Content = new Frame() { Content = new SaleGoodsMenu() };
+
+                    Tabs.Add(newTabItem);
+
+                    StaticResourse.tabs = Tabs;
+                    OnPropertyChanged("Tabs");
+
+                }
+                if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
+                {
+                    SelectedTabItem = Tabs.IndexOf(Tabs.ElementAt(0));
+                }
+                else
+                {
+                    var tab = Tabs.Where(item => item.IsSelected == true).FirstOrDefault();
+                    SelectedTabItem = Tabs.IndexOf(tab) + 1;
+                }
+            }
+            
+        }
+        
+        public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;
+        private void OfficialDepositMoney()
+        {
+            VisibleFirstDialogWindow = "Visible";
+        }
+
+        public ICommand OfficialIssuanceModeyCommand => _officialReceivedMoneyCommand;
+        private void OfficialIssuanceModey()
+        {
+            VisibleSecondDialogWindow = "Visible";
+        }
+
+        public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
+        private void OkFirstDialogWindow()
+        {
+            new Thread(new ThreadStart(() => {
+
+                int number = int.Parse(_model.GetLocalNumber());
+                Operation operation = new Operation
+                {
+                    versionDataPaket  = 1,
+                    typeOperation = 2,
+                    dataPacketIdentifier = 1,
+                    typeRRO = 0,
+                    fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                    taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                    factoryNumberRRO = "v1",
+                    mac = _model.GetMac(),
+                    createdAt = DateTime.Now,
+                    numberPayment = number.ToString(),
+                    formOfPayment = 0,
+                    totalPayment = Cash,
+                };
+
+                VisibleFirstDialogWindow = "Hidden";
+                if (_model.OfficialDepositMoney(operation))
+                {
+                    MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+
+            })).Start();
+        }
+
+        public ICommand CancelFirstDialogWindowCommand => _cancelFirstDialogsWindowCommand;
+        private void CancelFirstDialogWindow()
+        {
+            Cash = 0;
+            VisibleFirstDialogWindow = "Hidden";
+        }
+
+
+        public ICommand OkSecondDialogWindowCommand => _okSecondDialogsWindowCommand;
+        private void OkSeconDialogWindow()
+        {
+            new Thread(new ThreadStart(() => {
+
+                int number = int.Parse(_model.GetLocalNumber());
+                Operation operation = new Operation
+                {
+                    versionDataPaket = 1,
+                    typeOperation = 2.01m,
+                    dataPacketIdentifier = 1,
+                    typeRRO = 0,
+                    fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                    taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                    factoryNumberRRO = "v1",
+                    mac = _model.GetMac(),
+                    createdAt = DateTime.Now,
+                    numberPayment = number.ToString(),
+                    formOfPayment = 0,
+                    totalPayment = Cash,
+                };
+                VisibleSecondDialogWindow = "Hidden";
+                if (_model.OfficialDepositMoney(operation))
+                {
+                    MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Cash = 0;
+                }
+
+            })).Start();
+
+        }
+
+        public ICommand CancelSecondDialogWindowCommand => _cancelSecondDialogsWindowCommand;
+        private void CancelSecondDialogWindow()
+        {
+            Cash = 0;
+            VisibleSecondDialogWindow = "Hidden";
+        }
+
+        public ICommand OpenReturnGoodsMenuCommand => _openReturnGoodsMenuCommand;
+        private void OpenReturnGoodsMenu()
+        {
+            if (Tabs.Count != 0)
+            {
+                Tabs.Clear(); 
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new ReturnGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+
+                OnPropertyChanged("Tabs");
+            }
+        }
+
 
     }
 }

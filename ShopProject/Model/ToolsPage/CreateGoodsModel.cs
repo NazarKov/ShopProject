@@ -2,6 +2,7 @@
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
+using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

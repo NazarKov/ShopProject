@@ -1,4 +1,4 @@
-﻿<Page x:Class="ShopProject.Views.SalePage.SaleMenu"
+﻿<Page x:Class="ShopProject.Views.SalePage.SaleGoodsMenu"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SaleMenu">
     <Page.DataContext>
-        <local:SaleMenuViewModel></local:SaleMenuViewModel>
+        <local:SaleGoodsMenuViewModel></local:SaleGoodsMenuViewModel>
     </Page.DataContext>
 
     <Grid x:Name="Grid">

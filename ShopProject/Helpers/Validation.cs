@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation.Peers;
 
-namespace ShopProject.Model
+namespace ShopProject.Helpers
 {
     internal static class Validation
     {
@@ -75,7 +75,7 @@ namespace ShopProject.Model
         }
         public static int ChekNull(int item)
         {
-            if(item != 0)
+            if (item != 0)
             {
                 return item;
             }
@@ -84,7 +84,7 @@ namespace ShopProject.Model
                 return 0;
             }
         }
-        public static int ChekNull(int item,int count)
+        public static int ChekNull(int item, int count)
         {
             if (item != 0)
             {
@@ -95,8 +95,8 @@ namespace ShopProject.Model
                 return count;
             }
         }
-        
-        public static double ChekEmpty(int item,int i , DataTable dataTable)
+
+        public static double ChekEmpty(int item, int i, DataTable dataTable)
         {
             if (ChekParamsIsNull(item, i, dataTable) != string.Empty)
             {
@@ -109,7 +109,7 @@ namespace ShopProject.Model
         }
 
 
-        public static bool CodeCoincidenceinDatabase(string code , IEnumerable<Goods> products)
+        public static bool CodeCoincidenceinDatabase(string code, IEnumerable<Goods> products)
         {
             foreach (Goods item in products)
             {
@@ -123,17 +123,17 @@ namespace ShopProject.Model
 
         public static void ChekRowIsNull(int code, int name, int articule, int price, int count, int units)
         {
-            if(code == 0)
+            if (code == 0)
             {
-                if(name==0)
+                if (name == 0)
                 {
-                    if(articule==0)
+                    if (articule == 0)
                     {
-                        if(price==0)
-                        {   
+                        if (price == 0)
+                        {
                             if (count == 0)
                             {
-                                if(units==0)
+                                if (units == 0)
                                 {
                                     throw new Exception("Заповніть поля");
                                 }

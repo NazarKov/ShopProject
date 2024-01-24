@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace ShopProject.Model.SalePage
 {
-    internal class SaleMenuModel
+    internal class SaleGoodsMenuModel
     {
         private IEntityAccessor<Goods> _goodsRepository;
         private IEntityAccessor<Operation> _operationRepository;
@@ -24,12 +24,14 @@ namespace ShopProject.Model.SalePage
         private PrintingFiscalCheck _printingFiscalCheck;
         private bool _isDrawingChek;
 
+        ReturnDataWithDataBase _returnDataWithDataBase;
+
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
 
 
         string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
 
-        public SaleMenuModel()
+        public SaleGoodsMenuModel()
         {
             _goodsRepository = new GoodsTableAccess();
             _operationRepository = new OperationTableAccess();
@@ -38,6 +40,8 @@ namespace ShopProject.Model.SalePage
             _mainController = new MainContoller();
             _serverController = new FiscalServerController();
             _printingFiscalCheck = new PrintingFiscalCheck();
+            _returnDataWithDataBase = new ReturnDataWithDataBase();
+
             _isDrawingChek = true;
         }
         
@@ -103,12 +107,11 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-
         private void SendCheck(Operation operation,List<Goods> goods)
         {
             if (operation.typeOperation == 0)
             {
-                RecordingOperationXmlFile.WriteXmlFile(operation, goods, true, pathxml);
+                 WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(),goods, pathxml);
                 _mainController.SignFiles();
                 _serverController.SendFiscalCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO , true);
             }
@@ -122,37 +125,6 @@ namespace ShopProject.Model.SalePage
             _printingFiscalCheck.PrintCheck(products,id,order);
         }
        
-        public string? GetMac(bool typecheck)
-        {
-            try
-            {
-                Operation operation = GetLastCheck();
-
-                List<GoodsOperation> goodsOperation = _goodsOperationRepository.GetAll().Where(item => item.operation.id == operation.id).ToList();
-                List<Goods> goodsList = new List<Goods>();
-                RecordingOperationXmlFile.WriteXmlFile(operation, goodsOperation, typecheck, pathxml);
-                return SHA.GenerateSHA256File(pathxml);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-        }
-
-        public string? GetLocalNumber()
-        {
-            try
-            {
-                Operation operation = GetLastCheck();
-                return (Convert.ToInt32(operation.numberPayment) + 1).ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
 
         private void SaveDataBase(Operation operation, List<Goods> goods)
         {
@@ -172,21 +144,15 @@ namespace ShopProject.Model.SalePage
 
         }
 
-
-        private Operation GetLastCheck()
+        public string GetMac()
         {
-            var operationList = _operationRepository.GetAll().Where(item => item.typeOperation == 0);
-            if(operationList!=null)
-            {
-                return operationList.ElementAt(operationList.Count() - 1);
-            }
-            else
-            {
-                throw new Exception("Зачекайте");
-            }
+            return _returnDataWithDataBase.GetMac(pathxml);
         }
-
        
+        public string GetLocalNumber()
+        {
+            return _returnDataWithDataBase.GetLocalNumber();
+        }
 
     }
 }

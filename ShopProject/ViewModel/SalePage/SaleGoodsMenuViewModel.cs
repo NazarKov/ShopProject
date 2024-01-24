@@ -1,7 +1,7 @@
-﻿using ShopProject.DataBase.Model;
+﻿using NPOI.OpenXmlFormats.Wordprocessing;
+using ShopProject.DataBase.Model;
 using ShopProject.Helpers;
 using ShopProject.Helpers.MiniServiceSigningFile;
-using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using System;
@@ -12,13 +12,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.SalePage
 {
-    internal class SaleMenuViewModel : ViewModel<SaleMenuViewModel>
+    internal class SaleGoodsMenuViewModel : ViewModel<SaleGoodsMenuViewModel>
     {
-        private SaleMenuModel _model;
+        private SaleGoodsMenuModel _model;
 
         private ICommand _searchBarCodeGoodsCommand;
         private ICommand _printingCheckCommand;
@@ -27,9 +28,9 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _updateSize;
 
 
-        public SaleMenuViewModel() 
+        public SaleGoodsMenuViewModel() 
         {
-            _model = new SaleMenuModel();
+            _model = new SaleGoodsMenuModel();
       
             _searchBarCodeGoodsCommand = new DelegateCommand(SearchBarCodeGoods);
             _printingCheckCommand = new DelegateCommand(PrintingCheck);
@@ -109,7 +110,7 @@ namespace ShopProject.ViewModel.SalePage
         private void UpdateSizes()
         {
             Widght = (int)Application.Current.MainWindow.ActualWidth - 175;
-            Height = (int)Application.Current.MainWindow.ActualHeight - 280;
+            Height = (int)Application.Current.MainWindow.ActualHeight - 290;
         }
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
@@ -131,7 +132,7 @@ namespace ShopProject.ViewModel.SalePage
             get { return _isFiscalCheck; }
             set { _isFiscalCheck = value; OnPropertyChanged("IsFiscalCheck"); }
         }
-
+        public int Tag;
 
         public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
@@ -224,7 +225,7 @@ namespace ShopProject.ViewModel.SalePage
                     typeOperration = 200;
                 }
 
-                if(_model.SendCheck(Goods, new Operation()
+                if (_model.SendCheck(Goods, new Operation()
                 {
                     dataPacketIdentifier = 1,
                     typeRRO = 0,
@@ -232,14 +233,16 @@ namespace ShopProject.ViewModel.SalePage
                     taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
                     factoryNumberRRO = "v1",
                     typeOperation = typeOperration,
-                    mac = _model.GetMac(true),
+                    mac = _model.GetMac(),
                     createdAt = DateTime.Now,
-                    numberPayment =_model.GetLocalNumber(),
+                    numberPayment = _model.GetLocalNumber(),
                     goodsTax = "0",
                     restPayment = Convert.ToDecimal(rest),
                     totalPayment = (decimal)SumaOrder,
                     buyersAmount = (decimal)SumaUser,
                     formOfPayment = SelectIndex,
+                    versionDataPaket = 1,
+
                 }))
                 {
                     MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -248,6 +251,11 @@ namespace ShopProject.ViewModel.SalePage
                     SumaUser = new decimal();
                     SumaUser = 0;
                     SumaOrder = 0;
+
+                    if (Tag != 0)
+                    {
+                        StaticResourse.tabs.RemoveAt(Tag);
+                    }
                 }
                 
             }

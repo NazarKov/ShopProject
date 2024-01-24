@@ -7,7 +7,6 @@ using ShopProject.Helpers;
 using ShopProject.Helpers.MiniServiceSigningFile;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 
 namespace ShopProject.Model.SalePage
@@ -17,6 +16,7 @@ namespace ShopProject.Model.SalePage
         private IEntityAccessor<Operation> _operationRepository;
         private IEntityAccessor<GoodsOperation> _goodsOperationRepository;
 
+        private ReturnDataWithDataBase _returnDataWithDataBase;
 
         string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
 
@@ -28,7 +28,7 @@ namespace ShopProject.Model.SalePage
             _operationRepository = new OperationTableAccess();
             _goodsOperationRepository = new GoodsOperationTableAccess();
 
-
+            _returnDataWithDataBase = new ReturnDataWithDataBase();
             _mainContoller = new MainContoller();
             _serverController = new FiscalServerController();
         }
@@ -85,7 +85,7 @@ namespace ShopProject.Model.SalePage
         }
         private void OpenShift(Operation operation)
         {
-            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), true, pathxml);
+            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
             _mainContoller.SignFiles();
             _serverController.SendServiceCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO);
         }
@@ -140,12 +140,55 @@ namespace ShopProject.Model.SalePage
         }
         private void CloseShift(Operation operation)
         {
-            RecordingOperationXmlFile.WriteXmlFile(operation, new List<Goods>(), false, pathxml);
+            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
             _mainContoller.SignFiles();
             _serverController.SendZReport(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberOfSalesReceipts), operation.fiscalNumberRRO);
         }
 
+        public bool OfficialDepositMoney(Operation operation)
+        {
+            return OfficialDepositMoneyRecursive(operation, 0, 5);
+        }
 
+        private bool OfficialDepositMoneyRecursive(Operation operation,int depth, int maxDepth)
+        {
+            try
+            {
+                if (depth >= maxDepth)
+                {
+                    throw new Exception("Неможливо виконати операцію");
+                }
+                SendOfficialDepositMoney(operation);
+                return true;
+            }
+            catch (ExceptionOK)
+            {
+                SaveDataBase(operation);
+                return true;
+            }
+            catch (ExceptionBadHashPrev exbadHash)
+            {
+                operation.mac = exbadHash.Error.Split(" ")[3];
+                return OfficialDepositMoneyRecursive(operation,depth+1,maxDepth);
+            }
+            catch (ExceptionSave exSave)
+            {
+                MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+        private void SendOfficialDepositMoney(Operation operation)
+        {
+            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
+            _mainContoller.SignFiles();
+            _serverController.SendServiceCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO);
+        }
+       
         private void SaveDataBase(Operation operation)
         {
             _operationRepository.Add(operation);
@@ -153,7 +196,7 @@ namespace ShopProject.Model.SalePage
 
         private void CheckedOpenShift()
         {
-            Operation operation = GetLastCheck();
+            Operation operation = _returnDataWithDataBase.GetLastCheck();
             if (operation.numberPayment == "0" && operation.typeOperation != 108)
             {
                 throw new Exception("Зміна не відкрита");
@@ -161,58 +204,44 @@ namespace ShopProject.Model.SalePage
         }
         private void CheckedCloseShift()
         {
-            Operation operation = GetLastCheck();
+            Operation operation = _returnDataWithDataBase.GetLastCheck();
             if ((int)operation.numberOfSalesReceipts == 0)
             {
                 throw new Exception("Зміна не закрита");
             }
         }
         
-        public string? GetMac(bool typecheck)
+        public string? GetMac()
         {
-            try
-            {
-                Operation operation = GetLastCheck();
-
-                List<GoodsOperation> goodsOperation = _goodsOperationRepository.GetAll().Where(item => item.operation.id == operation.id).ToList();
-                List<Goods> goodsList = new List<Goods>();
-                RecordingOperationXmlFile.WriteXmlFile(operation, goodsOperation, typecheck, pathxml);
-                return SHA.GenerateSHA256File(pathxml);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
+            return _returnDataWithDataBase.GetMac(pathxml);
         }
         public string? GetLocalNumber()
         {
-            try
-            {
-                Operation operation = GetLastCheck();
-                return (Convert.ToInt32(operation.numberPayment) + 1).ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
+            return _returnDataWithDataBase.GetLocalNumber();
         }
-        private Operation GetLastCheck()
+        public decimal GetNumberFiscalCheck()
         {
-            var operationList = _operationRepository.GetAll();
-            if (operationList != null)
-            {
-                return operationList.ElementAt(operationList.Count() - 1);
-            }
-            else
-            {
-                throw new Exception("Зачекайте");
-            }
+            return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(0);
         }
-        
-
+        public decimal GetNumberReturnFiscalCheck()
+        {
+            return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(1);
+        }
+        public decimal GetTotalFundsReceived()
+        {
+            return _returnDataWithDataBase.GetTotalSumReceivedAndIssuance(2);
+        }
+        public decimal GetTotalFundsIssued() 
+        {
+            return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(2.01m);
+        }
+        public decimal GetTotalBuyersAmount()
+        {
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount");
+        }
+        public decimal GetTotalRest() 
+        {
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment");
+        }
     }
-
-
 }
