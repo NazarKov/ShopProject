@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShopProject.DataBase.Entities;
 
 namespace ShopProject.DataBase.Context
 {
@@ -12,14 +13,14 @@ namespace ShopProject.DataBase.Context
     {
         protected override void Seed(ContextDataBase context)
         {
-            context.goodsUnits.Add(new GoodsUnit() { number = 2009, name = "шт" , shortName = "Штука" });
-            context.goodsUnits.Add(new GoodsUnit() { number = 0301, name = "кг", shortName = "Кілограм" });
-            context.goodsUnits.Add(new GoodsUnit() { number = 2112, name = "пач", shortName = "Пачка" });
-            context.goodsUnits.Add(new GoodsUnit() { number = 2075, name = "ящ" , shortName = "Ящик" });
+            context.Users.Add(new UserEntiti() { Login = "Admin", Password = "Admin" ,CreatedAt = DateTime.Now, Status = 0 , UserRole = new UserRoleEntiti() { NameRole = "Admin", TypeAccess = 0 }});
 
-            context.SaveChanges();
+            context.ProductUnits.Add(new ProductUnitEntiti() { Number = 2009, ShortNameUnit = "шт" , NameUnit = "Штука" });
+            context.ProductUnits.Add(new ProductUnitEntiti() { Number = 0301, ShortNameUnit = "кг",  NameUnit = "Кілограм" });
+            context.ProductUnits.Add(new ProductUnitEntiti() { Number = 2112, ShortNameUnit = "пач", NameUnit = "Пачка" });
+            context.ProductUnits.Add(new ProductUnitEntiti() { Number = 2075, ShortNameUnit = "ящ" , NameUnit = "Ящик" });
 
-            context.codeUKTZED.Add(new CodeUKTZED() { code="9507" ,name = "Вудки риболовні, гачки та інші снасті для риболовлі з використанням волосіні; сачки для риби, сачки для метеликів та подібні сачки; принади у вигляді муляжів птахів (крім включених до товарної позиції 9208 або 9705) та аналогічні вироби для полювання або стрільби" });
+            context.CodeUKTZED.Add(new CodeUKTZEDEntiti() { Code="9507" ,NameCode = "Вудки риболовні, гачки та інші снасті для риболовлі з використанням волосіні; сачки для риби, сачки для метеликів та подібні сачки; принади у вигляді муляжів птахів (крім включених до товарної позиції 9208 або 9705) та аналогічні вироби для полювання або стрільби" });
       
             context.SaveChanges();
             

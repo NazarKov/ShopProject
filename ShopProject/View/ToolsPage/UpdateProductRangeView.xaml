@@ -1,0 +1,49 @@
+﻿<Window x:Class="ShopProject.View.ToolsPage.UpdateProductRangeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
+        mc:Ignorable="d"
+        Title="UpdateProductAll" Height="475" Width="800" ResizeMode="NoResize" Name="window" >
+    <Window.Resources>
+        <local:UpdateProductRangeViewModel x:Key="VM"  ></local:UpdateProductRangeViewModel>
+        <CollectionViewSource x:Key="Units" Source="{Binding ProductUnits}"></CollectionViewSource>
+        <CollectionViewSource x:Key="CodeUKTZED" Source="{Binding ProductCodeUKTZED}"></CollectionViewSource>
+     
+        
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource VM}"></Binding>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="400"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <DataGrid Name="list" Margin="15,15,15,15"
+                  Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ProductList ,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+                  HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
+                  HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
+                  VerticalAlignment="Stretch" ColumnWidth="*"
+                  CanUserAddRows="False"  >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Артикул" Binding="{Binding Articule}" />
+                <DataGridTextColumn Header="Штрих код"  Binding="{Binding Code}" />
+                <DataGridTextColumn Header="Назва"  Binding="{Binding NameProduct}" />
+                <DataGridTextColumn Header="Ціна"  Binding="{Binding Price}" />
+                <DataGridTextColumn Header="Кількість" Binding="{Binding Count}" />
+                <DataGridComboBoxColumn x:Name="combobox1" Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" 
+                                        SelectedItemBinding="{Binding Unit.ShortNameUnit, UpdateSourceTrigger=PropertyChanged }"/>
+                <DataGridComboBoxColumn x:Name="combobox2" Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" SelectedItemBinding="{Binding CodeUKTZED.NameCode, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"/>
+               
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="button1" Content="Зберегти" Width="70" HorizontalAlignment="Right" Margin="0,0,100,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpdateProductCommand}"/>
+        <Button x:Name="button2" Content="Вийти" Width="70" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="1" VerticalAlignment="Top" CommandParameter="{Binding ElementName=window}" Command="{Binding ExitWindowCommand}"/>
+        
+
+    </Grid>
+</Window>

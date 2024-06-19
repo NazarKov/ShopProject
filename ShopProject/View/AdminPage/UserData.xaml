@@ -1,0 +1,65 @@
+﻿<Window x:Class="ShopProject.Views.AdminPage.UserData"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.ViewModel.AdminPage"
+        mc:Ignorable="d"
+        Title="UserData" Height="530" Width="450">
+    <Window.DataContext>
+        <local:UserDataViewModel></local:UserDataViewModel>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        
+        
+        <Label x:Name="label" Content="ПІБ" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0"  Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label1" Content="Login" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="2" Text="{Binding Login}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label2" Content="Податовий номер" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock2" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Tin}" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label3" Content="Посада" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock3" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Role}" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label4" Content="Статус" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock4" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="5" Text="{Binding Status}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label5" Content="Ключ ЕЦП" HorizontalAlignment="Left" Grid.Row="6" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock5" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="6" Text="{}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        
+        <Label x:Name="label6" Content="Автоматичний вхід" HorizontalAlignment="Left" Grid.Row="7" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        <CheckBox x:Name="textBlock6" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="7" VerticalAlignment="Center" IsChecked="{Binding AutomaticLogin}"/>
+
+        <Label x:Name="label7" Content="Дата створення" HorizontalAlignment="Left" Grid.Row="8" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
+        <TextBlock x:Name="textBlock7" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="8" Text="{Binding DateCreate}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+
+        <Button x:Name="button" Grid.Column="1" Content="Оновити ключ" HorizontalAlignment="Left" Width="120" Margin="15,0,0,0" Grid.Row="9" VerticalAlignment="Center"/>
+        <Button x:Name="button1" Grid.Column="1" Content="Вийти" HorizontalAlignment="Right" Width="60" Margin="0,0,15,0" Grid.Row="9" VerticalAlignment="Center"/>
+
+
+    </Grid>
+</Window>

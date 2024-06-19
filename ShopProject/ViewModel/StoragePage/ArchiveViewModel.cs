@@ -19,7 +19,7 @@ namespace ShopProject.ViewModel.StoragePage
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
         private ArchiveModel? _model;
-        private List<Goods> _goodsList;
+        private List<ProductEntiti> _goodsList;
 
         private ICommand _searchCommand;
         private ICommand _visibileAllCommand;
@@ -30,8 +30,8 @@ namespace ShopProject.ViewModel.StoragePage
             _searchCommand = new DelegateCommand(SearchArhive);
             _visibileAllCommand = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
 
-            _goodsList = new List<Goods>();
-            _archives = new List<Goods>();
+            _goodsList = new List<ProductEntiti>();
+            _archives = new List<ProductEntiti>();
             _searchTemplateName = new List<string>();
             _nameSearch = string.Empty;
 
@@ -53,8 +53,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<Goods> _archives;
-        public List<Goods> Archives
+        private List<ProductEntiti> _archives;
+        public List<ProductEntiti> Archives
         {
             get { return _archives; }
             set { _archives = value; OnPropertyChanged("Archives"); }
@@ -119,7 +119,7 @@ namespace ShopProject.ViewModel.StoragePage
         {   
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _goodsList = new List<Goods>();
+                _goodsList = new List<ProductEntiti>();
                 if (_model != null)
                 {
                     _model.ConvertToList((IList)parameter, _goodsList);
@@ -139,7 +139,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _goodsList = new List<Goods>();
+                _goodsList = new List<ProductEntiti>();
                 if (_model != null)
                 {
                     _model.ConvertToList((IList)parameter, _goodsList);

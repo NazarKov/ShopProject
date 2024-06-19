@@ -1,0 +1,62 @@
+﻿<Page x:Class="ShopProject.Views.SettingPage.SettingServiseSingingFiles"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.SettingPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SettingServiseSingingFiles">
+    <Page.DataContext>
+        <local:SettingServiseSingingFilesViewModel></local:SettingServiseSingingFilesViewModel>
+    </Page.DataContext>
+    <Border BorderBrush="White" BorderThickness="0.3">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="50"></ColumnDefinition>
+                <ColumnDefinition Width="120*"></ColumnDefinition>
+                <ColumnDefinition Width="20"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+
+            <Label x:Name="Tittle" Content="Налаштування підпису" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <Separator Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Top" Margin="180,16,0,0"></Separator>
+
+            <Button x:Name="button1" Grid.Column="3" Command="{Binding StartServiseCommand}" Content="Старт" HorizontalAlignment="Stretch"  Grid.Row="1" VerticalAlignment="Center"/>
+            <Button x:Name="button2" Grid.Column="3" Command="{Binding ConnectServiseCommnad}" Content="Підключення" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Center"/>
+            <Button x:Name="button3" Grid.Column="3" Command="{Binding InitializingSeriveCommand }" Content="ініціалізація" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Center"/>
+            <Button x:Name="button4" Grid.Column="3" Command="{Binding IsInitializingServiseCommand}" Content="Перевірка запуску" HorizontalAlignment="Stretch"  Grid.Row="4" VerticalAlignment="Center"/>
+            <Button x:Name="button5" Grid.Column="3" Command="{Binding SingFileCommand}" Content="Перевірка підпису" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center"/>
+            <Button x:Name="button6" Grid.Column="3" Command="{Binding DisconectServiseCommand}" Content="Відключення" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center"/>
+            <Button x:Name="button"  Grid.Column="3" Command="{Binding AutoTestServieCommand}" Content="Авто тест" HorizontalAlignment="Stretch" Grid.Row="7" VerticalAlignment="Center"/>
+            <Button x:Name="button7" Grid.Column="3" Command="{Binding StopServiseCommand}" Content="Стоп" HorizontalAlignment="Stretch" Grid.Row="8" VerticalAlignment="Center"/>
+            
+            
+            
+            <Label x:Name="label" Grid.Column="0" Content="Відповідь сервера:" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center"/>
+            
+            <Label x:Name="label1" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding Status}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            <Label x:Name="label2" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Content="{Binding Message}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+           
+            <Label x:Name="label3" Content="Статус" HorizontalAlignment="Stretch"  Grid.Row="2" VerticalAlignment="Center"/>
+            <Label x:Name="label4" Content="Опис" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Center"/>
+
+
+        </Grid>
+    </Border>
+</Page>

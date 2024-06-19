@@ -109,11 +109,11 @@ namespace ShopProject.Helpers
         }
 
 
-        public static bool CodeCoincidenceinDatabase(string code, IEnumerable<Goods> products)
+        public static bool CodeCoincidenceinDatabase(string code, IEnumerable<ProductEntiti> products)
         {
-            foreach (Goods item in products)
+            foreach (ProductEntiti item in products)
             {
-                if (item.code == code)
+                if (item.Code == code)
                 {
                     return true;
                 }

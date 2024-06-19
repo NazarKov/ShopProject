@@ -151,7 +151,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\Command\Command.cs" />
+    <Compile Include="Helpers\CommandExecute.cs" />
+    <Compile Include="Helpers\TcpJsonRCP\TypeCommand.cs" />
+    <Compile Include="Helpers\TcpJsonRCP\UserCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -159,7 +161,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>

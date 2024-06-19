@@ -16,17 +16,17 @@ namespace ShopProject.Model.StoragePage
 {
     internal class OutOfStockModel
     {
-        private IEntityAccessor<Goods> _goodsRepository;
-        private List<Goods> _goodsList;
+        private IEntityAccess<ProductEntiti> _goodsRepository;
+        private List<ProductEntiti> _goodsList;
        
         public OutOfStockModel() 
         {
-            _goodsList = new List<Goods>();
-            _goodsRepository = new GoodsTableAccess();
+            _goodsList = new List<ProductEntiti>();
+            _goodsRepository = new ProductTableAccess();
 
             try
             {
-                _goodsList = (List<Goods>)_goodsRepository.GetAll("outStock");    
+                //_goodsList = (List<ProductEntiti>)_goodsRepository.GetAll("outStock");    
             }
             catch (Exception ex)
             {
@@ -34,16 +34,17 @@ namespace ShopProject.Model.StoragePage
             }
 
         }
-        public List<Goods> GetAll()
+        public List<ProductEntiti> GetAll()
         {
             return _goodsList;
         }
 
-        public List<Goods>? SearchGoods(string itemSearch )
+        public List<ProductEntiti>? SearchGoods(string itemSearch )
         {
             try
             {
-                return Search.GoodsDataBase(itemSearch, (List<Goods>)_goodsRepository.GetAll("outStock"));
+                //return Search.GoodsDataBase(itemSearch, (List<ProductEntiti>)_goodsRepository.GetAll("outStock"));
+                return new List<ProductEntiti>();
             }
             catch (Exception ex)
             {
@@ -51,20 +52,20 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public void ConvertToList(IList collection , List<Goods> itemConver)
+        public void ConvertToList(IList collection , List<ProductEntiti> itemConver)
         {
-            foreach (Goods item in collection)
+            foreach (ProductEntiti item in collection)
             {
                 itemConver.Add(item);
             }
         }
 
-        public bool ReturnGoodsInStorage(Goods goodsOutOfStock)
+        public bool ReturnGoodsInStorage(ProductEntiti goodsOutOfStock)
         {
             try
             {
-                _goodsRepository.UpdateParameter(goodsOutOfStock.id, "status", "in_stock");
-                _goodsRepository.UpdateParameter(goodsOutOfStock.id, "outStock", null);
+                //_goodsRepository.UpdateParameter(goodsOutOfStock.id, "status", "in_stock");
+                //_goodsRepository.UpdateParameter(goodsOutOfStock.id, "outStock", null);
 
                 return true;
             }
@@ -75,7 +76,7 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool DeleteRecordArhive(Goods goods)
+        public bool DeleteRecordArhive(ProductEntiti goods)
         {
             try 
             {

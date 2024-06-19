@@ -2,10 +2,8 @@
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Image = System.Windows.Controls.Image;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
@@ -36,13 +34,14 @@ namespace ShopProject.ViewModel.ToolsPage
             IsShowProductDescription = true;
             
             SetFeildTextBox();
-            StaticResourse.Clear();
         }
         private void SetFeildTextBox()
         {
-            if (StaticResourse.goods == null)
+
+            var item = Session.Product;
+            NameCompany = Session.NameCompany;
+            if (item == null)
             {
-                NameCompany = StaticResourse.nameCompany;
 
                 if (AppSettingsManager.GetParameterFiles("LastBarCode") != string.Empty)
                 {
@@ -51,12 +50,11 @@ namespace ShopProject.ViewModel.ToolsPage
             }
             else
             {
-                NameCompany = StaticResourse.nameCompany;
-                if (StaticResourse.goods.code != null)
-                    Code = StaticResourse.goods.code.ToString();
-                if (StaticResourse.goods.name != null)
+                if (item.Code != null)
+                    Code = item.Code.ToString();
+                if (item.NameProduct != null)
                 {
-                    string[] splitName = StaticResourse.goods.name.ToString().Split(' ');
+                    string[] splitName = item.NameProduct.ToString().Split(' ');
                     if (splitName.Length < 2)
                     {
                         NameProduct = splitName[0];

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using FiscalServerApi;
 using ShopProject.DataBase.Interfaces;
-using ShopProject.Helpers.MiniServiceSigningFile;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 
 namespace ShopProject.Model.SalePage
@@ -15,34 +14,35 @@ namespace ShopProject.Model.SalePage
     internal class ReturnGoodsMenuModel
     {
 
-        private IEntityAccessor<Goods> _goodsRepository;
-        private IEntityAccessor<Operation> _operationRepository;
-        private IEntityAccessor<GoodsOperation> _goodsOperationRepository;
+        private IEntityAccess<ProductEntiti> _goodsRepository;
+        private IEntityAccess<OperationEntiti> _operationRepository;
+        private IEntityAccess<OrderEntiti> _goodsOperationRepository;
 
         private ReturnDataWithDataBase _returnDataWithDataBase;
 
-        private MainContoller _mainController;
+        //private MainContollerTcp _mainController;
         private FiscalServerController _serverController;
         string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
 
 
         public ReturnGoodsMenuModel()
         {
-            _goodsRepository = new GoodsTableAccess();
+            _goodsRepository = new ProductTableAccess();
             _operationRepository = new OperationTableAccess();
-            _goodsOperationRepository = new GoodsOperationTableAccess();
+            _goodsOperationRepository = new OrderTableAccess();
             _returnDataWithDataBase = new ReturnDataWithDataBase();
 
 
-            _mainController = new MainContoller();
+            //_mainController = new MainContollerTcp();
             _serverController = new FiscalServerController();
         }
 
-        public Goods? Search(string barCode)
+        public ProductEntiti? Search(string barCode)
         {
             try
             {
-                return _goodsRepository.GetItemBarCode(barCode);
+                //return _goodsRepository.GetItemBarCode(barCode);
+                return new ProductEntiti();
             }
             catch (Exception ex)
             {
@@ -51,11 +51,11 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public bool SendCheck(List<Goods> goods, Operation operation)
+        public bool SendCheck(List<ProductEntiti> goods, OperationEntiti operation)
         {
             return SendCheckRecursive(goods, operation, 0, 5);
         }
-        private bool SendCheckRecursive(List<Goods> goods, Operation operation, int depth, int maxDepth)
+        private bool SendCheckRecursive(List<ProductEntiti> goods, OperationEntiti operation, int depth, int maxDepth)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionBadHashPrev exbadHas)
             {
-                operation.mac = exbadHas.Error.Split(" ")[3];
+                operation.MAC = exbadHas.Error.Split(" ")[3];
                 return SendCheckRecursive(goods, operation, depth + 1, maxDepth);
             }
             catch (ExceptionCheck exCheck)
@@ -96,13 +96,13 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        private void SendCheck(Operation operation, List<Goods> goods)
+        private void SendCheck(OperationEntiti operation, List<ProductEntiti> goods)
         {
-            if (operation.typeOperation == 1)
+            if (operation.TypeOperation == 1)
             {
-                WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), goods, pathxml);
-                _mainController.SignFiles();
-                _serverController.SendFiscalCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO, true);
+                //WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), goods, pathxml);
+                //_mainController.SignFiles();
+                _serverController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO, true);
             }
             else
             {
@@ -119,18 +119,18 @@ namespace ShopProject.Model.SalePage
             return _returnDataWithDataBase.GetLocalNumber();
         }
 
-        private void SaveDataBase(Operation operation, List<Goods> goods)
+        private void SaveDataBase(OperationEntiti operation, List<ProductEntiti> goods)
         {
             _operationRepository.Add(operation);
             if (goods.Count != 0)
             {
-                foreach (Goods item in goods)
+                foreach (ProductEntiti item in goods)
                 {
-                    _goodsOperationRepository.Add(new GoodsOperation()
+                    _goodsOperationRepository.Add(new OrderEntiti()
                     {
-                        operation = operation,
-                        goods = item,
-                        count = (int)item.count,
+                        Operation = operation,
+                        Goods = item,
+                        Count = (int)item.Count,
                     });
                 }
             }

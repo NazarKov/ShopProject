@@ -10,55 +10,40 @@ using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.DataAccess.EntityAccess
 {
-    internal class OperationTableAccess : IEntityAccessor<Operation>
+    internal class OperationTableAccess : IEntityAccess<OperationEntiti>
     {
-        public void Add(Operation item)
+        public void Add(OperationEntiti item)
         {
             using (ContextDataBase context = new ContextDataBase())
             {
                 if(context!=null)
                 {
-                    context.operations.Load();
+                    context.Operations.Load();
+                    context.Users.Load();
                     if (item != null)
                     {
-                        context.operations.Add(item);
+                        item.User = context.Users.Find(item.User.ID);
+                        context.Operations.Add(item);
                     }
                 }
                 context.SaveChanges();
             }
         }
-
-        public void AddRange(List<Operation> items)
+        public void Delete(OperationEntiti item)
         {
             throw new NotImplementedException();
         }
-
-        public void Delete(Operation item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteRange(List<Operation> items)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Operation> GetAll(string statusGoods)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Operation> GetAll()
+        public IEnumerable<OperationEntiti> GetAll()
         {
             using(ContextDataBase context = new ContextDataBase())
             {
                 if(context!=null)
                 {
-                    context.goods.Load();
-                    context.operations.Load();
-                    if (context.operations.Count() != 0)
+                    context.Products.Load();
+                    context.Operations.Load();
+                    if (context.Operations.Count() != 0)
                     {
-                        return context.operations.ToList();
+                        return context.Operations.ToList();
                     }
                     else
                     {
@@ -69,28 +54,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 return null;
             }
         }
-
-        public Operation GetItemBarCode(string barCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Operation GetItemId(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Operation item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateRange(List<Operation> items)
+        public void Update(OperationEntiti item)
         {
             throw new NotImplementedException();
         }

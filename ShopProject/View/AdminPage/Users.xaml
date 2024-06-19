@@ -1,0 +1,131 @@
+﻿<Page x:Class="ShopProject.Views.AdminPage.Users"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.AdminPage"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="User">
+    <Page.DataContext>
+        <local:UsersViewModel ></local:UsersViewModel>
+    </Page.DataContext>
+    <Page.Resources>
+        <ControlTemplate x:Key="SearchTextBoxTemplate" TargetType="{x:Type TextBox}">
+            <Border BorderBrush="Black" BorderThickness="0.1" Height="35" Padding="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="275"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Grid.Row="0">
+                        <Image Grid.Column="0" Source="/Resource/Images/Search.png" />
+                    </Viewbox>
+
+                    <ScrollViewer Grid.Column="1" x:Name="PART_ContentHost" Focusable="false" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0"
+                               HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Row="1" Grid.RowSpan="2" x:Name="listView" ItemsSource="{Binding Users}" 
+                   ColumnWidth="*" AutoGenerateColumns="False"  SelectedIndex="{Binding SelectedItem}" CanUserAddRows="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header=""  Binding="{Binding ID}" />
+                <DataGridTextColumn Header="ПІБ" Binding="{Binding FullName}" />
+                <DataGridTextColumn Header="Логін"  Binding="{Binding Login}" />
+                <DataGridTextColumn Header="Логін"  Binding="{Binding Email}" />
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" />
+                <DataGridTextColumn Header="Посада"  Binding="{Binding UserRole.NameRole}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Переглянути всі дані" Command="{Binding DataContext.OpenUserDateCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Видалити" Command="{Binding DataContext.DeleteSelecteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Привязати РРО" Command="{Binding BindingObjectOwnerCommand}"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250*"></ColumnDefinition>
+                <ColumnDefinition Width="35*"></ColumnDefinition>
+                <ColumnDefinition Width="50*"></ColumnDefinition>
+                <ColumnDefinition Width="125"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="textboxSearch" Template="{StaticResource SearchTextBoxTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15,0,0,25" FontSize="20">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction
+            CommandParameter="{Binding Text , ElementName=textboxSearch}"
+            Command="{Binding SearchCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+
+            <Button Grid.Column="5" Grid.ColumnSpan="2" Height="35" Width="150" Content="Добавити Користувача" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15,0,15,25" Command="{Binding OpenWindowCreateUserCommand}"/>
+            <Button Grid.Column="4" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Right" Margin="0,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateItemDataGridView}">
+                <Button.Content>
+                    <Image Source="/Resource/Images/reboot.png"></Image>
+                </Button.Content>
+            </Button>
+        </Grid>
+        <Grid x:Name="InputBox1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="{Binding VisibilityDialogWindow , UpdateSourceTrigger=PropertyChanged}">
+
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+                MinHeight="150"
+                MinWidth="450"
+                Background="White" 
+                BorderBrush="Black" 
+                BorderThickness="0.5"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center">
+                <StackPanel Margin="0,35,0,0">
+
+                    <TextBlock Margin="5" Text="Доступні обєкти"  FontSize="18"  VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                    <DataGrid x:Name="datagrid1" Width="350" Height="100" Margin="15" AutoGenerateColumns="False" CanUserAddRows="False" ColumnWidth="*"
+                        ItemsSource="{Binding ObjectListDialogWindow, UpdateSourceTrigger=PropertyChanged}" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Назва"  Binding="{Binding deviceSettlementOperations.Name}" />
+                            <DataGridTextColumn Header="Адресса"  Binding="{Binding deviceSettlementOperations.FiscalNumber}" />
+                            <DataGridCheckBoxColumn Header="Добавити" Binding="{Binding isActive}"></DataGridCheckBoxColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid HorizontalAlignment="Center" Width="150">
+                        <Button x:Name="YesButton1" Margin="5" Padding="5"  Content="Добавити" HorizontalAlignment="Left" Command="{Binding SaveBindingObjectOwnerCommand}"/>
+                        <Button x:Name="NoButton1" Margin="5" Padding="5" Content="Відмінити" HorizontalAlignment="Right" Command="{Binding CloseDialogWindowCommand}"/>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+        </Grid>
+
+
+
+    </Grid>
+</Page>

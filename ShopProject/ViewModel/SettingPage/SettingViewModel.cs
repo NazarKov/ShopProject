@@ -14,7 +14,7 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand _deviceSettlementOperationsCommand;
         private ICommand _printingCheckCommand;
         private ICommand _stickerSettingOpenCommand;
-
+        private ICommand _openSettingUserCommand;
 
         public SettingViewModel()
         {
@@ -24,6 +24,9 @@ namespace ShopProject.ViewModel.SettingPage
             _deviceSettlementOperationsCommand = new DelegateCommand(() => {PageSetting = new SettingDeviceSettlementOperations(); });
             _printingCheckCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingCheck(); });
             _stickerSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingSticker(); });
+            _openSettingUserCommand = new DelegateCommand(() => { PageSetting = new SettingUser(); });
+
+            PageSetting = new SettingUser();
         }
 
         private Page _pageSetting;
@@ -40,5 +43,6 @@ namespace ShopProject.ViewModel.SettingPage
         public ICommand DeviceSettlementOperationsCommand => _deviceSettlementOperationsCommand;
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         public ICommand StickerSettingOpenCommand => _stickerSettingOpenCommand;
+        public ICommand OpenSettingUserCommand => _openSettingUserCommand;
     }
 }

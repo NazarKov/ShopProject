@@ -10,40 +10,28 @@ using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.DataAccess.EntityAccess
 {
-    internal class UnitTableAccess : IEntityAccessor<GoodsUnit>
+    internal class UnitTableAccess : IEntityAccess<ProductUnitEntiti>
     {
-        public void Add(GoodsUnit item)
+        public void Add(ProductUnitEntiti item)
         {
             throw new NotImplementedException();
         }
-
-        public void AddRange(List<GoodsUnit> items)
+        public void Delete(ProductUnitEntiti item)
         {
             throw new NotImplementedException();
         }
-
-        public void Delete(GoodsUnit item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteRange(List<GoodsUnit> items)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<GoodsUnit> GetAll()
+        public IEnumerable<ProductUnitEntiti> GetAll()
         {
             using (ContextDataBase context = new ContextDataBase())
             {
                 if (context != null)
                 {
-                    context.goodsUnits.Load();
-                    if (context.goodsUnits != null)
+                    context.ProductUnits.Load();
+                    if (context.ProductUnits != null)
                     {
-                        if (context.goodsUnits.Any())
+                        if (context.ProductUnits.Any())
                         {
-                            return context.goodsUnits.ToList();
+                            return context.ProductUnits.ToList();
                         }
                         else
                         {
@@ -62,33 +50,7 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                 }
             }
         }
-
-        public IEnumerable<GoodsUnit> GetAll(string statusGoods)
-        {
-            throw new NotImplementedException();
-        }
-
-        public GoodsUnit GetItemBarCode(string barCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public GoodsUnit GetItemId(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(GoodsUnit item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateRange(List<GoodsUnit> items)
+        public void Update(ProductUnitEntiti item)
         {
             throw new NotImplementedException();
         }

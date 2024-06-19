@@ -18,6 +18,7 @@
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
+    <PackageReference Include="MailKit" Version="4.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
@@ -43,11 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ExternalLibs\" />
-    <Folder Include="Helpers\XmlChek\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FiscalServerApi\FiscalServerApi.csproj" />
   </ItemGroup>
 
@@ -56,6 +52,10 @@
     <Resource Include="Resource\Images\Search.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
  
  

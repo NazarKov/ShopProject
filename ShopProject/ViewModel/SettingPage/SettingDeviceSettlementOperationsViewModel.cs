@@ -1,4 +1,5 @@
-﻿using ShopProject.Model.Command;
+﻿using ShopProject.Helpers;
+using ShopProject.Model.Command;
 using ShopProject.Model.SettingPage;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand _chekConnectionServerCommand;
         private ICommand _saveFiscalNumberCommand;
         private ICommand _saveTaxNumberCommand;
+        private ICommand _disableOrEnableTestModeCommand;
 
         public SettingDeviceSettlementOperationsViewModel()
         {
@@ -25,6 +27,7 @@ namespace ShopProject.ViewModel.SettingPage
 
             _saveFiscalNumberCommand = new DelegateCommand(() => {  SaveFiscalNumber(); });
             _saveTaxNumberCommand = new DelegateCommand(() => { SaveTaxNumber(); });
+            _disableOrEnableTestModeCommand = new DelegateCommand(() => { DisableOrEnableTestMode(); });
 
             _fiscalNumber = string.Empty;
             _taxNumber = string.Empty;
@@ -33,8 +36,14 @@ namespace ShopProject.ViewModel.SettingPage
         }
         private void setFieldTextBox()
         {
-            FiscalNumber = _model.GetSettingSetting("FiscalNumberRRO");
-            TaxNumber = _model.GetSettingSetting("TaxNumber");
+            var devise = Session.FocusDevices;
+            if(devise!=null)
+            {
+                FiscalNumber = devise.FiscalNumber;
+                
+            }
+            TestMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
+
         }
         private string _fiscalNumber;
         public string FiscalNumber
@@ -48,6 +57,13 @@ namespace ShopProject.ViewModel.SettingPage
         {
             get { return _taxNumber; }
             set { _taxNumber = value; OnPropertyChanged("TaxNumber"); }
+        }
+
+        private bool _testMode;
+        public bool TestMode
+        {
+            get { return _testMode; }
+            set { _testMode = value; OnPropertyChanged(nameof(TestMode)); }
         }
 
         public ICommand ChekConnectionServerCommand=> _chekConnectionServerCommand;
@@ -67,6 +83,15 @@ namespace ShopProject.ViewModel.SettingPage
         {
             _model.SaveFieldSetting("TaxNumber", TaxNumber);
             MessageBox.Show("Збережено","Information",MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+
+        public ICommand DisableOrEnableTestModeCommand => _disableOrEnableTestModeCommand;
+        private void DisableOrEnableTestMode()
+        {
+            AppSettingsManager.SetParameterFile("TestMode", TestMode);
+            TestMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
+            MessageBox.Show("Збережено", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

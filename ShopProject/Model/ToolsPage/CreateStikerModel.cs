@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Windows;
 using System;
-using ShopProject.Helpers.HelperForPrinting;
+using ShopProject.Helpers.PrintingServise;
 
 namespace ShopProject.Model.ToolsPage
 {
@@ -25,8 +25,8 @@ namespace ShopProject.Model.ToolsPage
             _printingSticker.SetShowTextInImage(isShowNameCompany, isShowProductBarCode, isShowProductName, isShowProductDescription);
         }
 
-    
-        public BitmapImage CreateBarCode(string company , string name,string description, string code)
+
+        public BitmapImage CreateBarCode(string company, string name, string description, string code)
         {
             return _printingSticker.CreateSticker(company, name, description, code, true);
         }

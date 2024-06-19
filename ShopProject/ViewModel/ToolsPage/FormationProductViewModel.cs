@@ -4,7 +4,6 @@ using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Model.ToolsPage;
-using ShopProject.Views.ToolsPage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,11 +19,11 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class FormationProductViewModel : ViewModel<FormationProductViewModel>
     {
-        private ICommand _addGoodsDataBaseCommand;
-        private ICommand _searchBarCodeGoodsCommand;
+        private ICommand _addProductDataBaseCommand;
+        private ICommand _searchBarCodeProductCommand;
 
         private FormationProductModel _model;
-        private List<Goods> _productsSelectGridView;
+        private List<ProductEntiti> _productsSelectGridView;
 
         public FormationProductViewModel() 
         {
@@ -38,13 +37,13 @@ namespace ShopProject.ViewModel.ToolsPage
             _price = 0;
             _units = new List<string>();
             _selectUnits = 0;
-            _goodsList = new List<Goods>();
-            _productsSelectGridView = new List<Goods>();
+            _ProductList = new List<ProductEntiti>();
+            _productsSelectGridView = new List<ProductEntiti>();
 
-            _addGoodsDataBaseCommand = new DelegateCommand(AddProductDataBase);
-            _searchBarCodeGoodsCommand = new DelegateCommand(SearchGoods);
+            _addProductDataBaseCommand = new DelegateCommand(AddProductDataBase);
+            _searchBarCodeProductCommand = new DelegateCommand(SearchProduct);
 
-            _goodsList = new List<Goods>();
+            _ProductList = new List<ProductEntiti>();
             
             new Thread(new ThreadStart(SetFieldComboBox)).Start();
         }
@@ -126,18 +125,18 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _selectCodeUKTZED = value; OnPropertyChanged("SelectCodeUKTZED"); }
         }
 
-        private List<Goods> _goodsList;
-        public List<Goods> GoodsList
+        private List<ProductEntiti> _ProductList;
+        public List<ProductEntiti> ProductList
         {
-            get { return _goodsList; }
-            set { _goodsList = value; OnPropertyChanged("GoodsList"); }
+            get { return _ProductList; }
+            set { _ProductList = value; OnPropertyChanged("ProductList"); }
         }
 
-        public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
+        public ICommand SearchBarCodeProductCommand => _searchBarCodeProductCommand;
 
-        private void SearchGoods()
+        private void SearchProduct()
         {
-            List<Goods> temp;
+            List<ProductEntiti> temp;
             if (SearchCode.Length > 12)
             {
                 if (SearchCode != "0000000000000")//винести в настройки
@@ -145,46 +144,46 @@ namespace ShopProject.ViewModel.ToolsPage
                     var item = _model.Search(SearchCode);
                     if (item != null)
                     {
-                        item.count = 1;
-                        temp = new List<Goods>();
-                        temp = GoodsList;
+                        item.Count = 1;
+                        temp = new List<ProductEntiti>();
+                        temp = ProductList;
 
-                        if (temp.Find(pr => pr.code == item.code) != null)
+                        if (temp.Find(pr => pr.Code == item.Code) != null)
                         {
-                            temp.Find(pr => pr.code == item.code).count += 1;
+                            temp.Find(pr => pr.Code == item.Code).Count += 1;
                         }
                         else
                         {
                             temp.Add(item);
                         }
 
-                        GoodsList = new List<Goods>();
-                        GoodsList = temp;
+                        ProductList = new List<ProductEntiti>();
+                        ProductList = temp;
                         SearchCode = string.Empty;
                     }
                 }
                 else
                 {
-                    if (GoodsList.Count() != 0)
+                    if (ProductList.Count() != 0)
                     {
-                        if (GoodsList.ElementAt(GoodsList.Count - 1).count == 1)
+                        if (ProductList.ElementAt(ProductList.Count - 1).Count == 1)
                         {
-                            temp = new List<Goods>();
-                            temp = GoodsList;
+                            temp = new List<ProductEntiti>();
+                            temp = ProductList;
 
                             temp.Remove(temp.ElementAt(temp.Count - 1));
-                            GoodsList = new List<Goods>();
-                            GoodsList = temp;
+                            ProductList = new List<ProductEntiti>();
+                            ProductList = temp;
                         }
                         else
                         {
-                            temp = new List<Goods>();
-                            temp = GoodsList;
+                            temp = new List<ProductEntiti>();
+                            temp = ProductList;
 
 
-                            temp.ElementAt(GoodsList.Count - 1).count -= 1;
-                            GoodsList = new List<Goods>();
-                            GoodsList = temp;
+                            temp.ElementAt(ProductList.Count - 1).Count -= 1;
+                            ProductList = new List<ProductEntiti>();
+                            ProductList = temp;
                         }
                         SearchCode = string.Empty;
                     }
@@ -196,16 +195,16 @@ namespace ShopProject.ViewModel.ToolsPage
        
         private void UpdateProductsInFormedProduct(object parameter)
         {
-            _productsSelectGridView = new List<Goods>();
+            _productsSelectGridView = new List<ProductEntiti>();
             if (_model != null)
             {
                 _model.ContertToListProduct((IList)parameter, _productsSelectGridView);
                 
-                var list = _model.UpdateList(_goodsList, _productsSelectGridView);
+                var list = _model.UpdateList(_ProductList, _productsSelectGridView);
                 
                 if (list != null)
                 {
-                    GoodsList = list;
+                    ProductList = list;
                 }
             } 
         }
@@ -219,11 +218,11 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private bool CanRegister(object parameter) => true;
 
-        public ICommand AddGoodsDataBaseCommand => _addGoodsDataBaseCommand;
+        public ICommand AddProductDataBaseCommand => _addProductDataBaseCommand;
 
         private void AddProductDataBase()
         {
-            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelectUnits),CodeUKTZED.ElementAt(SelectCodeUKTZED),GoodsList))
+            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelectUnits),CodeUKTZED.ElementAt(SelectCodeUKTZED),ProductList))
             {
                 MessageBox.Show("Товар добавлено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
             }

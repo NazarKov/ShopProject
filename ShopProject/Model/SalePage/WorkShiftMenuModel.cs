@@ -4,7 +4,8 @@ using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using ShopProject.Helpers;
-using ShopProject.Helpers.MiniServiceSigningFile;
+using ShopProject.Helpers.PrintingServise;
+using ShopProject.Helpers.SigningFileService;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -13,31 +14,35 @@ namespace ShopProject.Model.SalePage
 {
     internal class WorkShiftMenuModel
     {
-        private IEntityAccessor<Operation> _operationRepository;
-        private IEntityAccessor<GoodsOperation> _goodsOperationRepository;
+        private IEntityAccess<OperationEntiti> _operationRepository;
+        private IEntityAccess<OrderEntiti> _goodsOperationRepository;
 
         private ReturnDataWithDataBase _returnDataWithDataBase;
 
-        string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
+        string pathxml = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
 
-        private MainContoller _mainContoller;
+        private SigningFileContoller _signFileContoller;
         private FiscalServerController _serverController;
-        
+        private PrintingDayReport _printingController;
+
         public WorkShiftMenuModel()
         {
             _operationRepository = new OperationTableAccess();
-            _goodsOperationRepository = new GoodsOperationTableAccess();
+            _goodsOperationRepository = new OrderTableAccess();
 
             _returnDataWithDataBase = new ReturnDataWithDataBase();
-            _mainContoller = new MainContoller();
+            _signFileContoller = new SigningFileContoller();
             _serverController = new FiscalServerController();
+            _printingController = new PrintingDayReport();
+
+
         }
 
-        public bool OpenShift(Operation operation, bool @checked)
+        public bool OpenShift(OperationEntiti operation, bool @checked)
         {
            return OpenShiftRecursive(operation, @checked, 0,5);
         }
-        private bool OpenShiftRecursive(Operation operation, bool @checked,int depth, int maxDepth)
+        private bool OpenShiftRecursive(OperationEntiti operation, bool @checked,int depth, int maxDepth)
         {
             try
             {
@@ -56,7 +61,7 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionBadHashPrev exbadhash)
             {
-                operation.mac = exbadhash.Error.Split(" ")[3];
+                operation.MAC = exbadhash.Error.Split(" ")[3];
                 return OpenShiftRecursive(operation, false, depth + 1, maxDepth);
             }
             catch (ExceptionCheck exCheck)
@@ -75,27 +80,35 @@ namespace ShopProject.Model.SalePage
                 return false;
             }
         }
-        private void InspectionOpeningShift(Operation operation, bool @checked)
+        private void InspectionOpeningShift(OperationEntiti operation, bool @checked)
         {
-            if (@checked && operation.mac != null)
+            if (@checked && operation.MAC != null)
             {
                 CheckedCloseShift();
             }
             OpenShift(operation);
         }
-        private void OpenShift(Operation operation)
+        private void OpenShift(OperationEntiti operation)
         {
-            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
-            _mainContoller.SignFiles();
-            _serverController.SendServiceCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO);
+            WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
+            if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
+            {
+                _serverController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss"))
+                    , Convert.ToInt32(operation.NumberPayment), 
+                    operation.FiscalNumberRRO,(bool)AppSettingsManager.GetParameterFiles("TestMode"));
+            }
+            else
+            {
+               throw new Exception("невдалося підписати файл");
+            }
         }
 
-        public bool CloseShift(Operation operation, bool @checked)
+        public bool CloseShift(OperationEntiti operation, bool @checked)
         {
            return CloseShiftRecursive(operation, @checked, 0, 5);
 
         }
-        private bool CloseShiftRecursive(Operation operation, bool @checked, int depth, int maxDepth)
+        private bool CloseShiftRecursive(OperationEntiti operation, bool @checked, int depth, int maxDepth)
         {
             try
             {
@@ -115,13 +128,13 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionBadHashPrev exbadHash)
             {
-                operation.mac = exbadHash.Error.Split(" ")[3];
+                operation.MAC = exbadHash.Error.Split(" ")[3];
                 return CloseShiftRecursive(operation,@checked, depth+1, maxDepth);
             }
             catch (ExceptionSave exSave)
             {
-                MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;
+                operation.MAC = string.Empty;
+                return CloseShiftRecursive(operation, @checked, depth + 1, maxDepth);
             }
             catch (Exception ex)
             {
@@ -130,27 +143,35 @@ namespace ShopProject.Model.SalePage
             }
 
         }
-        private void InspectionEndShift(Operation operation,bool @checked)
+        private void InspectionEndShift(OperationEntiti operation,bool @checked)
         {
-            if (@checked && operation.mac != null)
+            if (@checked && operation.MAC != null)
             {
                 CheckedOpenShift();
             }
             CloseShift(operation);
         }
-        private void CloseShift(Operation operation)
+        private void CloseShift(OperationEntiti operation)
         {
-            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
-            _mainContoller.SignFiles();
-            _serverController.SendZReport(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberOfSalesReceipts), operation.fiscalNumberRRO);
+            WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
+            if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
+            {
+                _serverController.SendZReport(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+                    Convert.ToInt32(operation.NumberOfSalesReceipts), operation.FiscalNumberRRO
+                    , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
+            }
+            else
+            {
+                throw new Exception("невдалося підписати файл");
+            }
         }
 
-        public bool OfficialDepositMoney(Operation operation)
+        public bool OfficialDepositMoney(OperationEntiti operation)
         {
             return OfficialDepositMoneyRecursive(operation, 0, 5);
         }
 
-        private bool OfficialDepositMoneyRecursive(Operation operation,int depth, int maxDepth)
+        private bool OfficialDepositMoneyRecursive(OperationEntiti operation,int depth, int maxDepth)
         {
             try
             {
@@ -168,7 +189,7 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionBadHashPrev exbadHash)
             {
-                operation.mac = exbadHash.Error.Split(" ")[3];
+                operation.MAC = exbadHash.Error.Split(" ")[3];
                 return OfficialDepositMoneyRecursive(operation,depth+1,maxDepth);
             }
             catch (ExceptionSave exSave)
@@ -182,30 +203,39 @@ namespace ShopProject.Model.SalePage
                 return false;
             }
         }
-        private void SendOfficialDepositMoney(Operation operation)
+        private void SendOfficialDepositMoney(OperationEntiti operation)
         {
-            WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(), new List<Goods>(), pathxml);
-            _mainContoller.SignFiles();
-            _serverController.SendServiceCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO);
+            WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
+            if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
+            {
+                _serverController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+                    Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO
+                    , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
+            }
+            else
+            {
+                throw new Exception("невдалося підписати файл");
+            }
         }
        
-        private void SaveDataBase(Operation operation)
+        private void SaveDataBase(OperationEntiti operation)
         {
+            operation.User= Session.User;
             _operationRepository.Add(operation);
         }
 
         private void CheckedOpenShift()
         {
-            Operation operation = _returnDataWithDataBase.GetLastCheck();
-            if (operation.numberPayment == "0" && operation.typeOperation != 108)
+            OperationEntiti operation = _returnDataWithDataBase.GetLastCheck();
+            if (operation.NumberPayment == "0" && operation.TypeOperation != 108)
             {
                 throw new Exception("Зміна не відкрита");
             }
         }
         private void CheckedCloseShift()
         {
-            Operation operation = _returnDataWithDataBase.GetLastCheck();
-            if ((int)operation.numberOfSalesReceipts == 0)
+            OperationEntiti operation = _returnDataWithDataBase.GetLastCheck();
+            if ((int)operation.NumberOfSalesReceipts == 0)
             {
                 throw new Exception("Зміна не закрита");
             }
@@ -233,15 +263,36 @@ namespace ShopProject.Model.SalePage
         }
         public decimal GetTotalFundsIssued() 
         {
-            return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(2.01m);
+            return _returnDataWithDataBase.GetTotalSumReceivedAndIssuance(2.01m);
         }
-        public decimal GetTotalBuyersAmount()
+        public decimal GetTotalBuyersAmountCash()
         {
-            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount");
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount",0);
         }
-        public decimal GetTotalRest() 
+        public decimal GetTotalRestCash() 
         {
-            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment");
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment",0);
+        }
+        public decimal GetTotalBuyersAmountCard()
+        {
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount", 1);
+        }
+        public decimal GetTotalRestCard()
+        {
+            return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment", 1);
+        }
+        public decimal GetTotatalChechReturnCash()
+        {
+            return _returnDataWithDataBase.GetTotalRestReturnOperation(0);
+        }
+        public decimal GetTotatalChechReturnCard()
+        {
+            return _returnDataWithDataBase.GetTotalRestReturnOperation(1);
+        }
+
+        public void Print(OperationEntiti operation)
+        {
+            _printingController.PrintCheck(operation);
         }
     }
 }

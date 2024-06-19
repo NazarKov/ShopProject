@@ -17,29 +17,36 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class FormationProductModel
     {
-        private IEntityAccessor<Goods> _goodsRepository;
-        private IEntityAccessor<GoodsUnit> _goodsUnitRepository;
-        private IEntityAccessor<CodeUKTZED> _codeUKTZEDRepository;
+        private IEntityGet<ProductEntiti> _productRepositoryGet;
+        private IEntityUpdate<ProductEntiti> _productRepositoryUpdate;
+        private IEntityAccess<ProductEntiti> _productRepository;
 
-        private List<GoodsUnit> _goodsUnitsList;
-        private List<CodeUKTZED> _codesUKTZEDList;
+        private IEntityAccess<ProductUnitEntiti> _productUnitRepository;
+        private IEntityAccess<CodeUKTZEDEntiti> _codeUKTZEDRepository;
+
+        private List<ProductUnitEntiti> _productUnitsList;
+        private List<CodeUKTZEDEntiti> _codesUKTZEDList;
 
 
         public FormationProductModel()
         {
-            _goodsUnitsList = new List<GoodsUnit>();
-            _codesUKTZEDList = new List<CodeUKTZED>();
+            _productUnitsList = new List<ProductUnitEntiti>();
+            _codesUKTZEDList = new List<CodeUKTZEDEntiti>();
 
-            _goodsRepository = new GoodsTableAccess();
-            _goodsUnitRepository = new UnitTableAccess();
+            _productRepository = new ProductTableAccess();
+            _productRepositoryGet = new ProductTableAccess();
+            _productRepositoryUpdate = new ProductTableAccess();
+
+            _productUnitRepository = new UnitTableAccess();
             _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
         }
 
-        public Goods Search(string barCode)
+        public ProductEntiti Search(string barCode)
         {
             try
             {
-                return _goodsRepository.GetItemBarCode(barCode);
+                return _productRepositoryGet.GetByBarCode(barCode);
+                return new ProductEntiti();
             }
             catch (Exception ex)
             {
@@ -48,19 +55,19 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public void ContertToListProduct(IList list, List<Goods> products)
+        public void ContertToListProduct(IList list, List<ProductEntiti> products)
         {
             foreach (var item in list)
             {
-                products.Add((Goods)item);
+                products.Add((ProductEntiti)item);
             }
         }
 
-        public List<Goods>? UpdateList(List<Goods> productFormations, List<Goods> removeProduct)
+        public List<ProductEntiti>? UpdateList(List<ProductEntiti> productFormations, List<ProductEntiti> removeProduct)
         {
             try
             {
-                List<Goods> products = new List<Goods>();
+                List<ProductEntiti> products = new List<ProductEntiti>();
                 products.AddRange(productFormations);
                 if (removeProduct.Count == 1)
                 {
@@ -69,7 +76,7 @@ namespace ShopProject.Model.ToolsPage
                 }
                 else
                 {
-                    foreach (Goods product in removeProduct)
+                    foreach (ProductEntiti product in removeProduct)
                     {
                         products.Remove(product);
                     }
@@ -82,38 +89,38 @@ namespace ShopProject.Model.ToolsPage
                 return null;
             }
         }
-        public bool AddProduct(string name, string code, string articule, decimal price, int count, string units,string codeUKTZED, List<Goods> goodsFormation)
+        public bool AddProduct(string name, string code, string articule, decimal price, int count, string units,string codeUKTZED, List<ProductEntiti> goodsFormation)
         {
             try
             {
                 if (Validation.TextField(name, code, articule, price, count, units, (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct")))
                 {
 
-                    if (Validation.CodeCoincidenceinDatabase(code,_goodsRepository.GetAll("in_stock")))
+                    if (Validation.CodeCoincidenceinDatabase(code, _productRepositoryGet.GetAll("in_stock")))
                     {
                         throw new Exception("Товар існує");
                     }
-                    var unit = _goodsUnitsList.Where(item => item.shortName == units).FirstOrDefault();
-                    var UKTZED = _codesUKTZEDList.Where(item => item.name == codeUKTZED).FirstOrDefault();
+                    var unit = _productUnitsList.Where(item => item.ShortNameUnit== units).FirstOrDefault();
+                    var UKTZED = _codesUKTZEDList.Where(item => item.NameCode == codeUKTZED).FirstOrDefault();
 
                     if(unit!=null)
                     {
                         if(UKTZED!=null)
                         {
-                            Goods goods = new Goods();
+                            ProductEntiti goods = new ProductEntiti();
                             
-                            goods.code = code;
-                            goods.name = name;
-                            goods.articule = articule;
-                            goods.price = price;
-                            goods.count = count;
-                            goods.unit = unit;
-                            goods.codeUKTZED = UKTZED;
-                            goods.createdAt = DateTime.Now;
-                            goods.status = "in_stock";
-                            goods.sales = 0;
+                            goods.Code = code;
+                            goods.NameProduct = name;
+                            goods.Articule = articule;
+                            goods.Price = price;
+                            goods.Count = count;
+                            goods.Unit = unit;
+                            goods.CodeUKTZED = UKTZED;
+                            goods.CreatedAt = DateTime.Now;
+                            goods.Status = "in_stock";
+                            goods.Sales = 0;
 
-                            _goodsRepository.Add(goods);
+                            _productRepository.Add(goods);
                         }
                     }
 
@@ -121,10 +128,10 @@ namespace ShopProject.Model.ToolsPage
                     {
                         foreach(var item in goodsFormation)
                         {
-                            var itemCount = item.count * count;
+                            var itemCount = item.Count * count;
                             if (itemCount != null)
                             {
-                                _goodsRepository.UpdateParameter(item.id, "count", -itemCount);
+                                _productRepositoryUpdate.UpdateParameter(item.ID, "count", -itemCount);
                             }
                         }
                     }
@@ -142,10 +149,10 @@ namespace ShopProject.Model.ToolsPage
             try
             {
                 List<string> result = new List<string>();
-                _goodsUnitsList = (List<GoodsUnit>)_goodsUnitRepository.GetAll();
-                foreach (GoodsUnit unit in _goodsUnitsList)
+                _productUnitsList = (List<ProductUnitEntiti>)_productUnitRepository.GetAll();
+                foreach (ProductUnitEntiti unit in _productUnitsList)
                 {
-                    result.Add(unit.shortName.ToString());
+                    result.Add(unit.ShortNameUnit.ToString());
                 }
                 return result;
             }
@@ -160,10 +167,10 @@ namespace ShopProject.Model.ToolsPage
             try
             {
                 List<string> result = new List<string>();
-                _codesUKTZEDList = (List<CodeUKTZED>)_codeUKTZEDRepository.GetAll();
-                foreach (CodeUKTZED code in _codesUKTZEDList)
+                _codesUKTZEDList = (List<CodeUKTZEDEntiti>)_codeUKTZEDRepository.GetAll();
+                foreach (CodeUKTZEDEntiti code in _codesUKTZEDList)
                 {
-                    result.Add(code.name.ToString());
+                    result.Add(code.NameCode.ToString());
                 }
                 return result;
             }

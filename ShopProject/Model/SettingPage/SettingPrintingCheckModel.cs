@@ -1,5 +1,4 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Helpers.HelperForPrinting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +9,10 @@ namespace ShopProject.Model.SettingPage
 {
     internal class SettingPrintingCheckModel
     {
-        private PrintingFiscalCheck _ordererCheck;
+        //private PrintingFiscalCheck _ordererCheck;
         public SettingPrintingCheckModel() 
         {
-            _ordererCheck = new PrintingFiscalCheck();
+            //_ordererCheck = new PrintingFiscalCheck();
         }
 
         public void Save(params string[] item)
@@ -45,24 +44,24 @@ namespace ShopProject.Model.SettingPage
         }
         public void PrintTest()
         {
-            _ordererCheck.PrintCheck(new List<DataBase.Model.Goods>() {
-                new DataBase.Model.Goods()
-                {
-                    code = "123456789101",
-                    name = "Товар №1",
-                    codeUKTZED = new DataBase.Model.CodeUKTZED(){ code = "8855"},
-                    price = 100,
-                    count = 5,
-                },
-                new DataBase.Model.Goods()
-                {
-                    code = "987654321101",
-                    name = "Товар №2",
-                    codeUKTZED = new DataBase.Model.CodeUKTZED(){ code = "8865"},
-                    price = 200,
-                    count = 5,
-                }
-            },"123", new DataBase.Model.Operation());
+            //_ordererCheck.PrintCheck(new List<DataBase.Model.GoodsEntiti>() {
+            //    new DataBase.Model.GoodsEntiti()
+            //    {
+            //        Code = "123456789101",
+            //        NameGoods = "Товар №1",
+            //        CodeUKTZED = new DataBase.Model.CodeUKTZEDEntiti(){ Code = "8855"},
+            //        Price = 100,
+            //        Count = 5,
+            //    },
+            //    new DataBase.Model.GoodsEntiti()
+            //    {
+            //        Code = "987654321101",
+            //        NameGoods = "Товар №2",
+            //        CodeUKTZED = new DataBase.Model.CodeUKTZEDEntiti(){ Code = "8865"},
+            //        Price = 200,
+            //        Count = 5,
+            //    }
+            //},"123", new DataBase.Model.OperationEntiti());
         }
     }
 }

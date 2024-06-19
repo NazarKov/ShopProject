@@ -5,45 +5,37 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopProject.DataBase.DataAccess.EntityAccess
 {
-    internal class CodeUKTZEDTableAccess : IEntityAccessor<CodeUKTZED>
+    internal class CodeUKTZEDTableAccess : IEntityAccess<CodeUKTZEDEntiti>
     {
-        public void Add(CodeUKTZED item)
+        public void Add(CodeUKTZEDEntiti item)
+        {
+            throw new NotImplementedException();
+        }
+        public void Update(CodeUKTZEDEntiti item)
         {
             throw new NotImplementedException();
         }
 
-        public void AddRange(List<CodeUKTZED> items)
+        public void Delete(CodeUKTZEDEntiti item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(CodeUKTZED item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteRange(List<CodeUKTZED> items)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<CodeUKTZED> GetAll()
+        public IEnumerable<CodeUKTZEDEntiti> GetAll()
         {
             using (ContextDataBase context = new ContextDataBase())
             {
                 if (context != null)
                 {
-                    context.codeUKTZED.Load();
-                    if (context.codeUKTZED != null)
+                    context.CodeUKTZED.Load();
+                    if (context.CodeUKTZED != null)
                     {
-                        if (context.codeUKTZED.Any())
+                        if (context.CodeUKTZED.Any())
                         {
-                            return context.codeUKTZED.ToList();
+                            return context.CodeUKTZED.ToList();
                         }
                         else
                         {
@@ -60,36 +52,6 @@ namespace ShopProject.DataBase.DataAccess.EntityAccess
                     throw new Exception();
                 }
             }
-        }
-
-        public IEnumerable<CodeUKTZED> GetAll(string statusGoods)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CodeUKTZED GetItemBarCode(string barCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CodeUKTZED GetItemId(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(CodeUKTZED item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateRange(List<CodeUKTZED> items)
-        {
-            throw new NotImplementedException();
         }
     }
 }

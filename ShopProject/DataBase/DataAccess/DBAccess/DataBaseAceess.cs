@@ -28,7 +28,7 @@ namespace ShopProject.DataBase.DataAccess.DBAccess
                     context.Database.Create();
                 }
 
-                if (!context.goodsUnits.Any() || !context.codeUKTZED.Any())
+                if (!context.ProductUnits.Any() || !context.CodeUKTZED.Any())
                 {
                     var initializer = new ContextDatabaseInitializer();
                     initializer.InitializeDatabase(context);
@@ -47,12 +47,11 @@ namespace ShopProject.DataBase.DataAccess.DBAccess
         {
             using (ContextDataBase context = new ContextDataBase())
             {
-                context.goodsOperations.RemoveRange(context.goodsOperations);
-                context.operations.RemoveRange(context.operations);
-                context.goods.RemoveRange(context.goods);
+                context.Orders.RemoveRange(context.Orders);
+                context.Operations.RemoveRange(context.Operations);
+                context.Products.RemoveRange(context.Products);
 
-                context.user.RemoveRange(context.user);
-                context.cashRegisters.RemoveRange(context.cashRegisters);
+                context.Users.RemoveRange(context.Users);
                 context.GiftCertificates.RemoveRange(context.GiftCertificates);
 
                 context.SaveChanges();

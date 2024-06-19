@@ -14,7 +14,7 @@ namespace FiscalServerApi
         private string _apiAddress = "https://prro.tax.gov.ua:443";
         private string _apiTestAddress = "https://cabinet.tax.gov.ua:9443";
 
-        private string _pathFile = "..\\..\\..\\..\\ShopProject\\Resource\\BufferStorage\\Chek.xml.p7s";
+        private string _pathFile = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml.p7s";
 
         private CallOptions _callOptions;
 

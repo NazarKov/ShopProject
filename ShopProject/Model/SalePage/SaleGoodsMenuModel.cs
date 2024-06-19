@@ -4,8 +4,8 @@ using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
 using ShopProject.Helpers;
-using ShopProject.Helpers.HelperForPrinting;
-using ShopProject.Helpers.MiniServiceSigningFile;
+using ShopProject.Helpers.PrintingServise;
+using ShopProject.Helpers.SigningFileService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +15,11 @@ namespace ShopProject.Model.SalePage
 {
     internal class SaleGoodsMenuModel
     {
-        private IEntityAccessor<Goods> _goodsRepository;
-        private IEntityAccessor<Operation> _operationRepository;
-        private IEntityAccessor<GoodsOperation> _goodsOperationRepository;
+        private IEntityGet<ProductEntiti> _goodsRepository;
+        private IEntityAccess<OperationEntiti> _operationRepository;
+        private IEntityAccess<OrderEntiti> _goodsOperationRepository;
 
-        private MainContoller _mainController;
+        private SigningFileContoller _mainController;
         private FiscalServerController _serverController;
         private PrintingFiscalCheck _printingFiscalCheck;
         private bool _isDrawingChek;
@@ -29,15 +29,15 @@ namespace ShopProject.Model.SalePage
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
 
 
-        string pathxml = "..\\..\\..\\Resource\\BufferStorage\\Chek.xml";
+        string pathxml = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
 
         public SaleGoodsMenuModel()
         {
-            _goodsRepository = new GoodsTableAccess();
+            _goodsRepository = new ProductTableAccess();
             _operationRepository = new OperationTableAccess();
-            _goodsOperationRepository = new GoodsOperationTableAccess();
+            _goodsOperationRepository = new OrderTableAccess();
 
-            _mainController = new MainContoller();
+            _mainController = new SigningFileContoller();
             _serverController = new FiscalServerController();
             _printingFiscalCheck = new PrintingFiscalCheck();
             _returnDataWithDataBase = new ReturnDataWithDataBase();
@@ -45,11 +45,11 @@ namespace ShopProject.Model.SalePage
             _isDrawingChek = true;
         }
         
-        public Goods? Search(string barCode)
+        public ProductEntiti? Search(string barCode)
         {
             try
             {
-                return _goodsRepository.GetItemBarCode(barCode);
+                return _goodsRepository.GetByBarCode(barCode);
             }
             catch (Exception ex)
             {
@@ -58,11 +58,11 @@ namespace ShopProject.Model.SalePage
             }
         }
         
-        public bool SendCheck(List<Goods> goods,Operation operation)
+        public bool SendCheck(List<ProductEntiti> goods,OperationEntiti operation)
         {
            return SendCheckRecursive(goods,operation,0,5);
         }     
-        private bool SendCheckRecursive(List<Goods> goods, Operation operation, int depth, int maxDepth)
+        private bool SendCheckRecursive(List<ProductEntiti> goods, OperationEntiti operation, int depth, int maxDepth)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionBadHashPrev exbadHas)
             {
-                operation.mac = exbadHas.Error.Split(" ")[3];
+                operation.MAC = exbadHas.Error.Split(" ")[3];
                 return SendCheckRecursive(goods, operation,depth+1,maxDepth);
             }
             catch (ExceptionCheck exCheck)
@@ -97,8 +97,8 @@ namespace ShopProject.Model.SalePage
             }
             catch (ExceptionSave exSave)
             {
-                MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;
+                operation.MAC = string.Empty;
+                return SendCheckRecursive(goods, operation, depth + 1, maxDepth);
             }
             catch (Exception ex)
             {
@@ -107,37 +107,41 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        private void SendCheck(Operation operation,List<Goods> goods)
+        private void SendCheck(OperationEntiti operation,List<ProductEntiti> goods)
         {
-            if (operation.typeOperation == 0)
+            if (operation.TypeOperation == 0)
             {
-                 WriteReadXmlFile.WriteXmlFile(operation, new List<GoodsOperation>(),goods, pathxml);
-                _mainController.SignFiles();
-                _serverController.SendFiscalCheck(long.Parse(operation.createdAt.ToString("yyyyMMddHHmmss")), Convert.ToInt32(operation.numberPayment), operation.fiscalNumberRRO , true);
+                 WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(),goods, pathxml);
+                _mainController.SignFiles(Session.User.KeyPath,Session.User.KeyPassword);
+                _serverController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss"))
+                    , Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO
+                    , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
             }
             else
             {
                 SaveDataBase(operation, goods);
             }
         }       
-        public void PrintCheck(List<Goods> products, Operation order,string id)
+        public void PrintCheck(List<ProductEntiti> products, OperationEntiti order,string id)
         {
-            _printingFiscalCheck.PrintCheck(products,id,order);
+            _printingFiscalCheck.PrintCheck(products, id, order);
         }
        
 
-        private void SaveDataBase(Operation operation, List<Goods> goods)
+        private void SaveDataBase(OperationEntiti operation, List<ProductEntiti> goods)
         {
+            operation.User = Session.User;
             _operationRepository.Add(operation);
             if (goods.Count != 0)
             {
-                foreach (Goods item in goods)
+                foreach (ProductEntiti item in goods)
                 {
-                    _goodsOperationRepository.Add(new GoodsOperation()
+                    _goodsOperationRepository.Add(new OrderEntiti()
                     {
-                        operation = operation,
-                        goods = item,
-                        count = (int)item.count,
+                        Operation = operation,
+                        Goods = item,
+                        Count = (int)item.Count,
+                       
                     });
                 }
             }

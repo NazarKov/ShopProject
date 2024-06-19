@@ -5,63 +5,90 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using NPOI.SS.Formula.Functions;
 using ShopProject.DataBase.DataAccess.EntityAccess;
 using ShopProject.DataBase.Interfaces;
 using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
 
 namespace ShopProject.Model.StoragePage
 {
 
     internal class StorageModel
     {
-        private IEntityAccessor<Goods> _goodsRepository;
-        private static List<Goods>? _goods;
-        private Thread _threadSearch;
-        private static Timer timer;
-        private static string temp;
+        private IEntityGet<ProductEntiti> _productsGet;
+        private IEntityUpdate<ProductEntiti> _productsUpdate;
+        private IEntityAccess<ProductEntiti> _productsRepository;
+
+        private static List<ProductEntiti>? _products;
+
         public StorageModel()
         {
-            _goods = new List<Goods>();
-            _goodsRepository = new GoodsTableAccess();
-            new Thread(new ThreadStart(ChekedGoodinCountNull)).Start();
+            _products = new List<ProductEntiti>();
+            _productsGet = new ProductTableAccess();
+            _productsUpdate = new ProductTableAccess();
+            _productsRepository = new ProductTableAccess();
+
+            new Thread(new ThreadStart(ChekedNull)).Start();
         }
 
-        public List<Goods> SearchGoods(string item)
+        public List<ProductEntiti> SearchItems(string item) 
         {
             try
             {
-                if (_goods.Count != 0)
-                {
-                    _goods.Clear();
-                }
-                _goods = (List<Goods>)_goodsRepository.GetAll("in_stock");
+                _products = (List<ProductEntiti>)_productsGet.GetAll("in_stock");
                 if (item != "")
                 {
-                    return Search.GoodsDataBase(item, _goods);
+                    return Search(item, _products);
                 }
-                else
-                {
-                    return _goods;
-                }
+                return _products;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return new List<Goods>();
+                return new List<ProductEntiti>();
             }
         }
+
+        private List<ProductEntiti> Search(string item, List<ProductEntiti> _productsList)
+        {
+            var  result = new  List<ProductEntiti>();
+
+            var count = _productsList.Count; 
+            for (int i = 0; i < count; i++)
+            {
+                if (_productsList[i].Code.Contains(item))
+                {
+                    result.Add(_productsList[i]);
+                }
+                else if (_productsList[i].NameProduct.ToLower().Contains(item.ToLower()))
+                {
+                    result.Add(_productsList[i]);
+                }
+                else if (_productsList[i].Articule.ToLower().ToLower().Contains(item.ToLower()))
+                {
+                    result.Add(_productsList[i]);
+                }
+            }
+            return result;
+        }
+
         public int GetCount()
         {
-            return _goodsRepository.GetAll("in_stock").Count();
+            try
+            {
+                return _productsGet.GetAll("in_stock").Count();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
+                return 0;
+            }
         }
 
-        public bool DeleteGoods(Goods productDelete)
+        public bool DeleteItem(ProductEntiti item)
         {
             try
             {
-                _goodsRepository.Delete(productDelete);
+                _productsRepository.Delete(item);
                 return true;
             }
             catch (Exception ex)
@@ -71,52 +98,54 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool SetGoodsInArhive(Goods item)
+        public bool SetItemInArhive(ProductEntiti item)
         {
             try
             {
-                _goodsRepository.UpdateParameter(item.id, "status", "arhived");
-                _goodsRepository.UpdateParameter(item.id, "arhived", DateTime.Now);
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.Status), "arhived");
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.ArhivedAt), DateTime.Now);
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.Count), 0);
 
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
                 return false;
             }
         }
-        public bool SetGoodsOutOfStok(Goods item)
+        public bool SetItemOutOfStock(ProductEntiti item)
         {
             try
             {
-                _goodsRepository.UpdateParameter(item.id, "status", "outStock");
-                _goodsRepository.UpdateParameter(item.id, "outStock", DateTime.Now);
-                _goodsRepository.UpdateParameter(item.id, "count", 0);
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.Status), "outStock");
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.OutStockAt), DateTime.Now);
+                _productsUpdate.UpdateParameter(item.ID, nameof(item.Count), 0);
 
                 return true;
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
                 return false;
             }
         }
-        public void ContertToListGoods(IList list, List<Goods> goods)
+
+        public void ContertIListToList(IList list, List<ProductEntiti> _products)
         {
-            foreach(Goods item in list)
+            foreach(ProductEntiti item in list)
             {
-                goods.Add(item);
+                _products.Add(item);
             }
         }
 
-        private void ChekedGoodinCountNull()
+        private void ChekedNull()
         {
-            Parallel.ForEach(_goodsRepository.GetAll("in_stock"), item =>
+            Parallel.ForEach(_productsGet.GetAll("in_stock"), item =>
             {
-                if (item.count<=0)
+                if (item.Count <= 0)
                 {
-                    SetGoodsOutOfStok(item);
+                    SetItemOutOfStock(item);
                 }
             });
 

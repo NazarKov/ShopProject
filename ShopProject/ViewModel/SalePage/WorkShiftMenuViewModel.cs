@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Model;
+﻿using LocateWindow;
+using ShopProject.DataBase.Model;
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
@@ -33,6 +34,7 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _okSecondDialogsWindowCommand;
         private ICommand _cancelSecondDialogsWindowCommand;
 
+        private ICommand _exitWorkShiftMenuCommand;
 
 
         public WorkShiftMenuViewModel ()
@@ -55,6 +57,7 @@ namespace ShopProject.ViewModel.SalePage
 
             _okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
             _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
+            _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
 
             _statusShift = string.Empty;
             _statusColor = string.Empty;
@@ -64,6 +67,8 @@ namespace ShopProject.ViewModel.SalePage
             VisibleSecondDialogWindow = "Hidden";
             Cash = 0;
             setFieldPage();
+
+
         }
 
         private string _statusShift;
@@ -156,6 +161,13 @@ namespace ShopProject.ViewModel.SalePage
             set { _cash = value; OnPropertyChanged("Cash"); }
         }
 
+        private Visibility _testMode;
+        public Visibility TestMode
+        {
+            get { return _testMode; }
+            set { _testMode = value; OnPropertyChanged("TestMode"); }
+        }
+
         public ICommand UpdateSizeCommand => _updateSizeCommand;
 
         private void UpdateSizes()
@@ -167,7 +179,8 @@ namespace ShopProject.ViewModel.SalePage
 
         private void setFieldPage()
         {
-            if (StaticResourse.tabs.Count == 0)
+            var tabs = Session.Tabs;
+            if (tabs.Count == 0)
             {
                 Tabs.Add(new TabItem()
                 {
@@ -179,13 +192,13 @@ namespace ShopProject.ViewModel.SalePage
             else
             {
                 Tabs = new ObservableCollection<TabItem>();
-                for(int i = 0;i<StaticResourse.tabs.Count;i++)
+                for (int i = 0; i < tabs.Count; i++)
                 {
-                    Tabs.Add(StaticResourse.tabs[i]);
+                    Tabs.Add(tabs[i]);
                 }
 
-                SelectedTabItem = StaticResourse.tabs.Where(item=>item.IsSelected==true).FirstOrDefault().TabIndex;
-                
+                SelectedTabItem = tabs.Where(item => item.IsSelected == true).FirstOrDefault().TabIndex;
+
                 OnPropertyChanged("Tabs");
             }
 
@@ -198,28 +211,55 @@ namespace ShopProject.ViewModel.SalePage
             {
                 StatusColor = "Red";
             }
-            FNumber = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString();
-            EconomicUnit = AppSettingsManager.GetParameterFiles("NameShop").ToString();
-            Seller = AppSettingsManager.GetParameterFiles("NameSeller").ToString();
+            FNumber = Session.FocusDevices.FiscalNumber;
+            var focusdevices = Session.FocusDevices.ObjectOwner;
+            if(focusdevices!=null)
+            {
+                EconomicUnit = focusdevices.NameObject;
+            }
+            var nameSeller = Session.User.FullName;
+            if (nameSeller != null && nameSeller != string.Empty && nameSeller != "")
+            {
+
+                Seller = nameSeller;
+            }
+            else
+            {
+                Seller = Session.User.Login;
+            }
             StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
+
+            if ((bool)AppSettingsManager.GetParameterFiles("TestMode"))
+            {
+                _testMode = Visibility.Visible;
+            }
+            else
+            {
+                _testMode = Visibility.Hidden;
+            }
+
         }
 
 
         public ICommand OpenShiftCommand => _openShiftCommand;
         private void OpenShift()
         {
-            Operation operation = new Operation
+
+            var rro = Session.FocusDevices;
+            var user = Session.User;
+
+            OperationEntiti operation = new OperationEntiti
             {
-                versionDataPaket = 1,
-                dataPacketIdentifier = 1,
-                typeRRO = 0,
-                fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
-                taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
-                factoryNumberRRO = "v1",
-                typeOperation = 108,
-                createdAt = DateTime.Now,
-                numberPayment = "0",
-                mac = _model.GetMac(),
+                VersionDataPaket = 1,
+                DataPacketIdentifier = 1,
+                TypeRRO = 0,
+                FiscalNumberRRO = rro.FiscalNumber.ToString(),
+                TaxNumber = user.TIN.ToString(),
+                FactoryNumberRRO = "v1",
+                TypeOperation = 108,
+                CreatedAt = DateTime.Now,
+                NumberPayment = "0",
+                MAC = _model.GetMac(),
             };
 
             if (_model.OpenShift(operation, false))
@@ -229,45 +269,57 @@ namespace ShopProject.ViewModel.SalePage
                 AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
                 StatusOnline = "з " + DateTime.Now.ToString("g");
                 AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                AppSettingsManager.SetParameterFile("FocusDevise", rro.ID.ToString());
             }
         }
 
         public ICommand CloseShiftCommand => _closeShiftCommand;
         private void CloseShift()
         {
-            Operation operation = new Operation
+            OperationEntiti operation = new OperationEntiti
             {
-                typeOperation = 113,
-                dataPacketIdentifier = 1,
-                typeRRO = 0,
-                fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
-                taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
-                factoryNumberRRO = "v1",
-                mac = _model.GetMac(),
-                createdAt = DateTime.Now,
-                numberPayment = string.Empty,
+                TypeOperation = 113,
+                DataPacketIdentifier = 1,
+                TypeRRO = 0,
+                FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                TaxNumber = Session.User.TIN,
+                FactoryNumberRRO = "v1",
+                MAC = _model.GetMac(),
+                CreatedAt = DateTime.Now,
+                NumberPayment = "0",
+                
+                AmountOfFundsReceived = _model.GetTotalFundsReceived(),
+                AmountOfIssuedFunds = _model.GetTotalFundsIssued(),
 
-                amountOfFundsReceived = _model.GetTotalFundsReceived(),
-                amountOfIssuedFunds = _model.GetTotalFundsIssued(),
+                AmountReceivedCash = _model.GetTotalBuyersAmountCash(),
+                AmountIssuedCash = _model.GetTotalRestCash(),
+                
+                AmountReceivedCard = _model.GetTotalBuyersAmountCard(),
+                AmountIssuedCard = _model.GetTotalRestCard(),
 
-                amountReceivedCash = _model.GetTotalBuyersAmount(),
-                amountIssuedCash = _model.GetTotalRest(),
+                AmountCheckReturnCash = _model.GetTotatalChechReturnCash(),
+                AmountCheckReturnCard = _model.GetTotatalChechReturnCard(),
 
-                numberOfSalesReceipts = _model.GetNumberFiscalCheck(),
-                numberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
+                NumberOfSalesReceipts = _model.GetNumberFiscalCheck(),
+                NumberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
             };
 
-            if(_model.CloseShift(operation,false))
+            if (_model.CloseShift(operation, false))
             {
                 StatusShift = "Зміна закрита";
                 StatusColor = "Red";
                 AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
                 StatusOnline = string.Empty;
                 AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                _model.Print(operation);
+
+
+                AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
             }
 
 
         }
+
         public ICommand OpenNewCheck => _openNewCheckCommand;
         
         private void openNewCheck()
@@ -297,7 +349,7 @@ namespace ShopProject.ViewModel.SalePage
 
                     Tabs.Add(newTabItem);
 
-                    StaticResourse.tabs = Tabs;
+                    Session.Tabs = Tabs;
                     OnPropertyChanged("Tabs");
 
                 }
@@ -332,20 +384,20 @@ namespace ShopProject.ViewModel.SalePage
             new Thread(new ThreadStart(() => {
 
                 int number = int.Parse(_model.GetLocalNumber());
-                Operation operation = new Operation
+                OperationEntiti operation = new OperationEntiti
                 {
-                    versionDataPaket  = 1,
-                    typeOperation = 2,
-                    dataPacketIdentifier = 1,
-                    typeRRO = 0,
-                    fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
-                    taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
-                    factoryNumberRRO = "v1",
-                    mac = _model.GetMac(),
-                    createdAt = DateTime.Now,
-                    numberPayment = number.ToString(),
-                    formOfPayment = 0,
-                    totalPayment = Cash,
+                    VersionDataPaket  = 1,
+                    TypeOperation = 2,
+                    DataPacketIdentifier = 1,
+                    TypeRRO = 0,
+                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    TaxNumber = Session.User.TIN,
+                    FactoryNumberRRO = "v1",
+                    MAC = _model.GetMac(),
+                    CreatedAt = DateTime.Now,
+                    NumberPayment = number.ToString(),
+                    FormOfPayment = 0,
+                    TotalPayment = Cash,
                 };
 
                 VisibleFirstDialogWindow = "Hidden";
@@ -377,20 +429,20 @@ namespace ShopProject.ViewModel.SalePage
             new Thread(new ThreadStart(() => {
 
                 int number = int.Parse(_model.GetLocalNumber());
-                Operation operation = new Operation
+                OperationEntiti operation = new OperationEntiti
                 {
-                    versionDataPaket = 1,
-                    typeOperation = 2.01m,
-                    dataPacketIdentifier = 1,
-                    typeRRO = 0,
-                    fiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
-                    taxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
-                    factoryNumberRRO = "v1",
-                    mac = _model.GetMac(),
-                    createdAt = DateTime.Now,
-                    numberPayment = number.ToString(),
-                    formOfPayment = 0,
-                    totalPayment = Cash,
+                    VersionDataPaket = 1,
+                    TypeOperation = 2.01m,
+                    DataPacketIdentifier = 1,
+                    TypeRRO = 0,
+                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    TaxNumber = Session.User.TIN,
+                    FactoryNumberRRO = "v1",
+                    MAC = _model.GetMac(),
+                    CreatedAt = DateTime.Now,
+                    NumberPayment = number.ToString(),
+                    FormOfPayment = 0,
+                    TotalPayment = Cash,
                 };
                 VisibleSecondDialogWindow = "Hidden";
                 if (_model.OfficialDepositMoney(operation))
@@ -430,6 +482,13 @@ namespace ShopProject.ViewModel.SalePage
 
                 OnPropertyChanged("Tabs");
             }
+        }
+
+        public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
+        private void ExitWorkShiftMenu()
+        {
+            Mediator.Notify("OpenOperationRerocderMenu", "");
+            Session.FocusDevices = null;
         }
 
 

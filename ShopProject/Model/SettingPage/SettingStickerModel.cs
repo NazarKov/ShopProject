@@ -1,5 +1,4 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Helpers.HelperForPrinting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,11 @@ namespace ShopProject.Model.SettingPage
 {
     internal class SettingStickerModel
     {
-        private PrintingSticker _printingSticker;
+        //private PrintingSticker _printingSticker;
 
         public SettingStickerModel()
         {
-            _printingSticker = new PrintingSticker();
+            //_printingSticker = new PrintingSticker();
         }
 
         public string Get()
@@ -27,8 +26,8 @@ namespace ShopProject.Model.SettingPage
         }
         public void PrintTest()
         {
-            _printingSticker.CreateSticker("Ваша компанія","Товар №1","Опис до товару №1","123456789101",false);
-            _printingSticker.PrintSticker();
+            //_printingSticker.CreateSticker("Ваша компанія","Товар №1","Опис до товару №1","123456789101",false);
+            //_printingSticker.PrintSticker();
         }
     }
 }

@@ -110,126 +110,6 @@ namespace ShopProject.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string FiscalNumberRRO {
-            get {
-                return ((string)(this["FiscalNumberRRO"]));
-            }
-            set {
-                this["FiscalNumberRRO"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TaxNumber {
-            get {
-                return ((string)(this["TaxNumber"]));
-            }
-            set {
-                this["TaxNumber"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string NameShop {
-            get {
-                return ((string)(this["NameShop"]));
-            }
-            set {
-                this["NameShop"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string NameSeller {
-            get {
-                return ((string)(this["NameSeller"]));
-            }
-            set {
-                this["NameSeller"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string NameFop {
-            get {
-                return ((string)(this["NameFop"]));
-            }
-            set {
-                this["NameFop"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Region {
-            get {
-                return ((string)(this["Region"]));
-            }
-            set {
-                this["Region"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string District {
-            get {
-                return ((string)(this["District"]));
-            }
-            set {
-                this["District"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Citi {
-            get {
-                return ((string)(this["Citi"]));
-            }
-            set {
-                this["Citi"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Streer {
-            get {
-                return ((string)(this["Streer"]));
-            }
-            set {
-                this["Streer"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string House {
-            get {
-                return ((string)(this["House"]));
-            }
-            set {
-                this["House"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string StatusWorkShift {
             get {
                 return ((string)(this["StatusWorkShift"]));
@@ -272,6 +152,42 @@ namespace ShopProject.Properties {
             }
             set {
                 this["PrinterSticker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SessionID {
+            get {
+                return ((string)(this["SessionID"]));
+            }
+            set {
+                this["SessionID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FocusDevise {
+            get {
+                return ((string)(this["FocusDevise"]));
+            }
+            set {
+                this["FocusDevise"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TestMode {
+            get {
+                return ((bool)(this["TestMode"]));
+            }
+            set {
+                this["TestMode"] = value;
             }
         }
     }

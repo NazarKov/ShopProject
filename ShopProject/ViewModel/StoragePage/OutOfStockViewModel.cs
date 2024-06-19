@@ -21,13 +21,13 @@ namespace ShopProject.ViewModel.StoragePage
 
         private ICommand _searchCommand;
         private ICommand _visibileAllCommand;
-        private List<Goods> _goodsList;
+        private List<ProductEntiti> _goodsList;
 
         public OutOfStockViewModel() 
         {
             _model = new OutOfStockModel();
-            _goods = new List<Goods>();
-            _goodsList = new List<Goods>();
+            _goods = new List<ProductEntiti>();
+            _goodsList = new List<ProductEntiti>();
 
             _visibileAllCommand = new DelegateCommand(setFieldDataGrid);
             _searchCommand = new DelegateCommand(SearchProductInCodeAndName);
@@ -48,8 +48,8 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<Goods> _goods;
-        public List<Goods> Goods
+        private List<ProductEntiti> _goods;
+        public List<ProductEntiti> Goods
         {
             get { return _goods; }
             set { _goods = value; OnPropertyChanged("Goods"); }
@@ -106,7 +106,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _goodsList = new List<Goods>();
+                _goodsList = new List<ProductEntiti>();
                 if (_goodsList != null)
                 {
                     _model.ConvertToList((IList)parameter, _goodsList);
@@ -126,7 +126,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _goodsList = new List<Goods>();
+                _goodsList = new List<ProductEntiti>();
                 if (_goodsList != null)
                 {
                     _model.ConvertToList((IList)parameter, _goodsList);

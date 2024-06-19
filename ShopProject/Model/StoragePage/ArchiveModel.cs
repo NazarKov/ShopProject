@@ -12,16 +12,16 @@ namespace ShopProject.Model.StoragePage
 
     internal class ArchiveModel
     {
-        private IEntityAccessor<Goods> _goodsRepository;
-        private List<Goods> _arhiveGoods;
+        private IEntityAccess<ProductEntiti> _goodsRepository;
+        private List<ProductEntiti> _arhiveGoods;
 
         public ArchiveModel()
         {
-            _goodsRepository = new GoodsTableAccess();
-            _arhiveGoods = new List<Goods>();
+            _goodsRepository = new ProductTableAccess();
+            _arhiveGoods = new List<ProductEntiti>();
             try
             {
-                _arhiveGoods = (List<Goods>)_goodsRepository.GetAll("arhived");
+                //_arhiveGoods = (List<ProductEntiti>)_goodsRepository.GetAll("arhived");
             }
             catch (Exception ex) 
             {
@@ -29,16 +29,17 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public List<Goods> GetItems()
+        public List<ProductEntiti> GetItems()
         {
             return _arhiveGoods;
         }
 
-        public List<Goods>? SearchArhive(string itemSearch)
+        public List<ProductEntiti>? SearchArhive(string itemSearch)
         {
             try
             {
-                return Search.GoodsDataBase(itemSearch, (List<Goods>) _goodsRepository.GetAll("arhived"));
+                //return Search.GoodsDataBase(itemSearch, (List<ProductEntiti>) _goodsRepository.GetAll("arhived"));
+                return new List<ProductEntiti>();
             }
             catch(Exception ex)
             {
@@ -46,7 +47,7 @@ namespace ShopProject.Model.StoragePage
                 return null;
             }
         }
-        public bool DeleteRecordArhive(Goods product)
+        public bool DeleteRecordArhive(ProductEntiti product)
         {
             try
             {
@@ -59,20 +60,20 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public void ConvertToList(IList collection, List<Goods> itemConver)
+        public void ConvertToList(IList collection, List<ProductEntiti> itemConver)
         {
-            foreach(Goods item in collection)
+            foreach(ProductEntiti item in collection)
             {
                 itemConver.Add(item);
             }
         }
         
-        public bool ReturnGoodsInStorage(Goods archive)
+        public bool ReturnGoodsInStorage(ProductEntiti archive)
         {
             try
             {
-                _goodsRepository.UpdateParameter(archive.id, "status", "in_stock");
-                _goodsRepository.UpdateParameter(archive.id, "arhived", null);
+                //_goodsRepository.UpdateParameter(archive.id, "status", "in_stock");
+                //_goodsRepository.UpdateParameter(archive.id, "arhived", null);
                 return true;
             }
             catch (Exception ex)
