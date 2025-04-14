@@ -1,8 +1,10 @@
-﻿using ShopProject.DataBase.Model;
+﻿using LocateWindow;
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.View.ToolsPage;
+using ShopProject.Views.UserPage;
+using ShopProjectDataBase.DataBase.Model;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,8 @@ namespace ShopProject.ViewModel.StoragePage
     {
 
         private StorageModel? _model;
+        
+        
         private static Timer? _timer;
         private static string? _itemSearch;
 
@@ -28,7 +32,7 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _openExportProductToExelCommand;
         private ICommand _openImportProductWhichExelCommand;
 
-        private List<ProductEntiti> _products;
+        private List<ProductEntity> _products;
 
         public StorageViewModel()
         {
@@ -45,7 +49,7 @@ namespace ShopProject.ViewModel.StoragePage
 
 
             _model = new StorageModel();
-            _products = new List<ProductEntiti>();
+            _products = new List<ProductEntity>();
             
             _itemSearch = string.Empty;
             _statusBarCountProduct = string.Empty;
@@ -53,51 +57,48 @@ namespace ShopProject.ViewModel.StoragePage
             _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
             
 
-            ProductList = new List<ProductEntiti>();
-            
-           
-            SearchProduct("");
-            SetFiledStatusBar();
+            ProductList = new List<ProductEntity>();
 
+
+            Mediator.Subscribe("ReloadProduct", (object obg) => { setFieldPage(); });
+
+            //SearchProduct(""); 
+            setFieldPage();
         }
 
-        private List<ProductEntiti>? _productslist;
-        public List<ProductEntiti>? ProductList
+        private List<ProductEntity>? _productslist;
+        public List<ProductEntity>? ProductList
         {
-            get {  return _productslist;  }
-            set { _productslist = value; OnPropertyChanged("ProductList"); }
+            get { return _productslist; }
+            set { _productslist = value; OnPropertyChanged(nameof(ProductList)); }
         }
 
         private int _heigth;
         public int Heigth
         {
             get { return _heigth; }
-            set { _heigth = value; OnPropertyChanged("Heigth"); }
+            set { _heigth = value; OnPropertyChanged(nameof(Heigth)); }
         }
 
         private string _statusBarCountProduct;
         public string StatusBarCountProduct
         {
             get { return _statusBarCountProduct; }
-            set { _statusBarCountProduct = value; OnPropertyChanged("StatusBarCountProduct"); }
+            set { _statusBarCountProduct = value; OnPropertyChanged(nameof(StatusBarCountProduct)); }
+        }
+
+        public void setFieldPage()
+        {
+            ProductList = _model.GetProducts();
+            ProductList.Reverse();
+
+            SetFiledStatusBar();
         }
 
         private async void SetFiledStatusBar()
         {
-            await Task.Run(() =>
-            {
-                StatusBarCountProduct = "Кілкісь товарі: " + _model.GetCount();
-            });
-
+            StatusBarCountProduct = "Кілкісь товарі: " + ProductList.Count();
         }
-        public ICommand UpdateSizeCommand => _updateSizeGridCommand;
-
-        private void UpdateSizes()
-        {
-            Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
-        }
-
-        public ICommand UpdateProductDataGridView => _updateProductDataGridViewCommand;
 
         public ICommand SearchCommand { get => new DelegateParameterCommand(SearchProduct, CanRegister); }
 
@@ -138,16 +139,16 @@ namespace ShopProject.ViewModel.StoragePage
                     ProductList = result;
                 }
             });
-            
+
         }
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(UpdateProduct, CanRegister); }
         private void UpdateProduct(object parameter)
         {
-            _products = new List<ProductEntiti>();
+            _products = new List<ProductEntity>();
             if (_model != null)
                 _model.ContertIListToList((IList)parameter, _products);
-                
+
             if (_products.Count == 1)
             {
                 Session.Product = _products[0];
@@ -160,68 +161,33 @@ namespace ShopProject.ViewModel.StoragePage
             }
         }
 
-        public ICommand DeleteProductCommand { get => new DelegateParameterCommand(DeleteProduct, CanRegister); }
-        private void DeleteProduct(object parameter)
-        {
-            if (MessageBox.Show("видалити?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                _products = new List<ProductEntiti>();
-                if (_model != null)
-                    _model.ContertIListToList((IList)parameter, _products);
-                if (_products.Count == 1)
-                {
-                    if (_products[0] != null)
-                        if (_model != null)
-                        {
-                            if (_model.DeleteItem(_products[0]))
-                            {
-                                if (_itemSearch != string.Empty)
-                                {
-                                    SearchProduct(_itemSearch);
-                                }
-                                else
-                                {
-                                    SearchProduct(_itemSearch);
-                                }
-                            }
-                        }
-                }
-            }
-        }
-
         public ICommand AddProductArhiveCommand { get => new DelegateParameterCommand(AddProductArhive, CanRegister); }
         private void AddProductArhive(object parameter)
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<ProductEntiti>();
+                _products = new List<ProductEntity>();
                 if (_model != null)
                 {
                     _model.ContertIListToList((IList)parameter, _products);
                     if (_products.Count == 1)
                     {
-                        if(_model.SetItemInArhive(_products[0]))
+                        if (_model.SetItemInArhive(_products[0]))
                         {
-                            if(_itemSearch != string.Empty)
-                            {
-                                SearchProduct(_itemSearch);
-                            }
-                            else
-                            {
-                                SearchProduct(_itemSearch);
-                            }
+                            setFieldPage();
+                            MessageBox.Show("Товар перенесено в архів");
                         }
                     }
                 }
             }
         }
-        
+
         public ICommand AddOutOfStockProductCommand { get => new DelegateParameterCommand(AddOutOfStockProduct, CanRegister); }
         private void AddOutOfStockProduct(object parameter)
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _products = new List<ProductEntiti>();
+                _products = new List<ProductEntity>();
                 if (_model != null)
                 {
                     _model.ContertIListToList((IList)parameter, _products);
@@ -229,24 +195,17 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         if (_model.SetItemOutOfStock(_products[0]))
                         {
-                            if (_itemSearch != string.Empty)
-                            {
-                                SearchProduct(_itemSearch);
-                            }
-                            else
-                            {
-                                SearchProduct(_itemSearch);
-                            }
+                            setFieldPage();
                         }
                     }
                 }
             }
         }
-        
-        public ICommand OpenWindoiwCreateStikerCommand{ get => new DelegateParameterCommand(ShowWindowCreateStikerCommand, CanRegister); }
+
+        public ICommand OpenWindoiwCreateStikerCommand { get => new DelegateParameterCommand(ShowWindowCreateStikerCommand, CanRegister); }
         private void ShowWindowCreateStikerCommand(object parameter)
         {
-            _products = new List<ProductEntiti>();
+            _products = new List<ProductEntity>();
             if (_model != null)
                 _model.ContertIListToList((IList)parameter, _products);
 
@@ -256,9 +215,18 @@ namespace ShopProject.ViewModel.StoragePage
                 new CreateStickerView().Show();
             }
         }
-        
+
+
+        public ICommand UpdateSizeCommand => _updateSizeGridCommand;
+
+        private void UpdateSizes()
+        {
+            Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
+        }
         private bool CanRegister(object parameter) => true;
 
+
+        public ICommand UpdateProductDataGridView => _updateProductDataGridViewCommand;
         public ICommand OpenCreateProductWindowCommand => _openCreateProductWindowCommand;
         public ICommand OpenFormationProductWindowCommand => _openFormationProductWindowCommand;
         public ICommand OpenDeliveriOfProductCommand => _openDeliveriOfProductCommand;

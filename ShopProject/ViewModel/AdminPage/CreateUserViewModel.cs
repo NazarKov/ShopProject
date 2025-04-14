@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using ShopProjectDataBase.DataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -27,7 +28,7 @@ namespace ShopProject.ViewModel.AdminPage
         {
             _model = new CreateUserModel();
 
-            _userRoles = new List<string>();
+            _userRoles = new List<UserRoleEntity>();
             _login = string.Empty;
             _fullName = string.Empty;
             _password = string.Empty;
@@ -90,11 +91,11 @@ namespace ShopProject.ViewModel.AdminPage
             set { _email = value; OnPropertyChanged("Email"); }
         }
 
-        private List<string> _userRoles;
-        public List<string> UserRoles
+        private List<UserRoleEntity> _userRoles;
+        public List<UserRoleEntity> UserRoles
         {
             get { return _userRoles; }
-            set { _userRoles = value; OnPropertyChanged("UserRoles"); }
+            set { _userRoles = value; OnPropertyChanged(nameof(UserRoles)); }
         }
         private int _selectUserRole;
         public int SelectUserRole
@@ -114,14 +115,14 @@ namespace ShopProject.ViewModel.AdminPage
         {
             if(CheckIsKey)
             {
-                if(await _model.CreateUserKey(PathKey,_nameFile,Login,Email,Password,PasswordKey,UserRoles.ElementAt(SelectUserRole)))
+                if (await _model.CreateUserKey(PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
                 {
                     MessageBox.Show("Корисувача створено");
                 }
             }
             else
             {
-                _model.CreateUser(FullName,Login,Email,Password,UserRoles.ElementAt(SelectUserRole));
+                _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole));
             }
 
         }

@@ -1,8 +1,7 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
+﻿using NPOI.SS.Formula.Functions;
 using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,21 +15,14 @@ namespace ShopProject.Model.ToolsPage
 {
     internal class ImportProductExelModel 
     {
-        private IEntityGet<ProductEntiti> _productRepositoryGet;
-        private IEntityUpdate<ProductEntiti> _productRepositoryUpdate;
-        private IEntityAdd<ProductEntiti> _productRepositoryAdd;
 
         private FileExel? fileExel;
-        private List<ProductEntiti> _product;
+        private List<ProductEntity> _product;
         private string path;
-        private ProductEntiti product;
+        private ProductEntity product;
 
         public ImportProductExelModel()
-        {
-            _productRepositoryAdd = new ProductTableAccess();
-            _productRepositoryUpdate = new ProductTableAccess();
-            _productRepositoryGet = new ProductTableAccess();
-
+        {  
             path = string.Empty;
         }
 
@@ -60,7 +52,7 @@ namespace ShopProject.Model.ToolsPage
             return fileExel.GetTableName();
         }
 
-        public bool SetItemDataBase(DataTable dataTable,params int[] column)
+        public bool SetItemDataBase(DataTable dataTable, params int[] column)
         {
             try
             {
@@ -74,74 +66,91 @@ namespace ShopProject.Model.ToolsPage
                 return false;
             }
         }
-        private void SaveItem(DataTable dataTable,int code ,int name,int articule,int price,int count,int units,int indexTop,int intdexBottom)
+
+        private void SaveItem(DataTable dataTable, int code, int name, int articule, int price, int count, int units, int indexTop, int intdexBottom)
         {
             int i = Validation.ChekNull(indexTop);
             int max = Validation.ChekNull(intdexBottom, dataTable.Rows.Count);
-            _product = new List<ProductEntiti>();
+            _product = new List<ProductEntity>();
+             
 
-            var goodslistAll = new List<ProductEntiti>();
-            _productRepositoryGet.GetAll("in_stock");
+            List<ProductEntity> goodslistAll = new List<ProductEntity>();
+
+            Task task = Task.Run(async () => {
+
+                goodslistAll = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+            });
+
+            task.Wait();
+
 
             try
             {
                 for (; i < max; i++)
                 {
-                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable),goodslistAll))
+                    if (Validation.CodeCoincidenceinDatabase(Validation.ChekParamsIsNull(code, i, dataTable), goodslistAll))
                     {
                         SetCountItem(code, Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable)), i, dataTable);
                     }
                     else
                     {
-                        product = new ProductEntiti();
+                        product = new ProductEntity();
                         product.Code = Validation.ChekParamsIsNull(code, i, dataTable);
                         product.NameProduct = Validation.ChekParamsIsNull(name, i, dataTable);
                         product.Articule = Validation.ChekParamsIsNull(articule, i, dataTable);
                         product.Price = (decimal)Validation.ChekEmpty(price, i, dataTable);
                         product.Count = Convert.ToInt32(Validation.ChekEmpty(count, i, dataTable));
 
-                        if (Validation.ChekParamsIsNull(units, i, dataTable) == "Шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "шт"|| Validation.ChekParamsIsNull(units, i, dataTable) == "Штука")
+                        if (Validation.ChekParamsIsNull(units, i, dataTable) == "Шт" || Validation.ChekParamsIsNull(units, i, dataTable) == "шт" || Validation.ChekParamsIsNull(units, i, dataTable) == "Штука")
                         {
-                            product.Unit = new ProductUnitEntiti()
+                            product.Unit = new ProductUnitEntity()
                             {
                                 Number = 2009,
                                 NameUnit = "шт",
-                                ShortNameUnit= "Штука",
+                                ShortNameUnit = "Штука",
                             };
                         }
-                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "пачка"|| Validation.ChekParamsIsNull(units, i, dataTable) == "Пачка"|| Validation.ChekParamsIsNull(units, i, dataTable) == "пач")
+                        else if (Validation.ChekParamsIsNull(units, i, dataTable) == "пачка" || Validation.ChekParamsIsNull(units, i, dataTable) == "Пачка" || Validation.ChekParamsIsNull(units, i, dataTable) == "пач")
                         {
-                            product.Unit = new ProductUnitEntiti() { Number = 2112, NameUnit = "пач", ShortNameUnit = "Пачка" };
+                            product.Unit = new ProductUnitEntity() { Number = 2112, NameUnit = "пач", ShortNameUnit = "Пачка" };
                         }
                         else if (Validation.ChekParamsIsNull(units, i, dataTable) == "кг" || Validation.ChekParamsIsNull(units, i, dataTable) == "Кілограм")
                         {
-                            product.Unit = new ProductUnitEntiti() { Number = 0301, NameUnit = "кг", ShortNameUnit = "Кілограм" };
+                            product.Unit = new ProductUnitEntity() { Number = 0301, NameUnit = "кг", ShortNameUnit = "Кілограм" };
                         }
                         else if (Validation.ChekParamsIsNull(units, i, dataTable) == "ящ" || Validation.ChekParamsIsNull(units, i, dataTable) == "Ящик")
-                        {
-                            product.Unit = new ProductUnitEntiti() { Number = 2075, NameUnit = "ящ", ShortNameUnit = "Ящик" };
+                        { 
+                            product.Unit = new ProductUnitEntity() { Number = 2075, NameUnit = "ящ", ShortNameUnit = "Ящик" };
 
                         }
 
                         product.CreatedAt = DateTime.Now;
-                        product.Status = "in_stock";
-                        product.CodeUKTZED = new CodeUKTZEDEntiti() { Code = "9507" };
-                        
+                        product.Status = ShopProjectSQLDataBase.Helper.TypeStatusProduct.InStock;
+                        product.CodeUKTZED = new CodeUKTZEDEntity() { Code = "9507" };
+
                         _product.Add(product);
                     }
                 }
-                _productRepositoryAdd.AddRange(_product);
+                bool response = false;
+                Task t = Task.Run(async () =>
+                {
+                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProductRange(Session.Token,_product);
+                });
+                t.Wait();
+               
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK);
             }
         }
 
-        private void SetCountItem(int code,int count, int i , DataTable dataTable)
+        private void SetCountItem(int code, int count, int i, DataTable dataTable)
         {
-            ProductEntiti product = (ProductEntiti)_productRepositoryGet.GetByBarCode(Validation.ChekParamsIsNull(code, i, dataTable));
-            _productRepositoryUpdate.UpdateParameter(product.ID, nameof(product.Count), count);
+            Task t = Task.Run(async () =>
+            {
+                await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(ProductEntity.Count), count, new ProductEntity() { Code = Validation.ChekParamsIsNull(code, i, dataTable) });
+            });
         }
     }
 }

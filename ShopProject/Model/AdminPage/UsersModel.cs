@@ -1,57 +1,61 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Entities;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
+﻿using NPOI.SS.Formula.Functions;
 using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using ZXing;
 
 namespace ShopProject.Model.AdminPage
 { 
     internal class UsersModel
     {
-        private IEntityAccess<UserEntiti> _userTable;
-        private IEntityUpdate<UserEntiti> _userTableUpdate;
-        private IEntityAccess<OperationsRecorderEntiti> _objectTable;
-        private IEntityAccess<OperationsRecorderUserEntiti> _operationUserTable;
-
-
+        private static List<UserEntity> _users;
         public UsersModel() 
         {
-            _userTable = new UserTableAccess();
-            _userTableUpdate = new UserTableAccess();
-            _objectTable = new OperationsRecorderTableAccess();
-            _operationUserTable = new OperationsRecorderUserTableAccess();
+            _users = new List<UserEntity>();
         }
-        public List<UserEntiti> GetUsers()
+        public List<UserEntity> GetUsers()
         {
-            return (List<UserEntiti>)_userTable.GetAll();
-        }
-        public bool DeleteUser(UserEntiti user)
-        {
-            try
+            Task t = Task.Run(async () =>
             {
-                _userTable.Delete(user);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return false;
-            }
-
+                _users = (await MainWebServerController.MainDataBaseConntroller.UserController.GetUsers(Session.Token)).ToList();
+            });
+            t.Wait();
+            return _users;
         }
+        //public bool DeleteUser(UserEntiti user)
+        //{
+        //    try
+        //    {
+        //        _userTable.Delete(user);
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        return false;
+        //    }
+
+        //}
         public List<SoftwareDeviceSettlementOperationsHelper> GetAllObject()
         {
             try
             {
                 List<SoftwareDeviceSettlementOperationsHelper> result = new List<SoftwareDeviceSettlementOperationsHelper>();
-                foreach (var item in _objectTable.GetAll())
+                List<OperationsRecorderEntity> response = new List<OperationsRecorderEntity>();
+                Task t = Task.Run(async () =>
+                {
+                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationRecorders(Session.Token)).ToList();
+                });
+                t.Wait();
+                foreach (var item in response)
                 {
                     result.Add(new SoftwareDeviceSettlementOperationsHelper(item));
                 }
@@ -64,22 +68,31 @@ namespace ShopProject.Model.AdminPage
             }
 
         }
-        public bool SaveBinding(UserEntiti user, List<SoftwareDeviceSettlementOperationsHelper> objectOwnerHelpers)
+        public bool SaveBinding(UserEntity user, List<SoftwareDeviceSettlementOperationsHelper> objectOwnerHelpers)
         {
             try
             {
-                foreach(var item in objectOwnerHelpers)
+                List<OperationsRecorderUserEntity> result = new List<OperationsRecorderUserEntity>();
+                foreach (var item in objectOwnerHelpers)
                 {
                     if (item.isActive)
                     {
-                        _operationUserTable.Add(new OperationsRecorderUserEntiti()
+                        result.Add(new OperationsRecorderUserEntity()
                         {
                             OpertionsRecorders = item.deviceSettlementOperations,
                             Users = user,
                         });
                     }
                 }
-                return true;
+
+
+                bool response = false;
+                Task t = Task.Run(async () =>
+                {
+                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.AddOperationRecordersAndUser(Session.Token, result));
+                });
+                t.Wait();
+                return response;
 
             }
             catch (Exception ex)
@@ -90,25 +103,25 @@ namespace ShopProject.Model.AdminPage
         }
 
 
-        public List<UserEntiti> SearchObject(string item)
-        {
-            try
-            {
-                var items = _userTableUpdate.GetAll();
-                if (items != null)
-                {
-                    if (item != " ")
-                    {
-                        return items.Where(i => i.FullName.ToLower().Contains(item.ToLower())).ToList();
-                    }
-                }
-                return new List<UserEntiti>();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new List<UserEntiti>();
-            }
-        }
+        //public List<UserEntiti> SearchObject(string item)
+        //{
+        //    try
+        //    {
+        //        var items = _userTableUpdate.GetAll();
+        //        if (items != null)
+        //        {
+        //            if (item != " ")
+        //            {
+        //                return items.Where(i => i.FullName.ToLower().Contains(item.ToLower())).ToList();
+        //            }
+        //        }
+        //        return new List<UserEntiti>();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        return new List<UserEntiti>();
+        //    }
+        //}
     }
 }

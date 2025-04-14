@@ -1,40 +1,43 @@
-﻿using System;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
 
 namespace ShopProject.Model.StoragePage
 {
 
     internal class StorageModel
     {
-        private IEntityGet<ProductEntiti> _productsGet;
-        private IEntityUpdate<ProductEntiti> _productsUpdate;
-        private IEntityAccess<ProductEntiti> _productsRepository;
-
-        private static List<ProductEntiti>? _products;
+        private static List<ProductEntity>? _products;
+        
 
         public StorageModel()
         {
-            _products = new List<ProductEntiti>();
-            _productsGet = new ProductTableAccess();
-            _productsUpdate = new ProductTableAccess();
-            _productsRepository = new ProductTableAccess();
-
-            new Thread(new ThreadStart(ChekedNull)).Start();
+            _products = new List<ProductEntity>();
         }
 
-        public List<ProductEntiti> SearchItems(string item) 
+        public List<ProductEntity> GetProducts()
+        {
+            Task t = Task.Run(async () =>
+            {
+                _products = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+            });
+            t.Wait();
+
+            return _products;
+        }
+
+        public List<ProductEntity> SearchItems(string item)
         {
             try
             {
-                _products = (List<ProductEntiti>)_productsGet.GetAll("in_stock");
                 if (item != "")
                 {
                     return Search(item, _products);
@@ -44,15 +47,15 @@ namespace ShopProject.Model.StoragePage
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return new List<ProductEntiti>();
+                return new List<ProductEntity>();
             }
         }
 
-        private List<ProductEntiti> Search(string item, List<ProductEntiti> _productsList)
+        private List<ProductEntity> Search(string item, List<ProductEntity> _productsList)
         {
-            var  result = new  List<ProductEntiti>();
+            var result = new List<ProductEntity>();
 
-            var count = _productsList.Count; 
+            var count = _productsList.Count;
             for (int i = 0; i < count; i++)
             {
                 if (_productsList[i].Code.Contains(item))
@@ -71,24 +74,15 @@ namespace ShopProject.Model.StoragePage
             return result;
         }
 
-        public int GetCount()
+        public bool SetItemInArhive(ProductEntity item)
         {
             try
             {
-                return _productsGet.GetAll("in_stock").Count();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return 0;
-            }
-        }
-
-        public bool DeleteItem(ProductEntiti item)
-        {
-            try
-            {
-                _productsRepository.Delete(item);
+                Task t = Task.Run(async () =>
+                {
+                   await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(item.Status), TypeStatusProduct.Archived, item);
+                });
+                t.Wait();
                 return true;
             }
             catch (Exception ex)
@@ -98,13 +92,15 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool SetItemInArhive(ProductEntiti item)
+        public bool SetItemOutOfStock(ProductEntity item)
         {
             try
             {
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.Status), "arhived");
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.ArhivedAt), DateTime.Now);
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.Count), 0);
+                Task t = Task.Run(async () =>
+                {
+                    await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(item.Status), TypeStatusProduct.OutStock, item);
+                });
+                t.Wait();
 
                 return true;
             }
@@ -114,41 +110,13 @@ namespace ShopProject.Model.StoragePage
                 return false;
             }
         }
-        public bool SetItemOutOfStock(ProductEntiti item)
-        {
-            try
-            {
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.Status), "outStock");
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.OutStockAt), DateTime.Now);
-                _productsUpdate.UpdateParameter(item.ID, nameof(item.Count), 0);
 
-                return true;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return false;
-            }
-        }
-
-        public void ContertIListToList(IList list, List<ProductEntiti> _products)
+        public void ContertIListToList(IList list, List<ProductEntity> _products)
         {
-            foreach(ProductEntiti item in list)
+            foreach (ProductEntity item in list)
             {
                 _products.Add(item);
             }
-        }
-
-        private void ChekedNull()
-        {
-            Parallel.ForEach(_productsGet.GetAll("in_stock"), item =>
-            {
-                if (item.Count <= 0)
-                {
-                    SetItemOutOfStock(item);
-                }
-            });
-
         }
     }
 }

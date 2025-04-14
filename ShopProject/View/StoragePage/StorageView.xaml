@@ -103,20 +103,16 @@
                     <DataGridTextColumn Header="Ціна"  Binding="{Binding Price}" />
                     <DataGridTextColumn Header="Кількість" Binding="{Binding Count}" />
                     <DataGridTextColumn Header="Одниці"  Binding="{Binding Unit.ShortNameUnit}" />
-                    <DataGridTextColumn Header="Знижка"  Binding="{Binding Sales}" />
+                    <DataGridTextColumn Header="Статус"  Binding="{Binding Status}" />
                     <DataGridTextColumn Header="КодУКТЗЕД" Binding="{Binding CodeUKTZED.Code}" />
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                     <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindowCommand}"/>
-                        <MenuItem
+                    <MenuItem
                                 Header="Редагувати товар"
                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                                 Command="{Binding UpdateProductCommand}" />
-                        <MenuItem 
-                                Header="Видалити товар" 
-                                CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                                Command="{Binding DeleteProductCommand}"/>
                         <Separator></Separator>
                         <MenuItem Header="Перенести в архів"
                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"

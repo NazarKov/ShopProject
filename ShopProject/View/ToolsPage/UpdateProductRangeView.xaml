@@ -35,9 +35,9 @@
                 <DataGridTextColumn Header="Назва"  Binding="{Binding NameProduct}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding Price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding Count}" />
-                <DataGridComboBoxColumn x:Name="combobox1" Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" 
+                <DataGridComboBoxColumn x:Name="combobox1" Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" DisplayMemberPath="NameUnit"
                                         SelectedItemBinding="{Binding Unit.ShortNameUnit, UpdateSourceTrigger=PropertyChanged }"/>
-                <DataGridComboBoxColumn x:Name="combobox2" Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" SelectedItemBinding="{Binding CodeUKTZED.NameCode, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"/>
+                <DataGridComboBoxColumn x:Name="combobox2" Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" DisplayMemberPath="NameCode" SelectedItemBinding="{Binding CodeUKTZED.NameCode, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"/>
                
             </DataGrid.Columns>
         </DataGrid>

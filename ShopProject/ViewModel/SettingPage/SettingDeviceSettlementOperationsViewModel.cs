@@ -36,12 +36,12 @@ namespace ShopProject.ViewModel.SettingPage
         }
         private void setFieldTextBox()
         {
-            var devise = Session.FocusDevices;
-            if(devise!=null)
-            {
-                FiscalNumber = devise.FiscalNumber;
+            //var devise = Session.FocusDevices;
+            //if(devise!=null)
+            //{
+            //    FiscalNumber = devise.FiscalNumber;
                 
-            }
+            //}
             TestMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
 
         }

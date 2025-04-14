@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.Model;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,10 +13,14 @@ namespace ShopProject.Model.HomePage
 {
     internal class HomeModel
     {
-       
-        public HomeModel ()
+        public HomeModel(){}
+
+        public void Init()
         {
-           
+            Task task = Task.Run(() =>
+            {
+                MainWebServerController.Init();
+            });
         }
-    }
+    } 
 }

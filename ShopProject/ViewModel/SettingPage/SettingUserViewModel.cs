@@ -27,7 +27,7 @@ namespace ShopProject.ViewModel.SettingPage
             _create_at = new DateTime();
             _autoLogin = false;
 
-            SetFieldPage();
+           // SetFieldPage();
         }
 
         private string _login;
@@ -73,60 +73,60 @@ namespace ShopProject.ViewModel.SettingPage
             set { _autoLogin = value; OnPropertyChanged("AutoLogin"); }
         }
 
-        private void SetFieldPage()
-        {
-            var item = Session.User;
-            if (item != null)
-            {
-                if (item.Login != string.Empty)
-                {
-                    Login = item.Login;
-                }
-                if (item.FullName != string.Empty)
-                {
-                    FullName = item.FullName;
-                }
-                else
-                {
-                    FullName = "Користувач не вказав";
-                }
-                if (item.TIN != string.Empty)
-                {
-                    TIN = item.TIN;
-                }
-                else
-                {
-                    TIN = "Користувач не вказав";
-                }
-                if (item.KeyPath != string.Empty)
-                {
-                    var temp = item.KeyPath.Split("\\");
-                    NameKey = temp.ElementAt(temp.Length - 1);
-                }
-                else
-                {
-                    NameKey = "Ключ відсутній";
-                }
-                if (Session.User.Status == 0)
-                {
-                    Status = "Користувач без ключа ЕЦП";
-                }
-                else
-                {
-                    Status = "ОК";
-                }
-                if (Session.User.CreatedAt != null)
-                {
-                    Create_At = Session.User.CreatedAt.Value.Date;
-                }
-                AutoLogin = Session.User.AutomaticLogin;
-            }
-        }
+        //private void SetFieldPage()
+        //{
+            ////var item = Session.User;
+            //if (item != null)
+            //{
+            //    if (item.Login != string.Empty)
+            //    {
+            //        Login = item.Login;
+            //    }
+            //    if (item.FullName != string.Empty)
+            //    {
+            //        FullName = item.FullName;
+            //    }
+            //    else
+            //    {
+            //        FullName = "Користувач не вказав";
+            //    }
+            //    if (item.TIN != string.Empty)
+            //    {
+            //        TIN = item.TIN;
+            //    }
+            //    else
+            //    {
+            //        TIN = "Користувач не вказав";
+            //    }
+            //    if (item.KeyPath != string.Empty)
+            //    {
+            //        var temp = item.KeyPath.Split("\\");
+            //        NameKey = temp.ElementAt(temp.Length - 1);
+            //    }
+            //    else
+            //    {
+            //        NameKey = "Ключ відсутній";
+            //    }
+            //    if (Session.User.Status == 0)
+            //    {
+            //        Status = "Користувач без ключа ЕЦП";
+            //    }
+            //    else
+            //    {
+            //        Status = "ОК";
+            //    }
+            //    if (Session.User.CreatedAt != null)
+            //    {
+            //        Create_At = Session.User.CreatedAt.Value.Date;
+            //    }
+            //    AutoLogin = Session.User.AutomaticLogin;
+        //    }
+        //}
 
-        public ICommand ChangePasswordCommand => _changePasswordCommand;
-        private void ChangePassword()
-        {
+        //public ICommand ChangePasswordCommand => _changePasswordCommand;
+        //private void ChangePassword()
+        //{
 
-        }
+        //}
     }
 }

@@ -1,0 +1,77 @@
+﻿@{
+
+    Layout = ViewData["Layout"]?.ToString() ?? "_Layout";
+    ViewData["Title"] = "DataBase";
+}
+@model DataBaseViewModel
+
+<div class="DataBase-main-div">
+    <div class="border DataBase-list-informaion">
+        <div class="border DataBase-list-informaion-header">
+            <p>DataBase Details </p>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                 <th>@Model.DataBase.ConnectionString.InitialCatalog</th>
+            </tr>
+            <tr>
+                <th>Type</th>
+                  <th>@Model.DataBase.TypeDataBase</th>
+            </tr>
+            <tr>
+                <th>ConnectionType</th>
+                 <th>@Model.DataBase.ConnectionString.TypeDataBase</th>
+            </tr>
+            <tr>
+                <th>PC</th>
+                 <th>@Model.DataBase.ConnectionString.DataSource</th>
+            </tr>
+            <tr>
+                <th>Password</th>
+                 <th>@Model.DataBase.PasswordDataBase</th>
+            </tr>
+        </table>
+        <br />
+        <div class="block-buttons">
+        <button class="btn button">Резервна копія</button>
+        <button class="btn button">Відновлення з копії</button>
+        <button class="btn button">Видалити базу даних</button>
+        </div>
+    </div>
+
+    <div class="border DataBase-list-informaion">
+        <div class="border DataBase-list-informaion-header">
+            <p>User List</p>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Login</th>
+                <th>Token</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            <tr>
+                @{
+                    // for (int i = 0; i < Model.DataBase.Users.Count(); i++)
+                    // {
+                    // <tr>
+                    //     <th>@Model.DataBase.Users.ElementAt(i).User.Login</th>
+                    //     <th>@Model.DataBase.Users.ElementAt(i).User.Tokens</th>
+                    //     <th>@Model.DataBase.Users.ElementAt(i).User.Email</th>
+                    //     <th>
+                    //         <form asp-controller="DataBase" asp-action="Details" method="post">
+                    //             <input type="hidden" name="id" value="@Model.DataBase.Users.ElementAt(i).User.ID" />
+                    //             <button id="DataBaseUsersButton" class="btn button" type="submit">Details</button>
+                    //         </form>
+                    //     </th>
+                    // </tr>
+                    // }
+                }
+            </tr>
+        </table>
+        <br />
+        <button class="btn button">Змінити дані</button>
+
+    </div>
+</div>

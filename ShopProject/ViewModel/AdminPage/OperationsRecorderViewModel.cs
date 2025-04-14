@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Entities;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.AdminPage;
 using System;
@@ -13,6 +12,7 @@ using System.Windows.Input;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 using ShopProject.Helpers.DataGridViewHelperModel;
+using ShopProjectDataBase.DataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -38,7 +38,7 @@ namespace ShopProject.ViewModel.AdminPage
         public OperationsRecorderViewModel()
         {
             _model = new OperationsRecorderModel();
-            _objectList = new List<OperationsRecorderEntiti>();
+            _objectList = new List<OperationsRecorderEntity>();
             _visibilitiDialogWindow = string.Empty;
             _openFileDialog = new OpenFileDialog();
             _objectListDialogWindow = new List<SoftwareDeviceSettlementOperationsHelper>();
@@ -67,8 +67,8 @@ namespace ShopProject.ViewModel.AdminPage
             get { return _password; }
             set { _password = value; OnPropertyChanged("Password"); }
         }
-        private List<OperationsRecorderEntiti> _objectList;
-        public List<OperationsRecorderEntiti> ObjectList
+        private List<OperationsRecorderEntity> _objectList;
+        public List<OperationsRecorderEntity> ObjectList
         {
             get { return _objectList; }
             set { _objectList = value; OnPropertyChanged(nameof(ObjectList)); }
@@ -153,8 +153,6 @@ namespace ShopProject.ViewModel.AdminPage
             });
 
         }
-
-
         private void SetFilewPage()
         {
             _visibilityDialogWindow = Visibility.Hidden;
@@ -246,7 +244,7 @@ namespace ShopProject.ViewModel.AdminPage
         public ICommand SaveBindingObjectOwnerCommand => _saveBindingObjectOwnerCommand;
         private void SaveBindingObjectOwner()
         {
-            if(_model.SaveBinding(ObjectList.ElementAt(SelectedItem),ObjectOwners))
+            if (_model.SaveBinding(ObjectList.ElementAt(SelectedItem), ObjectOwners))
             {
                 MessageBox.Show("Првиязка успішна");
                 VisibilityDialogWindow = Visibility.Hidden;

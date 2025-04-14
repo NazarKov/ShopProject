@@ -1,9 +1,8 @@
-﻿using NPOI.SS.Formula.Functions;
-using ShopProject.DataBase.Model;
-using ShopProject.Model;
+﻿using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Model.ToolsPage;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace ShopProject.ViewModel.ToolsPage
         private ICommand _searchBarCodeProductCommand;
 
         private FormationProductModel _model;
-        private List<ProductEntiti> _productsSelectGridView;
+        private List<ProductEntity> _productsSelectGridView;
 
         public FormationProductViewModel() 
         {
@@ -35,23 +34,23 @@ namespace ShopProject.ViewModel.ToolsPage
             _searchCode = string.Empty;
             _count = 0;
             _price = 0;
-            _units = new List<string>();
+            _units = new List<ProductUnitEntity>();
             _selectUnits = 0;
-            _ProductList = new List<ProductEntiti>();
-            _productsSelectGridView = new List<ProductEntiti>();
+            _ProductList = new List<ProductEntity>();
+            _productsSelectGridView = new List<ProductEntity>();
 
             _addProductDataBaseCommand = new DelegateCommand(AddProductDataBase);
             _searchBarCodeProductCommand = new DelegateCommand(SearchProduct);
 
-            _ProductList = new List<ProductEntiti>();
-            
+            _ProductList = new List<ProductEntity>();
+
             new Thread(new ThreadStart(SetFieldComboBox)).Start();
         }
         private void SetFieldComboBox()
         {
-            Units = _model.GetUnitList();
-            CodeUKTZED = _model.GetCodeUKTZEDList();
-            
+            Units = _model.GetUnits();
+            CodeUKTZED = _model.GetCodeUKTZED();
+
             SelectUnits = 0;
             SelectCodeUKTZED = 0;
         }
@@ -98,35 +97,35 @@ namespace ShopProject.ViewModel.ToolsPage
             set {  _articule = value; OnPropertyChanged("Articule"); }
         }
 
-        private List<string> _units;
-        public List<string> Units 
+        private List<ProductUnitEntity> _units;
+        public List<ProductUnitEntity> Units 
         {
             get { return _units; }
-            set { _units = value;  OnPropertyChanged("Units"); }
+            set { _units = value;  OnPropertyChanged(nameof(Units)); }
         }
 
         private int _selectUnits;
         public int SelectUnits
         {
             get { return _selectUnits; }
-            set { _selectUnits = value;OnPropertyChanged("SelectUnits"); }
+            set { _selectUnits = value;OnPropertyChanged(nameof(SelectUnits)); }
         }
 
-        private List<string> _codeUKTZED;
-        public List<string> CodeUKTZED
+        private List<CodeUKTZEDEntity> _codeUKTZED;
+        public List<CodeUKTZEDEntity> CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
+            set { _codeUKTZED = value; OnPropertyChanged(nameof(CodeUKTZED)); }
         }
         private int _selectCodeUKTZED;
         public int SelectCodeUKTZED
         {
             get { return _selectCodeUKTZED; }
-            set { _selectCodeUKTZED = value; OnPropertyChanged("SelectCodeUKTZED"); }
+            set { _selectCodeUKTZED = value; OnPropertyChanged(nameof(SelectCodeUKTZED)); }
         }
 
-        private List<ProductEntiti> _ProductList;
-        public List<ProductEntiti> ProductList
+        private List<ProductEntity> _ProductList;
+        public List<ProductEntity> ProductList
         {
             get { return _ProductList; }
             set { _ProductList = value; OnPropertyChanged("ProductList"); }
@@ -136,7 +135,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void SearchProduct()
         {
-            List<ProductEntiti> temp;
+            List<ProductEntity> temp;
             if (SearchCode.Length > 12)
             {
                 if (SearchCode != "0000000000000")//винести в настройки
@@ -145,7 +144,7 @@ namespace ShopProject.ViewModel.ToolsPage
                     if (item != null)
                     {
                         item.Count = 1;
-                        temp = new List<ProductEntiti>();
+                        temp = new List<ProductEntity>();
                         temp = ProductList;
 
                         if (temp.Find(pr => pr.Code == item.Code) != null)
@@ -157,7 +156,7 @@ namespace ShopProject.ViewModel.ToolsPage
                             temp.Add(item);
                         }
 
-                        ProductList = new List<ProductEntiti>();
+                        ProductList = new List<ProductEntity>();
                         ProductList = temp;
                         SearchCode = string.Empty;
                     }
@@ -168,21 +167,21 @@ namespace ShopProject.ViewModel.ToolsPage
                     {
                         if (ProductList.ElementAt(ProductList.Count - 1).Count == 1)
                         {
-                            temp = new List<ProductEntiti>();
+                            temp = new List<ProductEntity>();
                             temp = ProductList;
 
                             temp.Remove(temp.ElementAt(temp.Count - 1));
-                            ProductList = new List<ProductEntiti>();
+                            ProductList = new List<ProductEntity>();
                             ProductList = temp;
                         }
                         else
                         {
-                            temp = new List<ProductEntiti>();
+                            temp = new List<ProductEntity>();
                             temp = ProductList;
 
 
                             temp.ElementAt(ProductList.Count - 1).Count -= 1;
-                            ProductList = new List<ProductEntiti>();
+                            ProductList = new List<ProductEntity>();
                             ProductList = temp;
                         }
                         SearchCode = string.Empty;
@@ -192,21 +191,21 @@ namespace ShopProject.ViewModel.ToolsPage
         }
 
         public ICommand UpdateProductsInFormedProductCommand { get => new DelegateParameterCommand(UpdateProductsInFormedProduct, CanRegister); }
-       
+
         private void UpdateProductsInFormedProduct(object parameter)
         {
-            _productsSelectGridView = new List<ProductEntiti>();
+            _productsSelectGridView = new List<ProductEntity>();
             if (_model != null)
             {
                 _model.ContertToListProduct((IList)parameter, _productsSelectGridView);
-                
+
                 var list = _model.UpdateList(_ProductList, _productsSelectGridView);
-                
+
                 if (list != null)
                 {
                     ProductList = list;
                 }
-            } 
+            }
         }
 
         public ICommand ExitWindow { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -222,7 +221,15 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void AddProductDataBase()
         {
-            if(_model.AddProduct(Name,Code,Articule,(decimal)Price,Count,Units.ElementAt(SelectUnits),CodeUKTZED.ElementAt(SelectCodeUKTZED),ProductList))
+            if (_model.AddProduct(new ProductEntity() {
+                NameProduct = Name,
+                Code = Code,
+                Articule = Articule,
+                Price = (decimal)Price,
+                Count = Count,
+                Unit = Units.ElementAt(SelectUnits),
+                CodeUKTZED = CodeUKTZED.ElementAt(SelectCodeUKTZED) },
+                ProductList))
             {
                 MessageBox.Show("Товар добавлено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
             }

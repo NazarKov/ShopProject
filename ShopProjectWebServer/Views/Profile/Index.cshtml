@@ -1,0 +1,55 @@
+﻿@{
+    Layout = ViewData["Layout"]?.ToString() ?? "_Layout";
+    ViewData["Title"] = "Profile Page";
+}
+@model ProfileViewModel
+<div>
+    <div class="border admin-informaion">
+        <div class="border admin-informaion-header">
+            <p>Admin User Details </p>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Login</th>
+                <th>
+                    <p>@Model.Login</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <th>
+                    <p>@Model.Password</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <th>
+                    <p>@Model.Email</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <th>
+                    <p>@Model.Role</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Rule</th>
+                <th>
+                    <p>@Model.Rule</p>
+                </th>
+            </tr>
+        </table>
+        <br />
+        <div class="block-buttons">
+        @using (Html.BeginForm("ChangeData", "Profile", FormMethod.Post))
+        {
+            <button class="btn button button-size">Змінити дані</button>
+        }
+        @using (Html.BeginForm("ChangePassword", "Profile", FormMethod.Post))
+        {
+            <button class="btn button button-size">Змінити пароль</button>
+        }
+        </div>
+    </div>
+</div>

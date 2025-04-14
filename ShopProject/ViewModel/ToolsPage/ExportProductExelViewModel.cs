@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using ShopProject.DataBase.Model;
 using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Model;
 using ShopProject.Model.Command;
@@ -18,13 +17,13 @@ namespace ShopProject.ViewModel.ToolsPage
         private ICommand _saveItemInFileCommand;
         private ICommand _saveAllItemInFileCommand;
 
-      
+
 
         public ExportProductExelViewModel()
         {
             _model = new ExportProductExelModel();
 
-    
+
             _addProductCommand = new DelegateCommand(AddItemExportList);
             _saveItemInFileCommand = new DelegateCommand(SaveExprotItem);
             _saveAllItemInFileCommand = new DelegateCommand(SaveExprotItemAll);
@@ -36,7 +35,7 @@ namespace ShopProject.ViewModel.ToolsPage
 
             SetFieldFileDialog();
         }
-    
+
         private void SetFieldFileDialog()
         {
             _saveFileDialog = new SaveFileDialog();
@@ -48,14 +47,14 @@ namespace ShopProject.ViewModel.ToolsPage
         public List<ExportProductInFileHelper> Product
         {
             get { return _Product; }
-            set { _Product = value;  OnPropertyChanged("Product"); }
+            set { _Product = value; OnPropertyChanged("Product"); }
         }
 
 
         private string _searchCode;
-        public string SearchCode 
+        public string SearchCode
         {
-            get { return _searchCode; } 
+            get { return _searchCode; }
             set { _searchCode = value; OnPropertyChanged("SearchCode"); }
         }
 
@@ -63,10 +62,9 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void AddItemExportList()
         {
+
             List<ExportProductInFileHelper> _tempProduct = new List<ExportProductInFileHelper>();
-
-
-            if (SearchCode.Length > 12)
+            if (SearchCode.Length >= 12)
             {
                 if (_model != null)
                 {
@@ -103,7 +101,7 @@ namespace ShopProject.ViewModel.ToolsPage
                     else
                     {
                         _tempProduct.AddRange(Product);
-                        
+
                         if (_tempProduct.Count != 0)
                         {
                             _tempProduct.RemoveAt(_tempProduct.Count - 1);
@@ -114,11 +112,10 @@ namespace ShopProject.ViewModel.ToolsPage
 
                         SearchCode = string.Empty;
                     }
-                   
+
                 }
             }
         }
-
         public ICommand SaveItemInFileCommand => _saveItemInFileCommand;
 
         private void SaveExprotItem()
@@ -135,12 +132,10 @@ namespace ShopProject.ViewModel.ToolsPage
         private void SaveExprotItemAll()
         {
             _saveFileDialog.ShowDialog();
-            if(_model!=null)
+            if (_model != null)
             {
                 _model.Save(_saveFileDialog.FileName);
             }
         }
-     
-
     }
 }

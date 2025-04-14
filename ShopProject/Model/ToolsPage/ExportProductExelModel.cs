@@ -1,34 +1,34 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Helpers.DataGridViewHelperModel;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ShopProject.Model.ToolsPage
 {
     internal class ExportProductExelModel
     {
-        private IEntityGet<ProductEntiti> _productRepository;
         private FileExel? fileExel;
 
-        public ExportProductExelModel()
-        {
-            _productRepository = new ProductTableAccess();
-        }
+        public ExportProductExelModel(){}
 
         public ExportProductInFileHelper GetItem(string itemSearch)
         {
 
             try
             {
-                return  new ExportProductInFileHelper()
+                ExportProductInFileHelper item = new ExportProductInFileHelper();
+                Task task = Task.Run(async () =>
                 {
-                    Product = _productRepository.GetByBarCode(itemSearch),
-                    ProductCount = 1
-                };
+                    item.Product = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, itemSearch);
+                    item.ProductCount = 1;
+                });
+                task.Wait();
+                return item;
             }
             catch (Exception ex)
             {
@@ -37,11 +37,19 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public List<ProductEntiti> GetItems()
+        public List<ProductEntity> GetItems()
         {
             try
             {
-                return (List<ProductEntiti>)_productRepository.GetAll("in_stock");
+                List<ProductEntity> items = new List<ProductEntity>();
+
+                Task task = Task.Run(async ()=>{
+                
+                    items = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+                });
+
+                task.Wait();
+                return items;
             }
             catch (Exception ex)
             {
@@ -49,11 +57,11 @@ namespace ShopProject.Model.ToolsPage
                 return null;
             }
         }
-        public void Save(List<ExportProductInFileHelper> products ,string path)
+        public void Save(List<ExportProductInFileHelper> products, string path)
         {
             if (Export(path, products))
             {
-                MessageBox.Show("Товар успішно експортовано","informations",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("Товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
@@ -70,7 +78,7 @@ namespace ShopProject.Model.ToolsPage
             {
                 foreach (var item in list)
                 {
-                    goods.Add(new ExportProductInFileHelper() { Product = item,ProductCount = item.Count });
+                    goods.Add(new ExportProductInFileHelper() { Product = item, ProductCount = item.Count });
                 }
             }
 
@@ -84,17 +92,17 @@ namespace ShopProject.Model.ToolsPage
             }
         }
 
-        public bool Export(string path,List<ExportProductInFileHelper> goods)
+        public bool Export(string path, List<ExportProductInFileHelper> goods)
         {
             try
             {
                 fileExel = new FileExel();
-                fileExel.Write(path,goods);
+                fileExel.Write(path, goods);
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }

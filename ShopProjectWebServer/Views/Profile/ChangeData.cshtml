@@ -1,0 +1,39 @@
+﻿@{
+    Layout = ViewData["Layout"]?.ToString() ?? "_Layout";
+    ViewData["Title"] = "ChangeData Page";
+}
+@model ProfileViewModel
+
+<div>
+    <div class="border admin-informaion">
+        <div class="border admin-informaion-header">
+            <p>Change User Data </p>
+        </div>
+        <form asp-action="ChangeData" asp-controller="Profile" method="get">
+            <table class="table">
+                <tr>
+                    <th>@Model.Error</th>
+                </tr>
+                <tr>
+                    <th>Login</th>
+                    <th>
+                        <input asp-for="Login" type="text" class="form-control" placeholder="write Login" />
+                    </th>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <th>
+                         <input asp-for="Email" type="text" class="form-control"  placeholder="Email" />
+                    </th>
+                </tr>
+            </table>
+            <br />
+            <button class="btn button button-size">Змінити дані</button>
+        </form>
+        @using (Html.BeginForm("index", "Profile", FormMethod.Post))
+        {
+            <button class="btn button button-size">Повернутися назад</button>
+        }
+       
+    </div>
+</div>

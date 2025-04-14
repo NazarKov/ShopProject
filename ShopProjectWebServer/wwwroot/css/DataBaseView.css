@@ -1,0 +1,20 @@
+﻿.DataBase-main-div
+{
+    margin-left:200px;
+    width:87%;
+    display:inline-block;
+}
+
+.DataBase-list-informaion {
+    margin-top: 50px;
+    padding: 15px; 
+    border-radius: 5px;
+    
+}
+
+.DataBase-list-informaion-header {
+    display: block;
+    padding: 10px;
+    height: 50px;
+    border-radius: 5px;
+} 

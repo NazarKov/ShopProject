@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Model;
-using ShopProject.Model;
+﻿using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.Views.StoragePage;
@@ -21,22 +20,22 @@ namespace ShopProject.ViewModel.StoragePage
 
         private ICommand _searchCommand;
         private ICommand _visibileAllCommand;
-        private List<ProductEntiti> _goodsList;
+//        private List<ProductEntiti> _goodsList;
 
         public OutOfStockViewModel() 
         {
-            _model = new OutOfStockModel();
-            _goods = new List<ProductEntiti>();
-            _goodsList = new List<ProductEntiti>();
+            //_model = new OutOfStockModel();
+            //_goods = new List<ProductEntiti>();
+            //_goodsList = new List<ProductEntiti>();
 
             _visibileAllCommand = new DelegateCommand(setFieldDataGrid);
-            _searchCommand = new DelegateCommand(SearchProductInCodeAndName);
+            //_searchCommand = new DelegateCommand(SearchProductInCodeAndName);
             setFieldDataGrid();
             SetFieldTextComboBox();
         }
         private void setFieldDataGrid()
         {
-            Goods = _model.GetAll();   
+            //Goods = _model.GetAll();   
         }
 
         private void SetFieldTextComboBox()
@@ -48,12 +47,12 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<ProductEntiti> _goods;
-        public List<ProductEntiti> Goods
-        {
-            get { return _goods; }
-            set { _goods = value; OnPropertyChanged("Goods"); }
-        }
+        //private List<ProductEntiti> _goods;
+        //public List<ProductEntiti> Goods
+        //{
+        //    get { return _goods; }
+        //    set { _goods = value; OnPropertyChanged("Goods"); }
+        //}
 
         private List<string> _searchTemplateName;
         public List<string> SearchTemplateName
@@ -77,71 +76,71 @@ namespace ShopProject.ViewModel.StoragePage
 
         public ICommand SearchCommand => _searchCommand;
 
-        void SearchProductInCodeAndName()
-        {
-            if (_model != null)
-                switch (_selectedIndexSearch)
-                {
-                    case 0:
-                        {
-                            Goods = _model.SearchGoods(_nameSearch);
-                            break;
-                        }
-                    case 1:
-                        {
-                            Goods = _model.SearchGoods(_nameSearch);
-                            break;
-                        }
-                    case 2:
-                        {
-                            Goods = _model.SearchGoods(_nameSearch);
-                            break;
-                        }
-                }
-        }
+        //void SearchProductInCodeAndName()
+        //{
+        //    if (_model != null)
+        //        switch (_selectedIndexSearch)
+        //        {
+        //            case 0:
+        //                {
+        //                    Goods = _model.SearchGoods(_nameSearch);
+        //                    break;
+        //                }
+        //            case 1:
+        //                {
+        //                    Goods = _model.SearchGoods(_nameSearch);
+        //                    break;
+        //                }
+        //            case 2:
+        //                {
+        //                    Goods = _model.SearchGoods(_nameSearch);
+        //                    break;
+        //                }
+        //        }
+        //}
         public ICommand VisibileAllCommand => _visibileAllCommand;
 
-        public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand(ReturnGoodsInStorage, (object parameter) => true); }
-        private void ReturnGoodsInStorage(object parameter)
-        {
-            if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                _goodsList = new List<ProductEntiti>();
-                if (_goodsList != null)
-                {
-                    _model.ConvertToList((IList)parameter, _goodsList);
-                    if (_goodsList.Count == 1)
-                    {
-                        if (_model.ReturnGoodsInStorage(_goodsList[0]))
-                        {
-                            new Thread(new ThreadStart(setFieldDataGrid)).Start();
-                        }
-                    }
-                }
-            }
-        }
+        //public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand(ReturnGoodsInStorage, (object parameter) => true); }
+        //private void ReturnGoodsInStorage(object parameter)
+        //{
+        //    if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //    {
+        //        _goodsList = new List<ProductEntiti>();
+        //        if (_goodsList != null)
+        //        {
+        //            _model.ConvertToList((IList)parameter, _goodsList);
+        //            if (_goodsList.Count == 1)
+        //            {
+        //                if (_model.ReturnGoodsInStorage(_goodsList[0]))
+        //                {
+        //                    new Thread(new ThreadStart(setFieldDataGrid)).Start();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        public ICommand DeleteGoodsOutOfStockCommand { get => new DelegateParameterCommand(DeleteGoods, (object parameter) => true); }
-        private void DeleteGoods(object parameter)
-        {
-            if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                _goodsList = new List<ProductEntiti>();
-                if (_goodsList != null)
-                {
-                    _model.ConvertToList((IList)parameter, _goodsList);
+        //public ICommand DeleteGoodsOutOfStockCommand { get => new DelegateParameterCommand(DeleteGoods, (object parameter) => true); }
+        //private void DeleteGoods(object parameter)
+        //{
+        //    if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //    {
+        //        _goodsList = new List<ProductEntiti>();
+        //        if (_goodsList != null)
+        //        {
+        //            _model.ConvertToList((IList)parameter, _goodsList);
 
-                    if (_goodsList.Count == 1)
-                    {
-                        if (_model.DeleteRecordArhive(_goodsList[0]))
-                        {
-                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
-                            new Thread(new ThreadStart(setFieldDataGrid)).Start();
-                        }
+        //            if (_goodsList.Count == 1)
+        //            {
+        //                if (_model.DeleteRecordArhive(_goodsList[0]))
+        //                {
+        //                    MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+        //                    new Thread(new ThreadStart(setFieldDataGrid)).Start();
+        //                }
 
-                    }
-                }
-            }
-        }
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

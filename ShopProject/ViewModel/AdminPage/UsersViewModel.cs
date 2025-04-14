@@ -9,8 +9,8 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
-using ShopProject.DataBase.Model;
 using System.Threading.Tasks;
+using ShopProjectDataBase.DataBase.Model;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -33,10 +33,10 @@ namespace ShopProject.ViewModel.AdminPage
         public UsersViewModel() 
         {
             _model = new UsersModel();
-            _users = new List<UserEntiti>();
+            _users = new List<UserEntity>();
 
             _openWindowCreateUserCommand = new DelegateCommand(CreateUser);
-            _opendUserDateCommand = new DelegateCommand(OpendUserData);
+            _opendUserDateCommand = new DelegateCommand(OpenUserData);
             _deleteSelectedUserCommand = new DelegateCommand(DeleteUser);
             _closeDialogWindowCommand = new DelegateCommand(CloseDialogWindow);
             _bindingObjectOwnerCommandl = new DelegateCommand(BindingObjectOwner);
@@ -52,11 +52,11 @@ namespace ShopProject.ViewModel.AdminPage
             new Thread(new ThreadStart(SetFieldPage)).Start();
         }
 
-        private List<UserEntiti> _users;
-        public List<UserEntiti> Users
+        private List<UserEntity> _users;
+        public List<UserEntity> Users
         {
             get { return _users; }
-            set { _users = value; OnPropertyChanged("Users"); }
+            set { _users = value; OnPropertyChanged(nameof(Users)); }
         }
         private int _selectedItem;
         public int SelectedItem
@@ -81,7 +81,8 @@ namespace ShopProject.ViewModel.AdminPage
         {
             _visibilityDialogWindow = Visibility.Collapsed;
             Users.Clear();
-            SearchGoods("");
+            Users = _model.GetUsers();
+            Users.Reverse();
         }
 
         public ICommand OpenWindowCreateUserCommand => _openWindowCreateUserCommand;
@@ -92,23 +93,23 @@ namespace ShopProject.ViewModel.AdminPage
         }
 
         public ICommand OpenUserDateCommand => _opendUserDateCommand;
-        private void OpendUserData()
+        private void OpenUserData()
         {
-             Session.UserItem = Users.ElementAt(SelectedItem);
+            Session.UserItem = Users.ElementAt(SelectedItem);
             new UserData().Show();
         }
         public ICommand DeleteSelecteUserCommand => _deleteSelectedUserCommand;
         private void DeleteUser()
         {
-            var user = _users.ElementAt(SelectedItem);
-            if(user != null)
-            {
-                if(_model.DeleteUser(user))
-                {
-                    MessageBox.Show("Користувача видалено");
-                    SetFieldPage();
-                }
-            }
+            //var user = _users.ElementAt(SelectedItem);
+            //if(user != null)
+            //{
+            //    if(_model.DeleteUser(user))
+            //    {
+            //        MessageBox.Show("Користувача видалено");
+            //        SetFieldPage();
+            //    }
+            //}
         }
         public ICommand CloseDialogWindowCommand => _closeDialogWindowCommand;
         public void CloseDialogWindow()
@@ -118,8 +119,8 @@ namespace ShopProject.ViewModel.AdminPage
         public ICommand BindingObjectOwnerCommand => _bindingObjectOwnerCommandl;
         private void BindingObjectOwner()
         {
-            var items = _model.GetAllObject(); 
-            if(items!= null)
+            var items = _model.GetAllObject();
+            if (items != null)
             {
 
                 ObjectListDialogWindow = items;
@@ -155,27 +156,27 @@ namespace ShopProject.ViewModel.AdminPage
         }
         private async void UpdateDataGrid(string parameter)
         {
-            await Task.Run(() =>
-            {
-                _nameSearch = parameter.ToString();
+            //await Task.Run(() =>
+            //{
+            //    _nameSearch = parameter.ToString();
 
-                var result = _model.SearchObject(parameter.ToString());
-                result.Reverse();
+            //    var result = _model.SearchObject(parameter.ToString());
+            //    result.Reverse();
 
-                if (Users.Count != 0)
-                {
-                    Users.Clear();
-                }
+            //    if (Users.Count != 0)
+            //    {
+            //        Users.Clear();
+            //    }
 
-                if (result.Count > 100)
-                {
-                    Users = result.Take(100).ToList();//100 це кількість елементів на екрані 
-                }
-                else
-                {
-                    Users = result;
-                }
-            });
+            //    if (result.Count > 100)
+            //    {
+            //        Users = result.Take(100).ToList();//100 це кількість елементів на екрані 
+            //    }
+            //    else
+            //    {
+            //        Users = result;
+            //    }
+            //});
 
         }
 

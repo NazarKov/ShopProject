@@ -1,8 +1,8 @@
 ﻿using LocateWindow;
-using NPOI.SS.Formula.Functions;
-using ShopProject.DataBase.Entities;
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
+using ShopProject.Model.UserPage;
+using ShopProjectDataBase.DataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,23 +15,24 @@ namespace ShopProject.ViewModel.UserPage
 {
     internal class OperationsRecorderViewModel : ViewModel<OperationsRecorderViewModel>
     {
-
+        private OperationsRecorderOperationsModel _model;
         private ICommand _openWorkShiftMenu;
 
         public OperationsRecorderViewModel() 
         {
-            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntiti>();
- 
+            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
+            _model = new OperationsRecorderOperationsModel();
+
             setFieldPage();
 
         }
 
 
-        private List<OperationsRecorderEntiti> _softwareDeviceSettlementOperationsList;
-        public List<OperationsRecorderEntiti> SoftwareDeviceSettlementOperationsList
+        private List<OperationsRecorderEntity> _softwareDeviceSettlementOperationsList;
+        public List<OperationsRecorderEntity> SoftwareDeviceSettlementOperationsList
         {
             get { return _softwareDeviceSettlementOperationsList; }
-            set {  _softwareDeviceSettlementOperationsList = value; OnPropertyChanged("SoftwareDeviceSettlementOperationsList"); }
+            set { _softwareDeviceSettlementOperationsList = value; OnPropertyChanged("SoftwareDeviceSettlementOperationsList"); }
         }
         private int _selectedItem;
         public int SelectedItem
@@ -42,7 +43,7 @@ namespace ShopProject.ViewModel.UserPage
 
         private void setFieldPage()
         {
-            var items = Session.Devices;
+            var items = _model.GetAllOperationsRecorderOperationsUser();
             if (items != null)
             {
                 SoftwareDeviceSettlementOperationsList = items;
@@ -54,7 +55,7 @@ namespace ShopProject.ViewModel.UserPage
         private void OpenWorkShiftMenu(object parameter)
         {
             Session.FocusDevices = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter);
-            Mediator.Notify("OpenWorkShiftMenu", "");
+            Mediator.Notify("RedirectToWorkShiftMenu", "");
 
         }
         private bool CanRegister(object parameter) => true;

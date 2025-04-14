@@ -1,0 +1,74 @@
+﻿.adminLayoutHeaderMenu {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    width: 100%;
+    height: 50px;
+    display: inline-flex;
+}
+
+.title-div {
+    text-align: center;
+    padding: 15px;
+    margin-left: 10px;
+}
+
+.menu-div {
+    margin-left: auto;
+    height: 50px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    margin-left: 150px;
+    margin-right: 50px;
+}
+
+    .menu > li {
+        position: relative;
+    }
+
+        .menu > li > p {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            background-color: #333;
+        }
+
+            .menu > li > p:hover {
+                background-color: #555;
+            }
+
+.submenu {
+    width: 79px;
+    display: none;
+    position: absolute;
+    top: 75%;
+    left: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 1000;
+    background-color: lightgray;
+}
+
+    .submenu li {
+        width: 100%;
+    }
+
+        .submenu li a {
+            display: block;
+            padding: 10px 20px;
+            color: red;
+            text-decoration: none;
+        }
+
+            .submenu li a:hover {
+                background-color: #777;
+            }
+
+.menu > li:hover .submenu {
+    display: block;
+}

@@ -78,28 +78,27 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void SetFieldWidnow()
         {
-            //if(StaticResourse.user !=null)
-            //{
-            //    var user = _model.GetUser(StaticResourse.user.Login);
-            //
-            //    Name = user.FullName;
-            //    Login = user.Login;
-            //    Tin = user.TIN;
-            //    Role = user.UserRole.NameRole;
-            //
-            //    if (user.Status == 0)
-            //    {
-            //        Status = "Користувач без ключа ЕЦП";
-            //    }
-            //    else
-            //    {
-            //        Status = "Користувач з ключем ЕЦП";
-            //    }
-            //
-            //    AutomaticLogin = user.AutomaticLogin;
-            //    DateCreate = DateTime.Parse(user.CreatedAt.ToString());
-            //}
-        
+            if (Session.UserItem != null)
+            {
+                var user = _model.GetUser();
+
+                Name = user.FullName;
+                Login = user.Login;
+                Tin = user.TIN;
+                Role = user.UserRole.NameRole;
+
+                if (user.Status == 0)
+                {
+                    Status = "Користувач без ключа ЕЦП";
+                }
+                else
+                {
+                    Status = "Користувач з ключем ЕЦП";
+                }
+
+                AutomaticLogin = user.AutomaticLogin;
+                DateCreate = DateTime.Parse(user.CreatedAt.ToString());
+            }
         }
 
     }

@@ -32,14 +32,14 @@ namespace ShopProject.ViewModel.ToolsPage
             IsShowProductBarCode = true;
             IsShowProductName = true;
             IsShowProductDescription = true;
-            
+
             SetFeildTextBox();
         }
         private void SetFeildTextBox()
         {
 
             var item = Session.Product;
-            NameCompany = Session.NameCompany;
+            //NameCompany = Session.NameCompany;
             if (item == null)
             {
 
@@ -96,7 +96,7 @@ namespace ShopProject.ViewModel.ToolsPage
             get { return _code; }
             set { _code = value; OnPropertyChanged("Code"); }
         }
-        
+
         private string _description;
         public string Description
         {
@@ -170,7 +170,6 @@ namespace ShopProject.ViewModel.ToolsPage
             window?.Close();
         }
         private bool CanRegister(object parameter) => true;
-
 
     }
 }

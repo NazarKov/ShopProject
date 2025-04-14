@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Start Page";
+}
+@model StartViewModel
+
+<div class="container-main-StartView">
+    <div class="StartSetting box-shadow">
+        <h1>
+            Налаштування веб серверу
+        </h1>    
+        <div class="createDB box-shadow">
+            <h3 style="margin: 10px;">Налаштування бази даних</h3>
+            <p id="error-create-datadase" class="error-dataBase">@Model.MessegeErrorCreateDataBase</p>
+            <p id="messege-create-datadase" class="messege-dataBase">@Model.MessegeCreateDataBase</p>
+
+            <form asp-controller="Start" asp-action="CreateDataBase" method="post">
+                
+                <p>Назва бази даних</p>
+                <input name="NameDataBase" asp-for="NameDataBase" class="createDB-nameDB" placeholder="Назва">
+                <br />
+
+                <p>Пароль бази даних</p>
+                <input name="PasswordDataBase" asp-for="PasswordDataBase" class="createDB-nameDB" placeholder="Пароль">
+                <br />
+                <div class="text-createDataBase">
+                    <p>Тип бази даних</p>
+                    <p id="text-TypeConnectDataBase" class="createDB-typeConnectDB">Тип підключення даних</p>
+                </div>
+                <br />
+                <select id="TypeDataBase" class="createDB-typeDB" asp-items="Model.TypeDataBase" asp-for="TypeDataBaseSelectItems"></select>
+                <select id="TypeConnectDataBase" class="createDB-typeDB" asp-items="Model.TypeConnectDataBase" asp-for="TypeConnectDataBaseSelectItems"></select>
+                <br>
+                <button id="create-database-btn" class="createDB-Button">Створити базу даних</button>
+            </form>
+        </div>
+        <p>Notes:Basic Login: Admin , Password : Admin</p>
+</div>

@@ -1,7 +1,4 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.DataAccess.DBAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -15,74 +12,67 @@ using System.Xml.Serialization;
 
 namespace ShopProject.Model.SettingPage
 {
-    internal class SettingDataBaseModel 
+    internal class SettingDataBaseModel
     {
-      
-        private IDataAccess _contextDataBase;
+        //private SettingsDataBaseApiContoller _contoller;
+
         public SettingDataBaseModel()
         {
-            _contextDataBase = new DataBaseAceess();
+            //_contoller = HttpDataBaseAPIController.SettingContoller;
         }
+        //public async Task<SettingsDataBase> GetSetting(string token)
+        //{
+        //    try
+        //    {
+        //        if (_contoller == null)
+        //        {
+        //            throw new Exception("Перевірте підключення до серверу");
+        //        }
+        //        return await _contoller.GetSetting(token);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        return null;
+        //    }
+        //}
+        //public async Task ConnectDataBase(string nameDataBase, string passwordDataBase, string password, ConnectionType  typeConnect, TypeDataBase typeDataBase)
+        //{
+        //    try
+        //    {
+        //        if (_contoller == null)
+        //        {
+        //            throw new Exception("Перевірте підключення до серверу");
+        //        }
+        //        SettingsDataBase settings = new SettingsDataBase()
+        //        {
 
-        public bool CreateDataBase(string name,int typeConnections)
-        {
-            try
-            {
-                if(typeConnections == 0)
-                {
-                    AppSettingsManager.SetConnectionDataBase(name,TypeConnections.EXPRESS);
-                    AppSettingsManager.SetParameterFile("TypeConnect", "EXPRESS");
-                }
-                else
-                {
-                    AppSettingsManager.SetConnectionDataBase(name, TypeConnections.DEVELOPER);
-                    AppSettingsManager.SetParameterFile("TypeConnect", "DEVELOPER");
-                }
-                AppSettingsManager.SetParameterFile("NameDataBase", name);
-                _contextDataBase.Create();
-                return true;
-                
-            }
-            catch (Exception ex)
-            {
-                HendlerShowExeption(ex); return false;
-            }
-        }
-
-        public bool DeleteDataBase()
-        {
-            try
-            {
-                _contextDataBase.Delete();
-                AppSettingsManager.SetParameterFile("NameDataBase", string.Empty);
-                AppSettingsManager.SetParameterFile("ConnectionString", string.Empty);
-                return true;
-            }
-            catch(Exception ex)
-            {
-                HendlerShowExeption(ex);
-                return false;
-            }
-        }
-        public bool ClearDataBase()
-        {
-            try
-            {
-
-                _contextDataBase.Clear();
-                return true;
-            }
-            catch(Exception ex)
-            {
-                HendlerShowExeption(ex);
-                return false;
-            }
-        }
-      
-        private void HendlerShowExeption(Exception ex)
-        {
-            MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-
-        }
+        //            PasswordDataBase = passwordDataBase,
+        //            ConnectionString = new ConnectionString()
+        //            {
+        //                ConnectionType = typeConnect,
+        //                InitialCatalog = nameDataBase,
+        //                IntegratedSecurity = true,
+        //            },
+        //            TypeDataBase = typeDataBase
+        //        };
+        //        await _contoller.ConnectDataBase(settings, password);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
+        //public async Task DisconnectDataBase(string token)
+        //{
+        //    try
+        //    {
+        //        await _contoller.DisconnectDataBase(token);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
     }
 }

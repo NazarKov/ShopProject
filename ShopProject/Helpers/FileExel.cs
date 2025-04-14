@@ -1,7 +1,6 @@
 ﻿using ExcelDataReader;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using ShopProject.DataBase.Model;
 using ShopProject.Helpers.DataGridViewHelperModel;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 
 namespace ShopProject.Helpers
@@ -29,6 +29,8 @@ namespace ShopProject.Helpers
         {
             try
             {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
                 using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read))
                 {
                     IExcelDataReader read = ExcelReaderFactory.CreateReader(stream);

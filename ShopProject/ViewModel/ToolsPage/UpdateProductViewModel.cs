@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Model;
-using ShopProject.Model.Command;
+﻿using ShopProject.Model.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Windows;
 using ShopProject.Model.ToolsPage;
 using System.Threading;
 using ShopProject.Helpers;
+using ShopProjectDataBase.DataBase.Model;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
@@ -18,12 +18,12 @@ namespace ShopProject.ViewModel.ToolsPage
         private ICommand _saveProductCommand;
 
         private UpdateProductModel _model;
-        private ProductEntiti? _products;
+        private ProductEntity? _products;
 
         public UpdateProductViewModel()
         {
             _model = new UpdateProductModel();
-            _products = new ProductEntiti();
+            _products = new ProductEntity();
 
             _saveProductCommand = new DelegateCommand(UpdateProductDataBase);
 
@@ -35,20 +35,20 @@ namespace ShopProject.ViewModel.ToolsPage
             _name = string.Empty;
             _articule = string.Empty;
             _units = null;
-            _selectUnits = string.Empty;
+            _selectUnits = 0;
 
-            Units = new List<string>();
-            CodeUKTZED = new List<string>();
+            Units = new List<ProductUnitEntity>();
+            CodeUKTZED = new List<CodeUKTZEDEntity>();
             ClearResourses();
-            SetFieldText();
-            new Thread(new ThreadStart(setFiledWindow)).Start();
+
+            setFiledWindow();
         }
 
         private void setFiledWindow()
         {
-            Units = _model.GetUnitList();
-            CodeUKTZED = _model.GetCodeUKTZEDList();
-            
+            Units = _model.GetUnits();
+            CodeUKTZED = _model.GetCodeUKTZED();
+            SetFieldText();
         }
 
         private Guid _id;
@@ -70,7 +70,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public string Articule
         {
             get { return _articule; }
-            set { _articule=value; OnPropertyChanged("Articule"); }
+            set { _articule = value; OnPropertyChanged("Articule"); }
         }
 
         private decimal _price;
@@ -87,31 +87,31 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _count = value; OnPropertyChanged("Count"); }
         }
 
-        private List<string>? _units;
-        public List<string>? Units
+        private List<ProductUnitEntity>? _units;
+        public List<ProductUnitEntity>? Units
         {
             get { return _units; }
-            set { _units = value; OnPropertyChanged("Units"); }
+            set { _units = value; OnPropertyChanged(nameof(Units)); }
         }
 
-        private string _selectUnits;
-        public string SelectUnits
+        private int _selectUnits;
+        public int SelectUnits
         {
             get { return _selectUnits; }
-            set { _selectUnits = value;  }
+            set { _selectUnits = value; OnPropertyChanged(nameof(SelectUnits)); }
         }
 
-        private List<string> _codeUKTZED;
-        public List<string> CodeUKTZED
+        private List<CodeUKTZEDEntity> _codeUKTZED;
+        public List<CodeUKTZEDEntity> CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
+            set { _codeUKTZED = value; OnPropertyChanged(nameof(CodeUKTZED)); }
         }
-        private string? _selectCodeUKTZED;
-        public string? SelcetCodeUKTZED
+        private int _selectCodeUKTZED;
+        public int SelectCodeUKTZED
         {
             get { return _selectCodeUKTZED; }
-            set { _selectCodeUKTZED = value;}
+            set { _selectCodeUKTZED = value; OnPropertyChanged(nameof(SelectCodeUKTZED)); }
         }
 
         public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -139,9 +139,9 @@ namespace ShopProject.ViewModel.ToolsPage
                 if (_products.Count != null)
                     Count = (decimal)_products.Count;
                 if (_products.Unit.ShortNameUnit != null)
-                    SelectUnits = _products.Unit.ShortNameUnit;
+                    SelectUnits = Units.IndexOf(Units.Where(i=>i.NameUnit ==_products.Unit.NameUnit).First());
                 if (_products.CodeUKTZED != null)
-                    SelcetCodeUKTZED = _products.CodeUKTZED.NameCode;
+                    SelectCodeUKTZED = CodeUKTZED.IndexOf(CodeUKTZED.Where(i => i.NameCode == _products.CodeUKTZED.NameCode).First());
             }
         }
         private void ClearResourses()
@@ -153,10 +153,19 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void UpdateProductDataBase()
         {
-                if (_model.UpdateItemDataBase(_id,_name, _code, _articule, _price, _count, _selectUnits,_selectCodeUKTZED))
-                {
-                    MessageBox.Show("Товар редаговано","Інформація",MessageBoxButton.OK,MessageBoxImage.Information);
-                }
+            if (_model.UpdateItemDataBase(new ProductEntity() {
+                ID = _id,
+                NameProduct = _name,
+                Code = _code,
+                Articule = _articule,
+                Price = _price,
+                Count = _count,
+                Unit = Units.ElementAt(_selectUnits),
+                CodeUKTZED = CodeUKTZED.ElementAt(_selectCodeUKTZED)
+                }))
+            {
+                MessageBox.Show("Товар редаговано", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }

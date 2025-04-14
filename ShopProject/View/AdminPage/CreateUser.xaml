@@ -41,7 +41,7 @@
         <TextBox x:Name="textBox1" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Center" Width="120"/>
 
         <Label x:Name="label3" Grid.Column="1" Grid.Row="5" Content="Посада" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-        <ComboBox x:Name="comboBox" Grid.Column="1" ItemsSource="{Binding UserRoles}" SelectedIndex="{Binding SelectUserRole}" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="5" VerticalAlignment="Center" Width="120"/>
+        <ComboBox x:Name="comboBox" Grid.Column="1" ItemsSource="{Binding UserRoles}" SelectedIndex="{Binding SelectUserRole}" DisplayMemberPath="NameRole" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="5" VerticalAlignment="Center" Width="120"/>
 
         <Label x:Name="label4" Grid.Column="1" Content="Підключення ключа ЕЦП" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Center" Margin="15,0,0,0"/>
         <CheckBox x:Name="checkBox" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" IsChecked="{Binding CheckIsKey}"/>

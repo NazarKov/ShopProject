@@ -1,4 +1,5 @@
 ﻿using LocateWindow;
+using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
 using System;
@@ -27,6 +28,8 @@ namespace ShopProject.ViewModel.UserPage
 
             _login = string.Empty;
             _password = string.Empty;
+
+            _autoLogin = (bool)AppSettingsManager.GetParameterFiles("AutoLogin");
         }
 
         private string _login;
@@ -42,14 +45,32 @@ namespace ShopProject.ViewModel.UserPage
             get { return _password; }
             set { _password = value; OnPropertyChanged(nameof(Password)); }
         }
+        private bool _autoLogin;
+        public bool AutoLogin
+        {
+            get { return _autoLogin; }
+            set { _autoLogin = value; OnPropertyChanged(nameof(AutoLogin));}
+        }
 
         public ICommand LogInCommnad => _logInCommnad;
         private void LogIn()
         {
-            if (_model.LogIn(Login, Password))
+            bool entranse = false;
+            Task t = Task.Run(async () =>
             {
-                Mediator.Notify("VisibleMenu", "");
-                MessageBox.Show("Вхід успішно виконано");
+                if (await _model.LogIn(Login, Password))
+                {
+                    Mediator.Notify("VisibleMenu", "");
+                    MessageBox.Show("Вхід успішно виконано");
+                    AppSettingsManager.SetParameterFile("AutoLogin", AutoLogin);
+                    entranse = true;
+                }
+            });
+            t.Wait();
+
+            if(entranse) 
+            {
+                Mediator.Notify("RedirectToOperationsRecorderView", "");
             }
         }
         public ICommand OpenChangePasswordCommand => _openChangePassowordCommand;

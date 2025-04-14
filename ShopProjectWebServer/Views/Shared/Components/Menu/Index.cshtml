@@ -1,0 +1,22 @@
+﻿@model ShopProjectWebServer.Models.ViewComponents.MenuComponentViewModel
+
+<div class="adminLayoutHeaderMenu">
+    <div class="title-div">
+        <p>WebServerApp</p>
+    </div>
+    <div class="menu-div">
+        <ul class="menu">
+            <li>
+                <p>@Model.Login</p>
+                <ul class="submenu">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Authorization" asp-action="Index">Exit</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

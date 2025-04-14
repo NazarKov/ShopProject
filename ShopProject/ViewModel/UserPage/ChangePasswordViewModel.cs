@@ -78,7 +78,7 @@ namespace ShopProject.ViewModel.UserPage
         {
             if (Email != string.Empty)
             {
-                _model.SendMessageEmail(Email);
+                //_model.SendMessageEmail(Email);
                 IsEnableFieldCode = true;
                 MessageBox.Show("Код надіслано перевірте свою електрону адресу");
             }
@@ -89,7 +89,7 @@ namespace ShopProject.ViewModel.UserPage
         {
             if(Code!=string.Empty)
             {
-                _model.ConfirmCode(Code);
+                //_model.ConfirmCode(Code);
                 IsEnableFieldChagePasssword = true;
                 IsEnableFieldCode = false;
 
@@ -101,7 +101,7 @@ namespace ShopProject.ViewModel.UserPage
         {
             if(Password !=string.Empty)
             {
-                _model.ChangePassword(Email, Password);
+                //_model.ChangePassword(Email, Password);
             }
         }
 

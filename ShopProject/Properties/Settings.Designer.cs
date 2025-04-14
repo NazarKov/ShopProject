@@ -26,60 +26,60 @@ namespace ShopProject.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ConnectionString {
+        public string URL {
             get {
-                return ((string)(this["ConnectionString"]));
+                return ((string)(this["URL"]));
             }
             set {
-                this["ConnectionString"] = value;
+                this["URL"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string NameDataBase {
+        public string TokenUser {
             get {
-                return ((string)(this["NameDataBase"]));
+                return ((string)(this["TokenUser"]));
             }
             set {
-                this["NameDataBase"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TypeConnect {
-            get {
-                return ((string)(this["TypeConnect"]));
-            }
-            set {
-                this["TypeConnect"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastBarCode {
-            get {
-                return ((string)(this["LastBarCode"]));
-            }
-            set {
-                this["LastBarCode"] = value;
+                this["TokenUser"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsValidCreateProduct {
+        public bool AutoLogin {
             get {
-                return ((bool)(this["IsValidCreateProduct"]));
+                return ((bool)(this["AutoLogin"]));
             }
             set {
-                this["IsValidCreateProduct"] = value;
+                this["AutoLogin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Port {
+            get {
+                return ((int)(this["Port"]));
+            }
+            set {
+                this["Port"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public string IpRouter {
+            get {
+                return ((string)(this["IpRouter"]));
+            }
+            set {
+                this["IpRouter"] = value;
             }
         }
         

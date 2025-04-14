@@ -41,7 +41,7 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             if (_model != null)
             {
-                if(_model.SetCount(BarCode, count))
+                if (_model.SetCount(BarCode, count))
                 {
                     BarCode = string.Empty;
                 }

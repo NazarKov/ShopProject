@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Model;
-using ShopProject.Model;
+﻿using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using System;
@@ -18,8 +17,8 @@ namespace ShopProject.ViewModel.StoragePage
 {
     internal class ArchiveViewModel : ViewModel<ArchiveViewModel>
     {
-        private ArchiveModel? _model;
-        private List<ProductEntiti> _goodsList;
+        //private ArchiveModel? _model;
+        //private List<ProductEntiti> _goodsList;
 
         private ICommand _searchCommand;
         private ICommand _visibileAllCommand;
@@ -27,11 +26,11 @@ namespace ShopProject.ViewModel.StoragePage
         public ArchiveViewModel()
         {
             SizeDataGrid = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
-            _searchCommand = new DelegateCommand(SearchArhive);
+            //_searchCommand = new DelegateCommand(SearchArhive);
             _visibileAllCommand = new DelegateCommand(() => { new Thread(new ThreadStart(SetFieldGridView)).Start(); });
 
-            _goodsList = new List<ProductEntiti>();
-            _archives = new List<ProductEntiti>();
+            //_goodsList = new List<ProductEntiti>();
+            //_archives = new List<ProductEntiti>();
             _searchTemplateName = new List<string>();
             _nameSearch = string.Empty;
 
@@ -40,8 +39,8 @@ namespace ShopProject.ViewModel.StoragePage
         }
         private void SetFieldGridView()
         {
-            _model = new ArchiveModel();
-            Archives = _model.GetItems();
+            //_model = new ArchiveModel();
+            //Archives = _model.GetItems();
         }
 
         private void SetFieldComboBox()
@@ -53,12 +52,12 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedIndexSearch = 0;
         }
 
-        private List<ProductEntiti> _archives;
-        public List<ProductEntiti> Archives
-        {
-            get { return _archives; }
-            set { _archives = value; OnPropertyChanged("Archives"); }
-        }
+        //private List<ProductEntiti> _archives;
+        //public List<ProductEntiti> Archives
+        //{
+        //    get { return _archives; }
+        //    set { _archives = value; OnPropertyChanged("Archives"); }
+        //}
 
         private int _sizeDataGrid;
         public int SizeDataGrid
@@ -89,73 +88,73 @@ namespace ShopProject.ViewModel.StoragePage
 
         public ICommand SearchCommand => _searchCommand;
 
-        private void SearchArhive()
-        {
-            switch(_selectedIndexSearch)
-            {
-                case 0:
-                    {
-                        Archives = _model.SearchArhive(_nameSearch);
-                        break;
-                    }
-                case 1:
-                    {
-                        Archives = _model.SearchArhive(_nameSearch);
-                        break;
-                    }
-                case 2:
-                    {
-                        Archives = _model.SearchArhive(_nameSearch);
-                        break;
-                    }
+        //private void SearchArhive()
+        //{
+        //    switch(_selectedIndexSearch)
+        //    {
+        //        case 0:
+        //            {
+        //                Archives = _model.SearchArhive(_nameSearch);
+        //                break;
+        //            }
+        //        case 1:
+        //            {
+        //                Archives = _model.SearchArhive(_nameSearch);
+        //                break;
+        //            }
+        //        case 2:
+        //            {
+        //                Archives = _model.SearchArhive(_nameSearch);
+        //                break;
+        //            }
 
-            }
-        }
+        //    }
+        //}
 
         public ICommand VisibileAllCommand => _visibileAllCommand;
 
-        public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand (ReturnGoodsInStorage,(object parameter)=>true); }
-        private void ReturnGoodsInStorage(object parameter)
-        {   
-            if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                _goodsList = new List<ProductEntiti>();
-                if (_model != null)
-                {
-                    _model.ConvertToList((IList)parameter, _goodsList);
-                    if (_goodsList.Count == 1)
-                    {
-                        if (_model.ReturnGoodsInStorage(_goodsList[0]))
-                        {
-                            new Thread(new ThreadStart(SetFieldGridView)).Start();
-                        }
-                    }
-                }
-            }
-        }
+        //public ICommand ReturnGoodsInStorageCommand { get => new DelegateParameterCommand (ReturnGoodsInStorage,(object parameter)=>true); }
+        //private void ReturnGoodsInStorage(object parameter)
+        //{   
+        //    if (MessageBox.Show("Перенести", "Error", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //    {
+        //        _goodsList = new List<ProductEntiti>();
+        //        if (_model != null)
+        //        {
+        //            _model.ConvertToList((IList)parameter, _goodsList);
+        //            if (_goodsList.Count == 1)
+        //            {
+        //                if (_model.ReturnGoodsInStorage(_goodsList[0]))
+        //                {
+        //                    new Thread(new ThreadStart(SetFieldGridView)).Start();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        public ICommand DeleteArhiveAndGoodsCommand { get => new DelegateParameterCommand(DeleteArhiveAndGoods, (object parameter) => true); }
-        private void DeleteArhiveAndGoods(object parameter)
-        {
-            if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                _goodsList = new List<ProductEntiti>();
-                if (_model != null)
-                {
-                    _model.ConvertToList((IList)parameter, _goodsList);
+        //public ICommand DeleteArhiveAndGoodsCommand { get => new DelegateParameterCommand(DeleteArhiveAndGoods, (object parameter) => true); }
+        //private void DeleteArhiveAndGoods(object parameter)
+        //{
+        //    if (MessageBox.Show("Ви точно хочете видалити?\nТовар також видаляється.", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        //    {
+        //        _goodsList = new List<ProductEntiti>();
+        //        if (_model != null)
+        //        {
+        //            _model.ConvertToList((IList)parameter, _goodsList);
 
-                    if (_goodsList.Count == 1)
-                    {
-                        if (_model.DeleteRecordArhive(_goodsList[0]))
-                        {
-                            MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
-                            new Thread(new ThreadStart(SetFieldGridView)).Start();
-                        }
+        //            if (_goodsList.Count == 1)
+        //            {
+        //                if (_model.DeleteRecordArhive(_goodsList[0]))
+        //                {
+        //                    MessageBox.Show("Aрхівну записку виладено", "in", MessageBoxButton.OK);
+        //                    new Thread(new ThreadStart(SetFieldGridView)).Start();
+        //                }
 
-                    }
-                }
-            }
-        }
+        //            }
+        //        }
+        //    }
+        //}
 
         
     }

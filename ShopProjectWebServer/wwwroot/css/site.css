@@ -1,0 +1,36 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+.button {
+    background-color: #333;
+    color: whitesmoke;
+}
+    .button:hover {
+        background-color: dimgray;
+    }
+.button-size{
+    width:230px;
+    height:50px;
+}
+.block-buttons {
+    display: flex;
+}
+
+    .block-buttons button {
+        margin-right: 15px;
+    }

@@ -1,7 +1,6 @@
-﻿
-using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,96 +8,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using NPOI.SS.Formula.Functions;
 
 namespace ShopProject.Model.ToolsPage
 {
     internal class UpdateProductRangeModel
     {
-        private IEntityUpdate<ProductEntiti> _productRepositoryUpdate;
-        private IEntityGet<ProductEntiti> _productRepositoryGet;
-        private IEntityAccess<ProductUnitEntiti> _productUnitRepository;
-        private IEntityAccess<CodeUKTZEDEntiti> _codeUKTZEDRepository;
 
-        private List<ProductUnitEntiti> _productUnitsList;
-        private List<CodeUKTZEDEntiti> _codesUKTZEDList;
+        private List<ProductUnitEntity> _productUnitsList;
+        private List<CodeUKTZEDEntity> _codesUKTZEDList;
 
         public UpdateProductRangeModel()
         {
-            _productUnitsList = new List<ProductUnitEntiti>();
-            _codesUKTZEDList = new List<CodeUKTZEDEntiti>();
-
-            _productRepositoryUpdate = new ProductTableAccess();
-            _productRepositoryGet = new ProductTableAccess();
-            _productUnitRepository = new UnitTableAccess();
-            _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
+            _productUnitsList = new List<ProductUnitEntity>();
+            _codesUKTZEDList = new List<CodeUKTZEDEntity>();
+ 
         }
-        public List<ProductEntiti> GetItem(List<ProductEntiti> items)
+
+        public bool UpdateProduct(List<ProductEntity> items)
         {
             try
             {
-                var result = new List<ProductEntiti>();
-                foreach (var item in items)
+
+                bool response = false;
+                Task t = Task.Run(async () =>
                 {
-                    result.Add(_productRepositoryGet.GetById(item.ID));
-                }
-                return result;
-            }
-            catch(Exception ex) 
-            {
-                MessageBox.Show(ex.Message, "Error" , MessageBoxButton.OK,MessageBoxImage.Error);
-                return new List<ProductEntiti>();
-            }
-        }
+                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateProductRange(Session.Token,items);
+                });
+                t.Wait();
 
-        public bool UpdateProduct(List<ProductEntiti> items)
-        {
-            try
-            {
-                //добавити валідацію на список
-                _productRepositoryUpdate.UpdateRange(items);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Error",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
-        public List<string>? GetUnitList()
+
+        public List<ProductUnitEntity> GetUnits()
         {
-            try
+            Task t = Task.Run(async () =>
             {
-                List<string> result = new List<string>();
-                _productUnitsList = (List<ProductUnitEntiti>)_productUnitRepository.GetAll();
-                foreach (ProductUnitEntiti unit in _productUnitsList)
-                {
-                    result.Add(unit.ShortNameUnit.ToString());
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
+                _productUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
+            });
+            t.Wait();
+            return _productUnitsList;
         }
-        public List<string>? GetCodeUKTZEDList()
+
+        public List<CodeUKTZEDEntity> GetCodeUKTZED()
         {
-            try
+            Task t = Task.Run(async () =>
             {
-                List<string> result = new List<string>();
-                _codesUKTZEDList = (List<CodeUKTZEDEntiti>)_codeUKTZEDRepository.GetAll();
-                foreach (CodeUKTZEDEntiti code in _codesUKTZEDList)
-                {
-                    result.Add(code.NameCode.ToString());
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
+                _codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
+            });
+            t.Wait();
+
+            return _codesUKTZEDList;
         }
 
     }

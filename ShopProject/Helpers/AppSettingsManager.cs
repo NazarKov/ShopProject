@@ -1,12 +1,9 @@
-﻿using MathNet.Numerics;
-using NPOI.SS.Formula.Functions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static NPOI.SS.Formula.PTG.ArrayPtg;
 
 namespace ShopProject.Helpers
 {
@@ -24,13 +21,13 @@ namespace ShopProject.Helpers
             {
                 case TypeConnections.DEVELOPER:
                     {
-                        Properties.Settings.Default.ConnectionString = "Data Source=" + Environment.MachineName + ";Initial Catalog=" + name + ";Integrated Security=True";
+                        Properties.Settings.Default.URL = "Data Source=" + Environment.MachineName + ";Initial Catalog=" + name + ";Integrated Security=True";
                         Properties.Settings.Default.Save();
                         break;
                     }
                 case TypeConnections.EXPRESS:
                     {
-                        Properties.Settings.Default.ConnectionString = "Data Source=" + Environment.MachineName + "\\SQLEXPRESS;Initial Catalog=" + name + ";Integrated Security=True";
+                        Properties.Settings.Default.URL = "Data Source=" + Environment.MachineName + "\\SQLEXPRESS;Initial Catalog=" + name + ";Integrated Security=True";
                         Properties.Settings.Default.Save();
                         break;
                     }
@@ -42,6 +39,11 @@ namespace ShopProject.Helpers
             Properties.Settings.Default.Save();
         }
         public static void SetParameterFile(string key, bool value)
+        {
+            Properties.Settings.Default[key] = value;
+            Properties.Settings.Default.Save();
+        }
+        public static void SetParameterFile(string key, object value)
         {
             Properties.Settings.Default[key] = value;
             Properties.Settings.Default.Save();

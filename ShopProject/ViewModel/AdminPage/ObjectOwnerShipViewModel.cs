@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Entities;
-using ShopProject.Model.Command;
+﻿using ShopProject.Model.Command;
 using ShopProject.Model.AdminPage;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using ShopProject.Views.AdminPage;
 using ShopProject.Helpers.DataGridViewHelperModel;
 using System.Threading.Tasks;
 using System.Timers;
+using ShopProjectDataBase.DataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -32,7 +32,7 @@ namespace ShopProject.ViewModel.AdminPage
         public ObjectOwnerShipViewModel()
         {
             _model = new ObjectOwnerShipModel();
-            _objectList = new List<ObjectOwnerEntiti>();
+            _objectList = new List<ObjectOwnerEntity>();
             _visibilitiDialogWindow = string.Empty;
             _openFileDialog = new OpenFileDialog();
             _objectListDialogWindow = new List<ObjectOwnerHelpers>();
@@ -57,8 +57,8 @@ namespace ShopProject.ViewModel.AdminPage
             get { return _password; }
             set { _password = value; OnPropertyChanged("Password"); }
         }
-        private List<ObjectOwnerEntiti> _objectList;
-        public List<ObjectOwnerEntiti> ObjectList
+        private List<ObjectOwnerEntity> _objectList;
+        public List<ObjectOwnerEntity> ObjectList
         {
             get { return _objectList; }
             set { _objectList = value; OnPropertyChanged(nameof(ObjectList)); }

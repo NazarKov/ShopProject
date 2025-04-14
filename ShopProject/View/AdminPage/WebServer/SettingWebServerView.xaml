@@ -1,0 +1,242 @@
+﻿<Page x:Class="ShopProject.View.AdminPage.WebServer.SettingWebServerView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.AdminPage.WebServer"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      Title="SettingWebServerView">
+    <Page.DataContext>
+        <local:SettingWebServerViewModel></local:SettingWebServerViewModel>
+    </Page.DataContext>
+
+
+    <Grid x:Name="Grid" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding ElementName=Grid}">
+                <i:InvokeCommandAction Command="{Binding UpdateSizeCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Width, UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding Height , UpdateSourceTrigger=PropertyChanged}"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+        <Grid Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+
+            
+            <Label x:Name="LoginLabel" Grid.Column="1" Content="Логін" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center"/>
+            <TextBox x:Name="LoginTextBox" Grid.Column="1" HorizontalAlignment="Right"  Grid.Row="1" TextWrapping="Wrap" Text="{Binding Login}" VerticalAlignment="Center" Width="120"/>
+            
+            <Label x:Name="PasswordLabel" Grid.Column="1" Content="Пароль" HorizontalAlignment="Left"  Grid.Row="2" VerticalAlignment="Center"/>
+            <TextBox x:Name="PasswordTextBox" Grid.Column="1" HorizontalAlignment="Right" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Center" Width="120"/>
+
+            <Button x:Name="EntrenceButton" Grid.Column="1" Content="Увійти" HorizontalAlignment="Center"  Grid.Row="3" VerticalAlignment="Center" Width="150" Command="{Binding EnranceWebServerSetting}"/>
+
+
+        </Grid>
+        
+        <Grid Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"></RowDefinition>
+                <RowDefinition Height="100"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+                
+            <GroupBox Grid.Row="2" Grid.Column="0" Header="Бази даних" Margin="20,20,20,10">
+                <Grid Margin="5">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150"></RowDefinition>
+                        <RowDefinition Height="150*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+
+                        <Label x:Name="NameDataBaseLabel" Content="Назва" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="NameDataBaseTextBox" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0"  TextWrapping="Wrap" Text="{Binding NameDataBase}" VerticalAlignment="Center" Width="120" Margin="5"/>
+
+
+                        <Label x:Name="PasswordDataBaseLable" Content="Пароль" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="PasswordDataBaseTextBox" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding PasswordDataBase}" VerticalAlignment="Center" Width="120" Margin="5"/>
+
+                        <Label x:Name="TypeDataBaseLable" Content="Тип" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0"  VerticalAlignment="Center" Margin="5"/>
+                        <ComboBox x:Name="TypeDataBaseComboBox" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding TypeDataBase}" SelectedIndex="{Binding SelectTypeDataBase}" VerticalAlignment="Center" Width="120" Margin="5"/>
+
+                        <Label x:Name="TypeConncetDataBaseLabel" Content="Підключення" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" Visibility="{Binding VisibilitiConnectionTypeDataBase}"/>
+                        <ComboBox x:Name="TypeConnectDataBaseComboBox" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding TypeConnectDataBase}" SelectedIndex="{Binding SelectConnectTypeDataBase}" VerticalAlignment="Center" Width="120" Margin="5" Visibility="{Binding VisibilitiConnectionTypeDataBase}"/>
+
+                        <Button x:Name="CreateDatabaseButton" Content="Створити" HorizontalAlignment="Stretch" Command="{Binding CreateDataBaseCommand}" Grid.Column="5" Grid.Row="0"  VerticalAlignment="Center" Margin="5"/>
+
+
+                    </Grid>
+
+
+
+                    <DataGrid x:Name="dataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="3" Grid.Column="0" Header="Користувачі" Margin="20,10,20,20">
+                <Grid Margin="5">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150"></RowDefinition>
+                        <RowDefinition Height="150*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+
+                        <Label x:Name="NameUserLabel" Content="Логін" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="NameUserTextBox" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0"  TextWrapping="Wrap" Text="{Binding NameUser}" VerticalAlignment="Center" Width="120" Margin="5"/>
+
+
+                        <Label x:Name="PasswordUserLable" Content="Пароль" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="PasswordUserTextBox" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding PasswordUser}" VerticalAlignment="Center" Width="120" Margin="5"/>
+
+                       
+                        <Button x:Name="CreateUserWebServerButton" Content="Створити" HorizontalAlignment="Stretch" Command="{Binding CreateDataBaseCommand}" Grid.Column="5" Grid.Row="0"  VerticalAlignment="Center" Margin="5"/>
+
+
+                    </Grid>
+
+
+
+                    <DataGrid x:Name="dataGrid1" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                </Grid>
+            </GroupBox>
+            
+            <GroupBox Header="Дані бази даних" Visibility="{Binding VisibilitiInfoDataBase}" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Margin="20">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="150"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    
+                    <Label x:Name="NameDataBaseInfoLable" Content="Назва бази даних" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox x:Name="NameDataBaseInfoTextBox" HorizontalAlignment="Right" Grid.Column="0" Margin="10" Grid.Row="0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+
+
+                    <Label x:Name="PasswordDataBaseInfoLable" Content="Пароль бази даних" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PasswordDataBaseInfoTextBox" HorizontalAlignment="Right" Grid.Column="0" Margin="10" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+
+
+                    <Label x:Name="TypeDataBaseInfoLable" Content="Тип бази даних" HorizontalAlignment="Left" Margin="10" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="TypeDataBaseInfoComboBox" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" ItemsSource="{Binding TypeDataBase}" SelectedIndex="{Binding SelectTypeDataBase}" Width="120"/>
+
+                    <Label x:Name="TypeConnectDataBaseInfoLable" Content="Тип підключення бази даних" HorizontalAlignment="Left" Margin="10" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="TypeConnectDataBaseInfoComboBox" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding TypeConnectDataBase}" SelectedIndex="{Binding SelectConnectTypeDataBase}" VerticalAlignment="Center" Width="120"/>
+                    
+                    
+                    <Label x:Name="ConnectUserToDataBaseInfoLable" Content="Підключені користувачі до бази даних" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <DataGrid x:Name="ConnectUserToDataBaseinfoGridView" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    
+                    
+                    <Label x:Name="PasswordDataBaseInfoUpdateLabel" Grid.Column="0" Content="Пароль бази даних" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PasswordDataBaseInfoUpdateTextBox" Grid.Column="0" HorizontalAlignment="Right" Margin="10" Padding="5" Grid.Row="4" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+                    
+                    <Button x:Name="UpdateDataBaseInfo" Grid.Column="1" Content="Редагувати" Margin="10" Padding="5" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center"/>
+                    <Button x:Name="ExitDataBaseInfo" Grid.Column="1" Content="Вийти" Padding="5" HorizontalAlignment="Right"  Grid.Row="4" VerticalAlignment="Center" Command="{Binding ExitDataBaseInfoCommand}"/>
+
+
+
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Дані користувача" Visibility="{Binding VisibilityInforUser}" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3"  Margin="20">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="100"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="150"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+
+                    <Label x:Name="LoginUserInfoLable" Content="Логін" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox x:Name="LoginUserInfotextBox" HorizontalAlignment="Right" Grid.Column="0" Margin="10" Grid.Row="0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+
+
+                    <Label x:Name="PasswordUserInforLabel" Content="Пароль" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PasswordUserInfoTextBox" HorizontalAlignment="Right" Grid.Column="0" Margin="10" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+
+                    
+                    <Label x:Name="ConnectToDataBaseUserInfoLable" Content="Підключені користувачі до бази даних" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <DataGrid x:Name="ConnectToDataBaseUserInfoDataGrid" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+
+
+                    <Label x:Name="PasswordUserInfoUpdateLable" Grid.Column="0" Content="Пароль" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PasswordUserInfoUpdateTextBox" Grid.Column="0" HorizontalAlignment="Right" Margin="10" Padding="5" Grid.Row="4" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="120"/>
+
+                    <Button x:Name="UpdateUserInfoButton" Grid.Column="1" Content="Редагувати" Margin="10" Padding="5" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center"/>
+                    <Button x:Name="ExitUserInforButton" Grid.Column="1" Content="Вийти" Padding="5" HorizontalAlignment="Right"  Grid.Row="4" VerticalAlignment="Center" Command="{Binding ExitUserInfoCommand}"/>
+
+
+                </Grid>
+            </GroupBox>
+
+        </Grid>
+        
+    </Grid>
+</Page>

@@ -1,4 +1,4 @@
-﻿using ShopProject.DataBase.Entities;
+﻿using ShopProjectDataBase.DataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ namespace ShopProject.Helpers.DataGridViewHelperModel
 {
     public class ObjectOwnerHelpers
     {
-        public ObjectOwnerEntiti item { get; set; }
+        public ObjectOwnerEntity item { get; set; }
         public bool isActive { get; set; }
 
-        public ObjectOwnerHelpers(ObjectOwnerEntiti item)
+        public ObjectOwnerHelpers(ObjectOwnerEntity item)
         {
             this.item = item;
             isActive = true;

@@ -1,7 +1,7 @@
-﻿using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
+using ShopProjectDataBase.DataBase.Model;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
@@ -19,49 +19,48 @@ namespace ShopProject.ViewModel.ToolsPage
             _model = new UpdateProductRangeModel();
             _updateProductCommand = new DelegateCommand(UpdateProduct);
             
-            _productList = new List<ProductEntiti>();
-            _productUnits = new List<string>();
-            _productCodeUKTZED = new List<string>();
+            _productList = new List<ProductEntity>();
+            _productUnits = new List<ProductUnitEntity>();
+            _productCodeUKTZED = new List<CodeUKTZEDEntity>();
 
-            ProductUnits = new List<string>();
-            
-            new Thread(new ThreadStart(SetField)).Start();
+
+            SetField();
         }
 
         private void SetField()
         {
-            if(_model!= null)
+            if (_model != null)
             {
-                ProductUnits = _model.GetUnitList();
-                ProductCodeUKTZED = _model.GetCodeUKTZEDList();
+                ProductUnits = _model.GetUnits();
+                ProductCodeUKTZED = _model.GetCodeUKTZED();
             }
 
             if (Session.ProductList != null)
             {
-                ProductList = _model.GetItem(Session.ProductList);
+                ProductList = Session.ProductList;
             }
 
         }
 
-        private List<string> _productUnits;
-        public List<string> ProductUnits
+        private List<ProductUnitEntity> _productUnits;
+        public List<ProductUnitEntity> ProductUnits
         {
             get { return _productUnits; }
-            set { _productUnits = value; OnPropertyChanged("ProductUnits"); }
+            set { _productUnits = value; OnPropertyChanged(nameof(ProductUnits)); }
         }
 
-        private List<string> _productCodeUKTZED;
-        public List<string> ProductCodeUKTZED
+        private List<CodeUKTZEDEntity> _productCodeUKTZED;
+        public List<CodeUKTZEDEntity> ProductCodeUKTZED
         {
             get { return _productCodeUKTZED; }
-            set { _productCodeUKTZED = value; OnPropertyChanged("ProductCodeUKTZED"); }
+            set { _productCodeUKTZED = value; OnPropertyChanged(nameof(ProductCodeUKTZED)); }
         }
 
-        private List<ProductEntiti> _productList;
-        public List<ProductEntiti> ProductList
+        private List<ProductEntity> _productList;
+        public List<ProductEntity> ProductList
         {
             get { return _productList; }
-            set { _productList = value; OnPropertyChanged("ProductList"); }
+            set { _productList = value; OnPropertyChanged(nameof(ProductList)); }
         }
 
         public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -77,7 +76,7 @@ namespace ShopProject.ViewModel.ToolsPage
         {
             if (_model.UpdateProduct(ProductList))
             {
-                MessageBox.Show("Товари редаговано","Інформація",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("Товари редаговано", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

@@ -20,6 +20,12 @@ using LocateWindow;
 using ShopProject.View.StoragePage;
 using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage;
+using ShopProject.View.StatisticsPage;
+using MessageBox = System.Windows.MessageBox;
+using ShopProject.ViewModel.AdminPage.WebServer;
+using ShopProject.View.AdminPage.WebServer;
+using ShopProject.View.HomePage;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -38,10 +44,18 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openUserPageCommand;
         private ICommand openObjectOwnerPageCommand;
         private ICommand openSoftwareDeviceSettlementOperationsPageCommand;
-        private ICommand exitUser;
+        private ICommand openStatisticsPage;
+        private ICommand _openWebServerPageCommand;
+
+        private ICommand _exitUserCommand;
+        
+        
+        private HomeModel _model;
 
         public HomeViewModel()
         {
+
+            _model = new HomeModel();
             _widht = 0;
             _height = 0;
 
@@ -64,15 +78,33 @@ namespace ShopProject.ViewModel.HomePage
             openUserPageCommand = new DelegateCommand(() => { Page = new Users(); });
             openObjectOwnerPageCommand = new DelegateCommand(() => { Page = new ObjectOwnerShip(); });
             openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
-            exitUser = new DelegateCommand(() => { Session.Remove(); Page = new Authorization(); VisibilityMenu = Visibility.Hidden; });
+            openStatisticsPage = new DelegateCommand(() => { Page = new StatisticsView(); });
+            _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
 
-            SetFieldWindow(null);
+            _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
+            
+            
+            if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
+            {
+                Page = new StartView();
+            }
+            else
+            {
+                _model.Init();
+                SetFieldWindow(null);
+            }
+            
 
-            Mediator.Subscribe("VisibleMenu", SetFieldWindow);
+
+
+            Mediator.Subscribe("RedirectToAuthorizationView", (object obg) => { Page = new AuthorizationView(); });
+            Mediator.Subscribe("RedirectToOperationsRecorderView", SetFieldWindow); 
+            Mediator.Subscribe("RedirectToWorkShiftMenu", OpenWorkShiftMenu);
             Mediator.Subscribe("OpenWorkShiftMenu", OpenWorkShiftMenu);
             Mediator.Subscribe("OpenChangePassword", (object obg) => { Page = new ChangePassword(); });
-            Mediator.Subscribe("OpenAuthorization", (object obg) => { Page = new Authorization(); });
-            Mediator.Subscribe("OpenOperationRerocderMenu",(object obg) => { Page = new OperationsRecorderView(); });
+            Mediator.Subscribe("OpenAuthorization", (object obg) => { Page = new AuthorizationView(); });
+            Mediator.Subscribe("OpenOperationRerocderMenu", (object obg) => { Page = new OperationsRecorderView(); });
+
         }
         private string _userName;
         public string UserName
@@ -105,11 +137,7 @@ namespace ShopProject.ViewModel.HomePage
         public Page Page
         {
             get { return _page; }
-            set 
-            {
-                _page = value;
-                OnPropertyChanged("Page");
-            }
+            set {_page = value; OnPropertyChanged(nameof(Page));}
         }
         private void SetFieldWindow(object obj)
         {
@@ -128,15 +156,18 @@ namespace ShopProject.ViewModel.HomePage
             }
             else
             {
-                Page = new Authorization();
+                Page = new AuthorizationView();
                 _visibilitiMenu = Visibility.Collapsed;
             }
             OnPropertyChanged(nameof(VisibilityMenu));
         }
+
+ 
+
         private void SetName()
         {
             var item = Session.User;
-            if (item.FullName != string.Empty)
+            if (item.FullName != null && item.FullName != string.Empty)
             {
                 UserName = item.FullName;
             }
@@ -175,6 +206,8 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenUserCommand => openUserPageCommand;
         public ICommand OpenObjectOwnerPageCommand => openObjectOwnerPageCommand;
         public ICommand OpenSoftwareDeviceSettlementOperationsPageCommand => openSoftwareDeviceSettlementOperationsPageCommand;
-        public ICommand ExitUserCommand => exitUser;
+        public ICommand ExitUserCommand => _exitUserCommand;
+        public ICommand OpenStatisticsPage => openStatisticsPage;
+        public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
     }
 }

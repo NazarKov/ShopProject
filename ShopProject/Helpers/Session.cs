@@ -1,106 +1,110 @@
-﻿using NPOI.SS.Formula.UDF;
-using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Entities;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
-using ShopProject.Views.AdminPage;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi; 
+using ShopProjectDataBase.DataBase.Model; 
+using System.Threading.Tasks;
+using System;
+using System.Windows;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Controls;
+using ShopProjectDataBase.DataBase.Entities;
 
 namespace ShopProject.Helpers
 {
     public class Session
     {
-        private static bool _isInit = false;
-        private static IEntityGet<UserEntiti>? _users;
-        private static IEntityAccess<OperationsRecorderUserEntiti> _deviceTable;
-        
+        public static UserEntity User { get; set; }
+        public static string Token { get; set; }
 
-        public static string? NameCompany { get; set; } = string.Empty;
-        public static ProductEntiti? Product { get; set; }
-        public static List<ProductEntiti>? ProductList { get; set; }
+        public static ProductEntity Product { get; set; }
+        public static List<ProductEntity> ProductList { get; set; }
+
+        public static UserEntity UserItem { get; set; }
+
+        //private static bool _isInit = false;
+        //private static IEntityGet<UserEntiti>? _users;
+        //private static IEntityAccess<OperationsRecorderUserEntiti> _deviceTable;
 
 
-        public static UserEntiti UserItem { get; set; }
-        public static ObservableCollection<TabItem> Tabs = new ObservableCollection<TabItem>();
+        //public static string? NameCompany { get; set; } = string.Empty;
+        //public static ProductEntiti? Product { get; set; }
+        //public static List<ProductEntiti>? ProductList { get; set; }
 
-        private static UserEntiti _user;
-        public static UserEntiti User
-        {
-            get { return _user; }
-        }
-        private static List<OperationsRecorderEntiti> _devicesSettlementOperations;
-        public static List<OperationsRecorderEntiti> Devices
-        {
-            get { return _devicesSettlementOperations; }
-        }
-        public static OperationsRecorderEntiti? FocusDevices;
 
-        private static void Init()
-        {
-            _users = new UserTableAccess();
-            _deviceTable = new OperationsRecorderUserTableAccess();
-            _user = new UserEntiti();
-            _devicesSettlementOperations = new List<OperationsRecorderEntiti>();
-            _isInit = true;
-        }
+        //public static UserEntiti UserItem { get; set; }
+        //public static ObservableCollection<TabItem> Tabs = new ObservableCollection<TabItem>();
+
+        //private static UserEntiti _user;
+        //public static UserEntiti User
+        //{
+        //    get { return _user; }
+        //}
+        //private static List<OperationsRecorderEntiti> _devicesSettlementOperations;
+        //public static List<OperationsRecorderEntiti> Devices
+        //{
+        //    get { return _devicesSettlementOperations; }
+        //}
+        public static OperationsRecorderEntity? FocusDevices;
+
+        //private static void Init()
+        //{
+        //    _users = new UserTableAccess();
+        //    _deviceTable = new OperationsRecorderUserTableAccess();
+        //    _user = new UserEntiti();
+        //    _devicesSettlementOperations = new List<OperationsRecorderEntiti>();
+        //    _isInit = true;
+        //}
 
         public static bool CheckSession()
         {
-            var login =  AppSettingsManager.GetParameterFiles("SessionID");
-            
-            if(login != null && login != string.Empty)
+            try
             {
-                GetInformationDataBase((string)login);
-                return true;
+                if (User == null)
+                {
+                    var autoLogin = (bool)AppSettingsManager.GetParameterFiles("AutoLogin");
+                    string token = AppSettingsManager.GetParameterFiles("TokenUser").ToString();
+
+                    if (autoLogin)
+                    {
+                        if (token != null && token != string.Empty)
+                        {
+                            Task task = Task.Run(async () =>
+                            {
+                                await WriteSession(token);
+                            });
+                            task.Wait();
+
+                            if (User != null)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 return false;
             }
         }
-        private static void GetInformationDataBase(string login )
+
+
+        private static async Task WriteSession(string token)
         {
-            _devicesSettlementOperations = new List<OperationsRecorderEntiti>();
-            if(!_isInit)
-            {
-                Init();
-            }
-            var users = _users.GetAll();
-            _user = _users.GetAll().Where(item => item.Login.Equals(login)).FirstOrDefault();
-
-
-            var device = _deviceTable.GetAll().Where(item => item.Users.ID == _user.ID).ToList();
-
-            if(device != null)
-            {
-                foreach(var item in device)
-                {
-                    _devicesSettlementOperations.Add(item.OpertionsRecorders);
-                }
-            }
-
-            var devise = AppSettingsManager.GetParameterFiles("FocusDevise").ToString();
-            if (devise != "")
-            {
-                FocusDevices = _devicesSettlementOperations.Where(item => item.ID.ToString() == devise).FirstOrDefault();
-            }
+            User = await MainWebServerController.MainDataBaseConntroller.UserController.GetUser(token);
+            Token = token;
         }
 
-        public static void Add(UserEntiti user)
+        public static void RemoveSession()
         {
-            GetInformationDataBase(user.Login);
-            AppSettingsManager.SetParameterFile("SessionID", user.Login);
+            User  = null;
         }
-        public static void Remove()
-        {
-            _user = null;
-            _devicesSettlementOperations = null;
-            AppSettingsManager.SetParameterFile("SessionID", null);
-        }
-        
-
     }
 }

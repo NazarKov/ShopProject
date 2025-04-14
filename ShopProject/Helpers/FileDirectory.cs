@@ -33,14 +33,11 @@ namespace ShopProject.Helpers
             Directory.CreateDirectory(_path + _projectTitle);
             Directory.CreateDirectory(_path + _projectTitle + "\\Users");
             Directory.CreateDirectory(_path + _projectTitle + "\\Temp");
-
         }
         public static void CreateUserFolder(string nameUser)
         {
-
             Directory.CreateDirectory(_path + _projectTitle + "\\Users\\" + nameUser);
             Directory.CreateDirectory(_path + _projectTitle + "\\Users\\" + nameUser + "\\Key");
-
         }
         public static string CopyKeyInUserFolder(string nameKey,string pathKey,string nameUser)
         {

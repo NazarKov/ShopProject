@@ -1,6 +1,8 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
+﻿
+using NPOI.SS.Formula.Functions;
+using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,26 +12,23 @@ using System.Threading.Tasks;
 namespace ShopProject.Model.AdminPage
 {
     internal class UserDataModel
-    {
-        private IEntityAccess<UserEntiti> _userTabel;
-        private List<UserEntiti> _users;
+    { 
+        private UserEntity _user;
 
-        public UserDataModel() 
+        public UserDataModel()
         {
-            _userTabel = new UserTableAccess();
-            _users = new List<UserEntiti>();
+            _user = new UserEntity();
         }
 
-        public UserEntiti? GetUser(string login)
+        public UserEntity? GetUser()
         {
-            _users = (List<UserEntiti>)_userTabel.GetAll();
-
-            if(_users.Count > 0)
+            Task t = Task.Run(async () =>
             {
-                return _users.Where(item => item.Login == login).FirstOrDefault();
-            }
-            return null;
-        }
+                _user = (await MainWebServerController.MainDataBaseConntroller.UserController.GetUserById(Session.Token, Session.UserItem.ID.ToString()));
+            });
+            t.Wait();
 
+            return _user;
+        }
     }
 }

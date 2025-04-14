@@ -1,0 +1,56 @@
+﻿@{
+    Layout = ViewData["Layout"]?.ToString() ?? "_Layout";
+    ViewData["Title"] = "Home Page";
+}
+
+<div >
+    <div class="border admin-informaion">
+        <div class="border admin-informaion-header">
+            <p>Admin User Details </p>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Login</th>
+                <th>
+                    <p>Nazar</p>
+                    @* <input type="text" class="form-control" placeholder="write Login" /> *@
+                </th>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <th>
+                    <p>***</p>
+                    @* <input type="password" class="form-control" placeholder="write password" /> *@
+                </th>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <th>
+                    <p>Nazar.korniychuK@urk.net</p>
+                   @*  <input type="text" class="form-control"  placeholder="Email" /> *@
+                </th>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <th>
+                    <p>
+                        Admin
+                    </p>
+                   @*  <input type="text" class="form-control" placeholder="Role" /> *@
+                </th>
+            </tr>
+            <tr>
+                <th>Rule</th>
+                <th>
+                    <p>
+                        Read , Write , delete , create , add
+                    </p>
+                    @*  <input type="text" class="form-control" placeholder="Role" /> *@
+                </th>
+            </tr>
+        </table>
+        <br />
+        <button class="btn btn-primary" style="left:0;">Змінити дані</button>
+        <button class="btn btn-primary" style="left:0;">Змінити пароль</button>
+    </div>
+</div>

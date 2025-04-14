@@ -41,13 +41,13 @@
             <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="170"/>
 
         <Label x:Name="unitlabel" Content="Одиниці товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top"  SelectedValue="{Binding SelectUnits}" ItemsSource="{Binding Units }" Width="170"/>
+        <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top"  SelectedIndex="{Binding SelectUnits}"   DisplayMemberPath="NameUnit"   ItemsSource="{Binding Units }" Width="170"/>
 
         <Label x:Name="Articulelabel" Content="Артикуль" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="2" VerticalAlignment="Top"/>
         <TextBox x:Name="articule" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Articule , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
 
         <Label x:Name="label" Grid.Column="1" Content="Код УКТЗЕД" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="3" VerticalAlignment="Top" Width="170" SelectedValue="{Binding SelcetCodeUKTZED}" ItemsSource="{Binding CodeUKTZED}"/>
+        <ComboBox x:Name="comboBox1" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="3" VerticalAlignment="Top" Width="170" SelectedIndex="{Binding SelectCodeUKTZED}"  DisplayMemberPath="NameCode" ItemsSource="{Binding CodeUKTZED}"/>
         
         <Button x:Name="buttonSave" Content="Редагувати" Grid.Column="0" Grid.Row="4" Command="{Binding SaveProductCommand}" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" Width="100"/>
         <Button x:Name="buttonCansel"  Content="Вийти" Grid.Column="1" Grid.Row="4" Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,40,15,0" VerticalAlignment="Top" Width="100"/>

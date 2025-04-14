@@ -1,5 +1,4 @@
 ﻿using QRCoder;
-using ShopProject.DataBase.Model;
 using ShopProject.Resource.template;
 using System;
 using System.Collections.Generic;
@@ -35,52 +34,52 @@ namespace ShopProject.Helpers.PrintingServise
 
             //_printer = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString(); ;
         }
-        public void PrintCheck(OperationEntiti operation)
-        {
-            try
-            {
-                PrintDialog printDlg = new PrintDialog();
-                TemplatePrintingDayReport template = new TemplatePrintingDayReport();
+        //public void PrintCheck(OperationEntiti operation)
+        //{
+        //    try
+        //    {
+        //        PrintDialog printDlg = new PrintDialog();
+        //        TemplatePrintingDayReport template = new TemplatePrintingDayReport();
                 
-                template.NameFop.Text = _nameFop;
-                template.NameShop.Text = _nameShop;
-                template.Seller.Text = _nameSeller;
-                template.RegionDistrictCiti.Text = region+", "+district+", "+city;
-                template.StreetHouse.Text = street + ", " + house;
-                template.Id.Text = "ID "+operation.ID;
+        //        template.NameFop.Text = _nameFop;
+        //        template.NameShop.Text = _nameShop;
+        //        template.Seller.Text = _nameSeller;
+        //        template.RegionDistrictCiti.Text = region+", "+district+", "+city;
+        //        template.StreetHouse.Text = street + ", " + house;
+        //        template.Id.Text = "ID "+operation.ID;
 
-                template.TotalSum.Text = (operation.AmountReceivedCard + operation.AmountReceivedCash).ToString("0.00");
-                template.TotalSumCash.Text= operation.AmountReceivedCash.ToString("0.00");
-                template.TotalSumCard.Text= operation.AmountReceivedCard.ToString("0.00");
+        //        template.TotalSum.Text = (operation.AmountReceivedCard + operation.AmountReceivedCash).ToString("0.00");
+        //        template.TotalSumCash.Text= operation.AmountReceivedCash.ToString("0.00");
+        //        template.TotalSumCard.Text= operation.AmountReceivedCard.ToString("0.00");
 
-                template.TotalSumReturn.Text = (operation.AmountCheckReturnCash + operation.AmountCheckReturnCard).ToString("0.00");
-                template.TotalSumCashReturn.Text= operation.AmountCheckReturnCash.ToString("0.00");
-                template.TotalSumCardReturn.Text = operation.AmountCheckReturnCard.ToString("0.00");
+        //        template.TotalSumReturn.Text = (operation.AmountCheckReturnCash + operation.AmountCheckReturnCard).ToString("0.00");
+        //        template.TotalSumCashReturn.Text= operation.AmountCheckReturnCash.ToString("0.00");
+        //        template.TotalSumCardReturn.Text = operation.AmountCheckReturnCard.ToString("0.00");
 
-                template.TotalSumOfficialEntry.Text = operation.AmountOfFundsReceived.ToString("0.00");
-                template.TotalSumOfficialIssuance.Text = operation.AmountOfIssuedFunds.ToString("0.00");
+        //        template.TotalSumOfficialEntry.Text = operation.AmountOfFundsReceived.ToString("0.00");
+        //        template.TotalSumOfficialIssuance.Text = operation.AmountOfIssuedFunds.ToString("0.00");
 
-                template.CountCheck.Text = operation.NumberOfSalesReceipts.ToString("0");
-                template.TotalReturnCheck.Text = operation.NumberOfPendingReturns.ToString("0");
+        //        template.CountCheck.Text = operation.NumberOfSalesReceipts.ToString("0");
+        //        template.TotalReturnCheck.Text = operation.NumberOfPendingReturns.ToString("0");
 
-                template.FNCheck.Text ="ФН чека: "+ operation.NumberPayment;
-                template.FNRRo.Text = "ФН ПРРО: " + operation.FiscalNumberRRO;
+        //        template.FNCheck.Text ="ФН чека: "+ operation.NumberPayment;
+        //        template.FNRRo.Text = "ФН ПРРО: " + operation.FiscalNumberRRO;
 
-                template.date.Text = DateTime.Now.ToString();
+        //        template.date.Text = DateTime.Now.ToString();
 
-                if (_printer == null || _printer == string.Empty || _printer == " ")
-                {
-                    throw new Exception("Ви не вказали принтера");
-                }
+        //        if (_printer == null || _printer == string.Empty || _printer == " ")
+        //        {
+        //            throw new Exception("Ви не вказали принтера");
+        //        }
 
-                printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), _printer);
-                printDlg.PrintVisual(template.grid, "DayZRepot");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        //        printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), _printer);
+        //        printDlg.PrintVisual(template.grid, "DayZRepot");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
         
     }
 }

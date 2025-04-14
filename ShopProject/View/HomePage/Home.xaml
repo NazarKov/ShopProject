@@ -31,6 +31,7 @@
                     <MenuItem Header="Користувачі"  Command="{Binding OpenUserCommand}"></MenuItem>
                     <MenuItem Header="Обєкти власності" Command="{Binding OpenObjectOwnerPageCommand}"></MenuItem>
                     <MenuItem Header="РРО" Command="{Binding OpenSoftwareDeviceSettlementOperationsPageCommand}"></MenuItem>
+                    <MenuItem Header="Налаштування веб серверу" Command="{Binding OpenWebServerPageCommand}"></MenuItem>
                     <Separator />
                     <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
                 </MenuItem>
@@ -47,6 +48,7 @@
                     <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProduct}"></MenuItem>
                     <MenuItem Header="Імпортувати товари" Command="{Binding OpenImportProduct}"></MenuItem>
                 </MenuItem>
+                <MenuItem Header="Статистика продаж" Command="{Binding OpenStatisticsPage}"></MenuItem>
                 <MenuItem Header="Довідник" ></MenuItem>
                 <MenuItem Header="Справка" ></MenuItem>
             </Menu>
@@ -60,7 +62,7 @@
                 <MenuItem Header="Меню продаж" Command="{Binding OpenSaleMenuCommand}" />
             </Menu>
 
-            <Frame x:Name="frame" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{Binding Path=Page}" NavigationUIVisibility="Hidden" ></Frame>
+            <Frame x:Name="frame" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{Binding Path=Page, UpdateSourceTrigger=PropertyChanged}" NavigationUIVisibility="Hidden" ></Frame>
 
         </Grid>
     </Viewbox>

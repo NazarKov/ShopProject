@@ -1,13 +1,13 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Entities;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
-using ShopProject.Helpers.HttpService;
-using ShopProject.Helpers.HttpService.Model;
+﻿using NPOI.SS.Formula.Functions;
+using ShopProject.Helpers; 
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.SigningFileService;
 using ShopProject.Helpers.SigningFileService.Model;
 using ShopProject.Views.SettingPage;
+using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,61 +21,58 @@ using System.Windows;
 namespace ShopProject.Model.AdminPage
 {
     class CreateUserModel
-    {
-        private IEntityAccess<UserEntiti> _userTable;
-        private IEntityAccess<UserRoleEntiti> _userRoleTable;
-        private IEntityAccess<ObjectOwnerEntiti> _objectOwnerTable;
-
-        private HttpController _mainControllerHttp;
+    {  
+        private MainElectronicTaxAccountController _mainTaxAccauntController;
         private SigningFileContoller _mainControllerTcp;
 
-        private List<UserRoleEntiti> _userRoles;
-        private List<ObjectOwnerEntiti> _userObjects;
+        private List<UserRoleEntity> _userRoles;
+        private List<ObjectOwnerEntity> _userObjects;
 
         public CreateUserModel()
-        {
-            _userTable = new UserTableAccess();
-            _userRoleTable = new UserRoleTableAccess();
-            _objectOwnerTable = new ObjectOwnerTableAccess();
+        { 
 
-            _userRoles = new List<UserRoleEntiti>();
-            _userObjects = new List<ObjectOwnerEntiti>();
+            _userRoles = new List<UserRoleEntity>();
+            _userObjects = new List<ObjectOwnerEntity>();
 
-            _mainControllerHttp = new HttpController();
+            _mainTaxAccauntController = new MainElectronicTaxAccountController();
             _mainControllerTcp = new SigningFileContoller();
 
-            new Thread(new ThreadStart(GetInfoDataBase)).Start();
         }
-        private void GetInfoDataBase()
-        {
-            _userObjects = (List<ObjectOwnerEntiti>)_objectOwnerTable.GetAll();
-        }
-        public void CreateUser(string fulleName,string login ,string email, string password , string roles)
+        public void CreateUser(string fulleName, string login, string email, string password, UserRoleEntity role)
         {
             try
             {
-                _userTable.Add(new UserEntiti()
+                var user = new UserEntity()
                 {
                     FullName = fulleName,
                     Login = login,
                     Email = email,
                     Password = password,
-                    UserRole = _userRoles.Where(item => item.NameRole == roles).FirstOrDefault(),
+                    UserRole = role,
                     Status = 0,
                     CreatedAt = DateTime.Now,
 
+                };
+
+                bool response = false;
+                Task t = Task.Run(async () =>
+                {
+                    response = await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(Session.Token, user);
                 });
+                t.Wait();
+
+
                 MessageBox.Show("Користувача створено");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
         }
-        public async Task<bool> CreateUserKey(string pathFile,string NameFile, string login ,string email, string password , string passwrodKey , string roles)
+
+        public async Task<bool> CreateUserKey(string pathFile, string NameFile, string login, string email, string password, string passwrodKey, UserRoleEntity role)
         {
-            UserCommand result = new UserCommand() { Status = "100"};
+            UserCommand result = new UserCommand() { Status = "100" };
             try
             {
                 string namefile = Path.GetFileName("C:\\ProgramData\\ShopProject\\Temp\\Key.txt.p7s");
@@ -83,44 +80,44 @@ namespace ShopProject.Model.AdminPage
 
                 //if (namefile == null && namefile ==string.Empty && namefile == "" )
                 //{
-                    if (!_mainControllerTcp.IsConnectingServise())
+                if (!_mainControllerTcp.IsConnectingServise())
+                {
+                    if (!_mainControllerTcp.IsStartServise())
                     {
-                        if (!_mainControllerTcp.IsStartServise())
-                        {
-                            _mainControllerTcp.StartServise();
-                        }
-                        _mainControllerTcp.ConnectService();
+                        _mainControllerTcp.StartServise();
                     }
+                    _mainControllerTcp.ConnectService();
+                }
 
-                     result = _mainControllerTcp.SendingCommand(new UserCommand()
+                result = _mainControllerTcp.SendingCommand(new UserCommand()
+                {
+                    TypeCommand = TypeCommand.IsInitialize,
+                    Time = DateTime.Now,
+                });
+
+                if (result.Status == "404")
+                {
+                    _mainControllerTcp.SendingCommand(new UserCommand()
                     {
-                        TypeCommand = TypeCommand.IsInitialize,
+                        TypeCommand = TypeCommand.Initialize,
                         Time = DateTime.Now,
                     });
-
-                    if (result.Status == "404")
-                    {
-                        _mainControllerTcp.SendingCommand(new UserCommand()
-                        {
-                            TypeCommand = TypeCommand.Initialize,
-                            Time = DateTime.Now,
-                        });
-                    }
+                }
 
 
-                    result = _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.GetDataKey,
-                        PathKey = pathFile,
-                        PasswordKey = passwrodKey,
-                        Time = DateTime.Now,
-                    });
+                result = _mainControllerTcp.SendingCommand(new UserCommand()
+                {
+                    TypeCommand = TypeCommand.GetDataKey,
+                    PathKey = pathFile,
+                    PasswordKey = passwrodKey,
+                    Time = DateTime.Now,
+                });
                 //}
 
                 if (result.Status == "100")
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
-                    var response = await _mainControllerHttp.Send();
+                    var response = await _mainTaxAccauntController.Send();
 
                     List<DataJsonHttpResponse> infoUser = DataJsonHttpResponse.FromJsonList(response);
 
@@ -131,7 +128,7 @@ namespace ShopProject.Model.AdminPage
                         FileDirectory.CreateUserFolder(nameUser);
                         string pathKey = FileDirectory.CopyKeyInUserFolder(NameFile, pathFile, nameUser);
 
-                        _userTable.Add(new UserEntiti()
+                        var user = new UserEntity()
                         {
                             FullName = nameUser,
                             TIN = infoUser.ElementAt(0).values.TIN,
@@ -142,16 +139,17 @@ namespace ShopProject.Model.AdminPage
                             KeyPath = pathKey,
                             Status = 1,
                             CreatedAt = DateTime.Now,
-                            UserRole = _userRoles.Where(item => item.NameRole == roles).FirstOrDefault()
-                        });
-
-
+                            UserRole = role,
+                        };
+                         
+                        var resultCreateUser = await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(Session.Token, user); 
+                  
                         _mainControllerTcp.SendingCommand(new UserCommand()
                         {
                             TypeCommand = TypeCommand.DisconnectUser,
                             Time = DateTime.Now,
                         });
-                        return true;
+                        return resultCreateUser;
                     }
                 }
                 return false;
@@ -163,22 +161,21 @@ namespace ShopProject.Model.AdminPage
             }
         }
 
-        public List<string> GetUserRoles() 
+        public List<UserRoleEntity> GetUserRoles()
         {
             try
             {
-                List<string> nameRoles = new List<string>();
-                _userRoles = (List<UserRoleEntiti>)_userRoleTable.GetAll();
-                foreach(var item in _userRoles)
+                Task t = Task.Run(async () =>
                 {
-                    nameRoles.Add(item.NameRole);
-                }
-                return nameRoles;
+                    _userRoles = (await MainWebServerController.MainDataBaseConntroller.UserRoleController.GetRoles(Session.Token)).ToList();
+                });
+                t.Wait();
+                return _userRoles;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<string>();
+                return new List<UserRoleEntity>();
             }
         }
     }

@@ -1,5 +1,8 @@
-﻿using ShopProject.Model.Command;
+﻿using LocateWindow;
+using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,27 +25,29 @@ namespace ShopProject.ViewModel.ToolsPage
         public CreateProductViewModel()
         {
             _model = new CreateProductModel();
-            Units = new List<string>();
-            CodeUKTZED = new List<string>();
+            
+            Units = new List<ProductUnitEntity>();
+            CodeUKTZED = new List<CodeUKTZEDEntity>();
+
+
 
             _saveProductCommand = new DelegateCommand(SaveAndCreateProductDataBase);
             _clearWindowCommand = new DelegateCommand(ClearTextWindow);
 
             _code = string.Empty;
             _name = string.Empty;
-            _articled = string.Empty;
+            _article = string.Empty;
             _units = null;
-            _selectUnits = string.Empty;
-            _selectCodeUKTZED = string.Empty;
-
+            _selectUnitsIndex = 0;
+            _selectCodeUKTZEDIndex = 0;
             _price = 0m;
             _count = 0m;
-            new Thread(new ThreadStart(setFiledWindow)).Start();
+            setFiledWindow();
         }
         private void setFiledWindow()
         {
-            Units = _model.GetUnitList();
-            CodeUKTZED = _model.GetCodeUKTZEDList();
+            Units = _model.GetUnits();
+            CodeUKTZED = _model.GetCodeUKTZED();
         }
 
 
@@ -50,62 +55,62 @@ namespace ShopProject.ViewModel.ToolsPage
         public string Code
         {
             get { return _code; }
-            set { _code = value; OnPropertyChanged("Code"); }
+            set { _code = value; OnPropertyChanged(nameof(Code)); }
         }
 
         private string _name;
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged("Name"); }
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
 
-        private string _articled;
-        public string Articled
+        private string _article;
+        public string Article
         {
-            get { return _articled; }
-            set { _articled = value; OnPropertyChanged("Articled"); }
+            get { return _article; }
+            set { _article = value; OnPropertyChanged(nameof(Article)); }
         }
 
         private decimal _price;
         public decimal Price
         {
             get { return _price; }
-            set { _price = value; OnPropertyChanged("Price"); }
+            set { _price = value; OnPropertyChanged(nameof(Price)); }
         }
 
         private decimal _count;
         public decimal Count
         {
             get { return _count; }
-            set { _count = value; OnPropertyChanged("Count"); }
+            set { _count = value; OnPropertyChanged(nameof(Count)); }
         }
 
-        private List<string>? _units;
-        public List<string>? Units
+        private List<ProductUnitEntity>? _units;
+        public List<ProductUnitEntity>? Units
         {
             get { return _units; }
-            set { _units = value; OnPropertyChanged("Units"); }
+            set { _units = value; OnPropertyChanged(nameof(Units)); }
         }
 
-        private string _selectUnits;
-        public string SelectUnits
+        private int _selectUnitsIndex;
+        public int SelectUnitIndex
         {
-            get { return _selectUnits; }
-            set { _selectUnits = value; }
+            get { return _selectUnitsIndex; }
+            set { _selectUnitsIndex = value; }
         }
 
-        private List<string>? _codeUKTZED;
-        public List<string>? CodeUKTZED
+        private List<CodeUKTZEDEntity>? _codeUKTZED;
+        public List<CodeUKTZEDEntity>? CodeUKTZED
         {
             get { return _codeUKTZED; }
-            set { _codeUKTZED = value; OnPropertyChanged("CodeUKTZED"); }
+            set { _codeUKTZED = value; OnPropertyChanged(nameof(CodeUKTZED)); }
         }
-        private string _selectCodeUKTZED;
-        public string SelectCodeUKTZED
+        private int _selectCodeUKTZEDIndex;
+        public int SelectCodeUKTZEDIndex
         {
-            get { return _selectCodeUKTZED; }
-            set { _selectCodeUKTZED = value; }
+            get { return _selectCodeUKTZEDIndex; }
+            set { _selectCodeUKTZEDIndex = value; }
         }
 
 
@@ -132,12 +137,25 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void SaveAndCreateProductDataBase()
         {
-            new Thread(new ThreadStart(() => { 
-                if (_model.SaveItemDataBase(_name, _code, _articled, _price, _count, _selectUnits,_selectCodeUKTZED ))
+            new Thread(new ThreadStart(() =>
+            {
+                if (_model.SaveItemDataBase(new ProductEntity() {
+                    NameProduct = _name,
+                    Code = _code,
+                    Articule = _article,
+                    Price = _price,
+                    Count = _count,
+                    Unit = _units.ElementAt(_selectUnitsIndex),
+                    CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
+                    CreatedAt = DateTime.Now,
+                    Status = TypeStatusProduct.InStock,
+                }));
                 {
-                     MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Mediator.Notify("ReloadProduct", "");
                 }
             })).Start();
+
         }
 
     }

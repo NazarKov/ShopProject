@@ -1,0 +1,58 @@
+﻿<Page x:Class="ShopProject.View.HomePage.StartView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.HomePage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="StartView">
+    <Page.DataContext>
+        <local:StartViewModel></local:StartViewModel>
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="350"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="{Binding HeightGrid}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label x:Name="label" Grid.Column="1" Grid.Row="1" Margin="15,0,0,0"  Content="Url DataBase" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="1"  HorizontalAlignment="Center"  Text="{Binding Url}" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="button2" Grid.Column="1" Grid.Row="1" Margin="0,0,46,0"  Content="Авто пошук" HorizontalAlignment="Right"   VerticalAlignment="Top" Command="{Binding ShowSettingAutoFindCommand}"/>
+
+        <Grid Grid.Column="1" Grid.Row="1" Visibility="{Binding VisibilitySettingAutoFind}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="label1" Grid.Row="1" Content="IPRouter" Margin="15,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox1"  Grid.Row="1" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding IpRouter}" VerticalAlignment="Top" Width="120"/>
+
+            <Label x:Name="Port"  Grid.Row="2" Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"   VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox2" Grid.Row="2" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding Port}" VerticalAlignment="Top" Width="120"/>
+
+            <Label x:Name="MinIpAddress" Grid.Row="3"  Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox4"  Grid.Row="3"  HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding MinIPAddress}" VerticalAlignment="Top" Width="120"/>
+
+            <Label x:Name="MaxIpAddress"  Grid.Row="4"   Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"   VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox3"  Grid.Row="4" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding MaxIPadress}" VerticalAlignment="Top" Width="120"/>
+
+            <Button x:Name="button3"  Grid.Row="5" Content="Пошук" HorizontalAlignment="Center" Command="{Binding AutoFindUrlCommand}" VerticalAlignment="Top" Width="120"/>
+        </Grid>
+
+
+        <Button x:Name="exit" Grid.Column="1" Grid.Row="1" Content="Вихід" Margin="0,0,55,0" HorizontalAlignment="Right" Width="100" VerticalAlignment="Bottom"/>
+        <Button x:Name="connect" Grid.Column="1" Grid.Row="1" Margin="55,0,0,0" Content="Підключитися" Command="{Binding ConnectCommand}" HorizontalAlignment="Left" Width="100"  VerticalAlignment="Bottom"/>
+    </Grid>
+</Page>

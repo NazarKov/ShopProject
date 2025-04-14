@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Authorization Page";
+}
+@model AuthorizationViewModel;
+
+<div class="container-main- AuthorizationView">
+    <div class="Authorization box-shadow">
+        <p name="messege">@Model.Messege</p>
+        <form asp-controller="Authorization" asp-action="Authorization">
+            <h2>Login</h2>
+            <input class="AuthorizationView-input" asp-for="Login" type="text" />
+            <h2>Password</h2>
+            <input class="AuthorizationView-input" asp-for="Password" type="password" />
+            <br />
+            <br />
+            <button class="btn button button-size" type="submit">Авторизуватися</button>
+        </form>
+        <br />
+        @using (Html.BeginForm("RedirectToResetPassword", "Authorization", FormMethod.Post))
+        {
+            <button class="btn button button-size">Відновити пароль</button>
+        }
+    </div>
+</div>

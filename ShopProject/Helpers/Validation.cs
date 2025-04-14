@@ -1,5 +1,4 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.Model;
+﻿using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -109,9 +108,9 @@ namespace ShopProject.Helpers
         }
 
 
-        public static bool CodeCoincidenceinDatabase(string code, IEnumerable<ProductEntiti> products)
+        public static bool CodeCoincidenceinDatabase(string code, IEnumerable<ProductEntity> products)
         {
-            foreach (ProductEntiti item in products)
+            foreach (ProductEntity item in products)
             {
                 if (item.Code == code)
                 {

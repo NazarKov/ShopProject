@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
@@ -45,6 +44,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FiscalServerApi\FiscalServerApi.csproj" />
+    <ProjectReference Include="..\ShopProjectDataBase\ShopProjectSQLDataBase.csproj" />
   </ItemGroup>
 
   <ItemGroup>

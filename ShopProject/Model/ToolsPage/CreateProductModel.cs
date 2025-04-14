@@ -1,113 +1,64 @@
-﻿using ShopProject.DataBase.Context;
-using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.DataBase.Model;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ShopProject.Model.ToolsPage
 {
     internal class CreateProductModel
     {
-        private IEntityAccess<ProductEntiti> _productsRepository;
-        private IEntityGet<ProductEntiti> _productsGet;
-        private IEntityAccess<ProductUnitEntiti> _productsUnitRepository;
-        private IEntityAccess<CodeUKTZEDEntiti> _codeUKTZEDRepository;
-
-        private List<ProductUnitEntiti> _productsUnitsList;
-        private List<CodeUKTZEDEntiti> _codesUKTZEDList;
+        private List<ProductUnitEntity> _productsUnitsList;
+        private List<CodeUKTZEDEntity> _codeUKTZEDEList;
 
         public CreateProductModel()
         {
-            _productsUnitsList = new List<ProductUnitEntiti>();
-            _codesUKTZEDList = new List<CodeUKTZEDEntiti>();
-
-            _productsGet = new ProductTableAccess();
-            _productsRepository = new ProductTableAccess();
-            _productsUnitRepository = new UnitTableAccess();
-            _codeUKTZEDRepository = new CodeUKTZEDTableAccess();
+            _productsUnitsList = new List<ProductUnitEntity>();
+            _codeUKTZEDEList= new List<CodeUKTZEDEntity>();
         }
 
-        public bool SaveItemDataBase(string name, string code, string articled, decimal price, decimal count, string units,string codeUKTZED)
+        public List<ProductUnitEntity> GetUnits()
+        {
+            Task t = Task.Run(async () =>
+            {
+                _productsUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
+            });
+            t.Wait();
+            return _productsUnitsList;
+        }
+
+        public List<CodeUKTZEDEntity> GetCodeUKTZED()
+        {
+            Task t = Task.Run(async () =>
+            {
+                _codeUKTZEDEList = (await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
+            });
+            t.Wait();
+
+            return _codeUKTZEDEList;
+        }
+
+        public bool SaveItemDataBase(ProductEntity product)
         {
             try
             {
-                if (Validation.TextField(name, code, articled, price, count,units, (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct")))
+                bool response = false;
+                Task t = Task.Run(async () =>
                 {
-                    if (_productsGet.GetByBarCode(code) != null)//перевірка на наявність товару по штрих коду
-                    {
-                        throw new Exception("Товар існує");
-                    }
+                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.Token, product);
+                });
+                t.Wait();
 
-                    var unit = _productsUnitsList.Where(item => item.ShortNameUnit == units).FirstOrDefault();
-                    var UKTZED = _codesUKTZEDList.Where(item => item.NameCode==codeUKTZED).FirstOrDefault();
-                    if (unit != null)
-                    {
-                        if (UKTZED != null)
-                        {
-                            _productsRepository.Add(new ProductEntiti()
-                            {
-                                NameProduct = name,
-                                Code = code,
-                                Articule = articled,
-                                Price = price,
-                                Count = count,
-                                Unit = unit,
-                                CodeUKTZED = UKTZED,
-                                CreatedAt = DateTime.Now,
-                                Status = "in_stock",
-                                Sales = 0
-                            });
-                        }
-                    }
-                }
-                return true;
+                return response;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK,MessageBoxImage.Error);
                 return false;
             }
-        }
-        public List<string>? GetUnitList()
-        {
-            try
-            {
-                List<string> result = new List<string>();
-                _productsUnitsList = (List<ProductUnitEntiti>)_productsUnitRepository.GetAll();
-                foreach (ProductUnitEntiti unit in _productsUnitsList)
-                {
-                    result.Add(unit.ShortNameUnit.ToString());
-                }
-                return result;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        }
-        public List<string>? GetCodeUKTZEDList()
-        {
-            try
-            {
-                List<string> result = new List<string>();
-                _codesUKTZEDList = (List<CodeUKTZEDEntiti>)_codeUKTZEDRepository.GetAll();
-                foreach(CodeUKTZEDEntiti code in  _codesUKTZEDList)
-                {
-                    result.Add(code.NameCode.ToString());
-                }
-                return result;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message,"Помилка",MessageBoxButton.OK,MessageBoxImage.Error);
-                return null;
-            }
-        }
-       
+        }  
     }
 }

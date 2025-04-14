@@ -1,0 +1,68 @@
+﻿.container-main-StartView {
+    width: 100%;
+    height: 100%;
+    font-family:sans-serif;
+}
+.container-main{
+    margin-top:50px
+}
+
+.StartSetting {
+    margin: 0 auto;
+    border: lightgray solid 1px;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    width: 600px;
+}
+
+.startSetting-continue {
+    margin: 5px;
+    width: 230px;
+    border: lightgray;
+    border-radius: 10px;
+}
+    .startSetting-continue:hover {
+        background: skyblue;
+    }
+
+.createDB {
+    padding: 5px;
+    margin: 10px;
+    border: lightgray solid 1px;
+    border-radius: 10px;
+    text-align: center;
+}
+.createDB p {
+        margin: 10px;
+}
+
+.createDB-nameDB {
+    margin: 5px;
+    width: 230px;
+    border: lightgray solid 1px;
+}
+
+.createDB-typeDB {
+    margin: 5px;
+    width: 230px;
+    text-align: center;
+    border: lightgray solid 1px;
+}
+
+.createDB-Button {
+    margin: 5px;
+    width: 230px;
+    border: lightgray;
+    border-radius: 10px;
+}
+    .createDB-Button:hover {
+        background: skyblue;
+    }
+.text-createDataBase
+{
+    display:inline-flex;
+}
+.text-createDataBase p{
+    text-align:center;
+}

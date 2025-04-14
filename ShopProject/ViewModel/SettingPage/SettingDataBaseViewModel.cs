@@ -1,4 +1,5 @@
-﻿using ShopProject.DataBase.Context;
+﻿using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Asn1.Cmp;
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SettingPage;
@@ -12,154 +13,231 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml.Serialization;
+using ZXing;
 
 namespace ShopProject.ViewModel.SettingPage
 {
     internal class SettingDataBaseViewModel : ViewModel<SettingDataBaseViewModel>
     {
-        private ICommand _createDataBase;
-        private ICommand _deleteDataBase;
-        private ICommand _clearDataBase;
+        private ICommand _connectDataBaseCommand;
+        private ICommand _disconnectDataBaseCommand;
 
         private SettingDataBaseModel _model;
-     
+
+        private string tokenUser;
+        private string tokenDataBase;
+
         public SettingDataBaseViewModel()
         {
             _model = new SettingDataBaseModel();
-            _createDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(CreateDataBaseInUpdateField)).Start());
-            _deleteDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(DeleteDataBaseAndDeleteSettingDataBase)).Start());
-            _clearDataBase = new DelegateCommand(()=> new Thread(new ThreadStart(ClearDataBaseAll)).Start());
+            _disconnectDataBaseCommand = new DelegateCommand(DiscoonectDataBase);
+            _connectDataBaseCommand = new DelegateCommand(ConnectDataBase);
+
+            _nameDataBase = string.Empty;
+            _authorizationVisibiliti = Visibility.Visible;
+            _settingConnectAndCreateDataBaseVisisbiliti = Visibility.Visible;
+            _settingDataBaseVisibiliti = Visibility.Visible;
+            _visibilitiConnectionTypeDataBase = Visibility.Collapsed;
+
+
+            _selectTypeConnect = 0;
+            _selectTypeDataBase = 0;
+            _heightConnectButtonRow = 0;
+            _rowSpanGrid = 7;
+            SetSettingPage();
+        }
+
+        private async void SetSettingPage()
+        {
+            tokenUser = AppSettingsManager.GetParameterFiles("TokenSetting").ToString();
+
+            SettingConncectAndCreateDataBaseVisibiliti = Visibility.Visible;
+            SettingDataBaseVisibiliti = Visibility.Collapsed;
+
+            RowSpanGrid = 6;
+            ConnectDataBaseButtonRow = 5;
+            AuthorizationVisibiliti = Visibility.Visible;
+
+            if (tokenUser != null && tokenUser != string.Empty)
+            {
+                AuthorizationVisibiliti = Visibility.Collapsed;
+                RowSpanGrid = 5;
+                ConnectDataBaseButtonRow = 4;
+
+            }
+
+            tokenDataBase = AppSettingsManager.GetParameterFiles("TokenDataBase").ToString();
+            if (tokenDataBase != null && tokenDataBase != string.Empty)
+            {
+                //var result = await _model.GetSetting(tokenDataBase);
+                //if(result != null)
+                //{
+                //    NameDataBase = result.ConnectionString.InitialCatalog;
+                //    SettingConncectAndCreateDataBaseVisibiliti = Visibility.Collapsed;
+                //    SettingDataBaseVisibiliti = Visibility.Visible;
+                //    RowSpanGrid = 3;
+                //}
+            }
            
-            _isCreateButton = true;
-            _dbname = string.Empty;
-            _isCreateLableName = string.Empty;
-            _typeConnect = new List<string>();
-            
-
-            SetFieldComboBox();
-            if (AppSettingsManager.GetParameterFiles("ConnectionString") != string.Empty)
-            {
-                SetFieldText(true);         
-            }
-            else
-            {
-                SetFieldText(false);
-            }
         }
-        private void SetFieldComboBox()
+
+        private string _nameDataBase;
+        public string NameDataBase
         {
-            TypeConnect = new List<string>();
-            TypeConnect.Add("EXPRESS");
-            TypeConnect.Add("DEVELOPER");
-
-            if (AppSettingsManager.GetParameterFiles("TypeConnect").ToString()=="EXPRESS")
-            {
-                SelectItemConnect = 0;
-            }
-            else if(AppSettingsManager.GetParameterFiles("TypeConnect").ToString() == "DEVELOPER")
-            {
-                SelectItemConnect = 1;
-            }
-            else
-            {
-                SelectItemConnect = 2;
-            }
+            get { return _nameDataBase; }
+            set { _nameDataBase = value; OnPropertyChanged(nameof(NameDataBase)); }
         }
-
-        private void SetFieldText(bool createTrueAndFalse)
+        private int _selectTypeConnect;
+        public int SelectTypeConnect
         {
-            if (createTrueAndFalse)
-            {
-                IsCreateButton = false;
-                IsCreateLableName = "База створена";
-                DBName = AppSettingsManager.GetParameterFiles("NameDataBase").ToString();
-            }
-            else
-            {
-                IsCreateButton = true;
-                IsCreateLableName =string.Empty;
-                DBName = string.Empty;
-            }
-        }
-        private int _selectItemConnect;
-        public int SelectItemConnect
-        {
-            get { return _selectItemConnect; }
-            set { _selectItemConnect = value; OnPropertyChanged("SelectItemConnect"); }
+            get { return _selectTypeConnect; }
+            set { _selectTypeConnect = value; OnPropertyChanged(nameof(SelectTypeConnect)); }
         }
 
-        private List<string> _typeConnect;
-        public List<string> TypeConnect
+        private Array? _typeConnectDataBase;
+        public Array? TypeConnectDataBase
         {
-            get { return _typeConnect; }
-            set { _typeConnect = value; OnPropertyChanged("TypeConnect"); }
+       //     get { return Enum.GetValues(typeof(ConnectionType)); }
+            set { _typeConnectDataBase = value; OnPropertyChanged(nameof(TypeConnectDataBase)); }
         }
 
-        private string _dbname;
-        public string DBName
+        private int _selectTypeDataBase;
+        public int SelectTypeDataBase
         {
-            get { return _dbname; }
-            set { _dbname = value; OnPropertyChanged("DBName"); }
+            get { return _selectTypeDataBase; }
+            set { _selectTypeDataBase = value;
+            ////    if (TypeDataBase.GetValue(value).ToString()=="SQL")
+            //    {
+            //        VisibilitiConnectionTypeDataBase = Visibility.Visible;
+            //        HeightConnectButtonRow = 30;
+            //        RowSpanGrid++;
+            //    }
+            //    else
+            //    {
+            //        VisibilitiConnectionTypeDataBase = Visibility.Hidden;
+            //        HeightConnectButtonRow = 0;
+            //        RowSpanGrid--;
+            //    }
+                OnPropertyChanged(nameof(SelectTypeDataBase)); }
         }
 
-        private string _isCreateLableName;
-        public string IsCreateLableName
+        private Visibility _visibilitiConnectionTypeDataBase;
+        public Visibility VisibilitiConnectionTypeDataBase
         {
-            get { return _isCreateLableName; }
-            set { _isCreateLableName = value; OnPropertyChanged("IsCreateLableName");}
+            get { return _visibilitiConnectionTypeDataBase; }
+            set { _visibilitiConnectionTypeDataBase = value; OnPropertyChanged(nameof(VisibilitiConnectionTypeDataBase)); }
         }
 
-        private bool _isCreateButton;
-        public bool IsCreateButton
+        private Array? _typeDataBase;
+        public Array? TypeDataBase
         {
-            get { return _isCreateButton; }
-            set { _isCreateButton = value; OnPropertyChanged("IsCreateButton"); }
+         //   get { return Enum.GetValues(typeof(TypeDataBase)); }
+            set { _typeDataBase = value; OnPropertyChanged(nameof(TypeDataBase)); }
+
+        }
+        private string _passwordDataBase;
+        public string PasswordDataBase
+        {
+            get { return _passwordDataBase; }
+            set { _passwordDataBase = value; OnPropertyChanged(nameof(PasswordDataBase)); }
+        }
+        private string _passwordAdmin;
+        public string PasswordAdmin
+        {
+            get { return _passwordAdmin; }
+            set { _passwordAdmin = value; OnPropertyChanged(nameof(PasswordAdmin)); }
         }
 
-        public ICommand CreateDataBase => _createDataBase;
-
-        private void CreateDataBaseInUpdateField()
+        private Visibility _settingDataBaseVisibiliti;
+        public Visibility SettingDataBaseVisibiliti
         {
-     
-            if (_model.CreateDataBase(DBName,SelectItemConnect))
+            get { return _settingDataBaseVisibiliti; }
+            set { _settingDataBaseVisibiliti = value; OnPropertyChanged(nameof(SettingDataBaseVisibiliti)); }
+        }
+        private Visibility _settingConnectAndCreateDataBaseVisisbiliti;
+        public Visibility SettingConncectAndCreateDataBaseVisibiliti
+        {
+            get { return _settingConnectAndCreateDataBaseVisisbiliti; }
+            set { _settingConnectAndCreateDataBaseVisisbiliti = value; OnPropertyChanged(nameof(SettingConncectAndCreateDataBaseVisibiliti));}
+        }
+
+        private Visibility _authorizationVisibiliti;
+        public Visibility AuthorizationVisibiliti
+        {
+            get { return _authorizationVisibiliti; }
+            set { _authorizationVisibiliti = value; OnPropertyChanged(nameof(AuthorizationVisibiliti));}
+        }
+        private int _rowSpanGrid;
+        public int RowSpanGrid
+        {
+            get { return _rowSpanGrid; }
+            set { _rowSpanGrid = value; OnPropertyChanged(nameof(RowSpanGrid)); }
+        }
+        private int _connectDataBaseButtonRow;
+        public int ConnectDataBaseButtonRow
+        {
+            get { return _connectDataBaseButtonRow; }
+            set { _connectDataBaseButtonRow = value; OnPropertyChanged(nameof(ConnectDataBaseButtonRow)); }
+        }
+
+
+        private int _heightConnectButtonRow;
+        public int HeightConnectButtonRow
+        {
+            get { return _heightConnectButtonRow; }
+            set { _heightConnectButtonRow = value; OnPropertyChanged(nameof(HeightConnectButtonRow)); }
+        }
+
+
+        public ICommand ConnectDataBaseCommand => _connectDataBaseCommand;
+        private void ConnectDataBase()
+        {
+            Task task = Task.Run(async () =>
             {
-                SetFieldText(true);
-                MessageBox.Show("База даних створена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
+                if (ChekedField())
+                {
+                    if (tokenUser != null && tokenUser != string.Empty)
+                    {
+                   //     await _model.ConnectDataBase(NameDataBase, PasswordDataBase, tokenUser, (ConnectionType)TypeConnectDataBase.GetValue(SelectTypeConnect), (TypeDataBase)TypeDataBase.GetValue(SelectTypeDataBase));
+                    }
+                    else
+                    {
+                //        await _model.ConnectDataBase(NameDataBase, PasswordDataBase, PasswordAdmin, (ConnectionType)TypeConnectDataBase.GetValue(SelectTypeConnect),(TypeDataBase)TypeDataBase.GetValue(SelectTypeDataBase));
+                    }
+                }
+            });
+            task.ContinueWith(t =>
             {
-                MessageBox.Show("База даних не створена","Eror",MessageBoxButton.OK,MessageBoxImage.Error);
-            }
+                SetSettingPage();
+            });
         }
-        public ICommand DeleteDataBase => _deleteDataBase;
-        private void DeleteDataBaseAndDeleteSettingDataBase()
+        public ICommand DisconnectDataBaseCommand => _disconnectDataBaseCommand;
+        private void DiscoonectDataBase()
         {
-            if (_model.DeleteDataBase())
+            Task task = Task.Run(async () =>
             {
-                SetFieldText(false);
-                MessageBox.Show("База даних видалена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
+             //   await _model.DisconnectDataBase(tokenDataBase);
+            });
+            task.ContinueWith(t =>
             {
-                MessageBox.Show("База даних не видалена","Eror",MessageBoxButton.OK,MessageBoxImage.Error);
-            }
+                SetSettingPage();
+            });
         }
 
-        public ICommand ClearDataBase => _clearDataBase;
-        private void ClearDataBaseAll()
+        private bool ChekedField()
         {
-            if(_model.ClearDataBase())
+            if (NameDataBase == string.Empty)
             {
-                MessageBox.Show("База даних ощищена", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Заповніть поле Назва бази даних");
+                return false;
             }
-            else
+            if (PasswordDataBase == string.Empty)
             {
-                MessageBox.Show("База даних не очищена", "Eror", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Заповніть поле Пароль бази даних");
+                return false;
             }
+            return true;
         }
-      
-
 
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using ShopProject.DataBase.Model;
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
@@ -122,7 +121,7 @@ namespace ShopProject.ViewModel.ToolsPage
             if (openFileDialog.ShowDialog() == true)
             {
                 importProductExelModel.SetPath(openFileDialog.FileName);
-                if(importProductExelModel.LoadFile())
+                if (importProductExelModel.LoadFile())
                 {
                     ProductTemp = importProductExelModel.GetTable(_selectIndex);
                     TableName = importProductExelModel.GetNableName();
@@ -137,10 +136,10 @@ namespace ShopProject.ViewModel.ToolsPage
 
         public ICommand SaveItemDb => saveItemDbCommand;
         private void SaveItem()
-        { 
-            if(importProductExelModel.SetItemDataBase(ProductTemp, _indexCode,_indexName, _indexArticule, _indexPrice ,_indexCount, _indexUnit,_indexTop,_indexBottom))
+        {
+            if (importProductExelModel.SetItemDataBase(ProductTemp, _indexCode, _indexName, _indexArticule, _indexPrice, _indexCount, _indexUnit, _indexTop, _indexBottom))
             {
-                MessageBox.Show("Товари добалено","Informations",MessageBoxButton.OK,MessageBoxImage.Information);
+                MessageBox.Show("Товари добалено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {

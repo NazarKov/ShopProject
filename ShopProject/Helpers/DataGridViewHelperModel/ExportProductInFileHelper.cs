@@ -1,4 +1,4 @@
-﻿using ShopProject.DataBase.Model;
+﻿using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace ShopProject.Helpers.DataGridViewHelperModel
 {
     public class ExportProductInFileHelper
     {
-        public ProductEntiti Product { get; set; }
+        public ProductEntity Product { get; set; }
         public decimal? ProductCount { get; set; }
     }
 }

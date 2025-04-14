@@ -1,59 +1,63 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Entities;
-using ShopProject.DataBase.Interfaces;
+﻿using ShopProject.Helpers;
 using ShopProject.Helpers.DataGridViewHelperModel;
-using ShopProject.Helpers.HttpService;
-using ShopProject.Helpers.HttpService.Model;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.SigningFileService;
 using ShopProject.Helpers.SigningFileService.Model;
+using ShopProjectDataBase.DataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ZXing;
 
 namespace ShopProject.Model.AdminPage
 {
     internal class ObjectOwnerShipModel
     {
-        private IEntityAccess<ObjectOwnerEntiti> _objectTable;
-
         private SigningFileContoller _mainControllerTcp;
-        private HttpController _mainControllerHttp;
+        private MainElectronicTaxAccountController _accountController;
 
-        private List<ObjectOwnerEntiti> _objectOwnerList;
+        private List<ObjectOwnerEntity> _objectOwnerList;
 
         public ObjectOwnerShipModel()
         {
-            _objectTable = new ObjectOwnerTableAccess();
-
-            _objectOwnerList = new List<ObjectOwnerEntiti>();
+            _objectOwnerList = new List<ObjectOwnerEntity>();
 
             _mainControllerTcp = new SigningFileContoller();
-            _mainControllerHttp = new HttpController();
+            _accountController = new MainElectronicTaxAccountController();
         }
 
 
-        public List<ObjectOwnerEntiti> GetAll() => (List<ObjectOwnerEntiti>)_objectTable.GetAll();
-
-        public List<ObjectOwnerEntiti> SearchObject(string item)
+        public List<ObjectOwnerEntity> GetAll() 
+        {
+            Task t = Task.Run(async () =>
+            {
+                _objectOwnerList = (await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwners(Session.Token)).ToList();
+            });
+            t.Wait();
+            return _objectOwnerList;
+        }
+        public List<ObjectOwnerEntity> SearchObject(string item)
         {
             try
             {
-                var items = _objectTable.GetAll();
+                var items = GetAll();
                 if (items != null)
                 {
-                    if(item!= " ")
+                    if (item != " ")
                     {
                         return items.Where(i => i.NameObject.ToLower().Contains(item.ToLower())).ToList();
                     }
                 }
-                return new List<ObjectOwnerEntiti>();
+                return new List<ObjectOwnerEntity>();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<ObjectOwnerEntiti>();
+                return new List<ObjectOwnerEntity>();
             }
         }
 
@@ -84,7 +88,7 @@ namespace ShopProject.Model.AdminPage
                 {
                     _mainControllerTcp.SendingCommand(new UserCommand()
                     {
-                        TypeCommand =   TypeCommand.Initialize,
+                        TypeCommand = TypeCommand.Initialize,
                         Time = DateTime.Now,
                     });
                 }
@@ -99,7 +103,7 @@ namespace ShopProject.Model.AdminPage
                 if (result.Status == "100")
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
-                    var response = await _mainControllerHttp.Send();
+                    var response = await _accountController.Send();
 
                     List<DataJsonHttpResponse> infoUser = DataJsonHttpResponse.FromJsonList(response);
 
@@ -108,7 +112,7 @@ namespace ShopProject.Model.AdminPage
                     foreach (var item in infoUser.ElementAt(8).listValues)
                     {
 
-                        ObjectOwnerEntiti objectOwner = new ObjectOwnerEntiti()
+                        ObjectOwnerEntity objectOwner = new ObjectOwnerEntity()
                         {
                             NameObject = item.NAME,
                             Status = item.STAN_OBJECT,
@@ -153,7 +157,7 @@ namespace ShopProject.Model.AdminPage
                 }
                 return false;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;
@@ -166,15 +170,24 @@ namespace ShopProject.Model.AdminPage
         {
             try
             {
+
+                List<ObjectOwnerEntity> result = new List<ObjectOwnerEntity>();
                 for (int i = 0; i < objectOwnerHelpers.Count; i++)
                 {
                     if (objectOwnerHelpers.ElementAt(i).isActive)
                     {
-                        _objectTable.Add(objectOwnerHelpers.ElementAt(i).item);
+                        result.Add(objectOwnerHelpers.ElementAt(i).item);
                     }
 
                 }
-                return true;
+                bool response = false;
+                Task t = Task.Run(async () =>
+                {
+                    response = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.AddObjectsOwners(Session.Token, result);
+                });
+
+                t.Wait();
+                return response;
             }
             catch (Exception ex)
             {
@@ -183,18 +196,19 @@ namespace ShopProject.Model.AdminPage
             }
 
         }
-        public List<ObjectOwnerEntiti> GetListObjecyOwner()
+
+        public List<ObjectOwnerEntity> GetListObjecyOwner()
         {
             return _objectOwnerList;
         }
-        public bool deleteItemDataBase(ObjectOwnerEntiti item)
+        public bool deleteItemDataBase(ObjectOwnerEntity item)
         {
             try
             {
-                _objectTable.Delete(item);
+                //_objectTable.Delete(item);
                 return true;
             }
-            catch(Exception ex )
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;

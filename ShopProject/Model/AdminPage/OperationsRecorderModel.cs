@@ -1,54 +1,52 @@
-﻿using ShopProject.DataBase.DataAccess.EntityAccess;
-using ShopProject.DataBase.Entities;
-using ShopProject.DataBase.Interfaces;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Helpers.DataGridViewHelperModel;
-using ShopProject.Helpers.HttpService;
-using ShopProject.Helpers.HttpService.Model;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.SigningFileService;
 using ShopProject.Helpers.SigningFileService.Model;
+using ShopProjectDataBase.DataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace ShopProject.Model.AdminPage
 {
     internal class OperationsRecorderModel
     {
-        private IEntityUpdate<OperationsRecorderEntiti> _operationRecorderTableUpdate;
-        private IEntityAccess<OperationsRecorderEntiti> _operationRecorderTable;
-        private IEntityAccess<ObjectOwnerEntiti> _objectOwnerTable;
 
         private SigningFileContoller _mainControllerTcp;
-        private HttpController _mainControllerHttp;
+        private MainElectronicTaxAccountController _mainControllerHttp;
 
-        private List<OperationsRecorderEntiti> _softwareDeviceSettlementOperationsList;
+        private List<OperationsRecorderEntity> _softwareDeviceSettlementOperationsList;
 
         public OperationsRecorderModel()
-        {
-            _operationRecorderTableUpdate = new OperationsRecorderTableAccess();
-            _operationRecorderTable = new OperationsRecorderTableAccess();
-
-            _objectOwnerTable = new ObjectOwnerTableAccess();
-
-            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntiti>();
+        { 
+            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
 
             _mainControllerTcp = new SigningFileContoller();
-            _mainControllerHttp = new HttpController();
+            _mainControllerHttp = new MainElectronicTaxAccountController();
         }
-        public List<OperationsRecorderEntiti> GetAll()
+
+        public List<OperationsRecorderEntity> GetAll()
         {
             try
             {
-                return (List<OperationsRecorderEntiti>)_operationRecorderTable.GetAll();
+                Task t = Task.Run(async () =>
+                {
+                    _softwareDeviceSettlementOperationsList = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationRecorders(Session.Token)).ToList();
+                });
+                t.Wait();
+                return _softwareDeviceSettlementOperationsList;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<OperationsRecorderEntiti>();
+                return new List<OperationsRecorderEntity>();
             }
         }
 
@@ -103,7 +101,7 @@ namespace ShopProject.Model.AdminPage
 
                     foreach (var item in infoUser.ElementAt(7).listValues)
                     {
-                        OperationsRecorderEntiti tempList = new OperationsRecorderEntiti()
+                        OperationsRecorderEntity tempList = new OperationsRecorderEntity()
                         {
                             Status = item.STATUS,
                             Address = item.ADDRESS,
@@ -125,7 +123,7 @@ namespace ShopProject.Model.AdminPage
                         TypeCommand = TypeCommand.DisconnectUser,
                         Time = DateTime.Now,
                     });
-                    
+
                     return true;
                 }
                 return false;
@@ -139,11 +137,11 @@ namespace ShopProject.Model.AdminPage
 
         }
 
-        public List<OperationsRecorderEntiti> SearchObject(string item)
+        public List<OperationsRecorderEntity> SearchObject(string item)
         {
             try
             {
-                var items = _operationRecorderTable.GetAll();
+                var items = GetAll();
                 if (items != null)
                 {
                     if (item != " ")
@@ -151,12 +149,12 @@ namespace ShopProject.Model.AdminPage
                         return items.Where(i => i.Name.ToLower().Contains(item.ToLower())).ToList();
                     }
                 }
-                return new List<OperationsRecorderEntiti>();
+                return new List<OperationsRecorderEntity>();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<OperationsRecorderEntiti>();
+                return new List<OperationsRecorderEntity>();
             }
         }
 
@@ -164,14 +162,21 @@ namespace ShopProject.Model.AdminPage
         {
             try
             {
+                List<OperationsRecorderEntity> result = new List<OperationsRecorderEntity>();
                 for (int i = 0; i < items.Count; i++)
                 {
                     if (items.ElementAt(i).isActive)
                     {
-                        _operationRecorderTable.Add(items.ElementAt(i).deviceSettlementOperations);
+                        result.Add(items.ElementAt(i).deviceSettlementOperations);
                     }
                 }
-                return true;
+                bool response = false;
+                Task t = Task.Run(async () =>
+                {
+                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddOperationRecorders(Session.Token,result));
+                });
+                t.Wait();
+                return response;
             }
             catch (Exception ex)
             {
@@ -180,15 +185,15 @@ namespace ShopProject.Model.AdminPage
             }
 
         }
-        public List<OperationsRecorderEntiti> GetListObjecyOwner()
+        public List<OperationsRecorderEntity> GetListObjecyOwner()
         {
             return _softwareDeviceSettlementOperationsList;
         }
-        public bool deleteItemDataBase(OperationsRecorderEntiti item)
+        public bool deleteItemDataBase(OperationsRecorderEntity item)
         {
             try
             {
-                _operationRecorderTable.Delete(item);
+                //_operationRecorderTable.Delete(item);
                 return true;
             }
             catch (Exception ex)
@@ -202,7 +207,16 @@ namespace ShopProject.Model.AdminPage
             try
             {
                 List<ObjectOwnerHelpers> result = new List<ObjectOwnerHelpers>();
-                foreach (var item in _objectOwnerTable.GetAll())
+
+                List<ObjectOwnerEntity> list = new List<ObjectOwnerEntity>();
+                
+                Task t = Task.Run(async () =>
+                {
+                    list = (await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwners(Session.Token)).ToList();
+                });
+                t.Wait();
+
+                foreach (var item in list)
                 {
                     result.Add(new ObjectOwnerHelpers(item));
                 }
@@ -213,9 +227,9 @@ namespace ShopProject.Model.AdminPage
                 MessageBox.Show(ex.Message);
                 return new List<ObjectOwnerHelpers>();
             }
-            
+
         }
-        public bool SaveBinding(OperationsRecorderEntiti softwareDeviceSettlement,List<ObjectOwnerHelpers> objectOwnerHelpers)
+        public bool SaveBinding(OperationsRecorderEntity softwareDeviceSettlement, List<ObjectOwnerHelpers> objectOwnerHelpers)
         {
             try
             {
@@ -223,13 +237,20 @@ namespace ShopProject.Model.AdminPage
                 {
                     throw new Exception("Виберіть один обєкт");
                 }
-                _operationRecorderTableUpdate.UpdateParameter(softwareDeviceSettlement.ID, nameof(softwareDeviceSettlement.ObjectOwner),
-                    objectOwnerHelpers.Where(item=>item.isActive).FirstOrDefault().item.ID);
+                bool result = false;
+                Task t = Task.Run(async () =>
+                {
+                    result = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddBindingOperationRecorder(
+                        Session.Token,
+                        softwareDeviceSettlement.ID.ToString(), 
+                        objectOwnerHelpers.Where(item => item.isActive).FirstOrDefault().item.ID.ToString()));
+                });
+                t.Wait();
 
-                return true;
+                return result;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;

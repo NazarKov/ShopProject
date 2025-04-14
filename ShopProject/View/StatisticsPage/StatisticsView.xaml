@@ -1,0 +1,71 @@
+﻿<Page x:Class="ShopProject.View.StatisticsPage.StatisticsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.StatisticsPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="StatisticsView">
+    <Page.DataContext>
+        <local:StatisticsViewModel></local:StatisticsViewModel>
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.389,1.07"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="19,36,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+
+        <Label x:Name="label" Content="Користувач" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="200,36,0,0"  ItemsSource="{Binding Users}"
+                  SelectedItem="{Binding SelectedUser}" VerticalAlignment="Top" Width="120">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding FullName}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Label x:Name="label2" Content="Номер РРО" HorizontalAlignment="Left" Margin="200,68,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="200,94,0,0"  ItemsSource="{Binding OperationsRecorders}" 
+                  SelectedItem="{Binding SelectOperationRecorder}" VerticalAlignment="Top" Width="120">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding FiscalNumber}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+
+        <Label x:Name="label4" Content="З" HorizontalAlignment="Left" Margin="349,13,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="datePicker" HorizontalAlignment="Left" SelectedDate="{Binding StartedDate}" Margin="349,36,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        
+        <Label x:Name="label3" Content="По" HorizontalAlignment="Left" Margin="349,75,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="datePicker1" HorizontalAlignment="Left" SelectedDate="{Binding FinishedDate }" Margin="349,94,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+
+        <Button x:Name="button" Content="Пошук" HorizontalAlignment="Left" Margin="19,95,0,0" Command="{Binding SearchOperationsCommand}" VerticalAlignment="Top"/>
+
+        <DataGrid x:Name="dataGrid" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Operations}" AutoGenerateColumns="False" ColumnWidth="*">
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Номер чеку "  Binding="{Binding NumberPayment}" />
+                <DataGridTextColumn Header="Фіксальний номер РРО"  Binding="{Binding FiscalNumberRRO}" />
+                <DataGridTextColumn Header="Тип операції" Binding="{Binding TypeOperation}" />
+                <DataGridTextColumn Header="Загальна сума зміни"  Binding="{Binding TotalPayment}" />
+                <DataGridTextColumn Header="Користувач"  Binding="{Binding User.FullName}" />
+                <DataGridTextColumn Header="Дата створення "  Binding="{Binding CreatedAt}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>
