@@ -21,30 +21,6 @@ namespace ShopProject.Helpers
             //list = new List<OperationEntiti>();
         }
 
-        //public string? GetMac(string pathxml)
-        //{
-        //    try
-        //    {
-        //        //OperationEntiti operation = GetLastCheck();
-        //        if (operation != null)
-        //        {
-        //            List<OrderEntiti> goodsOperation = _goodsOperationRepository.GetAll().Where(item => item.Operation.ID == operation.ID).ToList();
-        //            List<ProductEntiti> goodsList = new List<ProductEntiti>();
-        //            WriteReadXmlFile.WriteXmlFile(operation, goodsOperation, new List<ProductEntiti>(), pathxml);
-        //            return SHA.GenerateSHA256File(pathxml);
-        //        }
-        //        else
-        //        {
-        //            return string.Empty;
-        //        }    
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //        return null;
-        //    }
-        //}
-
         //public string? GetLocalNumber()
         //{
         //    try

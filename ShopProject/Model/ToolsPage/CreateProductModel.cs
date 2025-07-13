@@ -20,39 +20,21 @@ namespace ShopProject.Model.ToolsPage
             _codeUKTZEDEList= new List<CodeUKTZEDEntity>();
         }
 
-        public List<ProductUnitEntity> GetUnits()
-        {
-            Task t = Task.Run(async () =>
-            {
-                _productsUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
-            });
-            t.Wait();
-            return _productsUnitsList;
+        public async Task<IEnumerable<ProductUnitEntity>> GetUnits()
+        { 
+            return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token);
         }
 
-        public List<CodeUKTZEDEntity> GetCodeUKTZED()
+        public async Task<IEnumerable<CodeUKTZEDEntity>> GetCodeUKTZED()
         {
-            Task t = Task.Run(async () =>
-            {
-                _codeUKTZEDEList = (await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
-            });
-            t.Wait();
-
-            return _codeUKTZEDEList;
+            return await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token);
         }
 
-        public bool SaveItemDataBase(ProductEntity product)
+        public async Task<bool> SaveItemDataBase(ProductEntity product)
         {
             try
-            {
-                bool response = false;
-                Task t = Task.Run(async () =>
-                {
-                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.Token, product);
-                });
-                t.Wait();
-
-                return response;
+            {  
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.Token, product);
             }
             catch (Exception ex)
             {

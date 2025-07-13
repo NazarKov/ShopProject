@@ -5,13 +5,13 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProject", "ShopProject\ShopProject.csproj", "{45827983-2196-49A3-82AC-7F5C5E2A42B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniServiceSigningFiles", "MiniServiceSigningFiles\MiniServiceSigningFiles.csproj", "{E33AA310-3707-41C1-B361-EB6A489AB71B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalServerApi", "FiscalServerApi\FiscalServerApi.csproj", "{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProjectSQLDataBase", "ShopProjectDataBase\ShopProjectSQLDataBase.csproj", "{C45FDA1F-6F0F-4B97-81F5-D419A5DF8F90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProjectWebServer", "ShopProjectWebServer\ShopProjectWebServer.csproj", "{9C8CC111-F85B-4B32-AE16-C746FF1CEA2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningFileLib", "SigningFileLib\SigningFileLib.csproj", "{79A26CF2-3C8D-41C3-B28E-7AD6A53F3486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{45827983-2196-49A3-82AC-7F5C5E2A42B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45827983-2196-49A3-82AC-7F5C5E2A42B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45827983-2196-49A3-82AC-7F5C5E2A42B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E33AA310-3707-41C1-B361-EB6A489AB71B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E33AA310-3707-41C1-B361-EB6A489AB71B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E33AA310-3707-41C1-B361-EB6A489AB71B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E33AA310-3707-41C1-B361-EB6A489AB71B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{9C8CC111-F85B-4B32-AE16-C746FF1CEA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C8CC111-F85B-4B32-AE16-C746FF1CEA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C8CC111-F85B-4B32-AE16-C746FF1CEA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79A26CF2-3C8D-41C3-B28E-7AD6A53F3486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79A26CF2-3C8D-41C3-B28E-7AD6A53F3486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79A26CF2-3C8D-41C3-B28E-7AD6A53F3486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79A26CF2-3C8D-41C3-B28E-7AD6A53F3486}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,251 +1,102 @@
 ﻿using FiscalServerApi;
 using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers;
+using ShopProject.Helpers.FiscalOperationService;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.PrintingServise;
-using ShopProject.Helpers.SigningFileService;
+using ShopProjectDataBase.DataBase.Model;
+using SigningFileLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ShopProject.Model.SalePage
 {
     internal class WorkShiftMenuModel
-    {
-        //private IEntityAccess<OperationEntiti> _operationRepository;
-        //private IEntityAccess<OrderEntiti> _goodsOperationRepository;
+    { 
 
-        private ReturnDataWithDataBase _returnDataWithDataBase;
-
-        string pathxml = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
-
-        private SigningFileContoller _signFileContoller;
-        private FiscalServerController _serverController;
         private PrintingDayReport _printingController;
+        private FiscalOperationController _fiscalOperationController;
 
         public WorkShiftMenuModel()
-        {
-            //_operationRepository = new OperationTableAccess();
-            //_goodsOperationRepository = new OrderTableAccess();
-
-            _returnDataWithDataBase = new ReturnDataWithDataBase();
-            _signFileContoller = new SigningFileContoller();
-            _serverController = new FiscalServerController();
+        {  
             _printingController = new PrintingDayReport();
 
-
+            _fiscalOperationController = new FiscalOperationController();
         }
 
-        //public bool OpenShift(OperationEntiti operation, bool @checked)
-        //{
-        //   return OpenShiftRecursive(operation, @checked, 0,5);
-        //}
-        //private bool OpenShiftRecursive(OperationEntiti operation, bool @checked,int depth, int maxDepth)
-        //{
-        //    try
-        //    {
-        //        if (depth >= maxDepth)
-        //        {
-        //            throw new Exception("Неможливо виконати операцію");
-        //        }
-        //        InspectionOpeningShift(operation, @checked);
-        //        return true;
-        //    }
-        //    catch (ExceptionOK)
-        //    {
-        //        SaveDataBase(operation);
-        //        MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return true;
-        //    }
-        //    catch (ExceptionBadHashPrev exbadhash)
-        //    {
-        //        operation.MAC = exbadhash.Error.Split(" ")[3];
-        //        return OpenShiftRecursive(operation, false, depth + 1, maxDepth);
-        //    }
-        //    catch (ExceptionCheck exCheck)
-        //    {
-        //        MessageBox.Show(exCheck.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //    catch (ExceptionSave exSave)
-        //    {
-        //        MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //}
-        //private void InspectionOpeningShift(OperationEntiti operation, bool @checked)
-        //{
-        //    if (@checked && operation.MAC != null)
-        //    {
-        //        CheckedCloseShift();
-        //    }
-        //    OpenShift(operation);
-        //}
-        //private void OpenShift(OperationEntiti operation)
-        //{
-        //    WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
-        //    if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
-        //    {
-        //        _serverController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss"))
-        //            , Convert.ToInt32(operation.NumberPayment), 
-        //            operation.FiscalNumberRRO,(bool)AppSettingsManager.GetParameterFiles("TestMode"));
-        //    }
-        //    else
-        //    {
-        //       throw new Exception("невдалося підписати файл");
-        //    }
-        //}
+        public bool OpenShift(OperationEntity operation)
+        {
 
-        //public bool CloseShift(OperationEntiti operation, bool @checked)
-        //{
-        //   return CloseShiftRecursive(operation, @checked, 0, 5);
+            if (_fiscalOperationController.OpenShift(operation)=="OK")
+            {
+                SaveDataBase(operation);
+                return true;
+            }
+            return false;
+        }   
+        public bool CloseShift(OperationEntity operation)
+        {
+            if (_fiscalOperationController.CloseShift(operation) == "OK")
+            {
+                SaveDataBase(operation);
+                return true;
+            }
+            return false;
+        }
+        public bool OfficialDepositMoney(OperationEntity operation)
+        {
+            if (_fiscalOperationController.DepositAndWithdrawalMoney(operation) == "OK")
+            {
+                SaveDataBase(operation);
+                return true;
+            }
+            return false;
+        }
+        private bool SaveDataBase(OperationEntity operation)
+        {
+            bool result = false;
+            operation.User = Session.User;
+            Task t = Task.Run(async () =>
+            {
+                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));
+            });
+            return result;
+        }
 
-        //}
-        //private bool CloseShiftRecursive(OperationEntiti operation, bool @checked, int depth, int maxDepth)
-        //{
-        //    try
-        //    {
-        //        if (depth >= maxDepth)
-        //        {
-        //            throw new Exception("Неможливо виконати операцію");
-        //        }
+        public string? GetMac() => _fiscalOperationController.GetMac();
 
-        //        InspectionEndShift(operation, @checked);
-        //        return true;
-        //    }
-        //    catch (ExceptionOK)
-        //    {
-        //        SaveDataBase(operation);
-        //        MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return true;
-        //    }
-        //    catch (ExceptionBadHashPrev exbadHash)
-        //    {
-        //        operation.MAC = exbadHash.Error.Split(" ")[3];
-        //        return CloseShiftRecursive(operation,@checked, depth+1, maxDepth);
-        //    }
-        //    catch (ExceptionSave exSave)
-        //    {
-        //        operation.MAC = string.Empty;
-        //        return CloseShiftRecursive(operation, @checked, depth + 1, maxDepth);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
+        public string? GetLocalNumber()
+        {
+            try
+            {
+                OperationEntity operation = new OperationEntity();
 
-        //}
-        //private void InspectionEndShift(OperationEntiti operation,bool @checked)
-        //{
-        //    if (@checked && operation.MAC != null)
-        //    {
-        //        CheckedOpenShift();
-        //    }
-        //    CloseShift(operation);
-        //}
-        //private void CloseShift(OperationEntiti operation)
-        //{
-        //    WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
-        //    if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
-        //    {
-        //        _serverController.SendZReport(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-        //            Convert.ToInt32(operation.NumberOfSalesReceipts), operation.FiscalNumberRRO
-        //            , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("невдалося підписати файл");
-        //    }
-        //}
+                Task t = Task.Run(async () =>
+                {
+                    operation = (await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token));
+                });
 
-        //public bool OfficialDepositMoney(OperationEntiti operation)
-        //{
-        //    return OfficialDepositMoneyRecursive(operation, 0, 5);
-        //}
+                t.Wait();
+                if (operation == null)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
 
-        //private bool OfficialDepositMoneyRecursive(OperationEntiti operation,int depth, int maxDepth)
-        //{
-        //    try
-        //    {
-        //        if (depth >= maxDepth)
-        //        {
-        //            throw new Exception("Неможливо виконати операцію");
-        //        }
-        //        SendOfficialDepositMoney(operation);
-        //        return true;
-        //    }
-        //    catch (ExceptionOK)
-        //    {
-        //        SaveDataBase(operation);
-        //        return true;
-        //    }
-        //    catch (ExceptionBadHashPrev exbadHash)
-        //    {
-        //        operation.MAC = exbadHash.Error.Split(" ")[3];
-        //        return OfficialDepositMoneyRecursive(operation,depth+1,maxDepth);
-        //    }
-        //    catch (ExceptionSave exSave)
-        //    {
-        //        MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //        return false;
-        //    }
-        //}
-        //private void SendOfficialDepositMoney(OperationEntiti operation)
-        //{
-        //    WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(), new List<ProductEntiti>(), pathxml);
-        //    if (_signFileContoller.SignFiles(Session.User.KeyPath, Session.User.KeyPassword))
-        //    {
-        //        _serverController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-        //            Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO
-        //            , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("невдалося підписати файл");
-        //    }
-        //}
-       
-        //private void SaveDataBase(OperationEntiti operation)
-        //{
-        //    operation.User= Session.User;
-        //    _operationRepository.Add(operation);
-        //}
 
-        //private void CheckedOpenShift()
-        //{
-        //    OperationEntiti operation = _returnDataWithDataBase.GetLastCheck();
-        //    if (operation.NumberPayment == "0" && operation.TypeOperation != 108)
-        //    {
-        //        throw new Exception("Зміна не відкрита");
-        //    }
-        //}
-        //private void CheckedCloseShift()
-        //{
-        //    OperationEntiti operation = _returnDataWithDataBase.GetLastCheck();
-        //    if ((int)operation.NumberOfSalesReceipts == 0)
-        //    {
-        //        throw new Exception("Зміна не закрита");
-        //    }
-        //}
-        
-        //public string? GetMac()
-        //{
-        //    return _returnDataWithDataBase.GetMac(pathxml);
-        //}
-        //public string? GetLocalNumber()
-        //{
-        //    return _returnDataWithDataBase.GetLocalNumber();
-        //}
         //public decimal GetNumberFiscalCheck()
         //{
         //    return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(0);
@@ -287,7 +138,7 @@ namespace ShopProject.Model.SalePage
         //    return _returnDataWithDataBase.GetTotalRestReturnOperation(1);
         //}
 
-        //public void Print(OperationEntiti operation)
+        //public void Print(OperationEntity operation)
         //{
         //    _printingController.PrintCheck(operation);
         //}

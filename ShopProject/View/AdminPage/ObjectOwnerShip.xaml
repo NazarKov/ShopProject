@@ -24,7 +24,7 @@
                     </Viewbox>
 
                     <ScrollViewer Grid.Column="1" x:Name="PART_ContentHost" Focusable="false" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0"
-                          HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                          HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
                 </Grid>
             </Border>
         </ControlTemplate>
@@ -92,7 +92,7 @@
 
 
         </Grid>
-        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="{Binding VisibilitiDialogWindow , UpdateSourceTrigger=PropertyChanged}">
+        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  Grid.RowSpan="8" Visibility="{Binding VisibilitiDialogWindow , UpdateSourceTrigger=PropertyChanged}">
 
             <Grid Background="Black" Opacity="0.5"/>
             <Border
@@ -113,7 +113,7 @@
                     </Grid>
                     
                     <TextBlock Margin="5" Text="Доступні обєкти"  FontSize="18"  VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="{Binding VisibilitiFieldDialogWindow}"/>
-                    <DataGrid x:Name="datagrid" Width="350" Height="100" Margin="15" AutoGenerateColumns="False" CanUserAddRows="False" ColumnWidth="*"
+                    <DataGrid x:Name="datagrid" Width="350" Height="100" Margin="15" EnableRowVirtualization="False" AutoGenerateColumns="False" CanUserAddRows="False" ColumnWidth="*"
                               ItemsSource="{Binding ObjectListDialogWindow, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding VisibilitiFieldDialogWindow}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Назва"  Binding="{Binding item.NameObject}" />

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
 {
-    public class MainDataBaseController
+    internal class MainDataBaseController
     {
         private string _url;
 
@@ -21,6 +21,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
         public ObjectOwnerController ObjectOwnerController { get; set; }
         public OperationRecorederController OperationRecorederController { get; set; }
         public OperationRecorderAndUserController OperationRecorderAndUserController { get; set; }
+        public OperationController OperationController { get; set; }
+        public OrderController OrderController { get; set; }
 
         public MainDataBaseController(string url)
         {
@@ -33,6 +35,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
             ObjectOwnerController = new ObjectOwnerController(url);
             OperationRecorederController = new OperationRecorederController(url);
             OperationRecorderAndUserController = new OperationRecorderAndUserController(url);
+            OperationController = new OperationController(url);
+            OrderController = new OrderController(url);
         }
     }
 }

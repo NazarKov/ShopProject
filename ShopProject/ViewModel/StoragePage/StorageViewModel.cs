@@ -1,28 +1,27 @@
-﻿using LocateWindow;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper.ProductContoller;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
-using ShopProject.Model.StoragePage;
+using ShopProject.Model.StoragePage; 
 using ShopProject.View.ToolsPage;
-using ShopProject.Views.UserPage;
+using ShopProject.ViewModel.TemplatePage; 
 using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using System.Windows; 
+using System.Windows.Input; 
 
 namespace ShopProject.ViewModel.StoragePage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>
-    {
-
-        private StorageModel? _model;
-        
-        
-        private static Timer? _timer;
-        private static string? _itemSearch;
+    { 
+        private StorageModel _model; 
 
         private ICommand _openCreateProductWindowCommand;
         private ICommand _openFormationProductWindowCommand;
@@ -33,37 +32,59 @@ namespace ShopProject.ViewModel.StoragePage
         private ICommand _openImportProductWhichExelCommand;
 
         private List<ProductEntity> _products;
+        private bool _isReadyUpdateDataGriedView;
+        private static Timer _timer;
+        private static string _itemSearch;
 
         public StorageViewModel()
         {
+            _model = new StorageModel();
+            _productslist = new List<ProductEntity>();
+            _products = new List<ProductEntity>();
+            _statusProducts = new List<string>();
+            _countShowList = new List<string>();
+            _paginator = new TemplatePaginatorButtonViewModel();
+            _statusBarCountProduct = string.Empty;
+            _isReadyUpdateDataGriedView = false;
+            _itemSearch = string.Empty;
+
             _openCreateProductWindowCommand = new DelegateCommand(() => { new CreateProductView().Show(); });
-
             _openFormationProductWindowCommand = new DelegateCommand(() => { new FormationProductView().Show(); });
-            _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
-
-            _updateProductDataGridViewCommand = new DelegateCommand(() => { SearchProduct(""); });
             _openDeliveriOfProductCommand = new DelegateCommand(() => { new DeliveryProductView().Show(); });
-
             _openExportProductToExelCommand = new DelegateCommand(() => { new ExportProductExelView().Show(); });
             _openImportProductWhichExelCommand = new DelegateCommand(() => { new ImportProductExelView().Show(); });
-
-
-            _model = new StorageModel();
-            _products = new List<ProductEntity>();
+            _updateProductDataGridViewCommand = new DelegateCommand(() => { SetFieldPage(); });      
+            _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
             
-            _itemSearch = string.Empty;
-            _statusBarCountProduct = string.Empty;
+            Paginator.Callback = UpdateDataGridView;
 
-            _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
-            
+            _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite); 
 
-            ProductList = new List<ProductEntity>();
+            SetFieldPage();
+            Mediator.Subscribe("ReloadProduct", (object obg) => { SetFieldPage(); });
+        }
 
+        private TemplatePaginatorButtonViewModel _paginator;
+        public TemplatePaginatorButtonViewModel Paginator
+        {
+            get { return _paginator; }
+            set { _paginator = value; OnPropertyChanged(nameof(Paginator)); }
+        }
 
-            Mediator.Subscribe("ReloadProduct", (object obg) => { setFieldPage(); });
+        private List<string> _countShowList;
+        public List<string> CountShowList
+        {
+            get { return _countShowList; } 
+            set { _countShowList = value; OnPropertyChanged(nameof(CountShowList)); }
+        }
 
-            //SearchProduct(""); 
-            setFieldPage();
+        private int _selectIndexCountShowList;
+        public int SelectIndexCountShowList
+        {
+            get { return _selectIndexCountShowList;}
+            set { _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
+                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            }
         }
 
         private List<ProductEntity>? _productslist;
@@ -73,6 +94,21 @@ namespace ShopProject.ViewModel.StoragePage
             set { _productslist = value; OnPropertyChanged(nameof(ProductList)); }
         }
 
+        private List<string> _statusProducts;
+        public List<string> StatusProducts
+        {
+            get { return _statusProducts; }
+            set { _statusProducts = value; OnPropertyChanged(nameof(StatusProducts)); }
+        }
+
+        private int _selectedStatusProduct;
+        public int SelectedStatusProduct
+        {
+            get { return _selectedStatusProduct; }
+            set { _selectedStatusProduct = value; OnPropertyChanged(nameof(SelectedStatusProduct)); 
+                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            }
+        }
         private int _heigth;
         public int Heigth
         {
@@ -87,17 +123,91 @@ namespace ShopProject.ViewModel.StoragePage
             set { _statusBarCountProduct = value; OnPropertyChanged(nameof(StatusBarCountProduct)); }
         }
 
-        public void setFieldPage()
-        {
-            ProductList = _model.GetProducts();
-            ProductList.Reverse();
-
+        public void SetFieldPage()
+        {  
+            SetComboBox();
             SetFiledStatusBar();
+            SetFielComboBoxTypeStatusProduct();
+            SetFieldDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)), 1 , true);
         }
 
-        private async void SetFiledStatusBar()
+        private void SetComboBox()
+        { 
+            if (CountShowList.Count == 0)
+            {
+                CountShowList.Add("10");
+                CountShowList.Add("25");
+                CountShowList.Add("50");
+                CountShowList.Add("100");
+                CountShowList.Add("250");
+                CountShowList.Add("500");
+                CountShowList.Add("1000");
+            }
+            SelectIndexCountShowList = 0;
+        }
+
+        private void SetFielComboBoxTypeStatusProduct()
         {
-            StatusBarCountProduct = "Кілкісь товарі: " + ProductList.Count();
+            SelectedStatusProduct = 0;
+            if (StatusProducts.Count == 0)
+            {
+                StatusProducts.Add(TypeStatusProduct.Unknown.ToString());
+                StatusProducts.Add(TypeStatusProduct.InStock.ToString());
+                StatusProducts.Add(TypeStatusProduct.OutStock.ToString());
+                StatusProducts.Add(TypeStatusProduct.Archived.ToString());
+            }         }
+
+        private void SetFiledStatusBar()
+        {
+            var result = new ProductInfo();
+            Task task = Task.Run(async () => 
+            {
+                result = await _model.GetProductInfo();
+            });
+            task.ContinueWith(t =>
+            {
+                StatusBarCountProduct = $"Кількість товарів: {result.CountProductAllStatus}   " +
+                                        $"Кількість товарів в наявності: {result.CountProductInStockStatus}  " +
+                                        $"Кількість товарів не в наявносіть: {result.CountProductOutStockStatus}  " +
+                                        $"Кількксть товарів в архіві: {result.CountProductArchivedStauts}  ";
+            });
+        }
+
+        private void SetFieldDataGridView(int countCoulmn, int page = 1 , bool reloadbutton = false)
+        {
+            PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
+            Task t = Task.Run(async () => {
+
+                result = await _model.GetProductsPageColumn(page, countCoulmn,Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)));
+            });
+            t.ContinueWith(t => {
+                if (reloadbutton) 
+                { 
+                    Paginator.CountButton = result.Pages;
+                }
+                Paginator.CountColumn = countCoulmn;
+                ProductList = result.Data;
+                _isReadyUpdateDataGriedView = true;
+            });
+        }  
+
+        private void UpdateDataGridView(int countCoulmn, int page = 1)
+        {
+            if(_isReadyUpdateDataGriedView)
+            {
+                ProductList.Clear();
+                PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
+
+                int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
+                if (_itemSearch == string.Empty && _itemSearch == "")
+                {
+                    SetFieldDataGridView(countCoulmn,page , false);
+                }
+                else
+                {
+                    SearchByNameAndByBarCode(countCoulmn, page);
+                } 
+            }
         }
 
         public ICommand SearchCommand { get => new DelegateParameterCommand(SearchProduct, CanRegister); }
@@ -112,35 +222,37 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void OnInputStopped(object state)
         {
-            UpdateDataGrid(_itemSearch);
+            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        private async void UpdateDataGrid(string parameter)
-        {
-            await Task.Run(() =>
+        private void SearchByNameAndByBarCode(int countColumn, int page)
+        { 
+            PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
+
+            Task t = Task.Run(async () =>
             {
-                _itemSearch = parameter.ToString();
-
-                var result = _model.SearchItems(parameter.ToString());
-                result.Reverse();
-
-                if (ProductList.Count != 0)
+                if (Regex.Matches(_itemSearch, "[1-9]").Count == 12) // 12 - довжина штрихкоду
                 {
-                    ProductList.Clear();
-                }
-
-                if (result.Count > 100)
-                {
-                    ProductList = result.Take(100).ToList();//100 це кількість елементів на екрані 
+                    result.Data = new List<ProductEntity>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)))) };
                 }
                 else
                 {
-                    ProductList = result;
+                    result = await _model.SearchByName(_itemSearch, page, countColumn, Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)));
                 }
-            });
 
+            });
+            t.ContinueWith(t =>
+            {
+                if (!(Paginator.CountButton == result.Pages))
+                {
+                    Paginator.CountButton = result.Pages;
+                }
+                Paginator.CountColumn = countColumn; 
+                ProductList = result.Data; 
+            });
         }
+        
 
         public ICommand UpdateProductCommand { get => new DelegateParameterCommand(UpdateProduct, CanRegister); }
         private void UpdateProduct(object parameter)
@@ -174,7 +286,7 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         if (_model.SetItemInArhive(_products[0]))
                         {
-                            setFieldPage();
+                            SetFieldPage();
                             MessageBox.Show("Товар перенесено в архів");
                         }
                     }
@@ -195,7 +307,7 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         if (_model.SetItemOutOfStock(_products[0]))
                         {
-                            setFieldPage();
+                            SetFieldPage();
                         }
                     }
                 }
@@ -214,14 +326,13 @@ namespace ShopProject.ViewModel.StoragePage
                 Session.Product = _products[0];
                 new CreateStickerView().Show();
             }
-        }
-
+        } 
 
         public ICommand UpdateSizeCommand => _updateSizeGridCommand;
 
         private void UpdateSizes()
         {
-            Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
+            Heigth = (int)Application.Current.MainWindow.ActualHeight - 380;
         }
         private bool CanRegister(object parameter) => true;
 

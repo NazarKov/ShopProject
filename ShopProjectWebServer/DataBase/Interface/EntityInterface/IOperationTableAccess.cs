@@ -6,5 +6,6 @@
         void Update(T item);
         void Delete(T item);
         IEnumerable<T> GetAll();
+        T GetLastItem();
     }
 }

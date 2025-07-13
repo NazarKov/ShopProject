@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.Views.StoragePage
+namespace ShopProject.View.TemplatePage
 {
     /// <summary>
-    /// Interaction logic for Archive.xaml
+    /// Interaction logic for TemplatePaginatorButtonView.xaml
     /// </summary>
-    public partial class Archive : Page
+    public partial class TemplatePaginatorButtonView : UserControl
     {
-        public Archive()
+        public TemplatePaginatorButtonView()
         {
             InitializeComponent();
         }

@@ -3,9 +3,8 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.SigningFileService;
-using ShopProject.Helpers.SigningFileService.Model;
 using ShopProjectDataBase.DataBase.Entities;
+using SigningFileLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace ShopProject.Model.AdminPage
 {
     internal class ObjectOwnerShipModel
     {
-        private SigningFileContoller _mainControllerTcp;
+        private SigningFileContoller _signingFileController;
         private MainElectronicTaxAccountController _accountController;
 
         private List<ObjectOwnerEntity> _objectOwnerList;
@@ -26,8 +25,10 @@ namespace ShopProject.Model.AdminPage
         {
             _objectOwnerList = new List<ObjectOwnerEntity>();
 
-            _mainControllerTcp = new SigningFileContoller();
+            _signingFileController = new SigningFileContoller();
             _accountController = new MainElectronicTaxAccountController();
+            _signingFileController.Initialize(false);
+
         }
 
 
@@ -65,43 +66,11 @@ namespace ShopProject.Model.AdminPage
         {
             try
             {
-                if (passwordKey == null)
-                {
-                    throw new Exception("Ведіть пароль");
-                }
-                if (!_mainControllerTcp.IsConnectingServise())
-                {
-                    if (!_mainControllerTcp.IsStartServise())
-                    {
-                        _mainControllerTcp.StartServise();
-                    }
-                    _mainControllerTcp.ConnectService();
-                }
 
-                var result = _mainControllerTcp.SendingCommand(new UserCommand()
+                _objectOwnerList = new List<ObjectOwnerEntity>();
+                if (_signingFileController.GetDataKey(pathFile, passwordKey))
                 {
-                    TypeCommand = TypeCommand.IsInitialize,
-                    Time = DateTime.Now,
-                });
-
-                if (result.Status == "404")
-                {
-                    _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.Initialize,
-                        Time = DateTime.Now,
-                    });
-                }
-                result = _mainControllerTcp.SendingCommand(new UserCommand()
-                {
-                    TypeCommand = TypeCommand.GetDataKey,
-                    PathKey = pathFile,
-                    PasswordKey = passwordKey,
-                    Time = DateTime.Now,
-                });
-
-                if (result.Status == "100")
-                {
+                   
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
                     var response = await _accountController.Send();
 
@@ -148,11 +117,7 @@ namespace ShopProject.Model.AdminPage
                         _objectOwnerList.Add(objectOwner);
                     }
 
-                    _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.DisconnectUser,
-                        Time = DateTime.Now,
-                    });
+                 
                     return true;
                 }
                 return false;

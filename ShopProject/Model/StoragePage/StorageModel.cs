@@ -1,12 +1,12 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper.ProductContoller;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProjectDataBase.DataBase.Model;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.Collections.Generic; 
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -14,64 +14,57 @@ namespace ShopProject.Model.StoragePage
 {
 
     internal class StorageModel
-    {
-        private static List<ProductEntity>? _products;
-        
+    { 
+        public StorageModel() {  }
 
-        public StorageModel()
-        {
-            _products = new List<ProductEntity>();
-        }
-
-        public List<ProductEntity> GetProducts()
-        {
-            Task t = Task.Run(async () =>
-            {
-                _products = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
-            });
-            t.Wait();
-
-            return _products;
-        }
-
-        public List<ProductEntity> SearchItems(string item)
+        public async Task<PaginatorData<ProductEntity>> GetProductsPageColumn(int page , int countColumn, TypeStatusProduct statusProduct)
         {
             try
             {
-                if (item != "")
-                {
-                    return Search(item, _products);
-                }
-                return _products;
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductsPageColumn(Session.Token, page, countColumn, statusProduct);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK);
-                return new List<ProductEntity>();
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<ProductEntity>();
             }
         }
 
-        private List<ProductEntity> Search(string item, List<ProductEntity> _productsList)
+        public async Task<PaginatorData<ProductEntity>> SearchByName(string item, int page, int countColumn, TypeStatusProduct statusProduct)
         {
-            var result = new List<ProductEntity>();
-
-            var count = _productsList.Count;
-            for (int i = 0; i < count; i++)
+            try
             {
-                if (_productsList[i].Code.Contains(item))
-                {
-                    result.Add(_productsList[i]);
-                }
-                else if (_productsList[i].NameProduct.ToLower().Contains(item.ToLower()))
-                {
-                    result.Add(_productsList[i]);
-                }
-                else if (_productsList[i].Articule.ToLower().ToLower().Contains(item.ToLower()))
-                {
-                    result.Add(_productsList[i]);
-                }
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByNamePageColumn(Session.Token,item, page, countColumn, statusProduct);
             }
-            return result;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<ProductEntity>();
+            }
+        }
+        public async Task<ProductEntity> SearchByBarCode(string item, TypeStatusProduct statusProduct)
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, item);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new ProductEntity();
+            } 
+        }
+        public async Task<ProductInfo> GetProductInfo()
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductInfo(Session.Token);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return  new ProductInfo();
+            }
         }
 
         public bool SetItemInArhive(ProductEntity item)

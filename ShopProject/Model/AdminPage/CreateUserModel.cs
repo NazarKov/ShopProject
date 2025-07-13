@@ -3,11 +3,10 @@ using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.SigningFileService;
-using ShopProject.Helpers.SigningFileService.Model;
 using ShopProject.Views.SettingPage;
 using ShopProjectDataBase.DataBase.Entities;
 using ShopProjectDataBase.DataBase.Model;
+using SigningFileLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +22,7 @@ namespace ShopProject.Model.AdminPage
     class CreateUserModel
     {  
         private MainElectronicTaxAccountController _mainTaxAccauntController;
-        private SigningFileContoller _mainControllerTcp;
+        private SigningFileContoller _mainSigningFileController;
 
         private List<UserRoleEntity> _userRoles;
         private List<ObjectOwnerEntity> _userObjects;
@@ -35,8 +34,9 @@ namespace ShopProject.Model.AdminPage
             _userObjects = new List<ObjectOwnerEntity>();
 
             _mainTaxAccauntController = new MainElectronicTaxAccountController();
-            _mainControllerTcp = new SigningFileContoller();
-
+            _mainSigningFileController = new SigningFileContoller();
+            _mainSigningFileController.Initialize(false);
+           
         }
         public void CreateUser(string fulleName, string login, string email, string password, UserRoleEntity role)
         {
@@ -70,51 +70,13 @@ namespace ShopProject.Model.AdminPage
             }
         }
 
-        public async Task<bool> CreateUserKey(string pathFile, string NameFile, string login, string email, string password, string passwrodKey, UserRoleEntity role)
+        public async Task<bool> CreateUserKey(string pathKey, string NameFile, string login, string email, string password, string passwrodKey, UserRoleEntity role)
         {
-            UserCommand result = new UserCommand() { Status = "100" };
             try
             {
                 string namefile = Path.GetFileName("C:\\ProgramData\\ShopProject\\Temp\\Key.txt.p7s");
 
-
-                //if (namefile == null && namefile ==string.Empty && namefile == "" )
-                //{
-                if (!_mainControllerTcp.IsConnectingServise())
-                {
-                    if (!_mainControllerTcp.IsStartServise())
-                    {
-                        _mainControllerTcp.StartServise();
-                    }
-                    _mainControllerTcp.ConnectService();
-                }
-
-                result = _mainControllerTcp.SendingCommand(new UserCommand()
-                {
-                    TypeCommand = TypeCommand.IsInitialize,
-                    Time = DateTime.Now,
-                });
-
-                if (result.Status == "404")
-                {
-                    _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.Initialize,
-                        Time = DateTime.Now,
-                    });
-                }
-
-
-                result = _mainControllerTcp.SendingCommand(new UserCommand()
-                {
-                    TypeCommand = TypeCommand.GetDataKey,
-                    PathKey = pathFile,
-                    PasswordKey = passwrodKey,
-                    Time = DateTime.Now,
-                });
-                //}
-
-                if (result.Status == "100")
+                if (_mainSigningFileController.GetDataKey(pathKey, passwrodKey))
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
                     var response = await _mainTaxAccauntController.Send();
@@ -126,7 +88,7 @@ namespace ShopProject.Model.AdminPage
                     {
                         FileDirectory.Init();
                         FileDirectory.CreateUserFolder(nameUser);
-                        string pathKey = FileDirectory.CopyKeyInUserFolder(NameFile, pathFile, nameUser);
+                        string pathFile = FileDirectory.CopyKeyInUserFolder(NameFile, pathKey, nameUser);
 
                         var user = new UserEntity()
                         {
@@ -136,19 +98,14 @@ namespace ShopProject.Model.AdminPage
                             Email = email,
                             Password = password,
                             KeyPassword = passwrodKey,
-                            KeyPath = pathKey,
+                            KeyPath = pathFile,
                             Status = 1,
                             CreatedAt = DateTime.Now,
                             UserRole = role,
                         };
                          
                         var resultCreateUser = await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(Session.Token, user); 
-                  
-                        _mainControllerTcp.SendingCommand(new UserCommand()
-                        {
-                            TypeCommand = TypeCommand.DisconnectUser,
-                            Time = DateTime.Now,
-                        });
+
                         return resultCreateUser;
                     }
                 }

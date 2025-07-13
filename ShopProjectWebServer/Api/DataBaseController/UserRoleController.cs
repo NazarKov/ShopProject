@@ -3,6 +3,7 @@ using ShopProjectDataBase.DataBase.Model;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DataBaseController
 {
@@ -16,21 +17,15 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        var roles = DataBaseMainController.DataBaseAccess.UserRoleTable.GetAll();
+                if (AuthorizationApi.LoginToken(token))
+                { 
+                    var roles = DataBaseMainController.DataBaseAccess.UserRoleTable.GetAll();
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize(roles),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 

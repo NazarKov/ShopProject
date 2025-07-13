@@ -4,6 +4,7 @@ using ShopProjectDataBase.DataBase.Entities;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DataBaseController
 {
@@ -16,21 +17,16 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(operationsrecorderuserentity);
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize<bool>(true),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                    DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(operationsrecorderuserentity);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize<bool>(true),
+                        Type = TypeMessage.Message
+                    }.ToString());
                 }
                 throw new Exception("Невірний токен авторизації");
 
@@ -51,21 +47,23 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        var operationRecordersUsers = DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.GetAll();
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(operationRecordersUsers),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                    var options = new JsonSerializerOptions
+                    {
+                        ReferenceHandler = ReferenceHandler.Preserve,
+                        WriteIndented = true
+                    };
+
+
+                    var operationRecordersUsers = DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.GetAll();
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize<IEnumerable<OperationsRecorderUserEntity>>(operationRecordersUsers,options),
+                        Type = TypeMessage.Message
+                    }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 

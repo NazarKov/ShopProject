@@ -36,9 +36,7 @@
                     <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Списки" >
-                    <MenuItem Header="Список всіх товарів готових до продажі" Command="{Binding OpenStorage}"></MenuItem>
-                    <MenuItem Header="Список товарів в архіві" Command="{Binding OpenArchive}"></MenuItem>
-                    <MenuItem Header="Список товарів які закінчилися" Command="{Binding OpenOutOfStock}"></MenuItem>
+                    <MenuItem Header="Список товарів" Command="{Binding OpenStorage}"></MenuItem>  
                 </MenuItem>
                 <MenuItem Header="Інструменти" >
                     <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoods}"></MenuItem>

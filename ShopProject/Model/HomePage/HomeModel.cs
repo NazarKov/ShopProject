@@ -1,4 +1,4 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+﻿using ShopProject.Helpers; 
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,10 +17,7 @@ namespace ShopProject.Model.HomePage
 
         public void Init()
         {
-            Task task = Task.Run(() =>
-            {
-                MainWebServerController.Init();
-            });
+            Resources.init();
         }
     } 
 }

@@ -1,8 +1,9 @@
-﻿using LocateWindow;
+﻿
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.Views.SalePage;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -40,23 +41,23 @@ namespace ShopProject.ViewModel.SalePage
         {
             _model = new WorkShiftMenuModel ();
 
-            //_openShiftCommand = new DelegateCommand(OpenShift);
-            //_closeShiftCommand = new DelegateCommand(CloseShift);
-            //_updateSizeCommand = new DelegateCommand(UpdateSizes);
-            //_openNewCheckCommand = new DelegateCommand(openNewCheck);
-            //_openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
+            _openShiftCommand = new DelegateCommand(OpenShift);
+            _closeShiftCommand = new DelegateCommand(CloseShift);
+            _updateSizeCommand = new DelegateCommand(UpdateSizes);
+            _openNewCheckCommand = new DelegateCommand(openNewCheck);
+            _openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
 
 
-            //_officialDepositMoneyCommand = new DelegateCommand(OfficialDepositMoney);
-            //_officialReceivedMoneyCommand = new DelegateCommand(OfficialIssuanceModey);
+            _officialDepositMoneyCommand = new DelegateCommand(OfficialDepositMoney);
+            _officialReceivedMoneyCommand = new DelegateCommand(OfficialIssuanceModey);
 
-            //_okFirstDialogsWindowCommand = new DelegateCommand(OkFirstDialogWindow);
-            //_cancelFirstDialogsWindowCommand = new DelegateCommand(CancelFirstDialogWindow);
+            _okFirstDialogsWindowCommand = new DelegateCommand(OkFirstDialogWindow);
+            _cancelFirstDialogsWindowCommand = new DelegateCommand(CancelFirstDialogWindow);
 
 
-            //_okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
-            //_cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
-            //_exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
+            _okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
+            _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
+            _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
 
             _statusShift = string.Empty;
             _statusColor = string.Empty;
@@ -65,7 +66,7 @@ namespace ShopProject.ViewModel.SalePage
             VisibleFirstDialogWindow = "Hidden";
             VisibleSecondDialogWindow = "Hidden";
             Cash = 0;
-            //setFieldPage();
+            setFieldPage();
 
 
         }
@@ -130,7 +131,7 @@ namespace ShopProject.ViewModel.SalePage
         public ObservableCollection<TabItem> Tabs
         {
             get { return _tabs; }
-            set { _tabs = value; OnPropertyChanged("Tabs"); }
+            set { _tabs = value; OnPropertyChanged(nameof(Tabs)); }
         }
         private int _selectedTabItem;
         public int SelectedTabItem
@@ -176,319 +177,326 @@ namespace ShopProject.ViewModel.SalePage
         }
 
 
-        //private void setFieldPage()
-        //{
-        //    var tabs = Session.Tabs;
-        //    if (tabs.Count == 0)
-        //    {
-        //        Tabs.Add(new TabItem()
-        //        {
-        //            Header = " ",
-        //            Content = new Frame() { Content = new SaleGoodsMenu() }
-        //        });
-        //        SelectedTabItem = 0;
-        //    }
-        //    else
-        //    {
-        //        Tabs = new ObservableCollection<TabItem>();
-        //        for (int i = 0; i < tabs.Count; i++)
-        //        {
-        //            Tabs.Add(tabs[i]);
-        //        }
+        private void setFieldPage()
+        {
+            var tabs = Session.Tabs;
+            if (tabs.Count == 0)
+            {
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new SaleGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+            }
+            else
+            {
+                Tabs = new ObservableCollection<TabItem>();
+                for (int i = 0; i < tabs.Count; i++)
+                {
+                    Tabs.Add(tabs[i]);
+                }
 
-        //        SelectedTabItem = tabs.Where(item => item.IsSelected == true).FirstOrDefault().TabIndex;
+                SelectedTabItem = tabs.Where(item => item.IsSelected == true).FirstOrDefault().TabIndex;
 
-        //        OnPropertyChanged("Tabs");
-        //    }
+                OnPropertyChanged("Tabs");
+            }
 
-        //    StatusShift = AppSettingsManager.GetParameterFiles("StatusWorkShift").ToString();
-        //    if (StatusShift == "Зміна відкрита")
-        //    {
-        //        StatusColor = "Green";
-        //    }
-        //    else
-        //    {
-        //        StatusColor = "Red";
-        //    }
-        //    FNumber = Session.FocusDevices.FiscalNumber;
-        //    var focusdevices = Session.FocusDevices.ObjectOwner;
-        //    if(focusdevices!=null)
-        //    {
-        //        EconomicUnit = focusdevices.NameObject;
-        //    }
-        //    var nameSeller = Session.User.FullName;
-        //    if (nameSeller != null && nameSeller != string.Empty && nameSeller != "")
-        //    {
+            StatusShift = AppSettingsManager.GetParameterFiles("StatusWorkShift").ToString();
+            if (StatusShift == "Зміна відкрита")
+            {
+                StatusColor = "Green";
+            }
+            else
+            {
+                StatusColor = "Red";
+            }
+            FNumber = Session.FocusDevices.FiscalNumber;
+            var focusdevices = Session.FocusDevices.ObjectOwner;
+            if (focusdevices != null)
+            {
+                EconomicUnit = focusdevices.NameObject;
+            }
+            var nameSeller = Session.User.FullName;
+            if (nameSeller != null && nameSeller != string.Empty && nameSeller != "")
+            {
 
-        //        Seller = nameSeller;
-        //    }
-        //    else
-        //    {
-        //        Seller = Session.User.Login;
-        //    }
-        //    StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
+                Seller = nameSeller;
+            }
+            else
+            {
+                Seller = Session.User.Login;
+            }
+            StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
 
-        //    if ((bool)AppSettingsManager.GetParameterFiles("TestMode"))
-        //    {
-        //        _testMode = Visibility.Visible;
-        //    }
-        //    else
-        //    {
-        //        _testMode = Visibility.Hidden;
-        //    }
+            if ((bool)AppSettingsManager.GetParameterFiles("TestMode"))
+            {
+                _testMode = Visibility.Visible;
+            }
+            else
+            {
+                _testMode = Visibility.Hidden;
+            }
 
-        //}
-
-
-        //public ICommand OpenShiftCommand => _openShiftCommand;
-        //private void OpenShift()
-        //{
-
-        //    var rro = Session.FocusDevices;
-        //    var user = Session.User;
-
-        //    OperationEntiti operation = new OperationEntiti
-        //    {
-        //        VersionDataPaket = 1,
-        //        DataPacketIdentifier = 1,
-        //        TypeRRO = 0,
-        //        FiscalNumberRRO = rro.FiscalNumber.ToString(),
-        //        TaxNumber = user.TIN.ToString(),
-        //        FactoryNumberRRO = "v1",
-        //        TypeOperation = 108,
-        //        CreatedAt = DateTime.Now,
-        //        NumberPayment = "0",
-        //        MAC = _model.GetMac(),
-        //    };
-
-        //    if (_model.OpenShift(operation, false))
-        //    {
-        //        StatusShift = "Зміна відкрита";
-        //        StatusColor = "Green";
-        //        AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-        //        StatusOnline = "з " + DateTime.Now.ToString("g");
-        //        AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-        //        AppSettingsManager.SetParameterFile("FocusDevise", rro.ID.ToString());
-        //    }
-        //}
-
-        //public ICommand CloseShiftCommand => _closeShiftCommand;
-        //private void CloseShift()
-        //{
-        //    OperationEntiti operation = new OperationEntiti
-        //    {
-        //        TypeOperation = 113,
-        //        DataPacketIdentifier = 1,
-        //        TypeRRO = 0,
-        //        FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-        //        TaxNumber = Session.User.TIN,
-        //        FactoryNumberRRO = "v1",
-        //        MAC = _model.GetMac(),
-        //        CreatedAt = DateTime.Now,
-        //        NumberPayment = "0",
-                
-        //        AmountOfFundsReceived = _model.GetTotalFundsReceived(),
-        //        AmountOfIssuedFunds = _model.GetTotalFundsIssued(),
-
-        //        AmountReceivedCash = _model.GetTotalBuyersAmountCash(),
-        //        AmountIssuedCash = _model.GetTotalRestCash(),
-                
-        //        BuyersAmount = _model.GetTotalBuyersAmountCard()+ _model.GetTotalBuyersAmountCash(),
-                
-
-        //        AmountCheckReturnCash = _model.GetTotatalChechReturnCash(),
-        //        AmountCheckReturnCard = _model.GetTotatalChechReturnCard(),
-
-        //        NumberOfSalesReceipts = _model.GetNumberFiscalCheck(),
-        //        NumberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
-        //    };
-
-        //    if (_model.CloseShift(operation, false))
-        //    {
-        //        StatusShift = "Зміна закрита";
-        //        StatusColor = "Red";
-        //        AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-        //        StatusOnline = string.Empty;
-        //        AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-        //        _model.Print(operation);
+        }
 
 
-        //        AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
-        //    }
+        public ICommand OpenShiftCommand => _openShiftCommand;
+        private void OpenShift()
+        {
+
+            var rro = Session.FocusDevices;
+            var user = Session.User;
+
+            OperationEntity operation = new OperationEntity
+            {
+                VersionDataPaket = 1,
+                DataPacketIdentifier = 1,
+                TypeRRO = 0,
+                FiscalNumberRRO = rro.FiscalNumber.ToString(),
+                TaxNumber = user.TIN.ToString(),
+                FactoryNumberRRO = "v1",
+                TypeOperation = 108,
+                CreatedAt = DateTime.Now,
+                NumberPayment = "0",
+                MAC = _model.GetMac(),
+            };
+
+            if (_model.OpenShift(operation))
+            {
+                StatusShift = "Зміна відкрита";
+                StatusColor = "Green";
+                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                StatusOnline = "з " + DateTime.Now.ToString("g");
+                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                AppSettingsManager.SetParameterFile("FocusDevise", rro.ID.ToString());
 
 
-        //}
+                MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
 
-        //public ICommand OpenNewCheck => _openNewCheckCommand;
-        
-        //private void openNewCheck()
-        //{
-        //    if ( ((Frame)Tabs.ElementAt(0).Content).Content.GetType() != typeof(SaleGoodsMenu))
-        //    {
-        //        Tabs.Clear();
-        //        Tabs.Add(new TabItem()
-        //        {
-        //            Header = " ",
-        //            Content = new Frame() { Content = new SaleGoodsMenu() }
-        //        });
-        //        SelectedTabItem = 0;
-        //    }
-        //    else
-        //    {
-        //        int maxCount = 15;
-        //        TabItem newTabItem = new TabItem();
-        //        int count = Tabs.Count;
+        public ICommand CloseShiftCommand => _closeShiftCommand;
+        private void CloseShift()
+        {
+            OperationEntity operation = new OperationEntity
+            {
+                TypeOperation = 113,
+                DataPacketIdentifier = 1,
+                TypeRRO = 0,
+                FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                TaxNumber = Session.User.TIN,
+                FactoryNumberRRO = "v1",
+                MAC = _model.GetMac(),
+                CreatedAt = DateTime.Now,
+                NumberPayment = "0",
 
-        //        if (count <= maxCount)
-        //        {
+                //AmountOfFundsReceived = _model.GetTotalFundsReceived(),
+                //AmountOfIssuedFunds = _model.GetTotalFundsIssued(),
 
-        //            newTabItem.Header = "Новий чек №" + count;
-        //            newTabItem.TabIndex = count;
-        //            newTabItem.Content = new Frame() { Content = new SaleGoodsMenu() };
+                //AmountReceivedCash = _model.GetTotalBuyersAmountCash(),
+                //AmountIssuedCash = _model.GetTotalRestCash(),
 
-        //            Tabs.Add(newTabItem);
-
-        //            Session.Tabs = Tabs;
-        //            OnPropertyChanged("Tabs");
-
-        //        }
-        //        if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
-        //        {
-        //            SelectedTabItem = Tabs.IndexOf(Tabs.ElementAt(0));
-        //        }
-        //        else
-        //        {
-        //            var tab = Tabs.Where(item => item.IsSelected == true).FirstOrDefault();
-        //            SelectedTabItem = Tabs.IndexOf(tab) + 1;
-        //        }
-        //    }
-            
-        //}
-        
-        //public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;
-        //private void OfficialDepositMoney()
-        //{
-        //    VisibleFirstDialogWindow = "Visible";
-        //}
-
-        //public ICommand OfficialIssuanceModeyCommand => _officialReceivedMoneyCommand;
-        //private void OfficialIssuanceModey()
-        //{
-        //    VisibleSecondDialogWindow = "Visible";
-        //}
-
-        //public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
-        //private void OkFirstDialogWindow()
-        //{
-        //    new Thread(new ThreadStart(() => {
-
-        //        int number = int.Parse(_model.GetLocalNumber());
-        //        OperationEntiti operation = new OperationEntiti
-        //        {
-        //            VersionDataPaket  = 1,
-        //            TypeOperation = 2,
-        //            DataPacketIdentifier = 1,
-        //            TypeRRO = 0,
-        //            FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-        //            TaxNumber = Session.User.TIN,
-        //            FactoryNumberRRO = "v1",
-        //            MAC = _model.GetMac(),
-        //            CreatedAt = DateTime.Now,
-        //            NumberPayment = number.ToString(),
-        //            FormOfPayment = 0,
-        //            TotalPayment = Cash,
-        //        };
-
-        //        VisibleFirstDialogWindow = "Hidden";
-        //        if (_model.OfficialDepositMoney(operation))
-        //        {
-        //            MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-        //            Cash = 0;
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-        //            Cash = 0;
-        //        }
-
-        //    })).Start();
-        //}
-
-        //public ICommand CancelFirstDialogWindowCommand => _cancelFirstDialogsWindowCommand;
-        //private void CancelFirstDialogWindow()
-        //{
-        //    Cash = 0;
-        //    VisibleFirstDialogWindow = "Hidden";
-        //}
+                //BuyersAmount = _model.GetTotalBuyersAmountCard() + _model.GetTotalBuyersAmountCash(),
 
 
-        //public ICommand OkSecondDialogWindowCommand => _okSecondDialogsWindowCommand;
-        //private void OkSeconDialogWindow()
-        //{
-        //    new Thread(new ThreadStart(() => {
+                //AmountCheckReturnCash = _model.GetTotatalChechReturnCash(),
+                //AmountCheckReturnCard = _model.GetTotatalChechReturnCard(),
 
-        //        int number = int.Parse(_model.GetLocalNumber());
-        //        OperationEntiti operation = new OperationEntiti
-        //        {
-        //            VersionDataPaket = 1,
-        //            TypeOperation = 2.01m,
-        //            DataPacketIdentifier = 1,
-        //            TypeRRO = 0,
-        //            FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-        //            TaxNumber = Session.User.TIN,
-        //            FactoryNumberRRO = "v1",
-        //            MAC = _model.GetMac(),
-        //            CreatedAt = DateTime.Now,
-        //            NumberPayment = number.ToString(),
-        //            FormOfPayment = 0,
-        //            TotalPayment = Cash,
-        //        };
-        //        VisibleSecondDialogWindow = "Hidden";
-        //        if (_model.OfficialDepositMoney(operation))
-        //        {
-        //            MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-        //            Cash = 0;
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            Cash = 0;
-        //        }
+                //NumberOfSalesReceipts = _model.GetNumberFiscalCheck(),
+                //NumberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
+            };
 
-        //    })).Start();
+            if (_model.CloseShift(operation))
+            {
+                StatusShift = "Зміна закрита";
+                StatusColor = "Red";
+                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                StatusOnline = string.Empty;
+                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                //_model.Print(operation);
 
-        //}
 
-        //public ICommand CancelSecondDialogWindowCommand => _cancelSecondDialogsWindowCommand;
-        //private void CancelSecondDialogWindow()
-        //{
-        //    Cash = 0;
-        //    VisibleSecondDialogWindow = "Hidden";
-        //}
+                AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
 
-        //public ICommand OpenReturnGoodsMenuCommand => _openReturnGoodsMenuCommand;
-        //private void OpenReturnGoodsMenu()
-        //{
-        //    if (Tabs.Count != 0)
-        //    {
-        //        Tabs.Clear(); 
-        //        Tabs.Add(new TabItem()
-        //        {
-        //            Header = " ",
-        //            Content = new Frame() { Content = new ReturnGoodsMenu() }
-        //        });
-        //        SelectedTabItem = 0;
+                MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
 
-        //        OnPropertyChanged("Tabs");
-        //    }
-        //}
 
-        //public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
-        //private void ExitWorkShiftMenu()
-        //{
-        //    Mediator.Notify("OpenOperationRerocderMenu", "");
-        //    Session.FocusDevices = null;
-        //}
+        }
+
+        public ICommand OpenNewCheck => _openNewCheckCommand;
+
+        private void openNewCheck()
+        {
+            if (((Frame)Tabs.ElementAt(0).Content).Content.GetType() != typeof(SaleGoodsMenu))
+            {
+                Tabs.Clear();
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new SaleGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+            }
+            else
+            {
+                int maxCount = 15;
+                TabItem newTabItem = new TabItem();
+                int count = Tabs.Count;
+
+                if (count <= maxCount)
+                {
+
+                    newTabItem.Header = "Новий чек №" + count;
+                    newTabItem.TabIndex = count;
+                    newTabItem.Content = new Frame() { Content = new SaleGoodsMenu() };
+
+                    Tabs.Add(newTabItem);
+
+                    Session.Tabs = Tabs;
+                    OnPropertyChanged("Tabs");
+
+                }
+                if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
+                {
+                    SelectedTabItem = Tabs.IndexOf(Tabs.ElementAt(0));
+                }
+                else
+                {
+                    var tab = Tabs.Where(item => item.IsSelected == true).FirstOrDefault();
+                    SelectedTabItem = Tabs.IndexOf(tab) + 1;
+                }
+            }
+
+        }
+
+        public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;
+        private void OfficialDepositMoney()
+        {
+            VisibleFirstDialogWindow = "Visible";
+        }
+
+        public ICommand OfficialIssuanceModeyCommand => _officialReceivedMoneyCommand;
+        private void OfficialIssuanceModey()
+        {
+            VisibleSecondDialogWindow = "Visible";
+        }
+
+        public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
+        private void OkFirstDialogWindow()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+
+                int number = int.Parse(_model.GetLocalNumber());
+                OperationEntity operation = new OperationEntity
+                {
+                    VersionDataPaket = 1,
+                    TypeOperation = 2,
+                    DataPacketIdentifier = 1,
+                    TypeRRO = 0,
+                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    TaxNumber = Session.User.TIN,
+                    FactoryNumberRRO = "v1",
+                    MAC = _model.GetMac(),
+                    CreatedAt = DateTime.Now,
+                    NumberPayment = number.ToString(),
+                    FormOfPayment = 0,
+                    TotalPayment = Cash,
+                };
+
+                VisibleFirstDialogWindow = "Hidden";
+                if (_model.OfficialDepositMoney(operation))
+                {
+                    MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+
+            })).Start();
+        }
+
+        public ICommand CancelFirstDialogWindowCommand => _cancelFirstDialogsWindowCommand;
+        private void CancelFirstDialogWindow()
+        {
+            Cash = 0;
+            VisibleFirstDialogWindow = "Hidden";
+        }
+
+
+        public ICommand OkSecondDialogWindowCommand => _okSecondDialogsWindowCommand;
+        private void OkSeconDialogWindow()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+
+                int number = int.Parse(_model.GetLocalNumber());
+                OperationEntity operation = new OperationEntity
+                {
+                    VersionDataPaket = 1,
+                    TypeOperation = 2.01m,
+                    DataPacketIdentifier = 1,
+                    TypeRRO = 0,
+                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    TaxNumber = Session.User.TIN,
+                    FactoryNumberRRO = "v1",
+                    MAC = _model.GetMac(),
+                    CreatedAt = DateTime.Now,
+                    NumberPayment = number.ToString(),
+                    FormOfPayment = 0,
+                    TotalPayment = Cash,
+                };
+                VisibleSecondDialogWindow = "Hidden";
+                if (_model.OfficialDepositMoney(operation))
+                {
+                    MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Cash = 0;
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Cash = 0;
+                }
+
+            })).Start();
+
+        }
+
+        public ICommand CancelSecondDialogWindowCommand => _cancelSecondDialogsWindowCommand;
+        private void CancelSecondDialogWindow()
+        {
+            Cash = 0;
+            VisibleSecondDialogWindow = "Hidden";
+        }
+
+        public ICommand OpenReturnGoodsMenuCommand => _openReturnGoodsMenuCommand;
+        private void OpenReturnGoodsMenu()
+        {
+            if (Tabs.Count != 0)
+            {
+                Tabs.Clear();
+                Tabs.Add(new TabItem()
+                {
+                    Header = " ",
+                    Content = new Frame() { Content = new ReturnGoodsMenu() }
+                });
+                SelectedTabItem = 0;
+
+                OnPropertyChanged("Tabs");
+            }
+        }
+
+        public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
+        private void ExitWorkShiftMenu()
+        {
+            Mediator.Notify("OpenOperationRerocderMenu", "");
+            Session.FocusDevices = null;
+        }
 
 
     }

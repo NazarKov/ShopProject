@@ -1,4 +1,4 @@
-﻿using LocateWindow;
+﻿
 using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Model.Command;

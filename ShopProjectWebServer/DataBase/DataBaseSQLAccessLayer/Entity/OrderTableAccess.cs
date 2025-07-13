@@ -1,13 +1,46 @@
-﻿using ShopProjectDataBase.DataBase.Model;
+﻿using ShopProjectDataBase.DataBase.Context;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectWebServer.DataBase.HelperModel;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OrderTableAccess : IOrderTableAccess<OrderEntity>
     {
+        private string _connectionString;
+        public OrderTableAccess(string ConnectionString)
+        {
+            _connectionString = ConnectionString;
+        }
+
         public void Add(OrderEntity item)
         {
             throw new NotImplementedException();
+        }
+
+        public void AddRange(IEnumerable<OrderEntity> items)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+                    context.Products.Load();
+                    context.Discounts.Load();
+                    context.Orders.Load();
+                    if (context.Products != null)
+                    {
+                        for (int i = 0; i < items.Count(); i++)
+                        {
+                            items.ElementAt(i).Goods = context.Products.Find(items.ElementAt(i).Goods.ID);
+                            items.ElementAt(i).Operation = context.Operations.Find(items.ElementAt(i).Operation.ID);
+                        }
+                        context.Orders.AddRange(items);
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
 
         public void Delete(OrderEntity item)
@@ -17,7 +50,26 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OrderEntity> GetAll()
         {
-            throw new NotImplementedException();
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+                    context.Products.Load();
+                    context.Discounts.Load();
+                    context.Orders.Load();
+
+                    if (context.Operations.Count() != 0)
+                    {
+                        return context.Orders.ToList();
+                    }
+                    else
+                    {
+                        return new List<OrderEntity>();
+                    }
+                }
+                return null;
+            }
         }
 
         public void Update(OrderEntity item)

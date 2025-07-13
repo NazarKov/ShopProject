@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
-using ShopProject.Views.StoragePage;
 using ShopProject.Model.Command;
 using ShopProject.Views.SalePage;
 using System.Windows.Forms;
 using ShopProject.Views.AdminPage;
 using ShopProject.Views.UserPage;
 using ShopProject.Helpers;
-using System.Threading;
-using LocateWindow;
+using System.Threading; 
 using ShopProject.View.StoragePage;
 using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage;
@@ -34,11 +32,9 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand exitApp;
         private ICommand openSetting;
         private ICommand openStorage;
-        private ICommand openArchive;
         private ICommand openExportProduct;
         private ICommand opemImportProduct;
         private ICommand openCreateStiker;
-        private ICommand openOutOfStock;
         private ICommand openSaleMenuCommand;
         private ICommand openDeliveryOfGoods;
         private ICommand openUserPageCommand;
@@ -66,13 +62,11 @@ namespace ShopProject.ViewModel.HomePage
             Height = Screen.PrimaryScreen.Bounds.Height;
 
             exitApp = new DelegateCommand(() => {/* Application.Current.MainWindow.Close();*/});
-            openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); });
-            openArchive = new DelegateCommand(() => { Page = new Archive(); });
+            openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); }); 
             openStorage = new DelegateCommand(() => { Page = new StorageView(); });
             openExportProduct = new DelegateCommand(() => { new ExportProductExelView().Show(); });
             opemImportProduct = new DelegateCommand(() => { new ImportProductExelView().Show(); });
             openCreateStiker = new DelegateCommand(() => { new CreateStickerView().Show(); });
-            openOutOfStock = new DelegateCommand(() => { Page = new OutOfStock(); });
             openSaleMenuCommand = new DelegateCommand(OpenSaleMenu);
             openDeliveryOfGoods = new DelegateCommand(() => { new DeliveryProductView().Show(); });
             openUserPageCommand = new DelegateCommand(() => { Page = new Users(); });
@@ -82,8 +76,8 @@ namespace ShopProject.ViewModel.HomePage
             _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
 
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
-            
-            
+
+            //Page = new StartView();
             if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
             {
                 Page = new StartView();
@@ -93,7 +87,7 @@ namespace ShopProject.ViewModel.HomePage
                 _model.Init();
                 SetFieldWindow(null);
             }
-            
+
 
 
 
@@ -146,7 +140,7 @@ namespace ShopProject.ViewModel.HomePage
                 _visibilitiMenu = Visibility.Visible;
                 if (Session.FocusDevices != null)
                 {
-                    Page = new WorkShiftMenu();
+                    Page = new StorageView();
                 }
                 else
                 {
@@ -196,11 +190,9 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenSetting => openSetting;
         public ICommand ExitApp => exitApp;
         public ICommand OpenStorage => openStorage;
-        public ICommand OpenArchive => openArchive;
         public ICommand OpenExportProduct => openExportProduct;
         public ICommand OpenImportProduct => opemImportProduct;
         public ICommand OpenCreateStiker => openCreateStiker;
-        public ICommand OpenOutOfStock => openOutOfStock;
         public ICommand OpenSaleMenuCommand => openSaleMenuCommand;
         public ICommand OpenDeliveryOfGoods => openDeliveryOfGoods;
         public ICommand OpenUserCommand => openUserPageCommand;

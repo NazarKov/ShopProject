@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DataBaseController
 {
@@ -12,29 +14,22 @@ namespace ShopProjectWebServer.Api.DataBaseController
     [ApiController]
     public class ProductController : ControllerBase
     {
-
-        [HttpGet("GetProducts")]
-        public async Task<IActionResult> GetProducts(string token)
+        [HttpGet("GetInfoProducts")]
+        public IActionResult GetInfoProducts(string token)
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        var products = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
+                    var informations = DataBaseMainController.DataBaseAccess.ProductTable.GetProductInfo();
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(products),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(informations),
+                        Type = TypeMessage.Message
+                    }.ToString());
                 }
-                throw new Exception("Невірний токен авторизації");
+                throw new Exception("Невдалося отримати товари");
 
             }
             catch (Exception ex)
@@ -49,27 +44,108 @@ namespace ShopProjectWebServer.Api.DataBaseController
         }
 
         [HttpGet("GetProductsByBarCode")]
-        public async Task<IActionResult> GetProductsByBarCode(string token,string barcode)
+        public IActionResult GetProductsByBarCode(string token, string barCode, TypeStatusProduct status)
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        var product = DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barcode);
+                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barCode, status);
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(product),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(products),
+                        Type = TypeMessage.Message
+                    }.ToString());
                 }
-                throw new Exception("Невірний токен авторизації");
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetProductByNamePageColumn")]
+        public IActionResult GetProductByNamePageColumn(string token,string name, int page, int countColumn, TypeStatusProduct status)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetProductByNamePageColumn(name,page,countColumn ,status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(products),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetProductsPageColumn")]
+        public IActionResult GetProductsPageColumn(string token, int page, int countColumn, TypeStatusProduct status)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetAllPageColumn(page,countColumn, status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(products),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetProducts")]
+        public async Task<IActionResult> GetProducts(string token)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(products),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                } 
+                throw new Exception("Невдалося отримати товари");
 
             }
             catch (Exception ex)
@@ -88,18 +164,13 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
+                if (AuthorizationApi.LoginToken(token))
+                { 
 
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-
-                        var productItem = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
+                    var productItem = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
                         if (productItem.Count() > 0)
                         {
-                            var item = productItem.Where(i => i.Code == product.Code).FirstOrDefault();
+                            var item = productItem.FirstOrDefault(i => i.Code == product.Code);
 
                             if (item != null)
                             {
@@ -113,8 +184,7 @@ namespace ShopProjectWebServer.Api.DataBaseController
                         {
                             MessageBody = JsonSerializer.Serialize<bool>(true),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 
@@ -135,23 +205,17 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
+                if (AuthorizationApi.LoginToken(token))
+                { 
 
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-
-                        DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product);
+                    DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product);
 
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize<bool>(true),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 
@@ -172,21 +236,16 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
+                if (AuthorizationApi.LoginToken(token))
+                { 
 
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        DataBaseMainController.DataBaseAccess.ProductTable.Update(product);
+                    DataBaseMainController.DataBaseAccess.ProductTable.Update(product);
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize<bool>(true),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 
@@ -207,21 +266,15 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        DataBaseMainController.DataBaseAccess.ProductTable.UpdateRange(product);
+                if (AuthorizationApi.LoginToken(token))
+                { 
+                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateRange(product);
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize<bool>(true),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 
@@ -242,21 +295,15 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
-                {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
-                    {
-                        DataBaseMainController.DataBaseAccess.ProductTable.UpdateParameter(product, parameter, value);
+                if (AuthorizationApi.LoginToken(token))
+                { 
+                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateParameter(product, parameter, value);
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize<bool>(true),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 

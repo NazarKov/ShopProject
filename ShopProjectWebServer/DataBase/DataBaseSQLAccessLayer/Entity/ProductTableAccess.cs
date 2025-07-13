@@ -1,15 +1,18 @@
 ﻿using ShopProjectDataBase.DataBase.Context;
 using ShopProjectDataBase.DataBase.Model;
 using ShopProjectSQLDataBase.Helper;
+using ShopProjectWebServer.Api.Helpers.ProductContoller;
 using ShopProjectWebServer.DataBase.HelperModel;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Data.Entity;
+using System.Linq;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class ProductTableAccess : IProductTableAccess<ProductEntity>
     {
         private string _connectionString;
+
         public ProductTableAccess(string ConnectionString)
         {
             _connectionString = ConnectionString;
@@ -212,7 +215,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public ProductEntity GetByBarCode(string barCode)
+        public PaginatorData<ProductEntity> GetAllPageColumn(double page , double countColumn,TypeStatusProduct productstatus)
         {
             using (ContextDataBase context = new ContextDataBase(_connectionString))
             {
@@ -224,23 +227,176 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
                     if (context.Products.Count() != 0)
                     {
-                        var item = context.Products.Where(i => i.Code == barCode).FirstOrDefault();
-                        if (item != null)
+                        double pages;
+
+                        int countEnd = (int)(page * countColumn);
+                        int countStart = (int)(countEnd - countColumn);
+
+                        PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
+
+                        if (productstatus == TypeStatusProduct.Unknown)
                         {
-                            return item;
+                            result.Page = (int)page; 
+                            result.Data = context.Products.OrderBy(i => i.ID)
+                                                          .Skip(countStart)
+                                                          .Take((int)countColumn).ToList();
+                            
+                            pages = context.Products.Count() / countColumn;
                         }
                         else
                         {
-                            throw new Exception("Товар не знайдено");
+                            result.Page = (int)page;
+                            result.Data = context.Products.Where(item => item.Status == productstatus)
+                                                           .OrderBy(i => i.ID)
+                                                           .Skip(countStart)
+                                                           .Take((int)countColumn).ToList();
+
+                            pages = context.Products.Where(item => item.Status == productstatus).Count() / countColumn;
                         }
+
+                        int pagesCount = 0;
+
+                        if (!(pages % 2 == 0))
+                        {
+                            pagesCount = (int)pages;
+                            pagesCount++;
+                        }
+                        result.Pages = pagesCount;
+
+                        return result;
                     }
                     else
                     {
-                        throw new Exception("Неможливий пошук оскільки немє товарів");
+                        return new PaginatorData<ProductEntity>();
+                    }
+                }
+                return null;
+            }
+        }
+
+        public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.CodeUKTZED.Load();
+                    context.ProductUnits.Load();
+                    context.Products.Load();
+
+                    if (context.Products != null && context.Products.Count() != 0)
+                    {
+                        ProductEntity result  = new ProductEntity();
+                        if (statusProduct == TypeStatusProduct.Unknown)
+                        {
+                            result = context.Products.First(i => i.Code == barCode);
+                        }
+                        else
+                        {
+                            result = context.Products.Where(t => t.Status == statusProduct).First(i => i.Code == barCode);
+                        }
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception("Неможливий пошук оскільки немає товарів");
                     }
 
                 }
-                return null;
+                return new ProductEntity();
+            }
+        }
+
+        public PaginatorData<ProductEntity> GetProductByNamePageColumn(string name , double page, double countColumn, TypeStatusProduct statusProduct)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.CodeUKTZED.Load();
+                    context.ProductUnits.Load();
+                    context.Products.Load();
+
+                    if (context.Products != null && context.Products.Count() != 0)
+                    {
+                        double pages;
+
+                        int countEnd = (int)(page * countColumn);
+                        int countStart = (int)(countEnd - countColumn);
+
+                        PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>(); 
+
+                        if (statusProduct == TypeStatusProduct.Unknown)
+                        {
+                            result.Page = (int)page;
+                            result.Data = context.Products.Where(i => i.NameProduct.Contains(name))
+                                                          .OrderBy(i => i.ID)
+                                                          .Skip(countStart)
+                                                          .Take((int)countColumn).ToList();
+
+                            pages = context.Products.Where(i => i.NameProduct.Contains(name)).Count() / countColumn;
+                        }
+                        else
+                        {
+                            result.Page = (int)page;
+                            result.Data = context.Products.Where(t => t.Status == statusProduct)
+                                                          .Where(i => i.NameProduct.Contains(name))
+                                                          .OrderBy(i => i.ID)
+                                                          .Skip(countStart)
+                                                          .Take((int)countColumn).ToList();
+
+                            pages = context.Products.Where(item => item.Status == statusProduct)
+                                                    .Where(i => i.NameProduct
+                                                    .Contains(name)).Count() / countColumn;
+                        }
+
+                        int pagesCount = 0;
+
+                        if (!(pages % 2 == 0))
+                        {
+                            pagesCount = (int)pages;
+                            pagesCount++;
+                        }
+                        result.Pages = pagesCount;
+
+                        return result;
+ 
+                    }
+                    else
+                    {
+                        throw new Exception("Неможливий пошук оскільки немає товарів");
+                    }
+
+                }
+                return new PaginatorData<ProductEntity>();
+            }
+        }
+
+        public ProductInfo GetProductInfo()
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                { 
+                    context.Products.Load();
+
+                    if (context.Products != null && context.Products.Count() != 0)
+                    {
+                        return new ProductInfo()
+                        {
+                            CountProductAllStatus = context.Products.Count(),
+                            CountProductInStockStatus = context.Products.Where(i => i.Status == TypeStatusProduct.InStock).Count(),
+                            CountProductOutStockStatus = context.Products.Where(i => i.Status == TypeStatusProduct.OutStock).Count(),
+                            CountProductArchivedStauts = context.Products.Where(i => i.Status == TypeStatusProduct.Archived).Count(),
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("Неможливий пошук оскільки немає товарів");
+                    }
+
+                }
+                return new ProductInfo();
             }
         }
     }

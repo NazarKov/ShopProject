@@ -66,7 +66,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
                 HttpResponseMessage httpResponse = await client.PostAsync($"/api/ObjectOwner/AddObjectsOwners?token={token}", httpContent);
                 string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                var result = CheckingResponse.Unpacking<bool>(responseBody);
+                var result =  CheckingResponse.Unpacking<bool>(responseBody);
                 httpResponse.EnsureSuccessStatusCode();
 
                 return (bool)result;

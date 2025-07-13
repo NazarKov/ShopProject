@@ -10,7 +10,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
     public static class MainWebServerController
     {
         private static string _url;
-        public static MainDataBaseController MainDataBaseConntroller { get; set; }
+        internal static MainDataBaseController MainDataBaseConntroller { get; set; }
         public static SettingsController settings;
         
         public static void Init()

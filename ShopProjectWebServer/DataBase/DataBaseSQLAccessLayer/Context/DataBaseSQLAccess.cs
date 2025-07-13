@@ -37,6 +37,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             ObjectOwnerTable = new ObjectOwnerTableAccess(ConnectionString);
             OperationRecorderTable = new OperationRecorderTableAccess(ConnectionString);
             OperationRecorederUserTable = new OperationRecorderUserTableAccess(ConnectionString);
+            OperationTable = new OperationTableAccess(ConnectionString);
+            OrderTable = new OrderTableAccess(ConnectionString);
         }
 
 

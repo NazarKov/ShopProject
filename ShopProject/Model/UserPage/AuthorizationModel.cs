@@ -22,9 +22,9 @@ namespace ShopProject.Model.UserPage
 
                 if(response != null)
                 {
-
                     AppSettingsManager.SetParameterFile("TokenUser", response.Token);
                     Session.User = response.User;
+                    Session.Token = response.Token;
                     return true;
                 }
                 else

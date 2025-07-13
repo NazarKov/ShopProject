@@ -103,7 +103,7 @@ namespace FiscalServerApi
         }
 
 
-        public void SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
+        public string SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages() 
             {
@@ -114,10 +114,10 @@ namespace FiscalServerApi
                 type = Check.Types.Type.Chk
             },TypeMessage.sendChk2);
 
-            AuditErrorServer(response);
+            return AuditErrorServer(response);
         }
 
-        public void SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
+        public string SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages()
             {
@@ -128,11 +128,11 @@ namespace FiscalServerApi
                 type = Check.Types.Type.Servicechk,
             }, TypeMessage.sendChk2);
 
-            AuditErrorServer(response);
+            return AuditErrorServer(response);
 
         }
         
-        public void SendZReport(long date, int localNumber, string rroFN , bool test = true)
+        public string SendZReport(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages()
             {
@@ -143,10 +143,10 @@ namespace FiscalServerApi
                 type = Check.Types.Type.Zreport,
             }, TypeMessage.sendChk2);
 
-            AuditErrorServer(response);
+            return AuditErrorServer(response);
         }
         
-        public void Ping(long date, int localNumber, string rroFN , bool test = true)
+        public string Ping(long date, int localNumber, string rroFN , bool test = true)
         {
             CheckResponse response = SendMessage(new Messages()
             {
@@ -157,10 +157,10 @@ namespace FiscalServerApi
                 type = Check.Types.Type.Zreport,
             }, TypeMessage.ping);
 
-            AuditErrorServer(response);
+            return AuditErrorServer(response);
         }
 
-        private void AuditErrorServer(CheckResponse response)
+        private string AuditErrorServer(CheckResponse response)
         {
             if (response != null)
             {
@@ -172,7 +172,7 @@ namespace FiscalServerApi
                         }
                     case CheckResponse.Types.Status.Ok:
                         {
-                            throw new ExceptionOK("OK",response.Id);
+                            return response.Id;
                         }
                     case CheckResponse.Types.Status.ErrorVerefy:
                         {
@@ -248,7 +248,7 @@ namespace FiscalServerApi
                     case CheckResponse.Types.Status.ErrorBadHashPrev:
                         {
 
-                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку",response.ErrorMessage);
+                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку", response.ErrorMessage);
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredRro:
                         {
@@ -266,10 +266,14 @@ namespace FiscalServerApi
                         {
                             throw new Exception("Невірний офлайн ID");
                         }
-
-
+                    default:
+                        {
+                            return string.Empty;
+                            break;
+                        }
                 }
             }
+            return string.Empty;
         }
         private ByteString ReadFile(string path)
         {

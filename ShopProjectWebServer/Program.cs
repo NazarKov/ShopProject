@@ -25,10 +25,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-new Thread(new ThreadStart(() => {
-    DataBaseMainController.init();
-})).Start();
-
+DataBaseMainController.init();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

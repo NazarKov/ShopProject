@@ -1,4 +1,5 @@
-﻿using LocateWindow;
+﻿
+using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
 using ShopProjectDataBase.DataBase.Model;
@@ -25,7 +26,7 @@ namespace ShopProject.ViewModel.ToolsPage
         public CreateProductViewModel()
         {
             _model = new CreateProductModel();
-            
+
             Units = new List<ProductUnitEntity>();
             CodeUKTZED = new List<CodeUKTZEDEntity>();
 
@@ -43,11 +44,19 @@ namespace ShopProject.ViewModel.ToolsPage
             _price = 0m;
             _count = 0m;
             setFiledWindow();
+
+
+           
         }
         private void setFiledWindow()
         {
-            Units = _model.GetUnits();
-            CodeUKTZED = _model.GetCodeUKTZED();
+            Task t = Task.Run(async () => {
+
+                var units = await _model.GetUnits();
+                Units = units.ToList();
+                var codeUKTZED = await _model.GetCodeUKTZED();
+                CodeUKTZED = codeUKTZED.ToList();
+            });
         }
 
 
@@ -137,9 +146,10 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void SaveAndCreateProductDataBase()
         {
-            new Thread(new ThreadStart(() =>
+            Task t = Task.Run(async () =>
             {
-                if (_model.SaveItemDataBase(new ProductEntity() {
+                if (await _model.SaveItemDataBase(new ProductEntity()
+                {
                     NameProduct = _name,
                     Code = _code,
                     Articule = _article,
@@ -149,13 +159,12 @@ namespace ShopProject.ViewModel.ToolsPage
                     CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
                     CreatedAt = DateTime.Now,
                     Status = TypeStatusProduct.InStock,
-                }));
+                })) ;
                 {
                     MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
                     Mediator.Notify("ReloadProduct", "");
                 }
-            })).Start();
-
+            });
         }
 
     }

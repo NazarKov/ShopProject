@@ -5,6 +5,8 @@ using System;
 using System.Windows;
 using System.Collections.Generic;
 using ShopProjectDataBase.DataBase.Entities;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace ShopProject.Helpers
 {
@@ -29,7 +31,7 @@ namespace ShopProject.Helpers
 
 
         //public static UserEntiti UserItem { get; set; }
-        //public static ObservableCollection<TabItem> Tabs = new ObservableCollection<TabItem>();
+        public static ObservableCollection<TabItem> Tabs = new ObservableCollection<TabItem>();
 
         //private static UserEntiti _user;
         //public static UserEntiti User

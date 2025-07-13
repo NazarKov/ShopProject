@@ -1,159 +1,134 @@
 ﻿using FiscalServerApi;
 using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers;
+using ShopProject.Helpers.FiscalOperationService;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.PrintingServise;
-using ShopProject.Helpers.SigningFileService;
+using ShopProjectDataBase.DataBase.Model;
+using SigningFileLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ShopProject.Model.SalePage
 {
     internal class SaleGoodsMenuModel
     {
-        //private IEntityGet<ProductEntiti> _goodsRepository;
-        //private IEntityAccess<OperationEntiti> _operationRepository;
-        //private IEntityAccess<OrderEntiti> _goodsOperationRepository;
-
-        private SigningFileContoller _mainController;
-        private FiscalServerController _serverController;
+         
         private PrintingFiscalCheck _printingFiscalCheck;
-        private bool _isDrawingChek;
-
-        ReturnDataWithDataBase _returnDataWithDataBase;
-
+        private bool _isDrawingChek; 
+        private FiscalOperationController _fiscalOperationController;
+          
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
-
-
-        string pathxml = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
-
+         
         public SaleGoodsMenuModel()
-        {
-            //_goodsRepository = new ProductTableAccess();
-            //_operationRepository = new OperationTableAccess();
-            //_goodsOperationRepository = new OrderTableAccess();
+        { 
+            _printingFiscalCheck = new PrintingFiscalCheck(); 
 
-            _mainController = new SigningFileContoller();
-            _serverController = new FiscalServerController();
-            _printingFiscalCheck = new PrintingFiscalCheck();
-            _returnDataWithDataBase = new ReturnDataWithDataBase();
+            _isDrawingChek = true; 
 
-            _isDrawingChek = true;
+            _fiscalOperationController = new FiscalOperationController();
         }
-        
-        //public ProductEntiti? Search(string barCode)
-        //{
-        //    try
-        //    {
-        //        return _goodsRepository.GetByBarCode(barCode);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message,"Error",MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return null;
-        //    }
-        //}
-        
-        //public bool SendCheck(List<ProductEntiti> goods,OperationEntiti operation)
-        //{
-        //   return SendCheckRecursive(goods,operation,0,5);
-        //}     
-        //private bool SendCheckRecursive(List<ProductEntiti> goods, OperationEntiti operation, int depth, int maxDepth)
-        //{
-        //    try
-        //    {
-        //        if (depth >= maxDepth)
-        //        {
-        //            throw new Exception("Неможливо виконати операцію");
-        //        }
-        //        SendCheck(operation, goods);
-        //        return true;
-        //    }
-        //    catch(ExceptionOK exOK)
-        //    {
-        //        if (exOK.ID != null)
-        //        {
-        //            SaveDataBase(operation, goods);
-        //            if (IsDrawinfChek)
-        //            {
-        //                PrintCheck(goods, operation, exOK.ID);
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //    catch (ExceptionBadHashPrev exbadHas)
-        //    {
-        //        operation.MAC = exbadHas.Error.Split(" ")[3];
-        //        return SendCheckRecursive(goods, operation,depth+1,maxDepth);
-        //    }
-        //    catch (ExceptionCheck exCheck)
-        //    {
-        //        MessageBox.Show(exCheck.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //    catch (ExceptionSave exSave)
-        //    {
-        //        operation.MAC = string.Empty;
-        //        return SendCheckRecursive(goods, operation, depth + 1, maxDepth);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        return false;
-        //    }
-        //}
 
-        //private void SendCheck(OperationEntiti operation,List<ProductEntiti> goods)
-        //{
-        //    if (operation.TypeOperation == 0)
-        //    {
-        //         WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntiti>(),goods, pathxml);
-        //        _mainController.SignFiles(Session.User.KeyPath,Session.User.KeyPassword);
-        //        _serverController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss"))
-        //            , Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO
-        //            , (bool)AppSettingsManager.GetParameterFiles("TestMode"));
-        //    }
-        //    else
-        //    {
-        //        SaveDataBase(operation, goods);
-        //    }
-        //}       
-        //public void PrintCheck(List<ProductEntiti> products, OperationEntiti order,string id)
-        //{
-        //    _printingFiscalCheck.PrintCheck(products, id, order);
-        //}
-       
+        public ProductEntity? Search(string barCode)
+        {
+            try
+            {
+                List<ProductEntity> products = new List<ProductEntity>() { };
 
-        //private void SaveDataBase(OperationEntiti operation, List<ProductEntiti> goods)
-        //{
-        //    operation.User = Session.User;
-        //    _operationRepository.Add(operation);
-        //    if (goods.Count != 0)
-        //    {
-        //        foreach (ProductEntiti item in goods)
-        //        {
-        //            _goodsOperationRepository.Add(new OrderEntiti()
-        //            {
-        //                Operation = operation,
-        //                Goods = item,
-        //                Count = (int)item.Count,
-                       
-        //            });
-        //        }
-        //    }
+                if (products.Count <= 1)
+                {
 
-        //}
+                    Task t = Task.Run(async () =>
+                    {
+                        products = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+                    });
+                    t.Wait();
+                }
+                return products.Where(item => item.Code == barCode).First();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
 
-        //public string GetMac()
-        //{
-        //    return _returnDataWithDataBase.GetMac(pathxml);
-        //}
-       
-        //public string GetLocalNumber()
-        //{
-        //    return _returnDataWithDataBase.GetLocalNumber();
-        //}
+        public bool SendCheck(List<ProductEntity> products, OperationEntity operation)
+        { 
+            var id = _fiscalOperationController.SendFiscalCheck(operation, products);
+            if (id != string.Empty)
+            {
+                SaveDataBase(operation, products);
+                //_printingFiscalCheck.PrintCheck(products, id, order);
+
+                return true;
+            }
+            return false;
+        } 
+
+        public void PrintCheck(List<ProductEntity> products, OperationEntity order, string id)
+        {
+            //_printingFiscalCheck.PrintCheck(products, id, order);
+        }
+
+
+        private void SaveDataBase(OperationEntity operation, List<ProductEntity> goods)
+        {
+            operation.User = Session.User;
+            bool result = false;
+            Task t = Task.Run(async () =>
+            {
+                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));
+                if (result)
+                {
+                    List<OrderEntity> orders = new List<OrderEntity>();
+                    foreach (ProductEntity item in goods)
+                    {
+                        orders.Add(new OrderEntity()
+                        {
+                            Operation = operation,
+                            Goods = item,
+                            Count = (int)item.Count,
+
+                        });
+                    }
+
+                    await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(Session.Token, orders);
+                }
+            });
+        }
+
+        public string GetMac() => _fiscalOperationController.GetMac();
+         
+        public string GetLocalNumber()
+        {
+            try
+            {
+                OperationEntity operation = new OperationEntity();
+
+                Task t = Task.Run(async () =>
+                {
+                    operation = (await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token)); 
+                });
+                t.Wait();
+                if (operation.LocalNumbetShift == 0)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
 
     }
 }

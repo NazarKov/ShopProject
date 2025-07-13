@@ -1,4 +1,7 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectSQLDataBase.Helper;
+using ShopProjectWebServer.Api.Helpers.ProductContoller;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IProductTableAccess<T>
     {
@@ -10,7 +13,10 @@
         void UpdateParameter(T item , string parameter , object value);
         void Delete(T item);
 
-        T GetByBarCode(string barCode);
+        ProductInfo GetProductInfo();
         IEnumerable<T> GetAll();
+        T GetByBarCode(string barCode, TypeStatusProduct statusProduct);
+        PaginatorData<T> GetAllPageColumn(double page, double countColumn,TypeStatusProduct statusProduct);
+        PaginatorData<T> GetProductByNamePageColumn(string name, double page, double countColumn, TypeStatusProduct statusProduct);
     }
 }

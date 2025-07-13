@@ -25,7 +25,7 @@ namespace ShopProject.Model.UserPage
         {
             Task t = Task.Run(async () =>
             {
-                _operationsRecordersUser = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.GetOperationRecordersAndUser(Session.Token)).ToList();
+              //  _operationsRecordersUser = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.GetOperationRecordersAndUser(Session.Token)).ToList();
             });
             t.Wait();
 

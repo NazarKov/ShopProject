@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -30,7 +31,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
                 var content = JsonSerializer.Serialize(user);
                 HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage httpResponse = await client.PostAsync($"/api/User/AddUser?token={token}", httpContent);
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+
+                HttpResponseMessage httpResponse = await client.PostAsync($"/api/User/AddUser?token={token}",httpContent);
                 string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
                 var result = CheckingResponse.Unpacking<bool>(responseBody);

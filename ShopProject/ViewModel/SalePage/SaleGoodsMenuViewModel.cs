@@ -1,6 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
+using ShopProjectDataBase.DataBase.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,13 +29,13 @@ namespace ShopProject.ViewModel.SalePage
         public SaleGoodsMenuViewModel() 
         {
             _model = new SaleGoodsMenuModel();
-      
-            //_searchBarCodeGoodsCommand = new DelegateCommand(SearchBarCodeGoods);
-            //_printingCheckCommand = new DelegateCommand(PrintingCheck);
+
+            _searchBarCodeGoodsCommand = new DelegateCommand(SearchBarCodeGoods);
+            _printingCheckCommand = new DelegateCommand(PrintingCheck);
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
 
-           // _goods = new List<ProductEntiti>();
+            _goods = new List<ProductEntity>();
             _barCodeSearch = string.Empty;
 
             _typeOplatu = new List<string>();
@@ -54,12 +55,12 @@ namespace ShopProject.ViewModel.SalePage
             set { _barCodeSearch = value; OnPropertyChanged("BarCodeSearch"); }
         }
 
-        //private List<ProductEntiti> _goods;
-        //public List<ProductEntiti> Goods 
-        //{
-        //    get {  return _goods; }
-        //    set { _goods = value; OnPropertyChanged("Goods");}
-        //}
+        private List<ProductEntity> _goods;
+        public List<ProductEntity> Goods
+        {
+            get { return _goods; }
+            set { _goods = value; OnPropertyChanged("Goods"); }
+        }
 
         private decimal? _sumaOrder;
         public decimal? SumaOrder
@@ -112,7 +113,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
-           // Goods = new List<ProductEntiti>();
+            Goods = new List<ProductEntity>();
             SumaUser = 0;
             SumaOrder = 0;
             _selectIndex = 0;
@@ -133,134 +134,134 @@ namespace ShopProject.ViewModel.SalePage
 
         public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
-        //private void SearchBarCodeGoods()
-        //{
-        //    List<ProductEntiti> temp;
-        //    if (BarCodeSearch.Length > 12)
-        //    {
-        //        if (BarCodeSearch != "2")
-        //        {
-        //            var item = _model.Search(BarCodeSearch);
-        //            if (item != null)
-        //            {
-        //                item.Count = 1;
-        //                temp = new List<ProductEntiti>();
-        //                temp = Goods;
+        private void SearchBarCodeGoods()
+        {
+            List<ProductEntity> temp;
+            if (BarCodeSearch.Length > 12)
+            {
+                if (BarCodeSearch != "2")
+                {
+                    var item = _model.Search(BarCodeSearch);
+                    if (item != null)
+                    {
+                        item.Count = 1;
+                        temp = new List<ProductEntity>();
+                        temp = Goods;
 
-        //                if (temp.Find(pr => pr.Code == item.Code) != null)
-        //                {
-        //                    temp.Find(pr => pr.Code == item.Code).Count += 1;
-        //                }
-        //                else
-        //                {
-        //                    temp.Add(item);
-        //                }
+                        if (temp.Find(pr => pr.Code == item.Code) != null)
+                        {
+                            temp.Find(pr => pr.Code == item.Code).Count += 1;
+                        }
+                        else
+                        {
+                            temp.Add(item);
+                        }
 
-        //                CountingSumaOrder(temp);
+                        CountingSumaOrder(temp);
 
-        //                Goods = new List<ProductEntiti>();
-        //                Goods = temp;
-        //                BarCodeSearch = string.Empty;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (Goods.Count() != 0)
-        //            {
-        //                if (Goods.ElementAt(Goods.Count - 1).Count == 1)
-        //                {
-        //                    temp = new List<ProductEntiti>();
-        //                    temp = Goods;
+                        Goods = new List<ProductEntity>();
+                        Goods = temp;
+                        BarCodeSearch = string.Empty;
+                    }
+                }
+                else
+                {
+                    if (Goods.Count() != 0)
+                    {
+                        if (Goods.ElementAt(Goods.Count - 1).Count == 1)
+                        {
+                            temp = new List<ProductEntity>();
+                            temp = Goods;
 
-        //                    temp.Remove(temp.ElementAt(temp.Count - 1));
-        //                    Goods = new List<ProductEntiti>();
-        //                    Goods = temp;
-        //                    CountingSumaOrder(Goods);
-        //                }
-        //                else
-        //                {
-        //                    temp = new List<ProductEntiti>();
-        //                    temp = Goods;
-
-
-        //                    temp.ElementAt(Goods.Count - 1).Count -= 1;
-        //                    Goods = new List<ProductEntiti>();
-        //                    Goods = temp;
-        //                    CountingSumaOrder(Goods);
-        //                }
-        //                BarCodeSearch = string.Empty;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void CountingSumaOrder(List<ProductEntiti> products)
-        //{
-        //    SumaOrder = 0;
-        //    foreach (ProductEntiti orderProduct in products)
-        //    {
-        //        SumaOrder += (orderProduct.Price * orderProduct.Count);
-        //    }
-        //}
-        //public ICommand PrintingCheckCommand => _printingCheckCommand;
-        //private void PrintingCheck()
-        //{
-        //    //_model.IsDrawinfChek = DrawingCheck;
-
-        //    if (SumaUser >= SumaOrder)
-        //    {
-        //        double rest = ((double)(SumaUser - SumaOrder));
+                            temp.Remove(temp.ElementAt(temp.Count - 1));
+                            Goods = new List<ProductEntity>();
+                            Goods = temp;
+                            CountingSumaOrder(Goods);
+                        }
+                        else
+                        {
+                            temp = new List<ProductEntity>();
+                            temp = Goods;
 
 
-        //        decimal typeOperration;
-        //        if(IsFiscalCheck)
-        //        {
-        //            typeOperration = 0;
-        //        }
-        //        else
-        //        {
-        //            typeOperration = 200;
-        //        }
-                
-        //        if (_model.SendCheck(Goods, new OperationEntiti()
-        //        {
-        //            DataPacketIdentifier = 1,
-        //            TypeRRO = 0,
-        //            FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-        //            TaxNumber = Session.User.TIN,
-        //            FactoryNumberRRO = "v1",
-        //            TypeOperation = typeOperration,
-        //            MAC = _model.GetMac(),
-        //            CreatedAt = DateTime.Now,
-        //            NumberPayment = _model.GetLocalNumber(),
-        //            GoodsTax = "0",
-        //            RestPayment = Convert.ToDecimal(rest),
-        //            TotalPayment = (decimal)SumaOrder,
-        //            BuyersAmount = (decimal)SumaUser,
-        //            FormOfPayment = SelectIndex,
-        //            VersionDataPaket = 1,
+                            temp.ElementAt(Goods.Count - 1).Count -= 1;
+                            Goods = new List<ProductEntity>();
+                            Goods = temp;
+                            CountingSumaOrder(Goods);
+                        }
+                        BarCodeSearch = string.Empty;
+                    }
+                }
+            }
+        }
 
-        //        }))
-        //        {
-        //            MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
-        //            Goods = new List<ProductEntiti>();
-        //            BarCodeSearch = string.Empty;
-        //            SumaUser = new decimal();
-        //            SumaUser = 0;
-        //            SumaOrder = 0;
+        private void CountingSumaOrder(List<ProductEntity> products)
+        {
+            SumaOrder = 0;
+            foreach (ProductEntity orderProduct in products)
+            {
+                SumaOrder += (orderProduct.Price * orderProduct.Count);
+            }
+        }
+        public ICommand PrintingCheckCommand => _printingCheckCommand;
+        private void PrintingCheck()
+        {
+            //_model.IsDrawinfChek = DrawingCheck;
 
-        //            if (Tag != 0)
-        //            {
-        //                Session.Tabs.RemoveAt(Tag);
-        //            }
-        //        }
-                
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
-        //    }
-        //}
+            if (SumaUser >= SumaOrder)
+            {
+                double rest = ((double)(SumaUser - SumaOrder));
+
+
+                decimal typeOperration;
+                if (IsFiscalCheck)
+                {
+                    typeOperration = 0;
+                }
+                else
+                {
+                    typeOperration = 200;
+                }
+
+                if (_model.SendCheck(Goods, new OperationEntity()
+                {
+                    DataPacketIdentifier = 1,
+                    TypeRRO = 0,
+                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    TaxNumber = Session.User.TIN,
+                    FactoryNumberRRO = "v1",
+                    TypeOperation = typeOperration,
+                    MAC = _model.GetMac(),
+                    CreatedAt = DateTime.Now,
+                    NumberPayment = _model.GetLocalNumber(),
+                    GoodsTax = "0",
+                    RestPayment = Convert.ToDecimal(rest),
+                    TotalPayment = (decimal)SumaOrder,
+                    BuyersAmount = (decimal)SumaUser,
+                    FormOfPayment = SelectIndex,
+                    VersionDataPaket = 1,
+
+                }))
+                {
+                    MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Goods = new List<ProductEntity>();
+                    BarCodeSearch = string.Empty;
+                    SumaUser = new decimal();
+                    SumaUser = 0;
+                    SumaOrder = 0;
+
+                    if (Tag != 0)
+                    {
+                        Session.Tabs.RemoveAt(Tag);
+                    }
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
+            }
+        }
 
 
     }

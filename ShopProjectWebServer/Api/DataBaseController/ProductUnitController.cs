@@ -4,6 +4,7 @@ using ShopProjectDataBase.DataBase.Model;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DataBaseController
 {
@@ -17,21 +18,22 @@ namespace ShopProjectWebServer.Api.DataBaseController
         {
             try
             {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
+
+                    var options = new JsonSerializerOptions
                     {
-                        var units = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetAll();
+                        ReferenceHandler = ReferenceHandler.Preserve,
+                        WriteIndented = true
+                    };
+
+                    var units = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetAll();
 
                         return Ok(new Message()
                         {
                             MessageBody = JsonSerializer.Serialize<IEnumerable<ProductUnitEntity>>(units),
                             Type = TypeMessage.Message
-                        }.ToString());
-                    }
+                        }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
             }

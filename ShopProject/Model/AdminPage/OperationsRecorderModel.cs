@@ -3,9 +3,8 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.SigningFileService;
-using ShopProject.Helpers.SigningFileService.Model;
 using ShopProjectDataBase.DataBase.Entities;
+using SigningFileLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace ShopProject.Model.AdminPage
     internal class OperationsRecorderModel
     {
 
-        private SigningFileContoller _mainControllerTcp;
+        private SigningFileContoller _signingFileController;
         private MainElectronicTaxAccountController _mainControllerHttp;
 
         private List<OperationsRecorderEntity> _softwareDeviceSettlementOperationsList;
@@ -28,8 +27,9 @@ namespace ShopProject.Model.AdminPage
         { 
             _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
 
-            _mainControllerTcp = new SigningFileContoller();
+            _signingFileController = new SigningFileContoller();
             _mainControllerHttp = new MainElectronicTaxAccountController();
+            _signingFileController.Initialize(false);
         }
 
         public List<OperationsRecorderEntity> GetAll()
@@ -59,38 +59,9 @@ namespace ShopProject.Model.AdminPage
                 {
                     throw new Exception("Ведіть пароль");
                 }
-                if (!_mainControllerTcp.IsConnectingServise())
-                {
-                    if (!_mainControllerTcp.IsStartServise())
-                    {
-                        _mainControllerTcp.StartServise();
-                    }
-                    _mainControllerTcp.ConnectService();
-                }
 
-                var result = _mainControllerTcp.SendingCommand(new UserCommand()
-                {
-                    TypeCommand = TypeCommand.IsInitialize,
-                    Time = DateTime.Now,
-                });
 
-                if (result.Status == "404")
-                {
-                    _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.Initialize,
-                        Time = DateTime.Now,
-                    });
-                }
-                result = _mainControllerTcp.SendingCommand(new UserCommand()
-                {
-                    TypeCommand = TypeCommand.GetDataKey,
-                    PathKey = pathFile,
-                    PasswordKey = passwordKey,
-                    Time = DateTime.Now,
-                });
-
-                if (result.Status == "100")
+                if (_signingFileController.GetDataKey(pathFile,passwordKey))
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
                     var response = await _mainControllerHttp.Send();
@@ -117,12 +88,6 @@ namespace ShopProject.Model.AdminPage
                         }
                         _softwareDeviceSettlementOperationsList.Add(tempList);
                     }
-
-                    _mainControllerTcp.SendingCommand(new UserCommand()
-                    {
-                        TypeCommand = TypeCommand.DisconnectUser,
-                        Time = DateTime.Now,
-                    });
 
                     return true;
                 }

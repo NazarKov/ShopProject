@@ -16,23 +16,17 @@ namespace ShopProjectWebServer.Api.DataBaseController
         public async Task<IActionResult> GetCodeUKTZED(string token)
         {
             try
-            {
-                var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
-
-                if (tokens != null)
+            {   
+                if (AuthorizationApi.LoginToken(token))
                 {
-                    var userToken = tokens.Where(t => t.Token == token).FirstOrDefault();
-                    if (userToken != null)
+                    var codeUKTZED = DataBaseMainController.DataBaseAccess.CodeUKTZEDTable.GetAll();
+                
+                    return Ok(new Message()
                     {
-                        var codeUKTZED = DataBaseMainController.DataBaseAccess.CodeUKTZEDTable.GetAll();
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize<IEnumerable<CodeUKTZEDEntity>>(codeUKTZED),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                    }
-                }
+                        MessageBody = JsonSerializer.Serialize<IEnumerable<CodeUKTZEDEntity>>(codeUKTZED),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }  
                 throw new Exception("Невірний токен авторизації");
             }
             catch (Exception ex)

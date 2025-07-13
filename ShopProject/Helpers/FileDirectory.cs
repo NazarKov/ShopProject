@@ -47,5 +47,18 @@ namespace ShopProject.Helpers
             return path;
         }
 
+        public static bool IsCreateProgramFolders()
+        {
+            try
+            {
+                string[] directoryInfo =  Directory.GetDirectories(_path + _projectTitle);
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
+        }
+
     }
 }
