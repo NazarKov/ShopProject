@@ -2,7 +2,7 @@
 using ShopProjectDataBase.DataBase.Model;
 using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers.ProductContoller;
-using ShopProjectWebServer.DataBase.HelperModel;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Data.Entity;
 using System.Linq;
@@ -246,12 +246,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         else
                         {
                             result.Page = (int)page;
-                            result.Data = context.Products.Where(item => item.Status == productstatus)
-                                                           .OrderBy(i => i.ID)
-                                                           .Skip(countStart)
-                                                           .Take((int)countColumn).ToList();
+                            var products = context.Products.Where(item => item.Status == productstatus).ToList();
+                            result.Data = products.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
 
-                            pages = context.Products.Where(item => item.Status == productstatus).Count() / countColumn;
+                            pages = products.Count() / countColumn;
                         }
 
                         int pagesCount = 0;
@@ -270,7 +270,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         return new PaginatorData<ProductEntity>();
                     }
                 }
-                return null;
+                return new PaginatorData<ProductEntity>();
             }
         }
 
@@ -329,25 +329,23 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         if (statusProduct == TypeStatusProduct.Unknown)
                         {
                             result.Page = (int)page;
-                            result.Data = context.Products.Where(i => i.NameProduct.Contains(name))
-                                                          .OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
+                            var products = context.Products.Where(i => i.NameProduct.Contains(name)).ToList();
+                            result.Data = products.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
 
-                            pages = context.Products.Where(i => i.NameProduct.Contains(name)).Count() / countColumn;
+                            pages = products.Count() / countColumn;
                         }
                         else
                         {
                             result.Page = (int)page;
-                            result.Data = context.Products.Where(t => t.Status == statusProduct)
-                                                          .Where(i => i.NameProduct.Contains(name))
-                                                          .OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
+                            var products = context.Products.Where(t => t.Status == statusProduct)
+                                                           .Where(i => i.NameProduct.Contains(name)).ToList();
+                            result.Data = products.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
 
-                            pages = context.Products.Where(item => item.Status == statusProduct)
-                                                    .Where(i => i.NameProduct
-                                                    .Contains(name)).Count() / countColumn;
+                            pages = products.Count() / countColumn;
                         }
 
                         int pagesCount = 0;

@@ -76,9 +76,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
             return (IEnumerable<ProductEntity>)result; 
         }
 
-        public async Task<ProductEntity> GetProductByBarCode(string token,string barCode)
+        public async Task<ProductEntity> GetProductByBarCode(string token,string barCode, TypeStatusProduct statusProduct)
         { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}&status={statusProduct}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();

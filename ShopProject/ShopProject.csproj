@@ -61,6 +61,8 @@
 
   <ItemGroup>
     <Folder Include="Model\TemplatePage\" />
+    <Folder Include="ViewModel\StoragePage\ProductPage\" />
+    <Folder Include="View\StoragePage\ProductPage\" />
   </ItemGroup>
  
  

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ShopProjectSQLDataBase.Helper;
 
 namespace ShopProjectDataBase.DataBase.Model
 {
@@ -24,7 +25,7 @@ namespace ShopProjectDataBase.DataBase.Model
         /// <summary>
         /// вибрані одиниці користувачем
         /// </summary>
-        public bool isFavorite { get; set; }
+        public TypeStatusUnit Status { get; set; }
 
     }
 }

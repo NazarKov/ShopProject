@@ -24,7 +24,7 @@ namespace ShopProject.Model.ToolsPage
                 ExportProductInFileHelper item = new ExportProductInFileHelper();
                 Task task = Task.Run(async () =>
                 {
-                    item.Product = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, itemSearch);
+                    //item.Product = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, itemSearch);
                     item.ProductCount = 1;
                 });
                 task.Wait();

@@ -20,6 +20,13 @@ namespace ShopProject.Helpers
 
         public static UserEntity UserItem { get; set; }
 
+
+
+        #region 
+        public static ProductUnitEntity ProductUnit { get; set; }
+        #endregion
+
+
         //private static bool _isInit = false;
         //private static IEntityGet<UserEntiti>? _users;
         //private static IEntityAccess<OperationsRecorderUserEntiti> _deviceTable;

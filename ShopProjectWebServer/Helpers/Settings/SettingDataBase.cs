@@ -1,4 +1,4 @@
-﻿using ShopProjectWebServer.DataBase.HelperModel;
+﻿using ShopProjectWebServer.DataBase.Helpers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

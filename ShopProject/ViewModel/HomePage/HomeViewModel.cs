@@ -18,8 +18,7 @@ using System.Threading;
 using ShopProject.View.StoragePage;
 using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage;
-using ShopProject.View.StatisticsPage;
-using MessageBox = System.Windows.MessageBox;
+using ShopProject.View.StatisticsPage; 
 using ShopProject.ViewModel.AdminPage.WebServer;
 using ShopProject.View.AdminPage.WebServer;
 using ShopProject.View.HomePage;
@@ -42,6 +41,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openSoftwareDeviceSettlementOperationsPageCommand;
         private ICommand openStatisticsPage;
         private ICommand _openWebServerPageCommand;
+        private ICommand _openUnitOfMeasurePageCommand;
 
         private ICommand _exitUserCommand;
         
@@ -74,7 +74,7 @@ namespace ShopProject.ViewModel.HomePage
             openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
             openStatisticsPage = new DelegateCommand(() => { Page = new StatisticsView(); });
             _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
-
+            _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
 
             //Page = new StartView();
@@ -201,5 +201,6 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand ExitUserCommand => _exitUserCommand;
         public ICommand OpenStatisticsPage => openStatisticsPage;
         public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
+        public ICommand OpenUnitOfMeasurePageCommand => _openUnitOfMeasurePageCommand;
     }
 }

@@ -35,7 +35,7 @@ namespace ShopProject.Model.ToolsPage
                 ProductEntity item = new ProductEntity();
                 Task task = Task.Run(async () =>
                 {
-                    item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, barCode);
+                    //item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, barCode);
  
                 });
                 task.Wait();

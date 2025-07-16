@@ -1,6 +1,6 @@
 ﻿using ShopProjectSQLDataBase.Helper;
 
-namespace ShopProjectWebServer.Api.Helpers.ProductContoller
+namespace ShopProjectWebServer.DataBase.Helpers
 {
     public class PaginatorData<T>
     {

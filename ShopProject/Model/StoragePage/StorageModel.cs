@@ -46,7 +46,7 @@ namespace ShopProject.Model.StoragePage
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, item);
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, item , statusProduct);
             }
             catch (Exception ex)
             {

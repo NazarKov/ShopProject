@@ -36,7 +36,8 @@
                     <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Списки" >
-                    <MenuItem Header="Список товарів" Command="{Binding OpenStorage}"></MenuItem>  
+                    <MenuItem Header="Список товарів" Command="{Binding OpenStorage}"></MenuItem>
+                    <MenuItem Header="Список одинць виміру для товарів" Command="{Binding OpenUnitOfMeasurePageCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Інструменти" >
                     <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoods}"></MenuItem>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.DataBase.HelperModel;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.Models;
 
 namespace ShopProjectWebServer.Controllers

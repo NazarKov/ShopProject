@@ -10,15 +10,9 @@ using System.Windows;
 namespace ShopProject.Model.ToolsPage
 {
     internal class CreateProductModel
-    {
-        private List<ProductUnitEntity> _productsUnitsList;
-        private List<CodeUKTZEDEntity> _codeUKTZEDEList;
+    { 
 
-        public CreateProductModel()
-        {
-            _productsUnitsList = new List<ProductUnitEntity>();
-            _codeUKTZEDEList= new List<CodeUKTZEDEntity>();
-        }
+        public CreateProductModel()  {  }
 
         public async Task<IEnumerable<ProductUnitEntity>> GetUnits()
         { 

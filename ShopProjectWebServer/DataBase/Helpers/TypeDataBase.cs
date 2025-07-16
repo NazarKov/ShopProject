@@ -1,4 +1,4 @@
-﻿namespace ShopProjectWebServer.DataBase.HelperModel
+﻿namespace ShopProjectWebServer.DataBase.Helpers
 {
     public enum TypeDataBase
     {

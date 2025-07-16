@@ -1,5 +1,6 @@
 ﻿using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers.ProductContoller;
+using ShopProjectWebServer.DataBase.Helpers;
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {

@@ -15,10 +15,10 @@ namespace ShopProjectDataBase.DataBase.Context
         {
             context.Users.Add(new UserEntity() { Login = "Admin", Password = "Admin" ,CreatedAt = DateTime.Now, Status = 0 , UserRole = new UserRoleEntity() { NameRole = "Admin", TypeAccess = 0 }});
 
-            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2009, ShortNameUnit = "шт" , NameUnit = "Штука" });
-            context.ProductUnits.Add(new ProductUnitEntity() { Number = 0301, ShortNameUnit = "кг",  NameUnit = "Кілограм" });
-            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2112, ShortNameUnit = "пач", NameUnit = "Пачка" });
-            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2075, ShortNameUnit = "ящ" , NameUnit = "Ящик" });
+            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2009, ShortNameUnit = "шт" , NameUnit = "Штука", Status = ShopProjectSQLDataBase.Helper.TypeStatusUnit.UnFavorite });
+            context.ProductUnits.Add(new ProductUnitEntity() { Number = 0301, ShortNameUnit = "кг",  NameUnit = "Кілограм" , Status = ShopProjectSQLDataBase.Helper.TypeStatusUnit.UnFavorite });
+            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2112, ShortNameUnit = "пач", NameUnit = "Пачка" , Status = ShopProjectSQLDataBase.Helper.TypeStatusUnit.UnFavorite });
+            context.ProductUnits.Add(new ProductUnitEntity() { Number = 2075, ShortNameUnit = "ящ" , NameUnit = "Ящик" , Status = ShopProjectSQLDataBase.Helper.TypeStatusUnit.UnFavorite });
 
             context.CodeUKTZED.Add(new CodeUKTZEDEntity() { Code="9507" ,NameCode = "Вудки риболовні, гачки та інші снасті для риболовлі з використанням волосіні; сачки для риби, сачки для метеликів та подібні сачки; принади у вигляді муляжів птахів (крім включених до товарної позиції 9208 або 9705) та аналогічні вироби для полювання або стрільби" });
       

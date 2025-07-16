@@ -155,7 +155,8 @@ namespace ShopProject.ViewModel.StoragePage
                 StatusProducts.Add(TypeStatusProduct.InStock.ToString());
                 StatusProducts.Add(TypeStatusProduct.OutStock.ToString());
                 StatusProducts.Add(TypeStatusProduct.Archived.ToString());
-            }         }
+            }     
+        }
 
         private void SetFiledStatusBar()
         {
@@ -195,7 +196,10 @@ namespace ShopProject.ViewModel.StoragePage
         {
             if(_isReadyUpdateDataGriedView)
             {
-                ProductList.Clear();
+                if (ProductList!=null && ProductList.Count > 0)
+                {
+                    ProductList.Clear();
+                }
                 PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
 
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));

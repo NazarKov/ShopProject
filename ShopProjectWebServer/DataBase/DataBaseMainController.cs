@@ -2,7 +2,7 @@
 using ShopProjectDataBase.DataBase.Model;
 using ShopProjectSQLDataBase.Entities;
 using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context;
-using ShopProjectWebServer.DataBase.HelperModel;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using ShopProjectWebServer.Helpers.Settings;
 
