@@ -1,18 +1,19 @@
-﻿using ShopProjectSQLDataBase.Helper;
+﻿using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IProductUnitTableAccess<T>
+    public interface IProductUnitTableAccess 
     {
-        void Add(T item);
-        void Update(T item);
-        void UpdateParameter(T item, string parameter, object value);
+        void Add(ProductUnitEntity item);
+        void Update(ProductUnitEntity item);
+        void UpdateParameter(ProductUnitEntity item, string parameter, object value);
         
-        void Delete(T item);
-        IEnumerable<T> GetAll();
-        PaginatorData<T> GetAllPageColumn(double page, double countColumn, TypeStatusUnit statusUnit);
-        T GetUnitByCode(int number, TypeStatusUnit statusProduct);
-        PaginatorData<T> GetUnitByNamePageColumn(string name, double page, double countColumn, TypeStatusUnit statusUnit);
+        void Delete(ProductUnitEntity item);
+        IEnumerable<ProductUnitEntity> GetAll();
+        PaginatorData<ProductUnitEntity> GetAllPageColumn(double page, double countColumn, TypeStatusUnit statusUnit);
+        ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit statusProduct);
+        PaginatorData<ProductUnitEntity> GetUnitByNamePageColumn(string name, double page, double countColumn, TypeStatusUnit statusUnit);
     }
 }

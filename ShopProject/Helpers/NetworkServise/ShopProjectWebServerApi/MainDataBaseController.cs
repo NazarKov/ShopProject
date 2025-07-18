@@ -16,7 +16,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
         public UserController UserController { get; set; }
         public ProductController ProductController { get; set; }
         public ProductUnitController ProductUnitController { get; set; }
-        public CodeUKTZEDController CodeUKTZEDController { get; set; }
+        public ProductCodeUKTZEDController ProductCodeUKTZEDController { get; set; }
         public UserRoleController UserRoleController { get; set; }
         public ObjectOwnerController ObjectOwnerController { get; set; }
         public OperationRecorederController OperationRecorederController { get; set; }
@@ -30,7 +30,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
             UserController = new UserController(url);
             ProductController = new ProductController(url);
             ProductUnitController = new ProductUnitController(url);
-            CodeUKTZEDController = new CodeUKTZEDController(url);
+            ProductCodeUKTZEDController = new ProductCodeUKTZEDController(url);
             UserRoleController = new UserRoleController(url);
             ObjectOwnerController = new ObjectOwnerController(url);
             OperationRecorederController = new OperationRecorederController(url);

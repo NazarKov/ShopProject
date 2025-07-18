@@ -1,10 +1,12 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectDataBase.DataBase.Entities;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IUserRoleTableAccess<T>
+    public interface IUserRoleTableAccess 
     {
-        void Add(T item);
-        void Update(T item);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Add(UserRoleEntity item);
+        void Update(UserRoleEntity item);
+        void Delete(UserRoleEntity item);
+        IEnumerable<UserRoleEntity> GetAll();
     }
 }

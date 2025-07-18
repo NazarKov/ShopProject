@@ -2,25 +2,24 @@
 
 namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
 {
-    public interface IDataAccess<TCodeUKTZEDTableAccess, TDiscountTableAccess, TGiftCertificatesTableAccess, TObjectOwnerTableAccess, TOperationRecorderTableAccess, TOperationRecorederUserTableAccess, 
-        TOperationTableAccess, TOrderTableAccess, TProductTableAccess, TProductUnitTableAccess, TUserRoleTableAccess, TUserTableAccess,TTokenTableAccess>
+    public interface IDataAccess 
     {
-        IOrderTableAccess<TOrderTableAccess> OrderTable { get; set; }
-        IOperationTableAccess<TOperationTableAccess> OperationTable { get; set; }
-        IOperationRecorderTableAccess<TOperationRecorderTableAccess> OperationRecorderTable { get; set; }
-        IOperationRecorederUserTableAccess<TOperationRecorederUserTableAccess> OperationRecorederUserTable { get; set; }
+        IOrderTableAccess OrderTable { get; set; }
+        IOperationTableAccess OperationTable { get; set; }
+        IOperationRecorderTableAccess OperationRecorderTable { get; set; }
+        IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; }
 
 
-        IProductTableAccess<TProductTableAccess> ProductTable { get; set; }
-        IProductUnitTableAccess<TProductUnitTableAccess> ProductUnitTable { get; set; }
-        ICodeUKTZEDTableAccess<TCodeUKTZEDTableAccess> CodeUKTZEDTable { get; set; }
-        IDiscountTableAccess<TDiscountTableAccess> DiscountTable { get; set; }
+        IProductTableAccess ProductTable { get; set; }
+        IProductUnitTableAccess ProductUnitTable { get; set; }
+        IProductCodeUKTZEDTableAccess ProductCodeUKTZEDTable { get; set; }
+        IDiscountTableAccess DiscountTable { get; set; }
 
-        IUserTableAccess<TUserTableAccess> UserTable  { get; set; }
-        IUserRoleTableAccess<TUserRoleTableAccess> UserRoleTable { get; set; }
-        IObjectOwnerTableAccess<TObjectOwnerTableAccess> ObjectOwnerTable { get; set; }
-        IGiftCertificatesTableAccess<TGiftCertificatesTableAccess> GiftCertificatesTable { get; set; }
-        ITokenTableAccess<TTokenTableAccess> TokenTable { get; set; }
+        IUserTableAccess UserTable  { get; set; }
+        IUserRoleTableAccess UserRoleTable { get; set; }
+        IObjectOwnerTableAccess ObjectOwnerTable { get; set; }
+        IGiftCertificatesTableAccess GiftCertificatesTable { get; set; }
+        ITokenTableAccess TokenTable { get; set; }
 
         public string Create(string connectionString);
         public bool IsCreate(string connectionString);

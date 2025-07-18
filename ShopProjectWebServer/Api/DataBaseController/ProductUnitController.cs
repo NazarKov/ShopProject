@@ -133,8 +133,8 @@ namespace ShopProjectWebServer.Api.DataBaseController
             }
         }
 
-        [HttpGet("GeUnitByCode")]
-        public IActionResult GeUnitByCode(string token, string code, TypeStatusUnit status)
+        [HttpGet("GetUnitByCode")]
+        public IActionResult GetUnitByCode(string token, string code, TypeStatusUnit status)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace ShopProjectWebServer.Api.DataBaseController
         }
 
         [HttpGet("GetUnitsPageColumn")]
-        public IActionResult GetProductsPageColumn(string token, int page, int countColumn, TypeStatusUnit status)
+        public IActionResult GetUnitsPageColumn(string token, int page, int countColumn, TypeStatusUnit status)
         {
             try
             {

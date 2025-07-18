@@ -37,7 +37,9 @@
                 </MenuItem>
                 <MenuItem Header="Списки" >
                     <MenuItem Header="Список товарів" Command="{Binding OpenStorage}"></MenuItem>
+                    <Separator></Separator>
                     <MenuItem Header="Список одинць виміру для товарів" Command="{Binding OpenUnitOfMeasurePageCommand}"></MenuItem>
+                    <MenuItem Header="Список кодів UKTZED для товарів" Command="{Binding OpenProductCodeUKTZEDPageCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Інструменти" >
                     <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoods}"></MenuItem>

@@ -59,7 +59,7 @@ namespace ShopProjectDataBase.DataBase.Model
         /// <summary>
         /// код УКТЗЕД
         /// </summary>
-        public CodeUKTZEDEntity? CodeUKTZED { get; set; }
+        public ProductCodeUKTZEDEntity? CodeUKTZED { get; set; }
         /// <summary>
         /// проміжна таблиця
         /// </summary>

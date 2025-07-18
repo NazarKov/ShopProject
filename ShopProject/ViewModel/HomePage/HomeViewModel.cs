@@ -1,10 +1,5 @@
 ﻿using ShopProject.Model.HomePage;
-using ShopProject.Views.SettingPage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ShopProject.Views.SettingPage; 
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,16 +8,13 @@ using ShopProject.Views.SalePage;
 using System.Windows.Forms;
 using ShopProject.Views.AdminPage;
 using ShopProject.Views.UserPage;
-using ShopProject.Helpers;
-using System.Threading; 
+using ShopProject.Helpers; 
 using ShopProject.View.StoragePage;
 using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage;
-using ShopProject.View.StatisticsPage; 
-using ShopProject.ViewModel.AdminPage.WebServer;
+using ShopProject.View.StatisticsPage;  
 using ShopProject.View.AdminPage.WebServer;
-using ShopProject.View.HomePage;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.View.HomePage; 
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -42,6 +34,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand openStatisticsPage;
         private ICommand _openWebServerPageCommand;
         private ICommand _openUnitOfMeasurePageCommand;
+        private ICommand _openProductCodeUKTZEDPageCommand;
 
         private ICommand _exitUserCommand;
         
@@ -76,8 +69,9 @@ namespace ShopProject.ViewModel.HomePage
             _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
             _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
+            _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
 
-            //Page = new StartView();
+            Page = new StartView();
             if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
             {
                 Page = new StartView();
@@ -202,5 +196,6 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenStatisticsPage => openStatisticsPage;
         public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
         public ICommand OpenUnitOfMeasurePageCommand => _openUnitOfMeasurePageCommand;
+        public ICommand OpenProductCodeUKTZEDPageCommand => _openProductCodeUKTZEDPageCommand;
     }
 }

@@ -5,7 +5,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class OperationRecorderUserTableAccess : IOperationRecorederUserTableAccess<OperationsRecorderUserEntity>
+    public class OperationRecorderUserTableAccess : IOperationRecorederUserTableAccess 
     {
         private string _connectionString;
         public OperationRecorderUserTableAccess(string ConnectionString)

@@ -8,15 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ShopProject.Model.StoragePage.UnitPage
+namespace ShopProject.Model.StoragePage.ProductUnitPage
 {
-    internal class CreateProductUnitModel
-    { 
-        public async Task<bool> SaveItemDataBase(ProductUnitEntity unit)
+    internal class UpdateProductUnitModel
+    {
+        public UpdateProductUnitModel() { }
+
+        public async Task<bool> UpdateItemDataBase(ProductUnitEntity unit)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.AddProduct(Session.Token, unit);
+                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.UpdateUnit(Session.Token, unit);
             }
             catch (Exception ex)
             {

@@ -1,11 +1,13 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectDataBase.DataBase.Entities;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IOperationRecorederUserTableAccess<T>
+    public interface IOperationRecorederUserTableAccess
     {
-        void Add(T item);
-        void AddRange(IEnumerable<T> item);
-        void Update(T item);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Add(OperationsRecorderUserEntity item);
+        void AddRange(IEnumerable<OperationsRecorderUserEntity> item);
+        void Update(OperationsRecorderUserEntity item);
+        void Delete(OperationsRecorderUserEntity item);
+        IEnumerable<OperationsRecorderUserEntity> GetAll();
     }
 }

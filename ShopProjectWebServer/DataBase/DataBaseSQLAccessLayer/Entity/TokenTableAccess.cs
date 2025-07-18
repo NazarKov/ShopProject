@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class TokenTableAccess : ITokenTableAccess<TokenEntity>
+    public class TokenTableAccess : ITokenTableAccess 
     {
         private string _connectionString;
         public TokenTableAccess(string ConnectionString)

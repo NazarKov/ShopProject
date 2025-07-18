@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class ProductUnitTableAccess : IProductUnitTableAccess<ProductUnitEntity>
+    public class ProductUnitTableAccess : IProductUnitTableAccess 
     {
         private string _connectionString;
 

@@ -3,7 +3,7 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class GiftCertificatesTableAccess : IGiftCertificatesTableAccess<GiftCertificatesEntity>
+    public class GiftCertificatesTableAccess : IGiftCertificatesTableAccess 
     {
         public void Add(GiftCertificatesEntity item)
         {

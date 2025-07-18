@@ -18,13 +18,13 @@ namespace ShopProject.Model.ToolsPage
     {
  
         private List<ProductUnitEntity> _productUnitsList;
-        private List<CodeUKTZEDEntity> _codesUKTZEDList;
+        private List<ProductCodeUKTZEDEntity> _codesUKTZEDList;
 
 
         public FormationProductModel()
         {
             _productUnitsList = new List<ProductUnitEntity>();
-            _codesUKTZEDList = new List<CodeUKTZEDEntity>();
+            _codesUKTZEDList = new List<ProductCodeUKTZEDEntity>();
  
         }
 
@@ -135,11 +135,11 @@ namespace ShopProject.Model.ToolsPage
             return _productUnitsList;
         }
 
-        public List<CodeUKTZEDEntity> GetCodeUKTZED()
+        public List<ProductCodeUKTZEDEntity> GetCodeUKTZED()
         {
             Task t = Task.Run(async () =>
             {
-                _codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
+                _codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
             });
             t.Wait();
 

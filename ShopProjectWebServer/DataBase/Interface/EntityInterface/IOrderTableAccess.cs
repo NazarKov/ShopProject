@@ -1,11 +1,13 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectDataBase.DataBase.Model;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IOrderTableAccess<T>
+    public interface IOrderTableAccess
     {
-        void Add(T item);
-        void AddRange(IEnumerable<T> items);
-        void Update(T item);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Add(OrderEntity item);
+        void AddRange(IEnumerable<OrderEntity> items);
+        void Update(OrderEntity item);
+        void Delete(OrderEntity item);
+        IEnumerable<OrderEntity> GetAll();
     }
 }

@@ -12,7 +12,7 @@ namespace ShopProjectDataBase.DataBase.Context
         public DbSet<OperationEntity>? Operations { get; set; }
         public DbSet<OrderEntity>? Orders { get; set; }
         public DbSet<ProductUnitEntity>? ProductUnits { get; set; }
-        public DbSet<CodeUKTZEDEntity>? CodeUKTZED { get; set; }
+        public DbSet<ProductCodeUKTZEDEntity>? ProductCodeUKTZED { get; set; }
         public DbSet<DiscountEntity>? Discounts { get; set; }
 
 

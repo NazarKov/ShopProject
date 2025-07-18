@@ -126,7 +126,7 @@ namespace ShopProject.Model.ToolsPage
 
                         product.CreatedAt = DateTime.Now;
                         product.Status = ShopProjectSQLDataBase.Helper.TypeStatusProduct.InStock;
-                        product.CodeUKTZED = new CodeUKTZEDEntity() { Code = "9507" };
+                        product.CodeUKTZED = new ProductCodeUKTZEDEntity() { Code = "9507" };
 
                         _product.Add(product);
                     }

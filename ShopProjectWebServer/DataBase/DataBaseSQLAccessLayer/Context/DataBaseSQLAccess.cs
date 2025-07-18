@@ -8,23 +8,23 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class DataBaseSQLAccess : IDataAccess<CodeUKTZEDEntity,DiscountEntity,GiftCertificatesEntity,ObjectOwnerEntity,OperationsRecorderEntity,OperationsRecorderUserEntity,OperationEntity,
-        OrderEntity,ProductEntity,ProductUnitEntity,UserRoleEntity,UserEntity,TokenEntity>
+    public class DataBaseSQLAccess : IDataAccess 
     {
-        public IOrderTableAccess<OrderEntity> OrderTable { get; set; }
-        public IOperationTableAccess<OperationEntity> OperationTable { get; set; }
-        public IOperationRecorderTableAccess<OperationsRecorderEntity> OperationRecorderTable { get; set; }
-        public IOperationRecorederUserTableAccess<OperationsRecorderUserEntity> OperationRecorederUserTable { get; set; }
-        public IProductTableAccess<ProductEntity> ProductTable { get; set; }
-        public IProductUnitTableAccess<ProductUnitEntity> ProductUnitTable { get; set; }
-        public ICodeUKTZEDTableAccess<CodeUKTZEDEntity> CodeUKTZEDTable { get; set; }
-        public IDiscountTableAccess<DiscountEntity> DiscountTable { get; set; }
-        public IUserTableAccess<UserEntity> UserTable { get; set; }
+        public IOrderTableAccess  OrderTable { get; set; }
+        public IOperationTableAccess OperationTable { get; set; }
+        public IOperationRecorderTableAccess OperationRecorderTable { get; set; }
+        public IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; }
+        public IProductTableAccess  ProductTable { get; set; }
+        public IProductUnitTableAccess  ProductUnitTable { get; set; }
+        public IProductCodeUKTZEDTableAccess  ProductCodeUKTZEDTable { get; set; }
+        public IDiscountTableAccess  DiscountTable { get; set; }
+        public IUserTableAccess  UserTable { get; set; }
 
-        public IUserRoleTableAccess<UserRoleEntity> UserRoleTable { get; set; }
-        public IObjectOwnerTableAccess<ObjectOwnerEntity> ObjectOwnerTable { get; set; }
-        public IGiftCertificatesTableAccess<GiftCertificatesEntity> GiftCertificatesTable { get; set; }
-        public ITokenTableAccess<TokenEntity> TokenTable { get; set;}
+        public IUserRoleTableAccess  UserRoleTable { get; set; }
+        public IObjectOwnerTableAccess  ObjectOwnerTable { get; set; }
+        public IGiftCertificatesTableAccess  GiftCertificatesTable { get; set; }
+        public ITokenTableAccess  TokenTable { get; set;}
+
 
         public DataBaseSQLAccess(string ConnectionString)
         {
@@ -33,14 +33,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             TokenTable = new TokenTableAccess(ConnectionString);
             ProductTable = new ProductTableAccess(ConnectionString);
             ProductUnitTable = new ProductUnitTableAccess(ConnectionString);
-            CodeUKTZEDTable = new CodeUKTZEDTableAccess(ConnectionString);
+            ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(ConnectionString);
             ObjectOwnerTable = new ObjectOwnerTableAccess(ConnectionString);
             OperationRecorderTable = new OperationRecorderTableAccess(ConnectionString);
             OperationRecorederUserTable = new OperationRecorderUserTableAccess(ConnectionString);
             OperationTable = new OperationTableAccess(ConnectionString);
             OrderTable = new OrderTableAccess(ConnectionString);
         }
-
 
         public void Clear()
         {

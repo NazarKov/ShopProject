@@ -1,10 +1,12 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectDataBase.DataBase.Model;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IGiftCertificatesTableAccess <T>
+    public interface IGiftCertificatesTableAccess 
     {
-        void Add(T item);
-        void Update(T item);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Add(GiftCertificatesEntity item);
+        void Update(GiftCertificatesEntity item);
+        void Delete(GiftCertificatesEntity item);
+        IEnumerable<GiftCertificatesEntity> GetAll();
     }
 }

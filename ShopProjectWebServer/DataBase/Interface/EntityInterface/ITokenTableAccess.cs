@@ -1,10 +1,12 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectSQLDataBase.Entities;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface ITokenTableAccess<T>
+    public interface ITokenTableAccess 
     {
-        void Add(T item);
-        void Update(T item);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Add(TokenEntity item);
+        void Update(TokenEntity item);
+        void Delete(TokenEntity item);
+        IEnumerable<TokenEntity> GetAll();
     }
 }

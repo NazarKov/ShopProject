@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class OperationTableAccess : IOperationTableAccess<OperationEntity>
+    public class OperationTableAccess : IOperationTableAccess 
     {
         private string _connectionString;
         public OperationTableAccess(string ConnectionString)

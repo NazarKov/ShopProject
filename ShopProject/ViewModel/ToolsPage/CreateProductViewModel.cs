@@ -28,7 +28,7 @@ namespace ShopProject.ViewModel.ToolsPage
             _model = new CreateProductModel();
 
             Units = new List<ProductUnitEntity>();
-            CodeUKTZED = new List<CodeUKTZEDEntity>();
+            CodeUKTZED = new List<ProductCodeUKTZEDEntity>();
 
 
 
@@ -109,8 +109,8 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _selectUnitsIndex = value; }
         }
 
-        private List<CodeUKTZEDEntity>? _codeUKTZED;
-        public List<CodeUKTZEDEntity>? CodeUKTZED
+        private List<ProductCodeUKTZEDEntity>? _codeUKTZED;
+        public List<ProductCodeUKTZEDEntity>? CodeUKTZED
         {
             get { return _codeUKTZED; }
             set { _codeUKTZED = value; OnPropertyChanged(nameof(CodeUKTZED)); }

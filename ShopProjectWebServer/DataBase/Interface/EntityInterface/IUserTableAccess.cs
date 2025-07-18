@@ -1,10 +1,12 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
+﻿using ShopProjectDataBase.DataBase.Model;
+
+namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
-    public interface IUserTableAccess<T>
+    public interface IUserTableAccess 
     {
-        void Add(T item);
+        void Add(UserEntity item);
         void UpdateParameter(Guid id, string nameParameter, object valueParameter);
-        void Delete(T item);
-        IEnumerable<T> GetAll();
+        void Delete(UserEntity item);
+        IEnumerable<UserEntity> GetAll();
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class ProductTableAccess : IProductTableAccess<ProductEntity>
+    public class ProductTableAccess : IProductTableAccess 
     {
         private string _connectionString;
 
@@ -26,12 +26,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Products.Load();
                     context.ProductUnits.Load();
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     if (context.Products != null)
                     {
 
                         item.Unit = context.ProductUnits.Find(item.Unit.ID);
-                        item.CodeUKTZED = context.CodeUKTZED.Find(item.CodeUKTZED.ID);
+                        item.CodeUKTZED = context.ProductCodeUKTZED.Find(item.CodeUKTZED.ID);
 
                         context.Products.Add(item);
                     }
@@ -48,13 +48,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Products.Load();
                     context.ProductUnits.Load();
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     if (context.Products != null)
                     {
                         for (int i = 0; i < items.Count(); i++)
                         {
                             items.ElementAt(i).Unit = context.ProductUnits.Find(items.ElementAt(i).Unit.ID);
-                            items.ElementAt(i).CodeUKTZED = context.CodeUKTZED.Find(items.ElementAt(i).CodeUKTZED.ID);
+                            items.ElementAt(i).CodeUKTZED = context.ProductCodeUKTZED.Find(items.ElementAt(i).CodeUKTZED.ID);
                         }
                         context.Products.AddRange(items);
                     }
@@ -77,12 +77,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Products.Load();
                     context.ProductUnits.Load();
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     if (context.Products != null)
                     {
                         UpdateFieldProducts(context.Products.Find(product.ID), product,
                                    context.ProductUnits.Where(unit => unit.ShortNameUnit == product.Unit.ShortNameUnit).FirstOrDefault(),
-                                   context.CodeUKTZED.Where(code => code.NameCode == product.CodeUKTZED.NameCode).FirstOrDefault());
+                                   context.ProductCodeUKTZED.Where(code => code.NameCode == product.CodeUKTZED.NameCode).FirstOrDefault());
                     }
                     context.SaveChanges();
                 }
@@ -96,7 +96,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Products.Load();
                     context.ProductUnits.Load();
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     if (context.Products != null)
                     {
                         if (items != null)
@@ -105,7 +105,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                             {
                                 UpdateFieldProducts(context.Products.Find(item.ID), item,
                                     context.ProductUnits.Where(unit => unit.ShortNameUnit == item.Unit.ShortNameUnit).FirstOrDefault(),
-                                    context.CodeUKTZED.Where(code => code.NameCode == item.CodeUKTZED.NameCode).FirstOrDefault());
+                                    context.ProductCodeUKTZED.Where(code => code.NameCode == item.CodeUKTZED.NameCode).FirstOrDefault());
                             }
                         }
                         else
@@ -118,7 +118,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        private void UpdateFieldProducts(ProductEntity ProductsUpdate, ProductEntity Products, ProductUnitEntity unit, CodeUKTZEDEntity codeUKTZED)
+        private void UpdateFieldProducts(ProductEntity ProductsUpdate, ProductEntity Products, ProductUnitEntity unit, ProductCodeUKTZEDEntity codeUKTZED)
         {
             ProductsUpdate.Code = Products.Code;
             ProductsUpdate.NameProduct = Products.NameProduct;
@@ -198,7 +198,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 if (context != null)
                 {
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     context.ProductUnits.Load();
                     context.Products.Load();
 
@@ -221,7 +221,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 if (context != null)
                 {
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     context.ProductUnits.Load();
                     context.Products.Load();
 
@@ -280,7 +280,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 if (context != null)
                 {
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     context.ProductUnits.Load();
                     context.Products.Load();
 
@@ -313,7 +313,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 if (context != null)
                 {
-                    context.CodeUKTZED.Load();
+                    context.ProductCodeUKTZED.Load();
                     context.ProductUnits.Load();
                     context.Products.Load();
 

@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class UserTableAccess : IUserTableAccess<UserEntity>
+    public class UserTableAccess : IUserTableAccess 
     {
         private string _connectionString;
         public UserTableAccess(string ConnectionString)

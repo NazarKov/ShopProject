@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class UserRoleTableAccess : IUserRoleTableAccess<UserRoleEntity>
+    public class UserRoleTableAccess : IUserRoleTableAccess 
     {
         private string _connectionString;
         public UserRoleTableAccess(string ConnectionString)

@@ -13,7 +13,7 @@ namespace ShopProject.Model.ToolsPage
     internal class UpdateProductModel
     {
         private List<ProductUnitEntity> _productsUnitsList;
-        private List<CodeUKTZEDEntity> _codeUKTZEDEList;
+        private List<ProductCodeUKTZEDEntity> _codeUKTZEDEList;
 
         public UpdateProductModel() {   }
 
@@ -50,11 +50,11 @@ namespace ShopProject.Model.ToolsPage
             return _productsUnitsList;
         }
 
-        public List<CodeUKTZEDEntity> GetCodeUKTZED()
+        public List<ProductCodeUKTZEDEntity> GetCodeUKTZED()
         {
             Task t = Task.Run(async () =>
             {
-                _codeUKTZEDEList = (await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
+                _codeUKTZEDEList = (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
             });
             t.Wait();
 

@@ -20,7 +20,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<bool> AddProduct(string token, ProductUnitEntity unit)
+        public async Task<bool> AddProductUnit(string token, ProductUnitEntity unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -78,7 +78,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
 
         public async Task<ProductUnitEntity> GetUnitByCode(string token, string code,TypeStatusUnit statusUnit)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GeUnitByCode?token={token}&code={code}&status={statusUnit}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitByCode?token={token}&code={code}&status={statusUnit}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var result = CheckingResponse.Unpacking<ProductUnitEntity>(responseBody);

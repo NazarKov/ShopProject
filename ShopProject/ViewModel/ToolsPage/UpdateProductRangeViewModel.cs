@@ -21,7 +21,7 @@ namespace ShopProject.ViewModel.ToolsPage
             
             _productList = new List<ProductEntity>();
             _productUnits = new List<ProductUnitEntity>();
-            _productCodeUKTZED = new List<CodeUKTZEDEntity>();
+            _productCodeUKTZED = new List<ProductCodeUKTZEDEntity>();
 
 
             SetField();
@@ -49,8 +49,8 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _productUnits = value; OnPropertyChanged(nameof(ProductUnits)); }
         }
 
-        private List<CodeUKTZEDEntity> _productCodeUKTZED;
-        public List<CodeUKTZEDEntity> ProductCodeUKTZED
+        private List<ProductCodeUKTZEDEntity> _productCodeUKTZED;
+        public List<ProductCodeUKTZEDEntity> ProductCodeUKTZED
         {
             get { return _productCodeUKTZED; }
             set { _productCodeUKTZED = value; OnPropertyChanged(nameof(ProductCodeUKTZED)); }

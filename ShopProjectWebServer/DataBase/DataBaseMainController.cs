@@ -1,7 +1,4 @@
-﻿using ShopProjectDataBase.DataBase.Entities;
-using ShopProjectDataBase.DataBase.Model;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context;
+﻿ using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using ShopProjectWebServer.Helpers.Settings;
@@ -13,11 +10,9 @@ namespace ShopProjectWebServer.DataBase
         private static Settings _settings;
         private static FileSettingManager _settingManager;
 
-        private static IDataAccess<CodeUKTZEDEntity, DiscountEntity, GiftCertificatesEntity, ObjectOwnerEntity, OperationsRecorderEntity, OperationsRecorderUserEntity, OperationEntity,
-        OrderEntity, ProductEntity, ProductUnitEntity, UserRoleEntity, UserEntity,TokenEntity> _dataBaseAccess;
+        private static IDataAccess _dataBaseAccess;
 
-        public static IDataAccess<CodeUKTZEDEntity, DiscountEntity, GiftCertificatesEntity, ObjectOwnerEntity, OperationsRecorderEntity, OperationsRecorderUserEntity, OperationEntity,
-        OrderEntity, ProductEntity, ProductUnitEntity, UserRoleEntity, UserEntity,TokenEntity> DataBaseAccess
+        public static IDataAccess  DataBaseAccess
         {
             set { _dataBaseAccess = value; }
             get { return _dataBaseAccess; }

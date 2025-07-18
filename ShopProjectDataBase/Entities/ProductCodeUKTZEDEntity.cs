@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ShopProjectSQLDataBase.Helper;
 
 namespace ShopProjectDataBase.DataBase.Model
 {
     [Table("CodeUKTZED")]
-    public class CodeUKTZEDEntity
+    public class ProductCodeUKTZEDEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
@@ -20,6 +21,6 @@ namespace ShopProjectDataBase.DataBase.Model
         /// <summary>
         /// вибрані коди користувачем
         /// </summary>
-        public bool isFavorite { get; set; }
+        public TypeStatusCodeUKTZED Status { get; set; }
     }
 }

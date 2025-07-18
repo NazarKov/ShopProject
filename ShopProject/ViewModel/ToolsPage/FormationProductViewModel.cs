@@ -111,8 +111,8 @@ namespace ShopProject.ViewModel.ToolsPage
             set { _selectUnits = value;OnPropertyChanged(nameof(SelectUnits)); }
         }
 
-        private List<CodeUKTZEDEntity> _codeUKTZED;
-        public List<CodeUKTZEDEntity> CodeUKTZED
+        private List<ProductCodeUKTZEDEntity> _codeUKTZED;
+        public List<ProductCodeUKTZEDEntity> CodeUKTZED
         {
             get { return _codeUKTZED; }
             set { _codeUKTZED = value; OnPropertyChanged(nameof(CodeUKTZED)); }

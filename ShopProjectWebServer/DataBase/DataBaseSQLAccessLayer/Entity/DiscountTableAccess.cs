@@ -3,7 +3,7 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class DiscountTableAccess : IDiscountTableAccess<DiscountEntity>
+    public class DiscountTableAccess : IDiscountTableAccess
     {
         public void Add(DiscountEntity item)
         {

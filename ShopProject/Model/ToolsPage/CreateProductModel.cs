@@ -19,9 +19,9 @@ namespace ShopProject.Model.ToolsPage
             return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token);
         }
 
-        public async Task<IEnumerable<CodeUKTZEDEntity>> GetCodeUKTZED()
+        public async Task<IEnumerable<ProductCodeUKTZEDEntity>> GetCodeUKTZED()
         {
-            return await MainWebServerController.MainDataBaseConntroller.CodeUKTZEDController.GetCodeUKTZED(Session.Token);
+            return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token);
         }
 
         public async Task<bool> SaveItemDataBase(ProductEntity product)

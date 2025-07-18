@@ -24,6 +24,7 @@ namespace ShopProject.Helpers
 
         #region 
         public static ProductUnitEntity ProductUnit { get; set; }
+        public static ProductCodeUKTZEDEntity ProductCodeUKTZEDEntity { get; set; }
         #endregion
 
 

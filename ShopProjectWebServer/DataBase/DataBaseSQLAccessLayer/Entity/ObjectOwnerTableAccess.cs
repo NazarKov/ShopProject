@@ -5,7 +5,7 @@ using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class ObjectOwnerTableAccess : IObjectOwnerTableAccess<ObjectOwnerEntity>
+    public class ObjectOwnerTableAccess : IObjectOwnerTableAccess 
     {
         private string _connectionString;
         public ObjectOwnerTableAccess(string ConnectionString)

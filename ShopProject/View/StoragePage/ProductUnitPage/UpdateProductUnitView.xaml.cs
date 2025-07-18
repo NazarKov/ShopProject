@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.StoragePage.UnitPage
+namespace ShopProject.View.StoragePage.ProductUnitPage
 {
     /// <summary>
-    /// Interaction logic for CreateProductUnitView.xaml
+    /// Interaction logic for UpdateProductUnitView.xaml
     /// </summary>
-    public partial class CreateProductUnitView : Window
+    public partial class UpdateProductUnitView : Window
     {
-        public CreateProductUnitView()
+        public UpdateProductUnitView()
         {
             InitializeComponent();
         }

@@ -1,8 +1,6 @@
-﻿using NPOI.Util;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
-using ShopProject.Model.StoragePage.UnitPage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Model.StoragePage.ProductUnitPage;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -12,20 +10,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.StoragePage.UnitPage
+namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
 {
-    internal class UpdateProductUnitViewModel : ViewModel<UpdateProductUnitViewModel>
+    internal class CreateProductUnitViewModel : ViewModel<CreateProductUnitViewModel>
     {
-        private UpdateProductUnitModel _model;
+        private readonly CreateProductUnitModel _model;
 
-        private readonly ICommand _updateProductUnitCommand;
+        private readonly ICommand _createProductUnitCommand;
         private readonly ICommand _exitWindowCommand;
 
-        private ProductUnitEntity _unit;
-
-        public UpdateProductUnitViewModel()
+        public CreateProductUnitViewModel()
         {
-            _model = new UpdateProductUnitModel(); 
+            _model = new CreateProductUnitModel();
 
 
             _fullNameUnit = string.Empty;
@@ -33,9 +29,8 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
             _numberUnit = 0;
             _statusUnit = new List<string>();
             _statusUnitEnumType = new List<string>();
-            _unit = new ProductUnitEntity();
 
-            _updateProductUnitCommand = new DelegateCommand(UpdateProductUnit);
+            _createProductUnitCommand = new DelegateCommand(CreateProductUnit);
             _exitWindowCommand = new DelegateCommand(() => { });
 
             SetFieldWindow();
@@ -43,23 +38,6 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
 
         private void SetFieldWindow()
         {
-            _unit = Session.ProductUnit;
-
-            if (_unit != null) 
-            {
-                FullNameUnit = _unit.NameUnit;
-                ShortNameUnit = _unit.ShortNameUnit;
-                NumberUnit = _unit.Number;
-
-                for (int i = 0; i < StatusUnit.Count; i++)
-                {
-                    if (_statusUnitEnumType.ElementAt(i) == _unit.Status.ToString())
-                    {
-                        SelectStatusUnit = i;
-                    }
-                }
-            }
-
             SetFieldComboBoxStatusUnit();
         }
 
@@ -67,7 +45,7 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
         {
             StatusUnit.Add("добавити до обраних");
             StatusUnit.Add("не добавляти до обраних");
-
+             
             _statusUnitEnumType.Add(TypeStatusUnit.Favorite.ToString());
             _statusUnitEnumType.Add(TypeStatusUnit.UnFavorite.ToString());
         }
@@ -90,7 +68,7 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
         public int NumberUnit
         {
             get { return _numberUnit; }
-            set { _numberUnit = value; OnPropertyChanged(nameof(NumberUnit)); }
+            set {  _numberUnit = value; OnPropertyChanged(nameof(NumberUnit));}
         }
 
         private List<string> _statusUnitEnumType;
@@ -98,24 +76,23 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
         public List<string> StatusUnit
         {
             get { return _statusUnit; }
-            set { _statusUnit = value; OnPropertyChanged(nameof(StatusUnit)); }
+            set { _statusUnit = value; OnPropertyChanged(nameof(StatusUnit));}
         }
 
         private int _selectStatusUnit;
         public int SelectStatusUnit
         {
-            get { return _selectStatusUnit; }
-            set { _selectStatusUnit = value; OnPropertyChanged(nameof(SelectStatusUnit)); }
+            get { return _selectStatusUnit;}
+            set { _selectStatusUnit = value;OnPropertyChanged(nameof(SelectStatusUnit)); }
         }
 
-        public ICommand UpdateProductUnitCommand => _updateProductUnitCommand;
-        private void UpdateProductUnit()
+        public ICommand CreateProductUnitCommand => _createProductUnitCommand;
+        private void CreateProductUnit()
         {
             Task t = Task.Run(async () =>
             {
-                await _model.UpdateItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductUnitEntity()
+                await _model.SaveItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductUnitEntity()
                 {
-                    ID = _unit.ID,
                     ShortNameUnit = _shortNameUnit,
                     NameUnit = _fullNameUnit,
                     Number = _numberUnit,
@@ -124,11 +101,12 @@ namespace ShopProject.ViewModel.StoragePage.UnitPage
             });
             t.ContinueWith(t =>
             {
-                MessageBox.Show("Одиниця оновленна");
+                MessageBox.Show("Одиниця добавленна");
                 Mediator.Notify("ReloadUnitsGriedView");
             });
         }
 
         public ICommand ExitWindowCommand => _exitWindowCommand;
+
     }
 }
