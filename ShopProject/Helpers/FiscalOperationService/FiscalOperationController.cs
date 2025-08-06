@@ -154,48 +154,50 @@ namespace ShopProject.Helpers.FiscalOperationService
         private string SendCheck(OperationEntity operation , TypeOperation typeOperation , List<ProductEntity> products = null)
         {
             WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntity>(), products, pathxml);
-            if (_signFileContoller.SignFile(Session.User.KeyPath, Session.User.KeyPassword))
-            {
-                string result = string.Empty;
-                switch (typeOperation)
-                {
-                    case TypeOperation.OpenShift:
-                        {
-                            result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                                Convert.ToInt32(operation.NumberPayment),  operation.FiscalNumberRRO, _testMode);
-                            break;
-                        }
-                        case TypeOperation.CloseShift:
-                        {
-                            result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                                Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO, _testMode);
-                            break;
-                        }
-                    case TypeOperation.DepositAndWithdrawalMoney:
-                        {
-                            result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                                Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO , _testMode);
-                            break;
-                        }
-                    case TypeOperation.FiscalCheck:
-                        {
-                            result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                                Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO , _testMode);
-                            break;
-                        }
-                    case TypeOperation.ReturnCheck:
-                        {
-                            result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                                 Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO, _testMode);
-                            break;
-                        }
-                }
-                return result;
-            }
-            else
-            {
-                throw new Exception("невдалося підписати файл");
-            }
+            //if (_signFileContoller.SignFile(Session.User.KeyPath, Session.User.KeyPassword))
+            //{
+            //    string result = string.Empty;
+            //    switch (typeOperation)
+            //    {
+            //        case TypeOperation.OpenShift:
+            //            {
+            //                result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+            //                    Convert.ToInt32(operation.NumberPayment),  operation.FiscalNumberRRO, _testMode);
+            //                break;
+            //            }
+            //            case TypeOperation.CloseShift:
+            //            {
+            //                result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+            //                    Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO, _testMode);
+            //                break;
+            //            }
+            //        case TypeOperation.DepositAndWithdrawalMoney:
+            //            {
+            //                result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+            //                    Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO , _testMode);
+            //                break;
+            //            }
+            //        case TypeOperation.FiscalCheck:
+            //            {
+            //                result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+            //                    Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO , _testMode);
+            //                break;
+            //            }
+            //        case TypeOperation.ReturnCheck:
+            //            {
+            //                result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+            //                     Convert.ToInt32(operation.NumberPayment), operation.FiscalNumberRRO, _testMode);
+            //                break;
+            //            }
+            //    }
+            //    return result;
+            //}
+            //else
+            //{
+            //    throw new Exception("невдалося підписати файл");
+            //}
+
+            return string.Empty;
         }
 
         public string? GetMac()

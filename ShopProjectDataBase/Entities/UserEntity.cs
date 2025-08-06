@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using ShopProjectDataBase.DataBase.Entities;
 using ShopProjectSQLDataBase.Entities;
+using ShopProjectSQLDataBase.Helper;
 
 namespace ShopProjectDataBase.DataBase.Model
 {
@@ -16,6 +17,10 @@ namespace ShopProjectDataBase.DataBase.Model
         /// </summary>
         public string Login { get; set; } = string.Empty;
         /// <summary>
+        /// пароль користувача
+        /// </summary>
+        public string Password { get; set; } = string.Empty;
+        /// <summary>
         /// Прізвище, ім’я та по батькові
         /// </summary>
         public string FullName { get; set; } = string.Empty;
@@ -28,37 +33,28 @@ namespace ShopProjectDataBase.DataBase.Model
         /// </summary>
         public string TIN { get; set; } = string.Empty;
         /// <summary>
-        /// шлях до ключа ЕЦП
-        /// </summary>
-        public string KeyPath { get; set; } = string.Empty;
-        /// <summary>
-        /// пароль до ключа ЕЦП
-        /// </summary>
-        public string KeyPassword { get; set; } = string.Empty;
-        /// <summary>
-        /// пароль користувача
-        /// </summary>
-        public string Password { get; set; } = string.Empty;
-        /// <summary>
         /// автоматичний вхід користувача 
         /// </summary>
         public bool AutomaticLogin {get;set;}
         /// <summary>
-        /// статус користувача 0 - без електроного ключа рро , 1 - з електроним ключом для рро  
+        /// статус користувача 
         /// </summary>
-        public decimal Status { get; set; } = decimal.Zero;
+        public TypeStatusUser Status { get; set; } 
         /// <summary>
         /// тип доступу користувача до програми
         /// </summary>
         public UserRoleEntity? UserRole { get; set; }
         /// <summary>
+        /// ключ ЕЦП
+        /// </summary>
+        public ElectronicSignatureKey? SignatureKey { get; set; }
+        /// <summary>
         /// Списко токенів користувача
         /// </summary>
-        private ICollection<TokenEntity> Tokens { get; set; }
+        private ICollection<TokenEntity>? Tokens { get; set; }
         /// <summary>
         /// дата створення користувача
         /// </summary>
-        public DateTimeOffset? CreatedAt { get; set; }
-        
+        public DateTimeOffset? CreatedAt { get; set; } 
     }
 }

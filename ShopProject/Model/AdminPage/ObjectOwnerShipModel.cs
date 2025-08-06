@@ -68,7 +68,7 @@ namespace ShopProject.Model.AdminPage
             {
 
                 _objectOwnerList = new List<ObjectOwnerEntity>();
-                if (_signingFileController.GetDataKey(pathFile, passwordKey))
+                if (_signingFileController.GetDataToFile(pathFile, passwordKey))
                 {
                    
                     DataJsonHttpResponse data = new DataJsonHttpResponse();

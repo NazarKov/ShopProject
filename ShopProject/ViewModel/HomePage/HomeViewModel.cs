@@ -14,7 +14,10 @@ using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage;
 using ShopProject.View.StatisticsPage;  
 using ShopProject.View.AdminPage.WebServer;
-using ShopProject.View.HomePage; 
+using ShopProject.View.HomePage;
+using System.Threading.Tasks;
+using ShopProject.Helpers.NetworkServise;
+using ShopProject.View.TemplatePage;
 
 namespace ShopProject.ViewModel.HomePage
 {
@@ -62,7 +65,7 @@ namespace ShopProject.ViewModel.HomePage
             openCreateStiker = new DelegateCommand(() => { new CreateStickerView().Show(); });
             openSaleMenuCommand = new DelegateCommand(OpenSaleMenu);
             openDeliveryOfGoods = new DelegateCommand(() => { new DeliveryProductView().Show(); });
-            openUserPageCommand = new DelegateCommand(() => { Page = new Users(); });
+            openUserPageCommand = new DelegateCommand(() => { Page = new UsersView(); });
             openObjectOwnerPageCommand = new DelegateCommand(() => { Page = new ObjectOwnerShip(); });
             openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
             openStatisticsPage = new DelegateCommand(() => { Page = new StatisticsView(); });
@@ -70,8 +73,16 @@ namespace ShopProject.ViewModel.HomePage
             _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
             _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
+            _visibilitiMenu = Visibility.Hidden;
 
-            Page = new StartView();
+            Page = new LoadingView();
+
+            InitResourse();
+        }
+
+
+        private void InitResourse()
+        {
             if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
             {
                 Page = new StartView();
@@ -79,21 +90,37 @@ namespace ShopProject.ViewModel.HomePage
             else
             {
                 _model.Init();
-                SetFieldWindow(null);
+                var result = false;
+
+                Task t = Task.Run(async () =>
+                {
+                    result = await _model.IsConnectWebServer();
+                });
+                t.ContinueWith(t =>
+                {
+                    if (result)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            SetFieldWindow();
+                        });
+                        Mediator.Subscribe("RedirectToAuthorizationView", (object obg) => { Page = new AuthorizationView(); });
+                        Mediator.Subscribe("RedirectToOperationsRecorderView", (object obg) => { SetFieldWindow(); });
+                        Mediator.Subscribe("RedirectToWorkShiftMenu", OpenWorkShiftMenu);
+                        Mediator.Subscribe("OpenWorkShiftMenu", OpenWorkShiftMenu);
+                        Mediator.Subscribe("OpenChangePassword", (object obg) => { Page = new ChangePassword(); });
+                        Mediator.Subscribe("OpenAuthorization", (object obg) => { Page = new AuthorizationView(); });
+                        Mediator.Subscribe("OpenOperationRerocderMenu", (object obg) => { Page = new OperationsRecorderView(); });
+                    }
+                    else
+                    {
+                        Page = new StartView();
+                    }
+                });
+
             }
-
-
-
-
-            Mediator.Subscribe("RedirectToAuthorizationView", (object obg) => { Page = new AuthorizationView(); });
-            Mediator.Subscribe("RedirectToOperationsRecorderView", SetFieldWindow); 
-            Mediator.Subscribe("RedirectToWorkShiftMenu", OpenWorkShiftMenu);
-            Mediator.Subscribe("OpenWorkShiftMenu", OpenWorkShiftMenu);
-            Mediator.Subscribe("OpenChangePassword", (object obg) => { Page = new ChangePassword(); });
-            Mediator.Subscribe("OpenAuthorization", (object obg) => { Page = new AuthorizationView(); });
-            Mediator.Subscribe("OpenOperationRerocderMenu", (object obg) => { Page = new OperationsRecorderView(); });
-
         }
+
         private string _userName;
         public string UserName
         {
@@ -127,7 +154,7 @@ namespace ShopProject.ViewModel.HomePage
             get { return _page; }
             set {_page = value; OnPropertyChanged(nameof(Page));}
         }
-        private void SetFieldWindow(object obj)
+        private void SetFieldWindow()
         {
             if (Session.CheckSession())
             {

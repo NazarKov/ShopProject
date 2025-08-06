@@ -9,8 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\gif\Loading.gif" />
     <None Remove="Resource\Images\reboot.png" />
     <None Remove="Resource\Images\Search.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\gif\Loading.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +31,7 @@
     <PackageReference Include="NPOI" Version="2.6.0" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="XamlAnimatedGif" Version="2.3.1" />
     <PackageReference Include="ZXing.Net" Version="0.16.9" />
   </ItemGroup>
 
@@ -60,6 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\NetworkServise\ShopProjectWebServerApi\Helper\Setting\" />
     <Folder Include="Model\TemplatePage\" />
     <Folder Include="ViewModel\StoragePage\ProductPage\" />
     <Folder Include="View\StoragePage\ProductPage\" />

@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ShopProject.Views.AdminPage
+namespace ShopProject.View.AdminPage.UserPage
 {
     /// <summary>
-    /// Interaction logic for CreateUser.xaml
+    /// Interaction logic for CreateUserView.xaml
     /// </summary>
-    public partial class CreateUser : Window
+    public partial class CreateUserView : Window
     {
-        public CreateUser()
+        public CreateUserView()
         {
             InitializeComponent();
         }

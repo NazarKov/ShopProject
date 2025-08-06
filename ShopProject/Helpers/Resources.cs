@@ -9,9 +9,9 @@ namespace ShopProject.Helpers
 {
     public static class Resources
     {
-        public static void init()
+        public static void Init()
         {
-            MainWebServerController.Init();
+            InitWebServer();
             InitSystemFolders();
         }
 
@@ -22,6 +22,10 @@ namespace ShopProject.Helpers
             {
                 FileDirectory.CreateProgramFolders();
             }
-        } 
+        }
+        private static void InitWebServer()
+        {
+            MainWebServerController.Init();
+        }
     }
 }

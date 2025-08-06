@@ -10,26 +10,23 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller
 {
     public class SettingsController
     {
-        private string _url;
+        private HttpClient _httpClient;
 
         public SettingsController(string url)
         {
-            _url = url;
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(url);
+            _httpClient.Timeout = TimeSpan.FromSeconds(2);
         }
         public async Task<string> Ping()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_url);
-                HttpResponseMessage responseMessage = await client.GetAsync("/api/Settings/Ping");
+        { 
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync("/api/Settings/Ping");
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
 
-                string responseBody = await responseMessage.Content.ReadAsStringAsync();
-
-                var result = CheckingResponse.Unpacking<string>(responseBody);
-                responseMessage.EnsureSuccessStatusCode();
-
-                return result.ToString();
-            }
+            var result = CheckingResponse.Unpacking<string>(responseBody);
+            responseMessage.EnsureSuccessStatusCode();
+            
+            return result.ToString(); 
         }
     }
 }

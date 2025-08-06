@@ -47,7 +47,7 @@ namespace SigningFileLib
             }
             return false;
         }
-        public bool GetDataKey(string pathKey, string passwordKey)
+        public bool GetDataToFile(string pathKey, string passwordKey)
         {
             if (IEUSignCP.IsInitialized())
             {
@@ -68,10 +68,8 @@ namespace SigningFileLib
             }
             return false;
         }
-        public void Finalize()
-        {
-            IEUSignCP.Finalize(); 
-        }
+        public void Finalize() => IEUSignCP.Finalize();
+        
         private void CreateFile(string dRFOCode)
         {
             try

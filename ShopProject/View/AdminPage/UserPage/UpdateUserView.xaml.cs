@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.Views.AdminPage
+namespace ShopProject.View.AdminPage.UserPage
 {
     /// <summary>
-    /// Interaction logic for User.xaml
+    /// Interaction logic for UpdateUserView.xaml
     /// </summary>
-    public partial class Users : Page
+    public partial class UpdateUserView : Window
     {
-        public Users()
+        public UpdateUserView()
         {
             InitializeComponent();
         }

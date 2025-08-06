@@ -24,7 +24,7 @@ namespace ShopProjectDataBase.DataBase.Context
         public DbSet<ObjectOwnerEntity>? ObjectOwners { get; set; }
         public DbSet<OperationsRecorderEntity>? OperationsRecorders { get; set; }
         public DbSet<OperationsRecorderUserEntity>? OperationsRecorderUsers { get; set; }
-
+        public DbSet<ElectronicSignatureKey> ElectronicSignatureKeys { get; set; }
 
         public ContextDataBase(string connectionString)
         {

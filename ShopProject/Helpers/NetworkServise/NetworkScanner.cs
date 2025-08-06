@@ -12,30 +12,12 @@ namespace ShopProject.Helpers.NetworkServise
 {
     public static class NetworkScanner
     {
-        /// <summary>
-        /// Base IpRouter = 192.168.0.
-        /// </summary>
-        internal static string IpRouter { get; set; } = "192.168.0.";
-        /// <summary>
-        /// Base minIPAddress = 1
-        /// </summary>
-        internal static int MinIPAddress { get; set; } = 1;
-        /// <summary>
-        /// Base minIPAddress = 255
-        /// </summary>
-        internal static int MaxIPAddress { get; set; } = 255;
-        /// <summary>
-        /// Base Port = 5000
-        /// </summary>
-        internal static int Port { get; set; } = 5000;
+
+        internal static NetworkURL Network { get; set; } = new NetworkURL();
         /// <summary>
         /// Bae ApiEndpoint = /Api/Settings/Ping
         /// </summary>
-        private static string _apiEndpoint = "/api/Settings/Ping";
-        /// <summary>
-        /// URL Database
-        /// </summary>
-        internal static string Url { get; set; } = string.Empty;
+        private static string _apiEndpoint = "/api/Settings/Ping"; 
         /// <summary>
         /// List IP addresses
         /// </summary>
@@ -58,12 +40,12 @@ namespace ShopProject.Helpers.NetworkServise
                 tasks.Add(Task.Run(async () =>
                 {
 
-                    if (IsPortOpen(ip, Port))
+                    if (IsPortOpen(ip, Network.Port))
                     {
-                        Url = $"http://{ip}:{Port}{_apiEndpoint}";
-                        if (await IsApiReachable(Url))
+                        Network.Url = $"http://{ip}:{Network.Port}{_apiEndpoint}";
+                        if (await IsApiReachable(Network.Url))
                         {
-                            return $"http://{ip}:{Port}";
+                            return $"http://{ip}:{Network.Port}";
                         }
                     }
                     throw new InvalidOperationException($"Завдання task{i} завершилося з помилкою.");
@@ -118,11 +100,11 @@ namespace ShopProject.Helpers.NetworkServise
             _taskCompletionSource = new TaskCompletionSource<bool>();
 
             Ping p;
-            _pendingPings = MaxIPAddress - MinIPAddress;
+            _pendingPings = Network.MaxIPAddress - Network.MinIPAddress;
 
-            for (int i = MinIPAddress; i < MaxIPAddress; i++)
+            for (int i = Network.MinIPAddress; i < Network.MaxIPAddress; i++)
             {
-                string ip = IpRouter + i.ToString();
+                string ip = Network.IpRouter + i.ToString();
                 p = new Ping();
                 p.PingCompleted += new PingCompletedEventHandler(p_PingCompleted);
                 p.SendAsync(ip, 100, ip);

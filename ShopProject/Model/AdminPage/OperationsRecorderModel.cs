@@ -61,7 +61,7 @@ namespace ShopProject.Model.AdminPage
                 }
 
 
-                if (_signingFileController.GetDataKey(pathFile,passwordKey))
+                if (_signingFileController.GetDataToFile(pathFile,passwordKey))
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
                     var response = await _mainControllerHttp.Send();

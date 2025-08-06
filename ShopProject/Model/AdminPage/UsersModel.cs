@@ -1,8 +1,10 @@
 ﻿using NPOI.SS.Formula.Functions;
 using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProjectDataBase.DataBase.Entities;
 using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,25 +27,52 @@ namespace ShopProject.Model.AdminPage
             Task t = Task.Run(async () =>
             {
                 _users = (await MainWebServerController.MainDataBaseConntroller.UserController.GetUsers(Session.Token)).ToList();
-            });
-            t.Wait();
+            }); 
             return _users;
         }
-        //public bool DeleteUser(UserEntiti user)
-        //{
-        //    try
-        //    {
-        //        _userTable.Delete(user);
 
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //        return false;
-        //    }
+        public async Task<PaginatorData<UserEntity>> GetUsersPageColumn(int page, int countColumn, TypeStatusUser status)
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.UserController.GetUsersPageColumn(Session.Token, page, countColumn, status);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<UserEntity>();
+            }
+        }
 
-        //}
+        public async Task<PaginatorData<UserEntity>> SearchByName(string item, int page, int countColumn, TypeStatusUser status )
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.UserController.GetUserByNamePageColumn(Session.Token, item, page, countColumn, status);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<UserEntity>();
+            }
+        }
+
+        public async Task<bool> DeleteUser(UserEntity user)
+        {
+            try
+            {
+                user.SignatureKey = null;
+                user.UserRole = null;
+                return await MainWebServerController.MainDataBaseConntroller.UserController.DeleteUser(Session.Token,user); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+
+        }
+
         public List<SoftwareDeviceSettlementOperationsHelper> GetAllObject()
         {
             try

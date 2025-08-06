@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.DataBase.Model;
 using ShopProjectSQLDataBase.Entities;
+using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Helpers;
@@ -14,38 +15,154 @@ namespace ShopProjectWebServer.Api.DataBaseController
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromQuery]string token, [FromBody]UserEntity user)
+        [HttpGet("GetUserByNamePageColumn")]
+        public IActionResult GetUserByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUser status)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var users = DataBaseMainController.DataBaseAccess.UserTable.GetUsersByNamePageColumn(name, page, countColumn, status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(users,options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetUsersPageColumn")]
+        public IActionResult GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser status)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var users = DataBaseMainController.DataBaseAccess.UserTable.GetAllPageColumn(page, countColumn, status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(users, options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromQuery] string token, UserEntity user)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
 
-                    var options = new JsonSerializerOptions
+                    
+                    DataBaseMainController.DataBaseAccess.UserTable.Delete(user);
+                     
+                    return Ok(new Message()
                     {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
+                        MessageBody = JsonSerializer.Serialize<bool>(true),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невірний токен авторизації");
 
-                    var users = DataBaseMainController.DataBaseAccess.UserTable.GetAll();
-                        if (users.Count() > 0)
-                        {
-                            var item = users.Where(u => u.Login == user.Login).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
 
-                            if (item != null)
-                            {
-                                throw new Exception("Користувач існує");
-                            }
-                        }
-                        DataBaseMainController.DataBaseAccess.UserTable.Add(user);
+                }.ToString());
+            }
+        }
 
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize<bool>(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromQuery] string token, UserEntity user)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                { 
+                   
+                    DataBaseMainController.DataBaseAccess.UserTable.Update(user);
+
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize<bool>(true),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невірний токен авторизації");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+
+        [HttpPost("AddUser")]
+        public async Task<IActionResult> AddUser([FromQuery]string token, UserEntity user)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                {  
+                    DataBaseMainController.DataBaseAccess.UserTable.Add(user);
+
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize<bool>(true),
+                        Type = TypeMessage.Message
+                    }.ToString()); 
                 }
                 throw new Exception("Невірний токен авторизації");
 

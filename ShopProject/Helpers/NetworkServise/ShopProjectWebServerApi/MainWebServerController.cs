@@ -11,16 +11,21 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
     {
         private static string _url;
         internal static MainDataBaseController MainDataBaseConntroller { get; set; }
-        public static SettingsController settings;
+        internal static SettingsController settings;
         
         public static void Init()
-
         {
-            _url = AppSettingsManager.GetParameterFiles("URL").ToString();
-            //прописати пошук URl якшо йоно нема в налаштуваннях
+            var networkURL = AppSettingsManager.GetParameterFiles("URL").ToString();
+
+            _url = NetworkURL.Deserialize(networkURL).Url; 
 
             MainDataBaseConntroller = new MainDataBaseController(_url);
-            settings = new SettingsController(_url);
+            settings = new SettingsController(_url); 
+        }
+
+        public static async Task<string> IsConnectServer()
+        { 
+            return await settings.Ping();
         }
 
 

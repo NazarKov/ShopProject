@@ -28,9 +28,6 @@
             <Menu Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="{Binding VisibilityMenu,UpdateSourceTrigger=PropertyChanged}">
                 <MenuItem Header="Програма">
                     <MenuItem Header="Настройки" Command="{Binding OpenSetting}" ></MenuItem>
-                    <MenuItem Header="Користувачі"  Command="{Binding OpenUserCommand}"></MenuItem>
-                    <MenuItem Header="Обєкти власності" Command="{Binding OpenObjectOwnerPageCommand}"></MenuItem>
-                    <MenuItem Header="РРО" Command="{Binding OpenSoftwareDeviceSettlementOperationsPageCommand}"></MenuItem>
                     <MenuItem Header="Налаштування веб серверу" Command="{Binding OpenWebServerPageCommand}"></MenuItem>
                     <Separator />
                     <MenuItem Header="Вийти" Command="{Binding ExitApp}"></MenuItem>
@@ -40,6 +37,10 @@
                     <Separator></Separator>
                     <MenuItem Header="Список одинць виміру для товарів" Command="{Binding OpenUnitOfMeasurePageCommand}"></MenuItem>
                     <MenuItem Header="Список кодів UKTZED для товарів" Command="{Binding OpenProductCodeUKTZEDPageCommand}"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Користувачі"  Command="{Binding OpenUserCommand}"></MenuItem>
+                    <MenuItem Header="Обєкти власності" Command="{Binding OpenObjectOwnerPageCommand}"></MenuItem>
+                    <MenuItem Header="РРО" Command="{Binding OpenSoftwareDeviceSettlementOperationsPageCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Інструменти" >
                     <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoods}"></MenuItem>

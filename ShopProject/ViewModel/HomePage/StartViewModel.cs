@@ -1,12 +1,6 @@
-﻿
-using ShopProject.Helpers;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+﻿using ShopProject.Helpers; 
 using ShopProject.Model.Command;
-using ShopProject.Model.HomePage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ShopProject.Model.HomePage; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +14,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand _connectCommand;
 
         private StartModel _model;
+
         public StartViewModel()
         {
             _model = new StartModel();
@@ -34,7 +29,7 @@ namespace ShopProject.ViewModel.HomePage
             _port = 0;
             _minIPAddress = 0;
             _maxIPAddress = 0;
-
+            _url = string.Empty; 
 
 
             SetSettingPage();
@@ -118,15 +113,26 @@ namespace ShopProject.ViewModel.HomePage
         public void Connect()
         {
 
-            AppSettingsManager.SetParameterFile("URL", Url);
+            string result = string.Empty;
+            Task t = Task.Run(async () => {
 
-            MainWebServerController.Init();
-            Task.Run(async () => { 
-                 var response = await MainWebServerController.settings.Ping();
-                MessageBox.Show("Підключення успішно дана підключення: "+response);
+                result = await _model.ConnectWebServer();
+            }); 
+            t.ContinueWith(t =>
+            {
+                if (result != string.Empty)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show("Підключення успішно дата підключення: " + result);
+                        Mediator.Notify("RedirectToAuthorizationView", "");
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося підключитися");
+                }
             });
-           
-            Mediator.Notify("RedirectToAuthorizationView", "");
         }
     }
 }
