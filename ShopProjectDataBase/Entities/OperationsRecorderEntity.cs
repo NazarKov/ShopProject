@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ShopProjectSQLDataBase.Helper;
 
 namespace ShopProjectDataBase.DataBase.Entities
 {
@@ -25,6 +26,10 @@ namespace ShopProjectDataBase.DataBase.Entities
         /// Статус ПРРО
         /// </summary>
         public string Status { get; set; } = string.Empty;
+        /// <summary>
+        /// тип статусу для програми
+        /// </summary>
+        public TypeStatusOperationRecorder TypeStatus {  get; set; }
         /// <summary>
         /// Дата реєстрації документа
         /// </summary>

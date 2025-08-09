@@ -31,8 +31,7 @@ namespace ShopProject.ViewModel.AdminPage
 
         private ICommand _updateItemDataGridView;
 
-        private static Timer? _timer;
-        private List<UserEntity> _userslist;
+        private static Timer? _timer; 
         private bool _isReadyUpdateDataGriedView;
         private static string? _nameSearch;
 
@@ -42,8 +41,7 @@ namespace ShopProject.ViewModel.AdminPage
         {
             _model = new UsersModel();
             _users = new List<UserEntity>();
-            _paginator = new TemplatePaginatorButtonViewModel();
-            _userslist = new List<UserEntity>();
+            _paginator = new TemplatePaginatorButtonViewModel(); 
             _statusUsers = new List<string>();
             _countShowList = new List<string>();
             _nameSearch = string.Empty;
@@ -91,12 +89,7 @@ namespace ShopProject.ViewModel.AdminPage
         {
             get => _visibilityDialogWindow;
             set { _visibilityDialogWindow = value; OnPropertyChanged(nameof(VisibilityDialogWindow)); }
-        } 
-        private void SetFieldDialogWindow()
-        {
-            _visibilityDialogWindow = Visibility.Collapsed;
         }
-
         public ICommand OpenWindowCreateUserCommand => _openWindowCreateUserCommand;
         private void CreateUser()
         {
@@ -223,6 +216,11 @@ namespace ShopProject.ViewModel.AdminPage
             SetFieldDialogWindow();
             SetFielComboBoxTypeStatusProduct();
             SetFieldDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)), 1, true);
+        }
+
+        private void SetFieldDialogWindow()
+        {
+            _visibilityDialogWindow = Visibility.Collapsed;
         }
 
         private void SetComboBox()

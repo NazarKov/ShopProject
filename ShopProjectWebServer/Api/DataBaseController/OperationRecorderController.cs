@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
@@ -12,6 +14,106 @@ namespace ShopProjectWebServer.Api.DataBaseController
     [ApiController]
     public class OperationRecorderController : ControllerBase
     {
+        [HttpPost("DeleteOperationRecorder")]
+        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, OperationsRecorderEntity operationsRecorder)
+        {
+            try
+            {
+                if (AuthorizationApi.LoginToken(token))
+                {
+
+
+                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Delete(operationsRecorder);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize<bool>(true),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невірний токен авторизації");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetOperationRecordersByNamePageColumn")]
+        public IActionResult GetOperationRecordersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var users = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetOperationRecorderByNamePageColumn(name, page, countColumn, status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(users, options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetOperationRecordersPageColumn")]
+        public IActionResult GetOperationRecordersPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var users = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetAllPageColumn(page, countColumn, status);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(users, options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
         [HttpGet("GetOperationRecorders")]
         public async Task<IActionResult> GetOperationRecorders(string token)
         {

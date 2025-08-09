@@ -5,6 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ShopProject.ViewModel.AdminPage"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:paginator="clr-namespace:ShopProject.View.TemplatePage" 
+    
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SoftwareDeviceSettlementOperations">
@@ -29,14 +31,23 @@
             </Border>
         </ControlTemplate>
     </Page.Resources>
-    <Grid>
+    <Grid Name="Grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="150"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="{Binding Heigth}"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="1" Grid.RowSpan="2" x:Name="listView" ItemsSource="{Binding ObjectList}" 
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding ElementName=Grid}">
+                <i:InvokeCommandAction Command="{Binding UpdateSizeCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0" Grid.Row="1"  Width="120"/>
+        
+        <DataGrid Grid.Row="2" x:Name="listView" ItemsSource="{Binding ObjectList}" 
      ColumnWidth="*" AutoGenerateColumns="False" CanUserAddRows="False" SelectedIndex="{Binding SelectedItem}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№"  Binding="{Binding ID}" />
@@ -67,17 +78,19 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
+        <paginator:TemplatePaginatorButtonView x:Name="BottomButtomPaginator1" Grid.Row="3" DataContext="{Binding Paginator}"  HorizontalAlignment="Center" VerticalAlignment="Center"></paginator:TemplatePaginatorButtonView>
+
+
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250*"></ColumnDefinition>
-                <ColumnDefinition Width="35*"></ColumnDefinition>
-                <ColumnDefinition Width="50*"></ColumnDefinition>
+                <ColumnDefinition Width="350"></ColumnDefinition> 
+                <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="125"></ColumnDefinition>
                 <ColumnDefinition Width="100"></ColumnDefinition>
                 <ColumnDefinition Width="200"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="textboxSearch" Template="{StaticResource SearchTextBoxTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15,0,0,25" FontSize="20">
+            <TextBox x:Name="textboxSearch" Template="{StaticResource SearchTextBoxTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="60,0,0,25" FontSize="20">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction
@@ -89,12 +102,13 @@
 
             <Button Grid.Column="5" Grid.ColumnSpan="2" Height="35" Width="150" Content="Добавити РРО" VerticalAlignment="Bottom"
                 HorizontalAlignment="Left" Margin="15,0,15,25" Command="{Binding OpenDialogWindowCommand}"/>
-            <Button Grid.Column="4" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Right" Margin="0,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateItemDataGridView }">
+            <Button Grid.Column="0" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Left"  Margin="10,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateItemDataGridView }">
                 <Button.Content>
                     <Image Source="/Resource/Images/reboot.png"></Image>
                 </Button.Content>
             </Button>
 
+            <ComboBox x:Name="comboBoxTypeStatusProduct" ItemsSource="{Binding StatusOperationRecorder}" SelectedIndex="{Binding SelectedStatusOperationRecorder}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
 
 
 

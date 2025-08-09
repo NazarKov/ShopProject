@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.Model.AdminPage
+namespace ShopProject.Model.AdminPage.UserPage
 {
     internal class UserDataModel
     { 
@@ -24,7 +24,7 @@ namespace ShopProject.Model.AdminPage
         {
             Task t = Task.Run(async () =>
             {
-                _user = (await MainWebServerController.MainDataBaseConntroller.UserController.GetUserById(Session.Token, Session.UserItem.ID.ToString()));
+                _user = await MainWebServerController.MainDataBaseConntroller.UserController.GetUserById(Session.Token, Session.UserItem.ID.ToString());
             });
             t.Wait();
 

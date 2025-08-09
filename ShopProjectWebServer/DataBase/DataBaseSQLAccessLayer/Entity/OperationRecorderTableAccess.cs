@@ -1,5 +1,8 @@
 ﻿using ShopProjectDataBase.DataBase.Context;
-using ShopProjectDataBase.DataBase.Entities; 
+using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Data.Entity;
 
@@ -62,7 +65,20 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(OperationsRecorderEntity item)
         {
-            throw new NotImplementedException();
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.OperationsRecorders.Load(); 
+
+                    if (context.OperationsRecorders != null)
+                    {
+                        var operationsRecorders = context.OperationsRecorders.Find(item.ID);
+                        context.OperationsRecorders.Remove(operationsRecorders);
+                    }
+                    context.SaveChanges();
+                }
+            }
         }
 
         public IEnumerable<OperationsRecorderEntity> GetAll()
@@ -83,6 +99,124 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     }
                 }
                 return null;
+            }
+        }
+
+        public PaginatorData<OperationsRecorderEntity> GetAllPageColumn(double page, double countColumn, TypeStatusOperationRecorder status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                { 
+                    context.OperationsRecorders.Load();
+
+                    if (context.OperationsRecorders != null && context.OperationsRecorders.Count() != 0)
+                    {
+                        double pages;
+
+                        int countEnd = (int)(page * countColumn);
+                        int countStart = (int)(countEnd - countColumn);
+
+                        PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
+
+                        if (status == TypeStatusOperationRecorder.Unknown)
+                        {
+                            result.Page = (int)page;
+                            result.Data = context.OperationsRecorders.OrderBy(i => i.ID)
+                                                          .Skip(countStart)
+                                                          .Take((int)countColumn).ToList();
+
+                            pages = context.OperationsRecorders.Count() / countColumn;
+                        }
+                        else
+                        {
+                            result.Page = (int)page;
+                            var operationsRecorders = context.OperationsRecorders.Where(item => item.TypeStatus == status).ToList();
+                            result.Data = operationsRecorders.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
+
+                            pages = operationsRecorders.Count() / countColumn;
+                        }
+
+                        int pagesCount = 0;
+
+                        if (!(pages % 2 == 0))
+                        {
+                            pagesCount = (int)pages;
+                            pagesCount++;
+                        }
+                        result.Pages = pagesCount;
+
+                        return result;
+                    }
+                    else
+                    {
+                        return new PaginatorData<OperationsRecorderEntity>();
+                    }
+                }
+                return new PaginatorData<OperationsRecorderEntity>();
+            }
+        }
+
+        public PaginatorData<OperationsRecorderEntity> GetOperationRecorderByNamePageColumn(string name, double page, double countColumn, TypeStatusOperationRecorder status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.OperationsRecorders.Load(); 
+
+                    if (context.OperationsRecorders != null && context.OperationsRecorders.Count() != 0)
+                    {
+                        double pages;
+
+                        int countEnd = (int)(page * countColumn);
+                        int countStart = (int)(countEnd - countColumn);
+
+                        PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
+
+                        if (status == TypeStatusOperationRecorder.Unknown)
+                        {
+                            result.Page = (int)page;
+                            var operationsRecorder = context.OperationsRecorders.Where(i => i.Name.Contains(name)).ToList();
+                            result.Data = operationsRecorder.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
+
+                            pages = operationsRecorder.Count() / countColumn;
+                        }
+                        else
+                        {
+                            result.Page = (int)page;
+                            var operationsRecorder = context.OperationsRecorders.Where(t => t.TypeStatus == status)
+                                                           .Where(i => i.Name.Contains(name)).ToList();
+                            result.Data = operationsRecorder.OrderBy(i => i.ID)
+                                                  .Skip(countStart)
+                                                  .Take((int)countColumn).ToList();
+
+                            pages = operationsRecorder.Count() / countColumn;
+                        }
+
+                        int pagesCount = 0;
+
+                        if (!(pages % 2 == 0))
+                        {
+                            pagesCount = (int)pages;
+                            pagesCount++;
+                        }
+                        result.Pages = pagesCount;
+
+                        return result;
+
+                    }
+                    else
+                    {
+                        throw new Exception("Неможливий пошук оскільки немає товарів");
+                    }
+
+                }
+                return new PaginatorData<OperationsRecorderEntity>();
             }
         }
 

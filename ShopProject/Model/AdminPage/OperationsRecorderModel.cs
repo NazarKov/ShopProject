@@ -3,7 +3,10 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Helper;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -32,24 +35,32 @@ namespace ShopProject.Model.AdminPage
             _signingFileController.Initialize(false);
         }
 
-        public List<OperationsRecorderEntity> GetAll()
+
+        public async Task<PaginatorData<OperationsRecorderEntity>> GetOperationsRecorderPageColumn(int page, int countColumn, TypeStatusOperationRecorder status)
         {
             try
             {
-                Task t = Task.Run(async () =>
-                {
-                    _softwareDeviceSettlementOperationsList = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationRecorders(Session.Token)).ToList();
-                });
-                t.Wait();
-                return _softwareDeviceSettlementOperationsList;
+                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderPageColumn(Session.Token, page, countColumn, status);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<OperationsRecorderEntity>();
+                return new PaginatorData<OperationsRecorderEntity>();
             }
         }
 
+        public async Task<PaginatorData<OperationsRecorderEntity>> SearchByName(string item, int page, int countColumn, TypeStatusOperationRecorder status)
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderByNamePageColumn(Session.Token, item, page, countColumn, status);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<OperationsRecorderEntity>();
+            }
+        } 
 
         public async Task<bool> GetServerSoftwareDeviceSettlementOperations(string pathFile, string passwordKey)
         {
@@ -80,6 +91,16 @@ namespace ShopProject.Model.AdminPage
                             LocalNumber = item.LNUM.ToString(),
                             Name = item.NAME,
                         };
+                        if (item.STATUS == "Активний")
+                        {
+                            tempList.Status = item.STATUS;
+                            tempList.TypeStatus = TypeStatusOperationRecorder.Open;
+                        }
+                        else if (item.STATUS == "Скасований")
+                        {
+                            tempList.Status = item.STATUS;
+                            tempList.TypeStatus = TypeStatusOperationRecorder.Closed;
+                        }
 
                         var time = item.D_REG;
                         if (time != null)
@@ -100,30 +121,9 @@ namespace ShopProject.Model.AdminPage
             }
 
 
-        }
+        } 
 
-        public List<OperationsRecorderEntity> SearchObject(string item)
-        {
-            try
-            {
-                var items = GetAll();
-                if (items != null)
-                {
-                    if (item != " ")
-                    {
-                        return items.Where(i => i.Name.ToLower().Contains(item.ToLower())).ToList();
-                    }
-                }
-                return new List<OperationsRecorderEntity>();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new List<OperationsRecorderEntity>();
-            }
-        }
-
-        public bool SaveDataBaseItem(List<SoftwareDeviceSettlementOperationsHelper> items)
+        public async Task<bool> SaveDataBaseItem(List<SoftwareDeviceSettlementOperationsHelper> items)
         {
             try
             {
@@ -135,17 +135,13 @@ namespace ShopProject.Model.AdminPage
                         result.Add(items.ElementAt(i).deviceSettlementOperations);
                     }
                 }
-                bool response = false;
-                Task t = Task.Run(async () =>
-                {
-                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddOperationRecorders(Session.Token,result));
-                });
-                t.Wait();
-                return response;
+                
+                 return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddOperationRecorders(Session.Token,result);
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);  
                 return false;
             }
 
@@ -154,12 +150,18 @@ namespace ShopProject.Model.AdminPage
         {
             return _softwareDeviceSettlementOperationsList;
         }
-        public bool deleteItemDataBase(OperationsRecorderEntity item)
+        public void ClearListObjectOwner()
+        {
+            _softwareDeviceSettlementOperationsList.Clear();
+        }
+
+
+        public async Task<bool> DeleteItem(OperationsRecorderEntity item)
         {
             try
             {
-                //_operationRecorderTable.Delete(item);
-                return true;
+                
+                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.DeleteOperationsRecorder(Session.Token,item);
             }
             catch (Exception ex)
             {

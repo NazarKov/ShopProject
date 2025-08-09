@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Model.AdminPage;
+using ShopProject.Model.AdminPage.UserPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShopProject.ViewModel.AdminPage
+namespace ShopProject.ViewModel.AdminPage.UserPage
 {
     internal class UserDataViewModel : ViewModel<UserDataViewModel>
     {

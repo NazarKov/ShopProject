@@ -27,10 +27,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<PaginatorData<UserEntity>> GetUserByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUser statusProduct)
+        public async Task<PaginatorData<UserEntity>> GetUserByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUser status )
         {
 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUserByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={statusProduct}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUserByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status }");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var result = CheckingResponse.Unpacking<PaginatorData<UserEntity>>(responseBody);
@@ -39,9 +39,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
             return (PaginatorData<UserEntity>)result;
         }
 
-        public async Task<PaginatorData<UserEntity>> GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser statusProduct)
+        public async Task<PaginatorData<UserEntity>> GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser status )
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUsersPageColumn?token={token}&countColumn={countColumn}&page={page}&status={statusProduct}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUsersPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status }");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var result = CheckingResponse.Unpacking<PaginatorData<UserEntity>>(responseBody);
