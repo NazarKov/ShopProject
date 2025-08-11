@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.Model.AdminPage
+namespace ShopProject.ViewModel.AdminPage.ObjectOwnerShipPage
 {
-    class ObjectOwnerShipDataModel
+    class ObjectOwnerShipDataViewModel
     {
     }
 }

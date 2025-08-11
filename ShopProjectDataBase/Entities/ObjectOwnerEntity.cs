@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using ShopProjectSQLDataBase.Helper;
 
 namespace ShopProjectDataBase.DataBase.Entities
 {
@@ -30,6 +31,10 @@ namespace ShopProjectDataBase.DataBase.Entities
         /// Стан обєкта оподаткування
         /// </summary>
         public string Status { get; set; } = string.Empty;
+        /// <summary>
+        /// тип статусу обєкта оподаткування
+        /// </summary>
+        public TypeStatusObjectOwner TypeStatus { get; set; }
         /// <summary>
         /// Вид права на об’єкт
         /// </summary>

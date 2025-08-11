@@ -3,7 +3,9 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectSQLDataBase.Helper;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,32 @@ namespace ShopProject.Model.AdminPage
             _accountController = new MainElectronicTaxAccountController();
             _signingFileController.Initialize(false);
 
+        }
+
+        public async Task<PaginatorData<ObjectOwnerEntity>> GetObjectOwnerPageColumn(int page, int countColumn, TypeStatusObjectOwner status)
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersPageColumn(Session.Token, page, countColumn, status);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<ObjectOwnerEntity>();
+            }
+        }
+
+        public async Task<PaginatorData<ObjectOwnerEntity>> SearchByName(string item, int page, int countColumn, TypeStatusObjectOwner status)
+        {
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersByNamePageColumn(Session.Token, item, page, countColumn, status);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<ObjectOwnerEntity>();
+            }
         }
 
 
@@ -83,8 +111,7 @@ namespace ShopProject.Model.AdminPage
 
                         ObjectOwnerEntity objectOwner = new ObjectOwnerEntity()
                         {
-                            NameObject = item.NAME,
-                            Status = item.STAN_OBJECT,
+                            NameObject = item.NAME, 
                             Address = item.ADDRESS,
                             C_DISTR = item.C_DISTR,
                             TypeOfRights = item.TYPE_OF_RIGHTS,
@@ -95,6 +122,16 @@ namespace ShopProject.Model.AdminPage
                             TypeObjectName = item.TYPE_OF_RIGHTS.ToString(),
 
                         };
+
+                        if (item.STAN_OBJECT == "Об'єкт відчужено / повернено власнику")
+                        {
+                            objectOwner.TypeStatus = TypeStatusObjectOwner.Closed;
+                        }
+                        else if (item.STAN_OBJECT == "орендується")
+                        {
+                            objectOwner.TypeStatus = TypeStatusObjectOwner.Open;
+                        }
+                        objectOwner.Status = item.STAN_OBJECT;
 
                         var time = item.D_ACC_START;
                         if (time != null)
@@ -166,12 +203,11 @@ namespace ShopProject.Model.AdminPage
         {
             return _objectOwnerList;
         }
-        public bool deleteItemDataBase(ObjectOwnerEntity item)
+        public async Task<bool> DeleteItem(ObjectOwnerEntity item)
         {
             try
-            {
-                //_objectTable.Delete(item);
-                return true;
+            { 
+                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.DeleteObjectsOwner(Session.Token, item);
             }
             catch (Exception ex)
             {

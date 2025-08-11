@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseController
 {
-    public class OperationRecorederController
+    public class OperationRecorderController
     { 
         private HttpClient _httpClient;
-        public OperationRecorederController(string url)
+        public OperationRecorderController(string url)
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(url); 
