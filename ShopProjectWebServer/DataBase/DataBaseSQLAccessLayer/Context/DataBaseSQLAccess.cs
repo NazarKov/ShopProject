@@ -1,7 +1,4 @@
-﻿using ShopProjectDataBase.DataBase.Context;
-using ShopProjectDataBase.DataBase.Entities;
-using ShopProjectDataBase.DataBase.Model;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectSQLDataBase.Context;
 using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;

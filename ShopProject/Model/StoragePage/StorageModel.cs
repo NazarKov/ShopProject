@@ -2,7 +2,7 @@
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper.ProductContoller;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections;

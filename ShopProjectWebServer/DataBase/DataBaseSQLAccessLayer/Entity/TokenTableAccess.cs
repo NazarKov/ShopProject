@@ -1,5 +1,5 @@
-﻿using ShopProjectDataBase.DataBase.Context;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectSQLDataBase.Context;
+using ShopProjectSQLDataBase.Entities; 
 using ShopProjectWebServer.DataBase.Helpers;        
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Data.Entity;

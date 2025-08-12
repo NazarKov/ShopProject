@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.DataBase.Entities;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
@@ -14,6 +13,76 @@ namespace ShopProjectWebServer.Api.DataBaseController
     [ApiController]
     public class OperationRecorderController : ControllerBase
     {
+        [HttpGet(nameof(GetOperationRecordersByNumberAndUser))]
+        public IActionResult GetOperationRecordersByNumberAndUser(string token, string number, Guid userId)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.SearchByNumberAndUser(number, userId);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(items, options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
+        [HttpGet("GetOperationRecordersByNameAndUser")]
+        public IActionResult GetOperationRecordersByNameAndUser(string token, string name , Guid userId)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                if (AuthorizationApi.LoginToken(token))
+                {
+                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.SearchByNameAndUser(name, userId);
+
+                    return Ok(new Message()
+                    {
+                        MessageBody = JsonSerializer.Serialize(items, options),
+                        Type = TypeMessage.Message
+                    }.ToString());
+                }
+                throw new Exception("Невдалося отримати товари");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Message()
+                {
+                    MessageBody = ex.ToString(),
+                    Type = TypeMessage.Error,
+
+                }.ToString());
+            }
+        }
+
         [HttpPost("DeleteOperationRecorder")]
         public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, OperationsRecorderEntity operationsRecorder)
         {
@@ -58,11 +127,11 @@ namespace ShopProjectWebServer.Api.DataBaseController
 
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    var users = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetOperationRecorderByNamePageColumn(name, page, countColumn, status);
+                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetOperationRecorderByNamePageColumn(name, page, countColumn, status);
 
                     return Ok(new Message()
                     {
-                        MessageBody = JsonSerializer.Serialize(users, options),
+                        MessageBody = JsonSerializer.Serialize(items, options),
                         Type = TypeMessage.Message
                     }.ToString());
                 }
@@ -92,11 +161,11 @@ namespace ShopProjectWebServer.Api.DataBaseController
                 };
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    var users = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetAllPageColumn(page, countColumn, status);
+                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetAllPageColumn(page, countColumn, status);
 
                     return Ok(new Message()
                     {
-                        MessageBody = JsonSerializer.Serialize(users, options),
+                        MessageBody = JsonSerializer.Serialize(items, options),
                         Type = TypeMessage.Message
                     }.ToString());
                 }

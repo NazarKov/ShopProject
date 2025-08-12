@@ -2,9 +2,9 @@
 {
     public class ConnectionString
     {
-        public string DataSource { get; set; }
-        public bool IntegratedSecurity { get; set; }
-        public string InitialCatalog { get; set; }
+        public string DataSource { get; set; } = string.Empty;
+        public bool IntegratedSecurity { get; set; } = false;
+        public string InitialCatalog { get; set; } = string.Empty;
         public TypeConnectDataBase TypeDataBase { get; set; }
 
         public override string ToString()
@@ -13,18 +13,15 @@
             {
                 case TypeConnectDataBase.None:
                     {
-                        return string.Empty;
-                        break;
+                        return string.Empty; 
                     }
                 case TypeConnectDataBase.SQLEXPRESS: 
                     {
-                        return "Data Source=" + DataSource + ".\\SQLEXPRESS;Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";";
-                        break;
+                        return "Data Source=" + DataSource + ".\\SQLEXPRESS;Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";"; 
                     }
                 case TypeConnectDataBase.DEVELEPER:
                     {
-                        return "Data Source=" + DataSource + ";Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";";
-                        break;
+                        return "Data Source=" + DataSource + ";Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";"; 
                     }
             }
             return string.Empty;

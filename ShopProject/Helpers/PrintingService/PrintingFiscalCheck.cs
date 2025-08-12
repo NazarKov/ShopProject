@@ -1,4 +1,4 @@
-﻿using NPOI.SS.Formula.Functions;
+﻿ 
 using QRCoder;
 using ShopProject.Resource.template;
 using System;

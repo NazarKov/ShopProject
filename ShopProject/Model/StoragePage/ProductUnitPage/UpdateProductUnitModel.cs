@@ -1,12 +1,12 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.Model.StoragePage.ProductUnitPage
 {

@@ -1,7 +1,6 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProject.Views.SettingPage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Views.SettingPage; 
 using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;

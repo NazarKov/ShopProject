@@ -1,8 +1,8 @@
-﻿using NPOI.Util;
+﻿ 
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductUnitPage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -113,7 +113,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.UpdateItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductUnitEntity()
+                await _model.UpdateItemDataBase(new  ProductUnitEntity()
                 {
                     ID = _unit.ID,
                     ShortNameUnit = _shortNameUnit,

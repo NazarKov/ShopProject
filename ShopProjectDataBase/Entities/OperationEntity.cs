@@ -2,52 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ShopProjectSQLDataBase.Helper; 
+using ShopProjectSQLDataBase.Entities;
 
-namespace ShopProjectDataBase.DataBase.Model
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("Operation")]
     public class OperationEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public int ID { get; set; }    
         /// <summary>
-        /// Локальний номер зміни
+        /// тип оплати
         /// </summary>
-        public int LocalNumbetShift { get; set; } = 0;   
+        public TypePayment TypePayment { get; set; }
         /// <summary>
-        /// фіксальний номер рро
+        /// Тип операції
         /// </summary>
-        public string FiscalNumberRRO { get; set; } = string.Empty;
+        public TypeOperation TypeOperation { get; set; }
         /// <summary>
-        /// податковий номер
-        /// </summary>
-        public string TaxNumber { get; set; } = string.Empty;
-        /// <summary>
-        /// Заводьській номер рро
-        /// </summary>
-        public string FactoryNumberRRO { get; set; } = string.Empty;
-        /// <summary>
-        /// індифікатор пакету даних
-        /// </summary>
-        public decimal DataPacketIdentifier { get;set; } = decimal.Zero;
-        /// <summary>
-        /// Тип рро
-        /// </summary>
-        public decimal TypeRRO { get; set; } = decimal.Zero;
-        /// <summary>
-        /// версія пакету даних = 1
-        /// </summary>
-        public decimal VersionDataPaket { get; set; } = decimal.Zero;
-        /// <summary>
-        /// тип чеку 0 - чек продажі 108 - відкриття зміни  100 - 200 фіксальний чек 200 - 300 не фіксальний чек   
-        /// </summary>
-        public decimal TypeOperation { get; set; } = decimal.Zero;
-        /// <summary>
-        /// форма оплати 0 - готівка ,не 0 - безготівка
-        /// </summary>
-        public decimal FormOfPayment { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума оплати що вноситься касиром
+        /// сума  що вносить користувачі
         /// </summary>
         public decimal BuyersAmount { get; set; } = decimal.Zero;
         /// <summary>
@@ -55,25 +29,17 @@ namespace ShopProjectDataBase.DataBase.Model
         /// </summary>
         public decimal RestPayment { get; set; } = decimal.Zero;
         /// <summary>
-        /// номер фіксального чеку
-        /// </summary>
-        public string NumberPayment { get; set; } = string.Empty;
-        /// <summary>
         /// загальна сума чеку
         /// </summary>
         public decimal TotalPayment { get; set; } = decimal.Zero;
         /// <summary>
+        /// номер фіксального чеку
+        /// </summary>
+        public string NumberPayment { get; set; } = string.Empty;
+        /// <summary>
         /// податок на товари в чеку 0 - без податку 
         /// </summary>
         public string GoodsTax { get; set; } = string.Empty;
-        /// <summary>
-        /// кількість чеків продажу
-        /// </summary>
-        public decimal NumberOfSalesReceipts { get; set; } = decimal.Zero;
-        /// <summary>
-        /// кількість чеків повернення
-        /// </summary>
-        public decimal NumberOfPendingReturns { get; set; } = decimal.Zero;
         /// <summary>
         /// сума отриманих коштів (службове внесення)
         /// </summary>
@@ -81,31 +47,7 @@ namespace ShopProjectDataBase.DataBase.Model
         /// <summary>
         /// сума отриманих коштів (службова видача)
         /// </summary>
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума отриманих коштів готівка
-        /// </summary>
-        public decimal AmountReceivedCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума виданих коштів готівка
-        /// </summary>
-        public decimal AmountIssuedCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума отриманих коштів картка
-        /// </summary>
-        public decimal AmountReceivedCard { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума виданих коштів картка
-        /// </summary>
-        public decimal AmountIssuedCard { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума чеків повернення готівка
-        /// </summary>
-        public decimal AmountCheckReturnCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума чеків повернення картка
-        /// </summary>
-        public decimal AmountCheckReturnCard { get; set; } = decimal.Zero;
+        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero; 
         /// <summary>
         /// код підтвердження на сервері
         /// </summary>
@@ -115,11 +57,16 @@ namespace ShopProjectDataBase.DataBase.Model
         /// </summary>
         public DateTime CreatedAt { get; set; }
         /// <summary>
-        /// користувач
+        /// знижка на чек
         /// </summary>
-        public UserEntity? User { get; set; }
-
-
+        public decimal Discount { get; set; } = decimal.Zero;
+        /// <summary>
+        /// Змінна під час якої була операція
+        /// </summary>
+        public WorkingShiftEntity? Shift { get; set; }
+        /// <summary>
+        /// Список товару який належмть до операції 
+        /// </summary>
         public ICollection<OrderEntity>? Order { get; set; }
 
     }

@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,20 +200,20 @@ namespace ShopProject.ViewModel.SalePage
 
                 if (_model.SendCheck(Goods, new OperationEntity()
                 {
-                    DataPacketIdentifier = 1,
-                    TypeRRO = 0,
-                    FiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
-                    TaxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
-                    FactoryNumberRRO = "v1",
-                    TypeOperation = 1,
-                    MAC = _model.GetMac(),
-                    CreatedAt = DateTime.Now,
-                    NumberPayment = _model.GetLocalNumber(),
-                    GoodsTax = "0",
-                    RestPayment = Convert.ToDecimal(rest),
-                    TotalPayment = (decimal)SumaOrder,
-                    BuyersAmount = (decimal)SumaUser,
-                    FormOfPayment = SelectIndex,
+                    //DataPacketIdentifier = 1,
+                    //TypeRRO = 0,
+                    //FiscalNumberRRO = AppSettingsManager.GetParameterFiles("FiscalNumberRRO").ToString(),
+                    //TaxNumber = AppSettingsManager.GetParameterFiles("TaxNumber").ToString(),
+                    //FactoryNumberRRO = "v1",
+                    //TypeOperation = 1,
+                    //MAC = _model.GetMac(),
+                    //CreatedAt = DateTime.Now,
+                    //NumberPayment = _model.GetLocalNumber(),
+                    //GoodsTax = "0",
+                    //RestPayment = Convert.ToDecimal(rest),
+                    //TotalPayment = (decimal)SumaOrder,
+                    //BuyersAmount = (decimal)SumaUser,
+                    //FormOfPayment = SelectIndex,
                 }))
                 {
                     MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);

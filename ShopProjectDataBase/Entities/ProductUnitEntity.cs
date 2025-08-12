@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using ShopProjectSQLDataBase.Helper;
 
-namespace ShopProjectDataBase.DataBase.Model
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("Units")]
     public class ProductUnitEntity

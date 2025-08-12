@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

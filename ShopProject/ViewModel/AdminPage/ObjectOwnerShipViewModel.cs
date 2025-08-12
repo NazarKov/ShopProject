@@ -7,13 +7,13 @@ using System.Windows.Input;
 using ShopProject.Views.AdminPage;
 using ShopProject.Helpers.DataGridViewHelperModel;
 using System.Threading.Tasks;
-using System.Timers;
-using ShopProjectDataBase.DataBase.Entities;
+using System.Timers; 
 using ShopProject.ViewModel.TemplatePage;
 using ShopProjectSQLDataBase.Helper;
 using ShopProject.Helpers.Template.Paginator;
 using System;
 using System.Windows;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {

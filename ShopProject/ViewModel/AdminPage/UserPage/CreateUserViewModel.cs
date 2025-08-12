@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows;
-using ShopProjectDataBase.DataBase.Entities; 
+using System.Windows; 
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {

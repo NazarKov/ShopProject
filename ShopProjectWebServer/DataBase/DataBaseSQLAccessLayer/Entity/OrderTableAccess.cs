@@ -1,5 +1,5 @@
-﻿using ShopProjectDataBase.DataBase.Context;
-using ShopProjectDataBase.DataBase.Model;
+﻿using ShopProjectSQLDataBase.Context;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Data.Entity;
@@ -33,7 +33,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     {
                         for (int i = 0; i < items.Count(); i++)
                         {
-                            items.ElementAt(i).Goods = context.Products.Find(items.ElementAt(i).Goods.ID);
+                            items.ElementAt(i).Product = context.Products.Find(items.ElementAt(i).Product.ID);
                             items.ElementAt(i).Operation = context.Operations.Find(items.ElementAt(i).Operation.ID);
                         }
                         context.Orders.AddRange(items);

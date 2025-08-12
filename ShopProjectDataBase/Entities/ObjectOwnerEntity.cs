@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using ShopProjectSQLDataBase.Helper;
 
-namespace ShopProjectDataBase.DataBase.Entities
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("ObjectOwner")]
     public class ObjectOwnerEntity

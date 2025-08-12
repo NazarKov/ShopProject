@@ -2,8 +2,8 @@
 using FiscalServerApi.ExceptionServer;
 using GreetClient;
 using ShopProject.Helpers.FiscalOperationService.Helpers;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi; 
+using ShopProjectSQLDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -153,7 +153,7 @@ namespace ShopProject.Helpers.FiscalOperationService
 
         private string SendCheck(OperationEntity operation , TypeOperation typeOperation , List<ProductEntity> products = null)
         {
-            WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntity>(), products, pathxml);
+            //WriteReadXmlFile.WriteXmlFile(operation, new List<OrderEntity>(), products, pathxml);
             //if (_signFileContoller.SignFile(Session.User.KeyPath, Session.User.KeyPassword))
             //{
             //    string result = string.Empty;
@@ -219,7 +219,7 @@ namespace ShopProject.Helpers.FiscalOperationService
 
 
                     List<ProductEntity> goodsList = new List<ProductEntity>();
-                    WriteReadXmlFile.WriteXmlFile(operation, OperationOrders, new List<ProductEntity>(), pathxml);
+                    //WriteReadXmlFile.WriteXmlFile(operation, OperationOrders, new List<ProductEntity>(), pathxml);
                     return SHA.GenerateSHA256File(pathxml);
                 }
                 else

@@ -4,8 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ShopProjectDataBase.DataBase.Model;
+using System.Threading.Tasks; 
 
 namespace ShopProjectSQLDataBase.Entities
 {
@@ -17,15 +16,15 @@ namespace ShopProjectSQLDataBase.Entities
         /// <summary>
         /// користувач
         /// </summary>
-        public UserEntity User { get; set; }
+        public UserEntity? User { get; set; }
         /// <summary>
         /// токен
         /// </summary>
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
         /// <summary>
         /// пристрій з якого була авторизація
         /// </summary>
-        public string Device { get; set; }
+        public string Device { get; set; } = string.Empty;
         /// <summary>
         /// дата авторизації
         /// </summary>

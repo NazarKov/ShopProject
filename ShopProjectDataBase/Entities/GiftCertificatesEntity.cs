@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShopProjectDataBase.DataBase.Model
+namespace ShopProjectSQLDataBase.Entities
 {
     public class GiftCertificatesEntity
     {

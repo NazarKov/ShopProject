@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿ 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using ShopProjectDataBase.DataBase.Entities;
+using System.ComponentModel.DataAnnotations; 
 using ShopProjectSQLDataBase.Helper;
 
-namespace ShopProjectDataBase.DataBase.Model
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("Product")]
     public class ProductEntity

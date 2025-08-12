@@ -4,7 +4,7 @@ using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using SigningFileLib;
 using System;

@@ -1,8 +1,8 @@
-﻿using NPOI.Util;
+﻿ 
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductCodeUKTZEDPage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.UpdateItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductCodeUKTZEDEntity()
+                await _model.UpdateItemDataBase(new  ProductCodeUKTZEDEntity()
                 {
                     ID = _codeUKTZED.ID,
                     Code = Code,

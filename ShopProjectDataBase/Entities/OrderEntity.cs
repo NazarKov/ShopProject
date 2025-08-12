@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using ShopProjectDataBase.DataBase.Entities;
+using System.ComponentModel.DataAnnotations; 
 
-namespace ShopProjectDataBase.DataBase.Model
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("Order")]
     public class OrderEntity
@@ -16,14 +15,10 @@ namespace ShopProjectDataBase.DataBase.Model
         /// <summary>
         /// товар
         /// </summary>
-        public  ProductEntity? Goods { get; set; }
+        public  ProductEntity? Product { get; set; }
         /// <summary>
         /// операція до якої належить товар
         /// </summary>
-        public OperationEntity? Operation { get; set; }
-        /// <summary>
-        /// знижка на чек
-        /// </summary>
-        public DiscountEntity? Discount { get; set; }
+        public OperationEntity? Operation { get; set; } 
     }
 }

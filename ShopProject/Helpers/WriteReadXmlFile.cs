@@ -1,4 +1,5 @@
-﻿using ShopProjectDataBase.DataBase.Model;
+﻿
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,12 @@ namespace ShopProject.Helpers
             writer.WriteAttributeString("V", "1");
 
             writer.WriteStartElement("DAT");
-            writer.WriteAttributeString("DI", operation.DataPacketIdentifier.ToString("0"));
-            writer.WriteAttributeString("DT", operation.TypeRRO.ToString("0"));
-            writer.WriteAttributeString("FN", operation.FiscalNumberRRO.ToString());
-            writer.WriteAttributeString("TN", "ПН " + operation.TaxNumber);
-            writer.WriteAttributeString("V", "1");
-            writer.WriteAttributeString("ZN", operation.FactoryNumberRRO.ToString());
+            //writer.WriteAttributeString("DI", operation.DataPacketIdentifier.ToString("0"));
+            //writer.WriteAttributeString("DT", operation.TypeRRO.ToString("0"));
+            //writer.WriteAttributeString("FN", operation.FiscalNumberRRO.ToString());
+            //writer.WriteAttributeString("TN", "ПН " + operation.TaxNumber);
+            //writer.WriteAttributeString("V", "1");
+            //writer.WriteAttributeString("ZN", operation.FactoryNumberRRO.ToString());
         }
         private static void WriteFooter(OperationEntity operation, XmlTextWriter writer)
         {
@@ -49,12 +50,12 @@ namespace ShopProject.Helpers
                 {
                     writer.WriteStartElement("P");//продажа
                     writer.WriteAttributeString("N", (i + 1).ToString());//порядковий номер 
-                    writer.WriteAttributeString("C", goods[i].Goods.Articule);//код товару
-                    writer.WriteAttributeString("CD", goods[i].Goods.Code.ToString());//штрихкод товару
-                    writer.WriteAttributeString("NM", goods[i].Goods.NameProduct);//назва товару або послуги
-                    writer.WriteAttributeString("SM", goods[i].Goods.Price.ToString().Replace(".", "").Replace(",", ""));//Сума операції
-                    writer.WriteAttributeString("Q", (Convert.ToDecimal(((decimal)goods[i].Count).ToString("0.000"))).ToString().Replace(".", "").Replace(",", ""));//кількість товару
-                    writer.WriteAttributeString("PRC", goods[i].Goods.Price.ToString().Replace(".", "").Replace(",", ""));//Ціна товару
+                    //writer.WriteAttributeString("C", goods[i].Goods.Articule);//код товару
+                    //writer.WriteAttributeString("CD", goods[i].Goods.Code.ToString());//штрихкод товару
+                   // writer.WriteAttributeString("NM", goods[i].Goods.NameProduct);//назва товару або послуги
+                   // writer.WriteAttributeString("SM", goods[i].Goods.Price.ToString().Replace(".", "").Replace(",", ""));//Сума операції
+                    //writer.WriteAttributeString("Q", (Convert.ToDecimal(((decimal)goods[i].Count).ToString("0.000"))).ToString().Replace(".", "").Replace(",", ""));//кількість товару
+                   // writer.WriteAttributeString("PRC", goods[i].Goods.Price.ToString().Replace(".", "").Replace(",", ""));//Ціна товару
                     writer.WriteAttributeString("TX", "0");//податок
                     writer.WriteEndElement();
                 }
@@ -71,7 +72,7 @@ namespace ShopProject.Helpers
                 writer.WriteAttributeString("N", (goods.Count + 2).ToString());//порядковий номер
                 writer.WriteAttributeString("NO", operation.NumberPayment.ToString());//номер фіксально чеку
                 writer.WriteAttributeString("SM", operation.TotalPayment.ToString("0.00").Replace(".", "").Replace(",", ""));//загальна сума чеку
-                writer.WriteAttributeString("FN", operation.FiscalNumberRRO);//фіксальний номер рро
+                //writer.WriteAttributeString("FN", operation.FiscalNumberRRO);//фіксальний номер рро
                 writer.WriteAttributeString("TS", operation.CreatedAt.ToString("yyyyMMddHHmmss"));//дата та час
                 writer.WriteAttributeString("TX", operation.GoodsTax);//податок
                 writer.WriteEndElement();
@@ -114,7 +115,7 @@ namespace ShopProject.Helpers
                 writer.WriteAttributeString("N", (goods.Count + 2).ToString());//порядковий номер
                 writer.WriteAttributeString("NO", operation.NumberPayment.ToString());//номер фіксально чеку
                 writer.WriteAttributeString("SM", operation.TotalPayment.ToString("0.00").Replace(".", "").Replace(",", ""));//загальна сума чеку
-                writer.WriteAttributeString("FN", operation.FiscalNumberRRO);//фіксальний номер рро
+                //writer.WriteAttributeString("FN", operation.FiscalNumberRRO);//фіксальний номер рро
                 writer.WriteAttributeString("TS", operation.CreatedAt.ToString("yyyyMMddHHmmss"));//дата та час
                 writer.WriteAttributeString("TX", operation.GoodsTax);//податок
                 writer.WriteEndElement();
@@ -132,7 +133,7 @@ namespace ShopProject.Helpers
             {
                 writer.WriteStartElement("I");
                 writer.WriteAttributeString("N", "1");//Порядковий номер операції в чеку.
-                writer.WriteAttributeString("T", operation.FormOfPayment.ToString("0"));//Формат оплати.
+                //writer.WriteAttributeString("T", operation.FormOfPayment.ToString("0"));//Формат оплати.
                 writer.WriteAttributeString("SM", operation.TotalPayment.ToString("0"));//Сума оплати.
                 writer.WriteEndElement();
 
@@ -141,7 +142,7 @@ namespace ShopProject.Helpers
             {
                 writer.WriteStartElement("O");
                 writer.WriteAttributeString("N", "1");//Порядковий номер операції в чеку.
-                writer.WriteAttributeString("T", operation.FormOfPayment.ToString("0"));//Формат оплати.
+                //writer.WriteAttributeString("T", operation.FormOfPayment.ToString("0"));//Формат оплати.
                 writer.WriteAttributeString("SM", operation.TotalPayment.ToString("0"));//Сума оплати.
                 writer.WriteEndElement();
             }
@@ -176,20 +177,20 @@ namespace ShopProject.Helpers
             writer.WriteStartElement("IO");//Підсумок службових внесень та видач за день готівка
             writer.WriteAttributeString("T", "0");//Форма оплати
             writer.WriteAttributeString("NM", "ГОТІВКА");//Форма оплати
-            writer.WriteAttributeString("NI", operation.AmountReceivedCash.ToString("0.00").Replace(".", "").Replace(",", ""));//сума внесень за день
-            writer.WriteAttributeString("NO", operation.AmountIssuedCash.ToString("0.00").Replace(".", "").Replace(",", ""));//сума видач за день
+            //writer.WriteAttributeString("NI", operation.AmountReceivedCash.ToString("0.00").Replace(".", "").Replace(",", ""));//сума внесень за день
+           // writer.WriteAttributeString("NO", operation.AmountIssuedCash.ToString("0.00").Replace(".", "").Replace(",", ""));//сума видач за день
             writer.WriteEndElement();
 
             writer.WriteStartElement("IO");//Підсумок службових внесень та видач за день картка
             writer.WriteAttributeString("T", "1");//Форма оплати
             writer.WriteAttributeString("NM", "безготівкові форми оплати");//Форма оплати
-            writer.WriteAttributeString("NI", operation.AmountReceivedCard.ToString("0.00").Replace(".", "").Replace(",", ""));//сума внесень за день
-            writer.WriteAttributeString("NO", operation.AmountIssuedCard.ToString("0.00").Replace(".", "").Replace(",", ""));//сума видач за день
+            //writer.WriteAttributeString("NI", operation.AmountReceivedCard.ToString("0.00").Replace(".", "").Replace(",", ""));//сума внесень за день
+            //writer.WriteAttributeString("NO", operation.AmountIssuedCard.ToString("0.00").Replace(".", "").Replace(",", ""));//сума видач за день
             writer.WriteEndElement();
 
             writer.WriteStartElement("NC");//Підсумок чеків за день
-            writer.WriteAttributeString("NI", operation.NumberOfSalesReceipts.ToString("0"));//кількість чеків продажу
-            writer.WriteAttributeString("NO", operation.NumberOfPendingReturns.ToString("0"));//кількість чеків повернення
+           // writer.WriteAttributeString("NI", operation.NumberOfSalesReceipts.ToString("0"));//кількість чеків продажу
+            //writer.WriteAttributeString("NO", operation.NumberOfPendingReturns.ToString("0"));//кількість чеків повернення
             //WriteAttributeString("NO", "0");
             writer.WriteEndElement();
 

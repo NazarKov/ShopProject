@@ -11,12 +11,11 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
-using ShopProject.Helpers.DataGridViewHelperModel;
-using ShopProjectDataBase.DataBase.Entities;
-using ShopProject.ViewModel.TemplatePage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers.DataGridViewHelperModel; 
+using ShopProject.ViewModel.TemplatePage; 
 using ShopProjectSQLDataBase.Helper;
 using ShopProject.Helpers.Template.Paginator;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {

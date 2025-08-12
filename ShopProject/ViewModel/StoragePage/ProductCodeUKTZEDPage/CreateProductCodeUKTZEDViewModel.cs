@@ -1,6 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductCodeUKTZEDPage;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.SaveItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductCodeUKTZEDEntity()
+                await _model.SaveItemDataBase(new ProductCodeUKTZEDEntity()
                 {
                     Code = Code,
                     NameCode = NameCodeUKTZED, 

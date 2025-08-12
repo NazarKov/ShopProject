@@ -1,7 +1,7 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectDataBase.DataBase.Entities;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,29 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseCon
         public OperationRecorderController(string url)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url); 
+            _httpClient.BaseAddress = new Uri(url);
+        }
+        public async Task<IEnumerable<OperationsRecorderEntity>> GetOperationRecordersByNumberAndUser(string token, string number,  Guid userId)
+        { 
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersByNumberAndUser?token={token}&number={number}&userId={userId}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var result = CheckingResponse.Unpacking<IEnumerable<OperationsRecorderEntity>>(responseBody);
+            httpResponse.EnsureSuccessStatusCode();
+
+            return (IEnumerable<OperationsRecorderEntity>)result;
+        }
+
+        public async Task<IEnumerable<OperationsRecorderEntity>> GetOperationRecordersByNameAndUser(string token, string name, Guid userId)
+        {
+
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersByNameAndUser?token={token}&name={name}&userId={userId}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var result = CheckingResponse.Unpacking<IEnumerable<OperationsRecorderEntity>>(responseBody);
+            httpResponse.EnsureSuccessStatusCode();
+
+            return (IEnumerable<OperationsRecorderEntity>)result;
         }
 
         public async Task<bool> DeleteOperationsRecorder(string token, OperationsRecorderEntity operationsRecorder)

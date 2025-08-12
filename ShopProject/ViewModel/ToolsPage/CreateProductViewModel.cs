@@ -2,7 +2,7 @@
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.ToolsPage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;

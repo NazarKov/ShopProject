@@ -4,7 +4,7 @@ using ShopProject.Helpers;
 using ShopProject.Helpers.FiscalOperationService;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.PrintingServise;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace ShopProject.Model.SalePage
         private bool SaveDataBase(OperationEntity operation)
         {
             bool result = false;
-            operation.User = Session.User;
+            //operation.User = Session.User;
             Task t = Task.Run(async () =>
             {
                 result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));

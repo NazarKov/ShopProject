@@ -1,12 +1,13 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
-using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,15 +16,15 @@ namespace ShopProject.ViewModel.UserPage
     internal class OperationsRecorderViewModel : ViewModel<OperationsRecorderViewModel>
     {
         private OperationsRecorderOperationsModel _model;
-        private ICommand _openWorkShiftMenu;
+        private List<OperationsRecorderEntity> _operationsRecorders;
+
 
         public OperationsRecorderViewModel() 
         {
             _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
             _model = new OperationsRecorderOperationsModel();
-
-            setFieldPage();
-
+            _operationsRecorders = new List<OperationsRecorderEntity>();
+            SetFieldPage();
         }
 
 
@@ -31,24 +32,60 @@ namespace ShopProject.ViewModel.UserPage
         public List<OperationsRecorderEntity> SoftwareDeviceSettlementOperationsList
         {
             get { return _softwareDeviceSettlementOperationsList; }
-            set { _softwareDeviceSettlementOperationsList = value; OnPropertyChanged("SoftwareDeviceSettlementOperationsList"); }
+            set { _softwareDeviceSettlementOperationsList = value; OnPropertyChanged(nameof(SoftwareDeviceSettlementOperationsList)); }
         }
         private int _selectedItem;
         public int SelectedItem
         {
             get { return _selectedItem; }
-            set { _selectedItem = value; OnPropertyChanged("SelectedItem"); }
+            set { _selectedItem = value; OnPropertyChanged(nameof(SelectedItem)); }
         }
 
-        private void setFieldPage()
-        {
-            var items = _model.GetAllOperationsRecorderOperationsUser();
-            if (items != null)
-            {
-                SoftwareDeviceSettlementOperationsList = items;
-            }
+        private void SetFieldPage()
+        { 
+            SetFieldDataListView();
         }
 
+        private void SetFieldDataListView()
+        { 
+            Task t = Task.Run(async () => { 
+                _operationsRecorders.Clear();
+                _operationsRecorders = await _model.GetAllOperationsRecorderOperationsUser();
+            });
+            t.ContinueWith(t => { 
+                if (_operationsRecorders != null)
+                {
+                    SoftwareDeviceSettlementOperationsList.Clear();
+                    SoftwareDeviceSettlementOperationsList = _operationsRecorders;
+                }
+            });
+        }
+
+        public ICommand SearchCommand { get => new DelegateParameterCommand(SearchOperationRecorder, CanRegister); }
+
+        private void SearchOperationRecorder(object parameter)
+        { 
+            Task t = Task.Run(async () => { 
+                _operationsRecorders.Clear();
+                if (parameter.ToString() != null && parameter.ToString() != "" && parameter.ToString() != " " && parameter.ToString()!=string.Empty)
+                { 
+                    _operationsRecorders = await _model.Search(parameter.ToString());
+                }
+                else
+                {
+
+                    _operationsRecorders = await _model.GetAllOperationsRecorderOperationsUser();
+                }
+
+            });
+            t.ContinueWith(t => {
+                if (_operationsRecorders != null)
+                {
+                    SoftwareDeviceSettlementOperationsList.Clear();
+                    SoftwareDeviceSettlementOperationsList = _operationsRecorders;
+                }
+            });
+        }
 
         public ICommand OpenWorkShifMenuCommand { get => new DelegateParameterCommand(OpenWorkShiftMenu, CanRegister); }
         private void OpenWorkShiftMenu(object parameter)

@@ -1,6 +1,5 @@
-﻿using ShopProjectDataBase.DataBase.Context;
-using ShopProjectDataBase.DataBase.Entities;
-using ShopProjectDataBase.DataBase.Model;
+﻿using ShopProjectSQLDataBase.Context;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
@@ -217,6 +216,74 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
                 }
                 return new PaginatorData<OperationsRecorderEntity>();
+            }
+        }
+         
+
+        public IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.OperationsRecorders.Load();
+                    context.OperationsRecorderUsers.Load();
+
+                    if (context.OperationsRecorders != null)
+                    {
+                        if (context.OperationsRecorderUsers != null)
+                        {
+                            var operationsRecorders = context.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.Name.Contains(item)).ToList();
+
+
+                            var result = new List<OperationsRecorderEntity>();
+
+                            var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
+                             
+                            foreach (var operationsRecorder in operationRecorders)
+                            {
+                                result.Add(operationsRecorder.OpertionsRecorders);
+                            }
+                            return result;
+                        }
+                    }
+                }
+                return Enumerable.Empty<OperationsRecorderEntity>();
+            }
+        }
+
+        public IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            {
+                if (context != null)
+                {
+                    context.Users.Load();
+                    context.OperationsRecorders.Load();
+                    context.OperationsRecorderUsers.Load();
+                    
+
+                    if (context.OperationsRecorders != null)
+                    {
+                        if (context.OperationsRecorderUsers != null)
+                        {
+                            var operationsRecorders = context.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.FiscalNumber.Contains(item)).ToList();
+                            
+                            
+                            var result = new List<OperationsRecorderEntity>();
+                            
+                            var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
+
+                            foreach (var operationsRecorder in operationRecorders)
+                            {
+                                result.Add(operationsRecorder.OpertionsRecorders);
+                            }
+                            return result;
+                        }  
+                    }
+                }
+
+                return Enumerable.Empty<OperationsRecorderEntity>();
             }
         }
 

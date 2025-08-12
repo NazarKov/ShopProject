@@ -1,12 +1,12 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShopProjectDataBase.DataBase.Entities;
+using ShopProjectSQLDataBase.Entities;
+using System.Windows;
 
 namespace ShopProject.Model.UserPage
 {
@@ -21,21 +21,43 @@ namespace ShopProject.Model.UserPage
             _operationsRecorders = new List<OperationsRecorderEntity>();
         }
 
-        public List<OperationsRecorderEntity> GetAllOperationsRecorderOperationsUser()
+        public async Task<List<OperationsRecorderEntity>> GetAllOperationsRecorderOperationsUser()
         {
-            Task t = Task.Run(async () =>
+            try
             {
-              //  _operationsRecordersUser = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.GetOperationRecordersAndUser(Session.Token)).ToList();
-            });
-            t.Wait();
+                _operationsRecordersUser = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.GetOperationRecordersAndUser(Session.Token)).ToList();
 
-            var result = _operationsRecordersUser.Where(item => item.Users.ID == Session.User.ID).ToList();
 
-            foreach (var item in result)
-            {
-                _operationsRecorders.Add(item.OpertionsRecorders);
+                var result = _operationsRecordersUser.Where(item => item.Users.ID == Session.User.ID).ToList();
+
+                foreach (var item in result)
+                {
+                    if (item.OpertionsRecorders != null)
+                    {
+                        _operationsRecorders.Add(item.OpertionsRecorders);
+                    }
+                }
+                return _operationsRecorders;
             }
-            return _operationsRecorders;
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
+                return new List<OperationsRecorderEntity>();
+            }
+        }
+
+        public async Task<List<OperationsRecorderEntity>> Search(string item)
+        {
+            try
+            {
+                return (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationRecordersByNumberAndUser(Session.Token,item,Session.User.ID)).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new List<OperationsRecorderEntity>();
+            } 
         }
     }
 }

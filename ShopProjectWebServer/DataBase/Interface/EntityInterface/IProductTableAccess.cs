@@ -1,4 +1,4 @@
-﻿using ShopProjectDataBase.DataBase.Model;
+﻿using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers.ProductContoller;
 using ShopProjectWebServer.DataBase.Helpers;

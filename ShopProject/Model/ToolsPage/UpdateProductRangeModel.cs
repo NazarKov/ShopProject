@@ -1,14 +1,13 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using NPOI.SS.Formula.Functions;
+using System.Windows; 
 
 namespace ShopProject.Model.ToolsPage
 {

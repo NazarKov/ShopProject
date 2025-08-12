@@ -1,12 +1,11 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi; 
-using ShopProjectDataBase.DataBase.Model; 
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;  
 using System.Threading.Tasks;
 using System;
 using System.Windows;
-using System.Collections.Generic;
-using ShopProjectDataBase.DataBase.Entities;
+using System.Collections.Generic; 
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.Helpers
 {

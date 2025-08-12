@@ -9,13 +9,13 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
-using System.Threading.Tasks;
-using ShopProjectDataBase.DataBase.Model;
+using System.Threading.Tasks; 
 using ShopProject.View.AdminPage.UserPage;
 using ShopProject.ViewModel.TemplatePage;
 using ShopProjectSQLDataBase.Helper;
 using ShopProject.Helpers.Template.Paginator;
 using System.Collections;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.ViewModel.AdminPage
 {

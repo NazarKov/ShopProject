@@ -3,9 +3,9 @@ using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows; 
-using ShopProjectDataBase.DataBase.Model;
+using System.Windows;  
 using ShopProject.Helpers.FiscalOperationService;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.Model.SalePage
 {

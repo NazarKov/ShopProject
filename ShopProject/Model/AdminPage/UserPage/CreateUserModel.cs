@@ -1,6 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectDataBase.DataBase.Entities;
+using ShopProject.Helpers; 
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,8 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
-using SigningFileLib;
-using ShopProjectDataBase.DataBase.Model;
+using SigningFileLib; 
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProjectSQLDataBase.Entities;
 

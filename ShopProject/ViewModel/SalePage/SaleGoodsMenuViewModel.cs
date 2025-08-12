@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -225,12 +225,12 @@ namespace ShopProject.ViewModel.SalePage
 
                 if (_model.SendCheck(Goods, new OperationEntity()
                 {
-                    DataPacketIdentifier = 1,
-                    TypeRRO = 0,
-                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                    TaxNumber = Session.User.TIN,
-                    FactoryNumberRRO = "v1",
-                    TypeOperation = typeOperration,
+                    //DataPacketIdentifier = 1,
+                    //TypeRRO = 0,
+                    //FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    //TaxNumber = Session.User.TIN,
+                    //FactoryNumberRRO = "v1",
+                    //TypeOperation = typeOperration,
                     MAC = _model.GetMac(),
                     CreatedAt = DateTime.Now,
                     NumberPayment = _model.GetLocalNumber(),
@@ -238,8 +238,8 @@ namespace ShopProject.ViewModel.SalePage
                     RestPayment = Convert.ToDecimal(rest),
                     TotalPayment = (decimal)SumaOrder,
                     BuyersAmount = (decimal)SumaUser,
-                    FormOfPayment = SelectIndex,
-                    VersionDataPaket = 1,
+                    //FormOfPayment = SelectIndex,
+                    //VersionDataPaket = 1,
 
                 }))
                 {

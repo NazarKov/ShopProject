@@ -1,6 +1,4 @@
-﻿using NPOI.HSSF.Record.Chart;
-using ShopProjectDataBase.DataBase.Model;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;

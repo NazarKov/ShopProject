@@ -1,6 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductUnitPage;
+using ShopProjectSQLDataBase.Entities;
 using ShopProjectSQLDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.SaveItemDataBase(new ShopProjectDataBase.DataBase.Model.ProductUnitEntity()
+                await _model.SaveItemDataBase(new ProductUnitEntity()
                 {
                     ShortNameUnit = _shortNameUnit,
                     NameUnit = _fullNameUnit,

@@ -3,8 +3,8 @@ using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers;
 using ShopProject.Helpers.FiscalOperationService;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.PrintingServise;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers.PrintingServise; 
+using ShopProjectSQLDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -77,7 +77,7 @@ namespace ShopProject.Model.SalePage
 
         private void SaveDataBase(OperationEntity operation, List<ProductEntity> goods)
         {
-            operation.User = Session.User;
+            //operation.User = Session.User;
             bool result = false;
             Task t = Task.Run(async () =>
             {
@@ -90,7 +90,7 @@ namespace ShopProject.Model.SalePage
                         orders.Add(new OrderEntity()
                         {
                             Operation = operation,
-                            Goods = item,
+                            //Goods = item,
                             Count = (int)item.Count,
 
                         });
@@ -114,14 +114,17 @@ namespace ShopProject.Model.SalePage
                     operation = (await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token)); 
                 });
                 t.Wait();
-                if (operation.LocalNumbetShift == 0)
-                {
-                    return "1";
-                }
-                else
-                {
-                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
-                }
+                //if (operation.LocalNumbetShift == 0)
+                //{
+                //    return "1";
+                //}
+
+                return "1";
+
+                //else
+                //{
+                //    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
+                //}
             }
             catch (Exception ex)
             {

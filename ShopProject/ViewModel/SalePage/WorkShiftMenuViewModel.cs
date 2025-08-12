@@ -3,7 +3,7 @@ using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.Views.SalePage;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -250,13 +250,13 @@ namespace ShopProject.ViewModel.SalePage
 
             OperationEntity operation = new OperationEntity
             {
-                VersionDataPaket = 1,
-                DataPacketIdentifier = 1,
-                TypeRRO = 0,
-                FiscalNumberRRO = rro.FiscalNumber.ToString(),
-                TaxNumber = user.TIN.ToString(),
-                FactoryNumberRRO = "v1",
-                TypeOperation = 108,
+                //VersionDataPaket = 1,
+                //DataPacketIdentifier = 1,
+                //TypeRRO = 0,
+                //FiscalNumberRRO = rro.FiscalNumber.ToString(),
+                //TaxNumber = user.TIN.ToString(),
+                //FactoryNumberRRO = "v1",
+                //TypeOperation = 108,
                 CreatedAt = DateTime.Now,
                 NumberPayment = "0",
                 MAC = _model.GetMac(),
@@ -281,12 +281,12 @@ namespace ShopProject.ViewModel.SalePage
         {
             OperationEntity operation = new OperationEntity
             {
-                TypeOperation = 113,
-                DataPacketIdentifier = 1,
-                TypeRRO = 0,
-                FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                TaxNumber = Session.User.TIN,
-                FactoryNumberRRO = "v1",
+               // TypeOperation = 113,
+               // DataPacketIdentifier = 1,
+               // TypeRRO = 0,
+               // FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+               // TaxNumber = Session.User.TIN,
+               // FactoryNumberRRO = "v1",
                 MAC = _model.GetMac(),
                 CreatedAt = DateTime.Now,
                 NumberPayment = "0",
@@ -392,17 +392,17 @@ namespace ShopProject.ViewModel.SalePage
                 int number = int.Parse(_model.GetLocalNumber());
                 OperationEntity operation = new OperationEntity
                 {
-                    VersionDataPaket = 1,
-                    TypeOperation = 2,
-                    DataPacketIdentifier = 1,
-                    TypeRRO = 0,
-                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                    TaxNumber = Session.User.TIN,
-                    FactoryNumberRRO = "v1",
+                   // VersionDataPaket = 1,
+                   // TypeOperation = 2,
+                   // DataPacketIdentifier = 1,
+                   // TypeRRO = 0,
+                   // FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                   // TaxNumber = Session.User.TIN,
+                   // FactoryNumberRRO = "v1",
                     MAC = _model.GetMac(),
                     CreatedAt = DateTime.Now,
                     NumberPayment = number.ToString(),
-                    FormOfPayment = 0,
+                   // FormOfPayment = 0,
                     TotalPayment = Cash,
                 };
 
@@ -438,17 +438,17 @@ namespace ShopProject.ViewModel.SalePage
                 int number = int.Parse(_model.GetLocalNumber());
                 OperationEntity operation = new OperationEntity
                 {
-                    VersionDataPaket = 1,
-                    TypeOperation = 2.01m,
-                    DataPacketIdentifier = 1,
-                    TypeRRO = 0,
-                    FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                    TaxNumber = Session.User.TIN,
-                    FactoryNumberRRO = "v1",
+                    //VersionDataPaket = 1,
+                    //TypeOperation = 2.01m,
+                    //DataPacketIdentifier = 1,
+                    //TypeRRO = 0,
+                    //FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
+                    //TaxNumber = Session.User.TIN,
+                    //FactoryNumberRRO = "v1",
                     MAC = _model.GetMac(),
                     CreatedAt = DateTime.Now,
                     NumberPayment = number.ToString(),
-                    FormOfPayment = 0,
+                    //FormOfPayment = 0,
                     TotalPayment = Cash,
                 };
                 VisibleSecondDialogWindow = "Hidden";

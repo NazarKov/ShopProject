@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShopProjectDataBase.DataBase.Entities
+namespace ShopProjectSQLDataBase.Entities
 {
     [Table("UserRole")]
     public class UserRoleEntity

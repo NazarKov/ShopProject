@@ -3,7 +3,7 @@ using ShopProjectWebServer.Api.Helpers;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProjectWebServer.Api.DataBaseController
 {

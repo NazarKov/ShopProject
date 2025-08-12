@@ -8,8 +8,8 @@ using System.Windows.Input;
 using System.Windows;
 using ShopProject.Model.ToolsPage;
 using System.Threading;
-using ShopProject.Helpers;
-using ShopProjectDataBase.DataBase.Model;
+using ShopProject.Helpers; 
+using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.ViewModel.ToolsPage
 {

@@ -1,4 +1,4 @@
-﻿using ShopProjectDataBase.DataBase.Entities;
+﻿using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {

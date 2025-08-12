@@ -14,7 +14,7 @@
     </Page.DataContext>
     <Page.Resources>
         <ControlTemplate x:Key="SearchTextBoxTemplate" TargetType="{x:Type TextBox}">
-            <Border BorderBrush="Black" BorderThickness="0.1" Height="35" Padding="3">
+            <Border BorderBrush="Black" BorderThickness="0.2" Height="35" Padding="3">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="30"></ColumnDefinition>
@@ -45,9 +45,8 @@
             <RowDefinition Height="0.9*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="textboxSearch" Template="{StaticResource SearchTextBoxTemplate}"
-                 Grid.Row="0"
-                 VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="25,15,0,15" FontSize="20">
+        <TextBox x:Name="textboxSearch" Template="{StaticResource SearchTextBoxTemplate}" Height="50" Grid.Row="0"
+                 VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="25,0,0,0" FontSize="20">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction
