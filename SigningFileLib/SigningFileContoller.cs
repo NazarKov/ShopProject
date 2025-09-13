@@ -11,10 +11,13 @@ namespace SigningFileLib
     {
         private int _error;
 
+        private readonly string fileName = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
+        private readonly string signedFileName = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml.p7s";
+
+
         public void Initialize(bool modeUI)
         {
             _error = IEUSignCP.Initialize();
-
             IEUSignCP.SetUIMode(modeUI);
             IEUSignCP.SetRuntimeParameter(IEUSignCP.EU_FP_RESET,true);
             AuditError(_error);
@@ -29,7 +32,7 @@ namespace SigningFileLib
             return true;
         }
   
-        public bool SignFile(string pathKey, string passordKey)
+        public bool SignFileToFileKey(string pathKey, string passordKey)
         {
             if (IEUSignCP.IsInitialized())
             {
@@ -38,7 +41,7 @@ namespace SigningFileLib
 
                 if (_error == IEUSignCP.EU_ERROR_NONE)
                 {
-                    _error = IEUSignCP.SignFile("C:\\ProgramData\\ShopProject\\Temp\\Chek.xml", "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml.p7s", false);
+                    _error = IEUSignCP.SignFile(fileName, signedFileName, false);
                     if (_error == IEUSignCP.EU_ERROR_NONE)
                     {
                         return true;
@@ -47,6 +50,30 @@ namespace SigningFileLib
             }
             return false;
         }
+
+        public bool SignFileToByteKey(byte[] key , string password)
+        {
+            if (IEUSignCP.IsInitialized())
+            {
+                var info = new IEUSignCP.EU_CERT_OWNER_INFO();
+                IEUSignCP.ReadPrivateKeyBinary(key, password, out info);
+
+
+                if (_error == IEUSignCP.EU_ERROR_NONE)
+                {
+                    _error = IEUSignCP.SignFile(fileName, signedFileName, false);
+                    if (_error == IEUSignCP.EU_ERROR_NONE)
+                    {
+                        return true;
+                    }
+                } 
+            }
+            return false;
+        }
+
+
+
+
         public bool GetDataToFile(string pathKey, string passwordKey)
         {
             if (IEUSignCP.IsInitialized())

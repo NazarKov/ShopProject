@@ -20,9 +20,10 @@ namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
         IObjectOwnerTableAccess ObjectOwnerTable { get; set; }
         IGiftCertificatesTableAccess GiftCertificatesTable { get; set; }
         ITokenTableAccess TokenTable { get; set; }
-
-        public string Create(string connectionString);
-        public bool IsCreate(string connectionString);
+        IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
+        IWorkingShiftTableAccess WorkingShiftTable { get; set; }
+         
+        public bool IsCreate();
         public string Сonnection(string connectionString);
         public void Clear();
         public void Delete();

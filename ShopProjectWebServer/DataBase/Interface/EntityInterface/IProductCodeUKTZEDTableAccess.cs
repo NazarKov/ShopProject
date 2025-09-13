@@ -1,5 +1,5 @@
-﻿using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Helpers;
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface

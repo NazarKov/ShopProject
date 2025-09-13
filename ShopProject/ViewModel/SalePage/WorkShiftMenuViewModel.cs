@@ -1,13 +1,14 @@
-﻿
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
+using ShopProject.UIModel.SalePage;
 using ShopProject.Views.SalePage;
 using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -35,7 +36,10 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _cancelSecondDialogsWindowCommand;
 
         private ICommand _exitWorkShiftMenuCommand;
+        private ICommand _printLastCheckCommand;
 
+        private UserEntity _user;
+        private OperationsRecorderEntity _operationsRecorder;
 
         public WorkShiftMenuViewModel ()
         {
@@ -58,73 +62,80 @@ namespace ShopProject.ViewModel.SalePage
             _okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
             _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
             _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
+            _printLastCheckCommand = new DelegateCommand(PrintLastCheck);
 
             _statusShift = string.Empty;
             _statusColor = string.Empty;
             _tabs = new ObservableCollection<TabItem>();
 
-            VisibleFirstDialogWindow = "Hidden";
-            VisibleSecondDialogWindow = "Hidden";
+            _user = Session.User;
+            _operationsRecorder = new OperationsRecorderEntity();
+            _operationsRecorder = Session.FocusDevices;
+            _fnNumber = string.Empty;
+            _economicUnit = string.Empty;
+            _seller = string.Empty;
+            _statusOnline = string.Empty;
+
+            VisibleFirstDialogWindow = Visibility.Hidden;
+            VisibleSecondDialogWindow = Visibility.Hidden;
             Cash = 0;
-            setFieldPage();
-
-
+            SetFieldPage();
         }
 
         private string _statusShift;
         public string StatusShift
         {
             get { return _statusShift; }
-            set { _statusShift = value; OnPropertyChanged("StatusShift"); }
+            set { _statusShift = value; OnPropertyChanged(nameof(StatusShift)); }
         }
 
         private string _statusColor;
         public string StatusColor
         {
             get { return _statusColor; }
-            set { _statusColor = value; OnPropertyChanged("StatusColor"); }
+            set { _statusColor = value; OnPropertyChanged(StatusColor); }
         }
 
         private string _fnNumber;
         public string FNumber
         {
             get { return _fnNumber; }
-            set { _fnNumber = value;OnPropertyChanged("FNumber"); }
+            set { _fnNumber = value;OnPropertyChanged(nameof(FNumber)); }
         }
 
         private string _economicUnit;
         public string EconomicUnit
         {
             get { return _economicUnit; }
-            set { _economicUnit = value; OnPropertyChanged("EconomicUnit"); }
+            set { _economicUnit = value; OnPropertyChanged(nameof(EconomicUnit)); }
         }
 
         private string _seller;
         public string Seller
         {
             get { return _seller; }
-            set { _seller = value; OnPropertyChanged("Seller"); }
+            set { _seller = value; OnPropertyChanged(nameof(Seller)); }
         }
 
         private string _statusOnline;
         public string StatusOnline
         {
             get { return _statusOnline; }
-            set { _statusOnline = value; OnPropertyChanged("StatusOnline"); }
+            set { _statusOnline = value; OnPropertyChanged(nameof(StatusOnline)); }
         }
 
         private int _widght;
         public int Widght
         {
             get { return _widght; }
-            set { _widght = value; OnPropertyChanged("Widght"); }
+            set { _widght = value; OnPropertyChanged(nameof(Widght)); }
         }
 
         private int _height;
         public int Height
         {
             get { return _height; }
-            set { _height = value; OnPropertyChanged("Height"); }
+            set { _height = value; OnPropertyChanged(nameof(Height)); }
         }
 
         private ObservableCollection<TabItem> _tabs;
@@ -137,35 +148,35 @@ namespace ShopProject.ViewModel.SalePage
         public int SelectedTabItem
         {
             get { return _selectedTabItem; }
-            set { _selectedTabItem = value;OnPropertyChanged("SelectedTabItem"); }
+            set { _selectedTabItem = value;OnPropertyChanged(nameof(SelectedTabItem)); }
         }
 
-        private string _visibleFirstDialogWindow;
-        public string VisibleFirstDialogWindow
+        private Visibility _visibleFirstDialogWindow;
+        public Visibility VisibleFirstDialogWindow
         {
             get { return _visibleFirstDialogWindow; }
-            set { _visibleFirstDialogWindow = value; OnPropertyChanged("VisibleFirstDialogWindow"); }
+            set { _visibleFirstDialogWindow = value; OnPropertyChanged(nameof(VisibleFirstDialogWindow)); }
         }
 
-        private string _visibleSecondDialogWindow;
-        public string VisibleSecondDialogWindow
+        private Visibility _visibleSecondDialogWindow;
+        public Visibility VisibleSecondDialogWindow
         {
             get { return _visibleSecondDialogWindow; }
-            set { _visibleSecondDialogWindow = value; OnPropertyChanged("VisibleSecondDialogWindow"); }
+            set { _visibleSecondDialogWindow = value; OnPropertyChanged(nameof(VisibleSecondDialogWindow)); }
         }
 
         private decimal _cash;
         public decimal Cash
         {
             get { return _cash; }
-            set { _cash = value; OnPropertyChanged("Cash"); }
+            set { _cash = value; OnPropertyChanged(nameof(Cash)); }
         }
 
         private Visibility _testMode;
         public Visibility TestMode
         {
             get { return _testMode; }
-            set { _testMode = value; OnPropertyChanged("TestMode"); }
+            set { _testMode = value; OnPropertyChanged(nameof(TestMode)); }
         }
 
         public ICommand UpdateSizeCommand => _updateSizeCommand;
@@ -177,7 +188,12 @@ namespace ShopProject.ViewModel.SalePage
         }
 
 
-        private void setFieldPage()
+        private void SetFieldPage()
+        { 
+            SetTabsField();
+            SetHeaderLabelField();
+        }
+        private void SetTabsField()
         {
             var tabs = Session.Tabs;
             if (tabs.Count == 0)
@@ -199,10 +215,17 @@ namespace ShopProject.ViewModel.SalePage
 
                 SelectedTabItem = tabs.Where(item => item.IsSelected == true).FirstOrDefault().TabIndex;
 
-                OnPropertyChanged("Tabs");
+                OnPropertyChanged(nameof(Tabs));
             }
+        }
+
+
+        private void SetHeaderLabelField()
+        {
 
             StatusShift = AppSettingsManager.GetParameterFiles("StatusWorkShift").ToString();
+            StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
+           
             if (StatusShift == "Зміна відкрита")
             {
                 StatusColor = "Green";
@@ -211,23 +234,23 @@ namespace ShopProject.ViewModel.SalePage
             {
                 StatusColor = "Red";
             }
-            FNumber = Session.FocusDevices.FiscalNumber;
-            var focusdevices = Session.FocusDevices.ObjectOwner;
-            if (focusdevices != null)
+
+            FNumber = _operationsRecorder.FiscalNumber;
+             
+            if (_operationsRecorder.ObjectOwner != null)
             {
-                EconomicUnit = focusdevices.NameObject;
+                EconomicUnit = _operationsRecorder.ObjectOwner.NameObject;
             }
-            var nameSeller = Session.User.FullName;
-            if (nameSeller != null && nameSeller != string.Empty && nameSeller != "")
+
+            if (_user.FullName != null && _user.FullName != string.Empty && _user.FullName != "")
             {
 
-                Seller = nameSeller;
+                Seller = _user.FullName;
             }
             else
             {
-                Seller = Session.User.Login;
-            }
-            StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
+                Seller = _user.Login;
+            } 
 
             if ((bool)AppSettingsManager.GetParameterFiles("TestMode"))
             {
@@ -237,91 +260,88 @@ namespace ShopProject.ViewModel.SalePage
             {
                 _testMode = Visibility.Hidden;
             }
-
         }
 
 
         public ICommand OpenShiftCommand => _openShiftCommand;
         private void OpenShift()
         {
+            UIWorkingShiftModel workingShiftEntity = new UIWorkingShiftModel();
 
-            var rro = Session.FocusDevices;
-            var user = Session.User;
+            Task t = Task.Run(async () => {
 
-            OperationEntity operation = new OperationEntity
+                _model.AddKey(_user.SignatureKey);
+                workingShiftEntity = new UIWorkingShiftModel()
+                {
+                    TypeRRO = 0,
+                    FiscalNumberRRO = _operationsRecorder.FiscalNumber,
+                    TypeShiftCrateAt = ShopProjectSQLDataBase.Helper.TypeWorkingShift.OpenShift,
+                    UserOpenShift = _user,
+                    DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber), 
+                    FactoryNumberRRO = "v1",
+                    MACCreateAt = await _model.GetMAC(_operationsRecorder.ID),
+                    CreateAt = DateTimeOffset.Now,
+                    
+                }; 
+                Session.WorkingShift = workingShiftEntity;
+            });
+            t.ContinueWith(t =>
             {
-                //VersionDataPaket = 1,
-                //DataPacketIdentifier = 1,
-                //TypeRRO = 0,
-                //FiscalNumberRRO = rro.FiscalNumber.ToString(),
-                //TaxNumber = user.TIN.ToString(),
-                //FactoryNumberRRO = "v1",
-                //TypeOperation = 108,
-                CreatedAt = DateTime.Now,
-                NumberPayment = "0",
-                MAC = _model.GetMac(),
-            };
-
-            if (_model.OpenShift(operation))
-            {
-                StatusShift = "Зміна відкрита";
-                StatusColor = "Green";
-                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-                StatusOnline = "з " + DateTime.Now.ToString("g");
-                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-                AppSettingsManager.SetParameterFile("FocusDevise", rro.ID.ToString());
+                if (_model.OpenShift(workingShiftEntity))
+                {
+                    StatusShift = "Зміна відкрита";
+                    StatusColor = "Green";
+                    AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                    StatusOnline = "з " + DateTime.Now.ToString("g");
+                    AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                    AppSettingsManager.SetParameterFile("FocusDevise", _operationsRecorder.ID.ToString());
 
 
-                MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+                    MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            });
         }
 
         public ICommand CloseShiftCommand => _closeShiftCommand;
         private void CloseShift()
         {
-            OperationEntity operation = new OperationEntity
+
+            var shift = Session.WorkingShift;
+
+
+
+            Task t = Task.Run(async () =>
             {
-               // TypeOperation = 113,
-               // DataPacketIdentifier = 1,
-               // TypeRRO = 0,
-               // FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-               // TaxNumber = Session.User.TIN,
-               // FactoryNumberRRO = "v1",
-                MAC = _model.GetMac(),
-                CreatedAt = DateTime.Now,
-                NumberPayment = "0",
-
-                //AmountOfFundsReceived = _model.GetTotalFundsReceived(),
-                //AmountOfIssuedFunds = _model.GetTotalFundsIssued(),
-
-                //AmountReceivedCash = _model.GetTotalBuyersAmountCash(),
-                //AmountIssuedCash = _model.GetTotalRestCash(),
-
-                //BuyersAmount = _model.GetTotalBuyersAmountCard() + _model.GetTotalBuyersAmountCash(),
-
-
-                //AmountCheckReturnCash = _model.GetTotatalChechReturnCash(),
-                //AmountCheckReturnCard = _model.GetTotatalChechReturnCard(),
-
-                //NumberOfSalesReceipts = _model.GetNumberFiscalCheck(),
-                //NumberOfPendingReturns = _model.GetNumberReturnFiscalCheck(),
-            };
-
-            if (_model.CloseShift(operation))
-            {
-                StatusShift = "Зміна закрита";
-                StatusColor = "Red";
-                AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-                StatusOnline = string.Empty;
-                AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-                //_model.Print(operation);
+                _model.AddKey(_user.SignatureKey);
+                shift.TotalCheckForShift = 0;
+                shift.TotalReturnCheckForShift = 0;
+                shift.UserCloseShift = _user;
+                shift.AmountOfOfficialFundsIssuedCash = 0;
+                shift.AmountOfFundsIssued = 0;
+                shift.AmountOfOfficialFundsReceivedCash = 0;
+                shift.AmountOfFundsReceived = 0;
+                shift.AmountOfOfficialFundsIssuedCard = 0;
+                shift.AmountOfOfficialFundsReceivedCard = 0;
+                shift.EndAt = DateTimeOffset.Now;
+                shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
+                shift.TypeShiftEndAt = ShopProjectSQLDataBase.Helper.TypeWorkingShift.CloseShift;
+            });
+            t.ContinueWith(t => {
+                if (_model.CloseShift(shift))
+                {
+                    StatusShift = "Зміна закрита";
+                    StatusColor = "Red";
+                    AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                    StatusOnline = string.Empty;
+                    AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                    //_model.Print(operation);
 
 
-                AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
+                    AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
 
-                MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-
+                    MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                } 
+            });
 
         }
 
@@ -374,13 +394,13 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;
         private void OfficialDepositMoney()
         {
-            VisibleFirstDialogWindow = "Visible";
+            VisibleFirstDialogWindow = Visibility.Visible;
         }
 
         public ICommand OfficialIssuanceModeyCommand => _officialReceivedMoneyCommand;
         private void OfficialIssuanceModey()
         {
-            VisibleSecondDialogWindow = "Visible";
+            VisibleSecondDialogWindow = Visibility.Visible;
         }
 
         public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
@@ -389,7 +409,7 @@ namespace ShopProject.ViewModel.SalePage
             new Thread(new ThreadStart(() =>
             {
 
-                int number = int.Parse(_model.GetLocalNumber());
+                //int number = int.Parse(_model.GetLocalNumber());
                 OperationEntity operation = new OperationEntity
                 {
                    // VersionDataPaket = 1,
@@ -399,14 +419,14 @@ namespace ShopProject.ViewModel.SalePage
                    // FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
                    // TaxNumber = Session.User.TIN,
                    // FactoryNumberRRO = "v1",
-                    MAC = _model.GetMac(),
+                    //MAC = _model.GetMac(),
                     CreatedAt = DateTime.Now,
-                    NumberPayment = number.ToString(),
+                   // NumberPayment = number.ToString(),
                    // FormOfPayment = 0,
                     TotalPayment = Cash,
                 };
 
-                VisibleFirstDialogWindow = "Hidden";
+                VisibleFirstDialogWindow = Visibility.Hidden;
                 if (_model.OfficialDepositMoney(operation))
                 {
                     MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -425,7 +445,7 @@ namespace ShopProject.ViewModel.SalePage
         private void CancelFirstDialogWindow()
         {
             Cash = 0;
-            VisibleFirstDialogWindow = "Hidden";
+            VisibleFirstDialogWindow = Visibility.Hidden;
         }
 
 
@@ -435,7 +455,7 @@ namespace ShopProject.ViewModel.SalePage
             new Thread(new ThreadStart(() =>
             {
 
-                int number = int.Parse(_model.GetLocalNumber());
+               // int number = int.Parse(_model.GetLocalNumber());
                 OperationEntity operation = new OperationEntity
                 {
                     //VersionDataPaket = 1,
@@ -445,13 +465,13 @@ namespace ShopProject.ViewModel.SalePage
                     //FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
                     //TaxNumber = Session.User.TIN,
                     //FactoryNumberRRO = "v1",
-                    MAC = _model.GetMac(),
+                   // MAC = _model.GetMac(),
                     CreatedAt = DateTime.Now,
-                    NumberPayment = number.ToString(),
+                   // NumberPayment = number.ToString(),
                     //FormOfPayment = 0,
                     TotalPayment = Cash,
                 };
-                VisibleSecondDialogWindow = "Hidden";
+                VisibleSecondDialogWindow = Visibility.Hidden;
                 if (_model.OfficialDepositMoney(operation))
                 {
                     MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -471,7 +491,7 @@ namespace ShopProject.ViewModel.SalePage
         private void CancelSecondDialogWindow()
         {
             Cash = 0;
-            VisibleSecondDialogWindow = "Hidden";
+            VisibleSecondDialogWindow = Visibility.Hidden;
         }
 
         public ICommand OpenReturnGoodsMenuCommand => _openReturnGoodsMenuCommand;
@@ -498,6 +518,11 @@ namespace ShopProject.ViewModel.SalePage
             Session.FocusDevices = null;
         }
 
+        public ICommand PrintLastCheckCommand => _printLastCheckCommand;
+        private void PrintLastCheck()
+        {
+
+        }
 
     }
 }

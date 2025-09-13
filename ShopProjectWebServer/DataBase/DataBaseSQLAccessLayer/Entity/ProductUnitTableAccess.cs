@@ -1,24 +1,23 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper; 
-using ShopProjectWebServer.DataBase.Helpers; 
-using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
-using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class ProductUnitTableAccess : IProductUnitTableAccess 
     {
-        private string _connectionString;
-
-        public ProductUnitTableAccess(string connectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public ProductUnitTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = connectionString;
+            _option = option;
         }
 
         public void Add(ProductUnitEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null && context.ProductUnits != null)
                 {
@@ -48,7 +47,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<ProductUnitEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -69,7 +68,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<ProductUnitEntity> GetAllPageColumn(double page, double countColumn, TypeStatusUnit statusUnit)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -121,7 +120,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit statusUnit)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -152,7 +151,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<ProductUnitEntity> GetUnitByNamePageColumn(string name, double page, double countColumn, TypeStatusUnit statusUnit)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -215,7 +214,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Update(ProductUnitEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -241,7 +240,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(ProductUnitEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -258,7 +257,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void UpdateParameter(ProductUnitEntity item, string parameter, object value)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {

@@ -1,26 +1,25 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Helpers.ProductContoller;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 using System.Linq;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class ProductTableAccess : IProductTableAccess 
     {
-        private string _connectionString;
-
-        public ProductTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public ProductTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
 
         public void Add(ProductEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -42,7 +41,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void AddRange(IEnumerable<ProductEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -71,7 +70,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Update(ProductEntity product)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -90,7 +89,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
         public void UpdateRange(IEnumerable<ProductEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -133,7 +132,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void UpdateParameter(ProductEntity product, string nameParameter, object valueParameter)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -194,7 +193,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<ProductEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -217,7 +216,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<ProductEntity> GetAllPageColumn(double page , double countColumn,TypeStatusProduct productstatus)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -276,7 +275,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -309,7 +308,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<ProductEntity> GetProductByNamePageColumn(string name , double page, double countColumn, TypeStatusProduct statusProduct)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -372,7 +371,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public ProductInfo GetProductInfo()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 { 
@@ -395,6 +394,30 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
                 }
                 return new ProductInfo();
+            }
+        }
+
+        public ProductEntity GetByBarCode(string barCode)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.ProductCodeUKTZED.Load();
+                    context.ProductUnits.Load();
+                    context.Products.Load();
+
+                    if (context.Products != null && context.Products.Count() != 0)
+                    { 
+                        return context.Products.First(i => i.Code == barCode);
+                    }
+                    else
+                    {
+                        throw new Exception("Неможливий пошук оскільки немає товарів");
+                    }
+
+                }
+                return new ProductEntity();
             }
         }
     }

@@ -1,64 +1,82 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity; 
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class DataBaseSQLAccess : IDataAccess 
+    public class DataBaseSQLAccess : IDataAccess
     {
-        public IOrderTableAccess  OrderTable { get; set; }
+        public IOrderTableAccess OrderTable { get; set; }
         public IOperationTableAccess OperationTable { get; set; }
         public IOperationRecorderTableAccess OperationRecorderTable { get; set; }
         public IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; }
-        public IProductTableAccess  ProductTable { get; set; }
-        public IProductUnitTableAccess  ProductUnitTable { get; set; }
-        public IProductCodeUKTZEDTableAccess  ProductCodeUKTZEDTable { get; set; }
-        public IDiscountTableAccess  DiscountTable { get; set; }
-        public IUserTableAccess  UserTable { get; set; }
+        public IProductTableAccess ProductTable { get; set; }
+        public IProductUnitTableAccess ProductUnitTable { get; set; }
+        public IProductCodeUKTZEDTableAccess ProductCodeUKTZEDTable { get; set; }
+        public IDiscountTableAccess DiscountTable { get; set; }
+        public IUserTableAccess UserTable { get; set; }
 
-        public IUserRoleTableAccess  UserRoleTable { get; set; }
-        public IObjectOwnerTableAccess  ObjectOwnerTable { get; set; }
-        public IGiftCertificatesTableAccess  GiftCertificatesTable { get; set; }
-        public ITokenTableAccess  TokenTable { get; set;}
+        public IUserRoleTableAccess UserRoleTable { get; set; }
+        public IObjectOwnerTableAccess ObjectOwnerTable { get; set; }
+        public IGiftCertificatesTableAccess GiftCertificatesTable { get; set; }
+        public ITokenTableAccess TokenTable { get; set; }
+        public IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
+        public IWorkingShiftTableAccess WorkingShiftTable { get; set; }
 
+        private readonly DbContextOptionsBuilder<ContextDataBase> optionsBuilder;
 
         public DataBaseSQLAccess(string ConnectionString)
         {
-            UserTable = new UserTableAccess(ConnectionString);
-            UserRoleTable = new UserRoleTableAccess(ConnectionString);
-            TokenTable = new TokenTableAccess(ConnectionString);
-            ProductTable = new ProductTableAccess(ConnectionString);
-            ProductUnitTable = new ProductUnitTableAccess(ConnectionString);
-            ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(ConnectionString);
-            ObjectOwnerTable = new ObjectOwnerTableAccess(ConnectionString);
-            OperationRecorderTable = new OperationRecorderTableAccess(ConnectionString);
-            OperationRecorederUserTable = new OperationRecorderUserTableAccess(ConnectionString);
-            OperationTable = new OperationTableAccess(ConnectionString);
-            OrderTable = new OrderTableAccess(ConnectionString);
+            optionsBuilder = new DbContextOptionsBuilder<ContextDataBase>();
+            optionsBuilder.UseSqlServer(ConnectionString);
+
+            if (IsCreate())
+            {
+                UserTable = new UserTableAccess(optionsBuilder.Options);
+                UserRoleTable = new UserRoleTableAccess(optionsBuilder.Options);
+                TokenTable = new TokenTableAccess(optionsBuilder.Options);
+                ProductTable = new ProductTableAccess(optionsBuilder.Options);
+                ProductUnitTable = new ProductUnitTableAccess(optionsBuilder.Options);
+                ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(optionsBuilder.Options);
+                ObjectOwnerTable = new ObjectOwnerTableAccess(optionsBuilder.Options);
+                OperationRecorderTable = new OperationRecorderTableAccess(optionsBuilder.Options);
+                OperationRecorederUserTable = new OperationRecorderUserTableAccess(optionsBuilder.Options);
+                OperationTable = new OperationTableAccess(optionsBuilder.Options);
+                OrderTable = new OrderTableAccess(optionsBuilder.Options);
+                MediaAccessControlTable = new MediaAccessControlTableAccess(optionsBuilder.Options);
+                WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
+                DiscountTable = new DiscountTableAccess();
+                GiftCertificatesTable = new GiftCertificatesTableAccess();
+            }
+            else
+            {
+                throw new Exception("База даних не створена");
+            }
         }
 
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Create(string connectionString)
+        public bool IsCreate()
         {
             try
             {
-                using (ContextDataBase context = new ContextDataBase(connectionString))
+                using (ContextDataBase context = new ContextDataBase(optionsBuilder.Options))
                 {
-                    if (!context.Database.Exists())
+
+                    if (!context.Database.CanConnect())
                     {
-                        context.Database.Create();
+                        context.Database.Migrate();
+                        context.Initial();
                     }
-                    return "OK";
+
+                    context.Database.Migrate();
+                    context.Initial();
+                    return true;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return ex.Message;
+                return false;
             }
         }
 
@@ -67,12 +85,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             throw new NotImplementedException();
         }
 
-        public bool IsCreate(string connectionString)
+        public string Сonnection(string connectionString)
         {
             throw new NotImplementedException();
         }
 
-        public string Сonnection(string connectionString)
+        public void Clear()
         {
             throw new NotImplementedException();
         }

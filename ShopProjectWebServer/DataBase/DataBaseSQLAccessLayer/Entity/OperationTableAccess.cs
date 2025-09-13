@@ -1,26 +1,34 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OperationTableAccess : IOperationTableAccess 
     {
-        private string _connectionString;
-        public OperationTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public OperationTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
         public void Add(OperationEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
+                    context.WorkingShift.Load();
+                    context.MediaAccessControls.Load();
                     context.Operations.Load();
-                    if (context.Products != null)
+                    if (context.Operations != null)
                     {
+                        item.MAC = context.MediaAccessControls.Find(item.MAC.ID);
+                        if(item.Shift != null)
+                        {
+                            item.Shift = context.WorkingShift.Find(item.Shift.ID);
+                        }
+
                         context.Operations.Add(item);
                     }
                     context.SaveChanges();
@@ -35,7 +43,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -54,16 +62,16 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public OperationEntity GetLastItem()
+        public OperationEntity GetLastItem(int shiftId)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
                     context.Operations.Load();
                     if (context.Operations.Count() != 0)
                     {
-                        return context.Operations.ElementAt(context.Operations.Count() - 1);
+                        return context.Operations.Where(i=>i.Shift.ID==shiftId).ElementAt(context.Operations.Count() - 1);
                     }
                     else
                     {

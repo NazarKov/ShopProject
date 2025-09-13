@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel;
+using ShopProject.UIModel.SalePage;
 
 namespace ShopProject.Helpers
 {
@@ -25,6 +27,7 @@ namespace ShopProject.Helpers
         public static ProductUnitEntity ProductUnit { get; set; }
         public static ProductCodeUKTZEDEntity ProductCodeUKTZEDEntity { get; set; }
         public static UserEntity UserEntity { get; set; }
+        public static UIWorkingShiftModel WorkingShift { get; set; }
         #endregion
 
 
@@ -62,7 +65,7 @@ namespace ShopProject.Helpers
         //    _isInit = true;
         //}
 
-        public static bool CheckSession()
+        public static async Task<bool> CheckSession()
         {
             try
             {
@@ -74,12 +77,8 @@ namespace ShopProject.Helpers
                     if (autoLogin)
                     {
                         if (token != null && token != string.Empty)
-                        {
-                            Task task = Task.Run(async () =>
-                            {
-                                await WriteSession(token);
-                            });
-                            task.Wait();
+                        { 
+                            await WriteSession(token); 
 
                             if (User != null)
                             {

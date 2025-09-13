@@ -1,22 +1,21 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities; 
-using ShopProjectWebServer.DataBase.Helpers;        
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class TokenTableAccess : ITokenTableAccess 
     {
-        private string _connectionString;
-        public TokenTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public TokenTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
-
         public void Add(TokenEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -41,7 +40,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<TokenEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 { 

@@ -1,16 +1,16 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class UserRoleTableAccess : IUserRoleTableAccess 
     {
-        private string _connectionString;
-        public UserRoleTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public UserRoleTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
 
         public void Add(UserRoleEntity item)
@@ -25,7 +25,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<UserRoleEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {

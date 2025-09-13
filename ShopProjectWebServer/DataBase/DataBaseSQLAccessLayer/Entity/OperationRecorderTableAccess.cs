@@ -1,23 +1,23 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OperationRecorderTableAccess : IOperationRecorderTableAccess 
     {
-        private string _connectionString;
-        public OperationRecorderTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public OperationRecorderTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
 
         public void Add(OperationsRecorderEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -31,7 +31,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void AddBinding(Guid idoperationrecoreder, Guid idobjectowner)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -50,7 +50,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void AddRange(IEnumerable<OperationsRecorderEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -64,7 +64,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(OperationsRecorderEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -82,7 +82,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -103,7 +103,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<OperationsRecorderEntity> GetAllPageColumn(double page, double countColumn, TypeStatusOperationRecorder status)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 { 
@@ -160,7 +160,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<OperationsRecorderEntity> GetOperationRecorderByNamePageColumn(string name, double page, double countColumn, TypeStatusOperationRecorder status)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -222,7 +222,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -254,7 +254,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {

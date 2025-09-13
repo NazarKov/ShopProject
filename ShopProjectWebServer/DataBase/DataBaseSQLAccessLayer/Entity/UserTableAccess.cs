@@ -1,23 +1,22 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities; 
-using ShopProjectSQLDataBase.Helper;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class UserTableAccess : IUserTableAccess
     {
-        private string _connectionString;
-        public UserTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public UserTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
-
         public void Add(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -48,7 +47,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -69,7 +68,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<UserEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -94,7 +93,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public PaginatorData<UserEntity> GetAllPageColumn(double page, double countColumn, TypeStatusUser statusUser)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -152,9 +151,37 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
+        public UserEntity GetUser(string token)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Users.Load();
+                    context.ElectronicSignatureKeys.Load();
+                    context.UserRoles.Load();
+                    context.UserTokens.Load();
+                    context.ObjectOwners.Load();
+                    context.OperationsRecorders.Load();
+
+
+                    if(context.Users!=null && context.Users.Count() > 0)
+                    {
+                        var userToken = context.UserTokens.FirstOrDefault(t => t.Token == token);
+
+                        if (userToken != null)
+                        {
+                            return context.Users.FirstOrDefault(u => u.ID == userToken.User.ID); 
+                        }
+                    } 
+                }
+                return new UserEntity();
+            }
+        }
+
         public PaginatorData<UserEntity> GetUsersByNamePageColumn(string name, double page, double countColumn, TypeStatusUser statusUser)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -218,7 +245,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Update(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -271,7 +298,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProject", "ShopProject\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalServerApi", "FiscalServerApi\FiscalServerApi.csproj", "{CE01F744-489A-4613-A5D0-ACCFC6FC5BB4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProjectSQLDataBase", "ShopProjectDataBase\ShopProjectSQLDataBase.csproj", "{C45FDA1F-6F0F-4B97-81F5-D419A5DF8F90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProjectDataBase", "ShopProjectDataBase\ShopProjectDataBase.csproj", "{C45FDA1F-6F0F-4B97-81F5-D419A5DF8F90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopProjectWebServer", "ShopProjectWebServer\ShopProjectWebServer.csproj", "{9C8CC111-F85B-4B32-AE16-C746FF1CEA2E}"
 EndProject

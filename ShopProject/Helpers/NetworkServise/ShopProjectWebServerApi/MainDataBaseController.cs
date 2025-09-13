@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DataBaseController;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.DataBaseController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
 {
     internal class MainDataBaseController
-    {
-        private string _url;
-
+    { 
         public UserController UserController { get; set; }
         public ProductController ProductController { get; set; }
         public ProductUnitController ProductUnitController { get; set; }
@@ -23,10 +21,11 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
         public OperationRecorderAndUserController OperationRecorderAndUserController { get; set; }
         public OperationController OperationController { get; set; }
         public OrderController OrderController { get; set; }
+        public MediaAccessControlController MediaAccessControlController { get; set; }
+        public WorkingShiftContoller WorkingShiftContoller { get; set; }
 
         public MainDataBaseController(string url)
-        {
-            _url = url;
+        { 
             UserController = new UserController(url);
             ProductController = new ProductController(url);
             ProductUnitController = new ProductUnitController(url);
@@ -37,6 +36,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
             OperationRecorderAndUserController = new OperationRecorderAndUserController(url);
             OperationController = new OperationController(url);
             OrderController = new OrderController(url);
+            MediaAccessControlController = new MediaAccessControlController(url);
+            WorkingShiftContoller = new WorkingShiftContoller(url);
         }
     }
 }

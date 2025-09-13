@@ -14,7 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShopProjectDataBase\ShopProjectSQLDataBase.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShopProjectDataBase\ShopProjectDataBase.csproj" />
   </ItemGroup>
 
 </Project>

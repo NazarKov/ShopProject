@@ -17,7 +17,7 @@ namespace ShopProjectWebServer.DataBase
             set { _dataBaseAccess = value; }
             get { return _dataBaseAccess; }
         }
-        public static void init()
+        public static void Init()
         {
             _settingManager = new FileSettingManager();
 
@@ -33,9 +33,7 @@ namespace ShopProjectWebServer.DataBase
         public static void Create(string nameDataBase, string password, string typeDataBase, string typeConnect)
         {
             SettingDataBase settingConnect = new SettingDataBase();
-            settingConnect.Name = nameDataBase;
-            settingConnect.PasswordDataBase = password;
-
+            ConnectionString connectionString = new ConnectionString();
 
             switch (Enum.Parse(typeof(TypeDataBase), typeDataBase, true))
             {
@@ -47,34 +45,33 @@ namespace ShopProjectWebServer.DataBase
                 case TypeDataBase.SQL:
                     {
                         settingConnect.TypeDataBase = TypeDataBase.SQL;
-                        settingConnect.ConnectionString = new ConnectionString()
+                        connectionString = new ConnectionString()
                         {
-                            DataSource = Environment.MachineName,
-                            IntegratedSecurity = true,
-                            InitialCatalog = nameDataBase,
+                            Server = Environment.MachineName,
+                            TrustServerCertificate = true,
+                            DataBaseName = nameDataBase,
+                            UserName = "ShopAdmin",
+                            Password = password
                         };
                         switch ((Enum.Parse(typeof(TypeConnectDataBase), typeConnect, true)))
                         {
                             case TypeConnectDataBase.None:
                                 {
-                                    settingConnect.ConnectionString.TypeDataBase = TypeConnectDataBase.None;
+                                    connectionString.TypeDataBase = TypeConnectDataBase.None;
                                     break;
                                 }
                             case TypeConnectDataBase.DEVELEPER:
                                 {
-                                    settingConnect.ConnectionString.TypeDataBase = TypeConnectDataBase.DEVELEPER;
+                                    connectionString.TypeDataBase = TypeConnectDataBase.DEVELEPER;
                                     break;
                                 }
                             case TypeConnectDataBase.SQLEXPRESS:
                                 {
-                                    settingConnect.ConnectionString.TypeDataBase = TypeConnectDataBase.SQLEXPRESS;
+                                    connectionString.TypeDataBase = TypeConnectDataBase.SQLEXPRESS;
                                     break;
                                 }
                         }
-
-
-                        _dataBaseAccess = new DataBaseSQLAccess(settingConnect.ConnectionString.ToString());
-                        _dataBaseAccess.Create(settingConnect.ConnectionString.ToString());
+                        settingConnect.ConnectionString = connectionString.ToString();
                         break;
                     }
                 case TypeDataBase.File:
@@ -90,6 +87,7 @@ namespace ShopProjectWebServer.DataBase
                 _settingManager.SaveJson<Settings>(setting);
             }
 
+            //_dataBaseAccess = new DataBaseSQLAccess(settingConnect.ConnectionString.ToString());
         }
 
         public static SettingDataBase GetInfo()

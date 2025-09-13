@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations; 
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("OperationsRecorderAndUser")]
     public class OperationsRecorderUserEntity

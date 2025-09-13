@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using ShopProjectSQLDataBase.Helper; 
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Helper;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("Operation")]
     public class OperationEntity
@@ -47,11 +44,12 @@ namespace ShopProjectSQLDataBase.Entities
         /// <summary>
         /// сума отриманих коштів (службова видача)
         /// </summary>
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero; 
+        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
         /// <summary>
         /// код підтвердження на сервері
-        /// </summary>
-        public string MAC { get; set; } = string.Empty;
+        /// </summary>   
+        public int? MACId { get; set; }  
+        public MediaAccessControlEntity? MAC { get; set; } 
         /// <summary>
         /// час створення чеку
         /// </summary>

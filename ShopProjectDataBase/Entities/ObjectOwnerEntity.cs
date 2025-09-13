@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using ShopProjectSQLDataBase.Helper;
+using ShopProjectDataBase.Helper;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("ObjectOwner")]
     public class ObjectOwnerEntity
@@ -62,7 +62,7 @@ namespace ShopProjectSQLDataBase.Entities
         /// <summary>
         /// Реєстраційний номер об’єкта оподаткування
         /// </summary>
-        public object? REG_NUM_OBJ { get; set; } 
+        public string? REG_NUM_OBJ { get; set; } 
         /// <summary>
         /// Код КАТОТТГ
         /// </summary>

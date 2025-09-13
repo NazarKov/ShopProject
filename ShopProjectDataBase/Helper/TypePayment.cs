@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProjectSQLDataBase.Helper
+namespace ShopProjectDataBase.Helper
 {
     public enum TypePayment
     {
         None,
         Cash,
-        Card
+        Card,
+        GiftCertificate
     }
 }

@@ -1,9 +1,12 @@
 ﻿using FiscalServerApi;
 using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers;
-using ShopProject.Helpers.FiscalOperationService;
+using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.PrintingServise; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.PrintingServise;
+using ShopProject.UIModel;
+using ShopProject.UIModel.SalePage;
 using ShopProjectSQLDataBase.Entities;
 using SigningFileLib;
 using System;
@@ -19,7 +22,7 @@ namespace ShopProject.Model.SalePage
          
         private PrintingFiscalCheck _printingFiscalCheck;
         private bool _isDrawingChek; 
-        private FiscalOperationController _fiscalOperationController;
+        private MainFiscalServerController _fiscalOperationController;
           
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
          
@@ -29,25 +32,14 @@ namespace ShopProject.Model.SalePage
 
             _isDrawingChek = true; 
 
-            _fiscalOperationController = new FiscalOperationController();
+            _fiscalOperationController = new MainFiscalServerController();
         }
 
-        public ProductEntity? Search(string barCode)
+        public async Task<ProductEntity>? Search(string barCode)
         {
             try
             {
-                List<ProductEntity> products = new List<ProductEntity>() { };
-
-                if (products.Count <= 1)
-                {
-
-                    Task t = Task.Run(async () =>
-                    {
-                        products = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
-                    });
-                    t.Wait();
-                }
-                return products.Where(item => item.Code == barCode).First();
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token,barCode);
             }
             catch (Exception ex)
             {
@@ -56,12 +48,15 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public bool SendCheck(List<ProductEntity> products, OperationEntity operation)
-        { 
-            var id = _fiscalOperationController.SendFiscalCheck(operation, products);
+        public bool SendCheck(List<ProductEntity> products, UIOperationModel operation)
+        {
+            var id =  _fiscalOperationController.SendFiscalCheck(Session.WorkingShift,operation, products);
             if (id != string.Empty)
             {
-                SaveDataBase(operation, products);
+                Task.Run(async () => {
+                    await SaveDataBase(operation, products);
+                    await CreateMac();
+                });
                 //_printingFiscalCheck.PrintCheck(products, id, order);
 
                 return true;
@@ -75,61 +70,87 @@ namespace ShopProject.Model.SalePage
         }
 
 
-        private void SaveDataBase(OperationEntity operation, List<ProductEntity> goods)
+        private async Task SaveDataBase(UIOperationModel operation, List<ProductEntity> goods)
         {
-            //operation.User = Session.User;
-            bool result = false;
-            Task t = Task.Run(async () =>
+            try
             {
+                operation.Shift = Session.WorkingShift;
+                bool result = false;
                 result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));
                 if (result)
                 {
-                    List<OrderEntity> orders = new List<OrderEntity>();
+                    List<UIOrderModel> orders = new List<UIOrderModel>();
                     foreach (ProductEntity item in goods)
                     {
-                        orders.Add(new OrderEntity()
+                        orders.Add(new UIOrderModel()
                         {
                             Operation = operation,
-                            //Goods = item,
+                            Product = item,
                             Count = (int)item.Count,
 
                         });
-                    }
-
+                    } 
                     await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(Session.Token, orders);
                 }
-            });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private async Task<bool?> CreateMac()
+        {
+
+            var mac = WriteReadXmlFile.GenerationMACForXML();
+
+            if (mac != null)
+            {
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new UIMediaAccessControlModel()
+                {
+                    OperationsRecorder = Session.FocusDevices,
+                    Content = mac,
+                    WorkingShifts = Session.WorkingShift,
+                });
+            }
+
+            return false;
         }
 
-        public string GetMac() => _fiscalOperationController.GetMac();
-         
-        public string GetLocalNumber()
+        public async Task<UIMediaAccessControlModel> GetMAC(Guid operationRecorderId)
+        {
+            try
+            {
+                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.Token, operationRecorderId)).ToUIMediaAccessControl();
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show("Невдалося отримати MAC");
+                return new UIMediaAccessControlModel();
+            }
+        }
+
+        public async Task<string> GetLocalNumber()
         {
             try
             {
                 OperationEntity operation = new OperationEntity();
+                 
+                operation = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token,Session.WorkingShift.ID);
 
-                Task t = Task.Run(async () =>
+                if (operation.NumberPayment == string.Empty)
                 {
-                    operation = (await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token)); 
-                });
-                t.Wait();
-                //if (operation.LocalNumbetShift == 0)
-                //{
-                //    return "1";
-                //}
-
-                return "1";
-
-                //else
-                //{
-                //    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
-                //}
+                    return "1";
+                } 
+                else
+                {
+                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                return "1";
             }
         }
 

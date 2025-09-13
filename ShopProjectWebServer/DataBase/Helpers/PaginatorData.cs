@@ -1,4 +1,4 @@
-﻿using ShopProjectSQLDataBase.Helper;
+﻿using ShopProjectDataBase.Helper; 
 
 namespace ShopProjectWebServer.DataBase.Helpers
 {

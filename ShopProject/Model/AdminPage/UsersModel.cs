@@ -100,16 +100,13 @@ namespace ShopProject.Model.AdminPage
         {
             try
             {
-                List<OperationsRecorderUserEntity> result = new List<OperationsRecorderUserEntity>();
+                List<OperationsRecorderEntity> result = new List<OperationsRecorderEntity>();
                 foreach (var item in objectOwnerHelpers)
                 {
                     if (item.isActive)
                     {
-                        result.Add(new OperationsRecorderUserEntity()
-                        {
-                            OpertionsRecorders = item.deviceSettlementOperations,
-                            Users = user,
-                        });
+                        item.deviceSettlementOperations.MediaAccessControls = new List<MediaAccessControlEntity>();
+                        result.Add(item.deviceSettlementOperations);
                     }
                 }
 
@@ -117,7 +114,7 @@ namespace ShopProject.Model.AdminPage
                 bool response = false;
                 Task t = Task.Run(async () =>
                 {
-                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.AddOperationRecordersAndUser(Session.Token, result));
+                    response = (await MainWebServerController.MainDataBaseConntroller.OperationRecorderAndUserController.AddOperationRecordersAndUser(Session.Token,user.ID, result));
                 });
                 t.Wait();
                 return response;

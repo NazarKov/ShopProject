@@ -15,20 +15,20 @@
 
     <Grid Name="Grid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130"></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
             <ColumnDefinition Width="{Binding Widght , UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="55*" MaxHeight="65"></RowDefinition>
-            <RowDefinition Height="55*" MaxHeight="65"></RowDefinition>
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
-
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="110*" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="55" MaxHeight="65"></RowDefinition>
+            <RowDefinition Height="55" MaxHeight="65"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -40,12 +40,14 @@
 
         <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="0" Grid.RowSpan="2" Command="{Binding OpenShiftCommand}" VerticalAlignment="Stretch"/>
         <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding OpenNewCheck}"/>
-        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="3" Command="{Binding OpenReturnGoodsMenuCommand}" VerticalAlignment="Stretch"/>
-        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="4" VerticalAlignment="Stretch" Command="{Binding OfficialDepositMoneyCommand}"/>
-        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="5" VerticalAlignment="Stretch" Command="{Binding OfficialIssuanceModeyCommand}"/>
-        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="6" Command="{Binding CloseShiftCommand}" VerticalAlignment="Stretch"/>
-        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="7" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"></Button>
-        <Grid Grid.Row="0" Grid.Column="1" Margin="15,0,0,0">
+
+        <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" VerticalAlignment="Stretch" Command="{Binding PrintLastCheckCommand}"/>
+        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="4" Command="{Binding OpenReturnGoodsMenuCommand}" VerticalAlignment="Stretch"/>
+        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="5" VerticalAlignment="Stretch" Command="{Binding OfficialDepositMoneyCommand}"/>
+        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="6" VerticalAlignment="Stretch" Command="{Binding OfficialIssuanceModeyCommand}"/>
+        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="7" Command="{Binding CloseShiftCommand}" VerticalAlignment="Stretch"/>
+        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"></Button>
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="15,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"></ColumnDefinition>
                 <ColumnDefinition Width="150"></ColumnDefinition>
@@ -78,7 +80,9 @@
         </Grid>
 
         <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="6" BorderBrush="Gainsboro" BorderThickness="0.5" HorizontalAlignment="Left"></Border>
-        <TabControl x:Name="tabControl" Grid.Column="1" Grid.Row="1" Grid.RowSpan="8" TabStripPlacement="Top" Padding="15" BorderBrush="Gainsboro" SelectedIndex="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Tabs, UpdateSourceTrigger=PropertyChanged}">
+        <TabControl x:Name="tabControl" Grid.Column="1" Grid.Row="1" Grid.RowSpan="9" TabStripPlacement="Top" Padding="15"
+                    BorderBrush="Gainsboro" SelectedIndex="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Tabs, UpdateSourceTrigger=PropertyChanged}"
+                    Margin="0,25,0,0" >
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -107,7 +111,8 @@
       
 
         </TabControl>
-        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="{Binding VisibleFirstDialogWindow , UpdateSourceTrigger=PropertyChanged}">
+        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="Hidden">
+            <!--Visibility="{Binding VisibleFirstDialogWindow , UpdateSourceTrigger=PropertyChanged}">-->
            
             <Grid Background="Black" Opacity="0.5"/>
             <Border
@@ -128,7 +133,8 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <Grid x:Name="InputBox2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="{Binding VisibleSecondDialogWindow , UpdateSourceTrigger=PropertyChanged}">
+        <Grid x:Name="InputBox2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="Hidden" >
+            <!--Visibility="{Binding VisibleSecondDialogWindow , UpdateSourceTrigger=PropertyChanged}"-->
 
             <Grid Background="Black" Opacity="0.5"/>
             <Border
@@ -149,7 +155,7 @@
                 </StackPanel>
             </Border>
         </Grid>
-
+        
     </Grid>
     
 </Page>

@@ -1,6 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
+using ShopProject.UIModel;
 using ShopProjectSQLDataBase.Entities;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,12 @@ namespace ShopProject.ViewModel.SalePage
         {
             _model = new SaleGoodsMenuModel();
 
-            _searchBarCodeGoodsCommand = new DelegateCommand(SearchBarCodeGoods);
+            _searchBarCodeGoodsCommand = new DelegateCommand(async () => { await SearchBarCodeGoods(); });
             _printingCheckCommand = new DelegateCommand(PrintingCheck);
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
 
-            _goods = new List<ProductEntity>();
+            _product = new List<ProductEntity>();
             _barCodeSearch = string.Empty;
 
             _typeOplatu = new List<string>();
@@ -52,40 +53,40 @@ namespace ShopProject.ViewModel.SalePage
         public string BarCodeSearch
         {
             get { return _barCodeSearch; }
-            set { _barCodeSearch = value; OnPropertyChanged("BarCodeSearch"); }
+            set { _barCodeSearch = value; OnPropertyChanged(nameof(BarCodeSearch)); }
         }
 
-        private List<ProductEntity> _goods;
-        public List<ProductEntity> Goods
+        private List<ProductEntity> _product;
+        public List<ProductEntity> Product
         {
-            get { return _goods; }
-            set { _goods = value; OnPropertyChanged("Goods"); }
+            get { return _product; }
+            set { _product = value; OnPropertyChanged(nameof(Product)); }
         }
 
         private decimal? _sumaOrder;
         public decimal? SumaOrder
         {
             get { return _sumaOrder; }
-            set { _sumaOrder = value;OnPropertyChanged("SumaOrder"); }
+            set { _sumaOrder = value;OnPropertyChanged(nameof(SumaOrder)); }
         }
 
         private decimal? _sumaUser;
         public decimal? SumaUser
         {
             get { return _sumaUser; }
-            set { _sumaUser = value; OnPropertyChanged("SumaUser"); }
+            set { _sumaUser = value; OnPropertyChanged(nameof(SumaUser)); }
         }
         private List<string> _typeOplatu;
         public List<string> TypeOplatu
         {
             get { return _typeOplatu; }
-            set { _typeOplatu = value; OnPropertyChanged("_typeOplatu"); }
+            set { _typeOplatu = value; OnPropertyChanged(nameof(TypeOplatu)); }
         }
         private int _selectIndex;
         public int SelectIndex
         {
             get { return _selectIndex; }
-            set { _selectIndex = value;OnPropertyChanged("_selectIndex"); }
+            set { _selectIndex = value;OnPropertyChanged(nameof(SelectIndex)); }
         }
 
         public ICommand UpdateSize => _updateSize;
@@ -94,7 +95,7 @@ namespace ShopProject.ViewModel.SalePage
         public int Widght
         {
             get { return _widght; }
-            set { _widght = value;OnPropertyChanged("Widght"); }
+            set { _widght = value;OnPropertyChanged(nameof(Widght)); }
         }
 
 
@@ -102,18 +103,18 @@ namespace ShopProject.ViewModel.SalePage
         public int Height
         {
             get { return _height; }
-            set { _height = value; OnPropertyChanged("Height"); }
+            set { _height = value; OnPropertyChanged(nameof(Height)); }
         }
 
         private void UpdateSizes()
         {
-            Widght = (int)Application.Current.MainWindow.ActualWidth - 175;
-            Height = (int)Application.Current.MainWindow.ActualHeight - 290;
+            Widght = (int)Application.Current.MainWindow.ActualWidth - 530;
+            Height = (int)Application.Current.MainWindow.ActualHeight-220;
         }
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
-            Goods = new List<ProductEntity>();
+            Product = new List<ProductEntity>();
             SumaUser = 0;
             SumaOrder = 0;
             _selectIndex = 0;
@@ -122,31 +123,32 @@ namespace ShopProject.ViewModel.SalePage
         public bool DrawingCheck
         {
             get { return _draingCheck; }
-            set { _draingCheck = value; OnPropertyChanged("DrawingCheck"); }
+            set { _draingCheck = value; OnPropertyChanged(nameof(DrawingCheck)); }
         }
         private bool _isFiscalCheck;
         public bool IsFiscalCheck
         {
             get { return _isFiscalCheck; }
-            set { _isFiscalCheck = value; OnPropertyChanged("IsFiscalCheck"); }
+            set { _isFiscalCheck = value; OnPropertyChanged(nameof(IsFiscalCheck)); }
         }
         public int Tag;
 
         public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
-        private void SearchBarCodeGoods()
+        private async Task SearchBarCodeGoods()
         {
             List<ProductEntity> temp;
             if (BarCodeSearch.Length > 12)
             {
                 if (BarCodeSearch != "2")
                 {
-                    var item = _model.Search(BarCodeSearch);
+                    var item = await _model.Search(BarCodeSearch);
                     if (item != null)
                     {
+                        
                         item.Count = 1;
                         temp = new List<ProductEntity>();
-                        temp = Goods;
+                        temp = Product;
 
                         if (temp.Find(pr => pr.Code == item.Code) != null)
                         {
@@ -159,35 +161,35 @@ namespace ShopProject.ViewModel.SalePage
 
                         CountingSumaOrder(temp);
 
-                        Goods = new List<ProductEntity>();
-                        Goods = temp;
+                        Product = new List<ProductEntity>();
+                        Product = temp;
                         BarCodeSearch = string.Empty;
                     }
                 }
                 else
                 {
-                    if (Goods.Count() != 0)
+                    if (Product.Count() != 0)
                     {
-                        if (Goods.ElementAt(Goods.Count - 1).Count == 1)
+                        if (Product.ElementAt(Product.Count - 1).Count == 1)
                         {
                             temp = new List<ProductEntity>();
-                            temp = Goods;
+                            temp = Product;
 
                             temp.Remove(temp.ElementAt(temp.Count - 1));
-                            Goods = new List<ProductEntity>();
-                            Goods = temp;
-                            CountingSumaOrder(Goods);
+                            Product = new List<ProductEntity>();
+                            Product = temp;
+                            CountingSumaOrder(Product);
                         }
                         else
                         {
                             temp = new List<ProductEntity>();
-                            temp = Goods;
+                            temp = Product;
 
 
-                            temp.ElementAt(Goods.Count - 1).Count -= 1;
-                            Goods = new List<ProductEntity>();
-                            Goods = temp;
-                            CountingSumaOrder(Goods);
+                            temp.ElementAt(Product.Count - 1).Count -= 1;
+                            Product = new List<ProductEntity>();
+                            Product = temp;
+                            CountingSumaOrder(Product);
                         }
                         BarCodeSearch = string.Empty;
                     }
@@ -213,49 +215,47 @@ namespace ShopProject.ViewModel.SalePage
                 double rest = ((double)(SumaUser - SumaOrder));
 
 
-                decimal typeOperration;
-                if (IsFiscalCheck)
-                {
-                    typeOperration = 0;
-                }
-                else
-                {
-                    typeOperration = 200;
-                }
+                //decimal typeOperration;
+                //if (IsFiscalCheck)
+                //{
+                //    typeOperration = 0;
+                //}
+                //else
+                //{
+                //    typeOperration = 200;
+                //}
 
-                if (_model.SendCheck(Goods, new OperationEntity()
-                {
-                    //DataPacketIdentifier = 1,
-                    //TypeRRO = 0,
-                    //FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                    //TaxNumber = Session.User.TIN,
-                    //FactoryNumberRRO = "v1",
-                    //TypeOperation = typeOperration,
-                    MAC = _model.GetMac(),
-                    CreatedAt = DateTime.Now,
-                    NumberPayment = _model.GetLocalNumber(),
-                    GoodsTax = "0",
-                    RestPayment = Convert.ToDecimal(rest),
-                    TotalPayment = (decimal)SumaOrder,
-                    BuyersAmount = (decimal)SumaUser,
-                    //FormOfPayment = SelectIndex,
-                    //VersionDataPaket = 1,
+                Task t = Task.Run(async () =>{
 
-                }))
-                {
-                    MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Goods = new List<ProductEntity>();
-                    BarCodeSearch = string.Empty;
-                    SumaUser = new decimal();
-                    SumaUser = 0;
-                    SumaOrder = 0;
+                    UIOperationModel operation = new UIOperationModel()
+                    { 
+                        TypeOperation = ShopProjectSQLDataBase.Helper.TypeOperation.FiscalCheck,
+                        MAC = await _model.GetMAC(Session.FocusDevices.ID),
+                        CreatedAt = DateTime.Now,
+                        NumberPayment = await _model.GetLocalNumber(),
+                        GoodsTax = "0",
+                        RestPayment = Convert.ToDecimal(rest),
+                        TotalPayment = (decimal)SumaOrder,
+                        BuyersAmount = (decimal)SumaUser,
+                        TypePayment = ShopProjectSQLDataBase.Helper.TypePayment.Cash,  
+                    };
 
-                    if (Tag != 0)
+                    if (_model.SendCheck(Product, operation))
+                    
                     {
-                        Session.Tabs.RemoveAt(Tag);
-                    }
-                }
+                        MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Product = new List<ProductEntity>();
+                        BarCodeSearch = string.Empty;
+                        SumaUser = new decimal();
+                        SumaUser = 0;
+                        SumaOrder = 0;
 
+                        if (Tag != 0)
+                        {
+                            Session.Tabs.RemoveAt(Tag);
+                        }
+                    }
+                }); 
             }
             else
             {

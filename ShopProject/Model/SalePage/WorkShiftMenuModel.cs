@@ -1,11 +1,10 @@
-﻿using FiscalServerApi;
-using FiscalServerApi.ExceptionServer;
-using ShopProject.Helpers;
-using ShopProject.Helpers.FiscalOperationService;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.PrintingServise;
+using ShopProject.UIModel.SalePage;
 using ShopProjectSQLDataBase.Entities;
-using SigningFileLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,132 +14,102 @@ using System.Windows;
 namespace ShopProject.Model.SalePage
 {
     internal class WorkShiftMenuModel
-    { 
-
+    {  
         private PrintingDayReport _printingController;
-        private FiscalOperationController _fiscalOperationController;
+        private MainFiscalServerController _fiscalOperationController;
 
         public WorkShiftMenuModel()
         {  
             _printingController = new PrintingDayReport();
 
-            _fiscalOperationController = new FiscalOperationController();
+            _fiscalOperationController = new MainFiscalServerController();
         }
 
-        public bool OpenShift(OperationEntity operation)
+        public bool OpenShift(UIWorkingShiftModel shiftEntity)
         {
-
-            if (_fiscalOperationController.OpenShift(operation)=="OK")
+            try
             {
-                SaveDataBase(operation);
-                return true;
+                if (_fiscalOperationController.OpenShift(shiftEntity) == "OK")
+                {
+                    Session.WorkingShift = shiftEntity;
+                    Task.Run(async () =>
+                    {
+                        Session.WorkingShift.ID = await SaveDataBaseOpenShift(shiftEntity);
+                        await CreateMac(shiftEntity);
+                    });
+                    return true;
+                }
+                return false;
             }
-            return false;
-        }   
-        public bool CloseShift(OperationEntity operation)
-        {
-            if (_fiscalOperationController.CloseShift(operation) == "OK")
+            catch (Exception ex) 
             {
-                SaveDataBase(operation);
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public void AddKey(ElectronicSignatureKey key) => _fiscalOperationController.AddKey(key);
+
+        public bool CloseShift(UIWorkingShiftModel shiftEntity)
+        {
+            if (_fiscalOperationController.CloseShift(shiftEntity) == "OK")
+            {
+                Task.Run(async () =>
+                {
+                    await SaveDataBaseCloseShift(shiftEntity);
+                    await CreateMac(shiftEntity);
+                });
                 return true;
             }
             return false;
         }
         public bool OfficialDepositMoney(OperationEntity operation)
         {
-            if (_fiscalOperationController.DepositAndWithdrawalMoney(operation) == "OK")
-            {
-                SaveDataBase(operation);
-                return true;
-            }
+            //if (_fiscalOperationController.DepositAndWithdrawalMoney(operation) == "OK")
+            //{
+            //    SaveDataBase(operation);
+            //    return true;
+            //}
             return false;
         }
-        private bool SaveDataBase(OperationEntity operation)
+        private async Task<int> SaveDataBaseOpenShift(UIWorkingShiftModel shift)
         {
-            bool result = false;
-            //operation.User = Session.User;
-            Task t = Task.Run(async () =>
-            {
-                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));
-            });
-            return result;
+            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.AddWorkingShift(Session.Token, shift);
+        }
+        private async Task<bool> SaveDataBaseCloseShift(UIWorkingShiftModel shift)
+        {
+            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.UpdateWorkingShift(Session.Token, shift);
         }
 
-        public string? GetMac() => _fiscalOperationController.GetMac();
+        private async Task<bool?> CreateMac(UIWorkingShiftModel workingShift )
+        {
 
-        public string? GetLocalNumber()
+            var mac = WriteReadXmlFile.GenerationMACForXML();
+
+            if (mac != null)
+            {
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new UIMediaAccessControlModel()
+                {
+                    OperationsRecorder = Session.FocusDevices,
+                    Content = mac,
+                    WorkingShifts = workingShift,
+                });
+            }
+
+            return false;
+        }  
+
+        public async Task<UIMediaAccessControlModel> GetMAC(Guid operationRecorderId)
         {
             try
             {
-                OperationEntity operation = new OperationEntity();
-
-                Task t = Task.Run(async () =>
-                {
-                    operation = (await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token));
-                });
-
-                t.Wait();
-                if (operation == null)
-                {
-                    return "1";
-                }
-                else
-                {
-                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
-                }
-            }
+                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.Token, operationRecorderId)).ToUIMediaAccessControl();
+            } 
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                MessageBox.Show("Невдалося отримати MAC");
+                return new UIMediaAccessControlModel();
             }
-        }
-
-
-        //public decimal GetNumberFiscalCheck()
-        //{
-        //    return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(0);
-        //}
-        //public decimal GetNumberReturnFiscalCheck()
-        //{
-        //    return _returnDataWithDataBase.GetTotalNumberFiscalChechAndReturnFiscalCheck(1);
-        //}
-        //public decimal GetTotalFundsReceived()
-        //{
-        //    return _returnDataWithDataBase.GetTotalSumReceivedAndIssuance(2);
-        //}
-        //public decimal GetTotalFundsIssued() 
-        //{
-        //    return _returnDataWithDataBase.GetTotalSumReceivedAndIssuance(2.01m);
-        //}
-        //public decimal GetTotalBuyersAmountCash()
-        //{
-        //    return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount",0);
-        //}
-        //public decimal GetTotalRestCash() 
-        //{
-        //    return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment",0);
-        //}
-        //public decimal GetTotalBuyersAmountCard()
-        //{
-        //    return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("buyersAmount", 1);
-        //}
-        //public decimal GetTotalRestCard()
-        //{
-        //    return _returnDataWithDataBase.GetTotalBuyersAmountAndRestOperation("restPayment", 1);
-        //}
-        //public decimal GetTotatalChechReturnCash()
-        //{
-        //    return _returnDataWithDataBase.GetTotalRestReturnOperation(0);
-        //}
-        //public decimal GetTotatalChechReturnCard()
-        //{
-        //    return _returnDataWithDataBase.GetTotalRestReturnOperation(1);
-        //}
-
-        //public void Print(OperationEntity operation)
-        //{
-        //    _printingController.PrintCheck(operation);
-        //}
+        } 
     }
 }

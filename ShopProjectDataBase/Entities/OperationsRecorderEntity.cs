@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using ShopProjectSQLDataBase.Helper;
+using ShopProjectDataBase.Helper;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("OperationsRecorder")]
     public class OperationsRecorderEntity
@@ -29,7 +29,7 @@ namespace ShopProjectSQLDataBase.Entities
         /// <summary>
         /// тип статусу для програми
         /// </summary>
-        public TypeStatusOperationRecorder TypeStatus {  get; set; }
+        public TypeStatusOperationRecorder TypeStatus { get; set; }
         /// <summary>
         /// Дата реєстрації документа
         /// </summary>
@@ -40,6 +40,10 @@ namespace ShopProjectSQLDataBase.Entities
         public string Address { get; set; } = string.Empty;
 
         public ObjectOwnerEntity? ObjectOwner { get; set; }
+        /// <summary>
+        /// Список MAC яких видав ПРРО
+        /// </summary>
+        public IEnumerable<MediaAccessControlEntity> MediaAccessControls { get; set; } = new List<MediaAccessControlEntity>();
 
     }
 }

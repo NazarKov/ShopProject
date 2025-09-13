@@ -2,26 +2,33 @@
 {
     public class ConnectionString
     {
-        public string DataSource { get; set; } = string.Empty;
-        public bool IntegratedSecurity { get; set; } = false;
-        public string InitialCatalog { get; set; } = string.Empty;
+        public string Server { get; set; } = string.Empty;
+        public string DataBaseName { get; set; } = string.Empty;
+
+        public string UserName { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public bool TrustServerCertificate { get; set; } = true; //true тест fasle потрібно створити ssl сертифікат і підключити його
+ 
         public TypeConnectDataBase TypeDataBase { get; set; }
 
         public override string ToString()
         {
-            switch(TypeDataBase) 
+            Server = "localhost";
+            switch (TypeDataBase) 
             {
                 case TypeConnectDataBase.None:
                     {
                         return string.Empty; 
                     }
-                case TypeConnectDataBase.SQLEXPRESS: 
-                    {
-                        return "Data Source=" + DataSource + ".\\SQLEXPRESS;Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";"; 
+                case TypeConnectDataBase.SQLEXPRESS:
+                    { 
+                        return $"Server = {Server}.\\SQLEXPRESS; Database = {DataBaseName}; User Id = {UserName}; Password = {Password}; TrustServerCertificate = {TrustServerCertificate};";
                     }
                 case TypeConnectDataBase.DEVELEPER:
                     {
-                        return "Data Source=" + DataSource + ";Initial Catalog=" + InitialCatalog + ";Integrated Security=" + IntegratedSecurity + ";"; 
+                        return $"Server = {Server}; Database = {DataBaseName}; User Id = {UserName}; Password = {Password}; TrustServerCertificate = {TrustServerCertificate};"; 
                     }
             }
             return string.Empty;

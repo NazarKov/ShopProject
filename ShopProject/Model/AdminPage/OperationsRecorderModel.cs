@@ -132,6 +132,7 @@ namespace ShopProject.Model.AdminPage
                     if (items.ElementAt(i).isActive)
                     {
                         result.Add(items.ElementAt(i).deviceSettlementOperations);
+                        
                     }
                 }
                 

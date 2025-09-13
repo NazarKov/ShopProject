@@ -25,7 +25,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-DataBaseMainController.init();
+DataBaseMainController.Init();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -1,4 +1,4 @@
-﻿using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectDataBase.Entities; 
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
@@ -8,6 +8,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(OperationEntity item);
         void Delete(OperationEntity item);
         IEnumerable<OperationEntity> GetAll();
-        OperationEntity GetLastItem();
+        OperationEntity GetLastItem(int shiftId);
     }
 }

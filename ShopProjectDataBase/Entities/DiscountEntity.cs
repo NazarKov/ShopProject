@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("Discount")]
     public class DiscountEntity

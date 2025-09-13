@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShopProjectSQLDataBase.Helper; 
+using ShopProjectDataBase.Helper;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("WorkingShift")]
     public class WorkingShiftEntity
@@ -72,12 +72,14 @@ namespace ShopProjectSQLDataBase.Entities
         public decimal AmountOfFundsIssued { get; set; } = decimal.Zero;
         /// <summary>
         /// hesh відкриття зміни
-        /// </summary>
-        public string MACCreateAt { get; set; } = string.Empty;
+        /// </summary> 
+        public int? MACIdCreateAt { get; set; }
+        public MediaAccessControlEntity MACCreateAt { get; set; }
         /// <summary>
         /// hesh закриття зміни
-        /// </summary>
-        public string MACEndAt { get; set; } = string.Empty;
+        /// </summary> 
+        public int? MACIdEndAt { get; set; }
+        public MediaAccessControlEntity MACEndAt { get; set; }  
         /// <summary>
         /// час відриття зміної
         /// </summary>
@@ -95,7 +97,7 @@ namespace ShopProjectSQLDataBase.Entities
         /// </summary>
         public UserEntity? UserCloseShift { get; set; }
         /// <summary>
-        /// Список операцій викониних аід час зміної
+        /// Список операцій викониних під час зміної
         /// </summary>
         public IEnumerable<OperationEntity>? Operations { get; set; }
     }

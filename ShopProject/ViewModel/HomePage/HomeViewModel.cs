@@ -100,9 +100,9 @@ namespace ShopProject.ViewModel.HomePage
                 {
                     if (result)
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        System.Windows.Application.Current.Dispatcher.Invoke(async () =>
                         {
-                            SetFieldWindow();
+                           await  SetFieldWindow();
                         });
                         Mediator.Subscribe("RedirectToAuthorizationView", (object obg) => { Page = new AuthorizationView(); });
                         Mediator.Subscribe("RedirectToOperationsRecorderView", (object obg) => { SetFieldWindow(); });
@@ -154,9 +154,9 @@ namespace ShopProject.ViewModel.HomePage
             get { return _page; }
             set {_page = value; OnPropertyChanged(nameof(Page));}
         }
-        private void SetFieldWindow()
+        private async Task SetFieldWindow()
         {
-            if (Session.CheckSession())
+            if (await Session.CheckSession())
             {
                 _visibilitiMenu = Visibility.Visible;
                 if (Session.FocusDevices != null)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations; 
-using ShopProjectSQLDataBase.Helper;
+using System.ComponentModel.DataAnnotations;
+using ShopProjectDataBase.Helper;
 
-namespace ShopProjectSQLDataBase.Entities
+namespace ShopProjectDataBase.Entities
 {
     [Table("User")]
     public class UserEntity

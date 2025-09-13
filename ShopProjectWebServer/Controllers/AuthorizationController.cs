@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Helpers;
 using ShopProjectWebServer.Models;

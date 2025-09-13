@@ -3,8 +3,7 @@ using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;  
-using ShopProject.Helpers.FiscalOperationService;
+using System.Windows;   
 using ShopProjectSQLDataBase.Entities;
 
 namespace ShopProject.Model.SalePage
@@ -12,11 +11,11 @@ namespace ShopProject.Model.SalePage
     internal class ReturnGoodsMenuModel
     {  
 
-        private FiscalOperationController _fiscalOperatonController; 
+       // private FiscalOperationController _fiscalOperatonController; 
 
         public ReturnGoodsMenuModel()
         {
-            _fiscalOperatonController = new FiscalOperationController();
+           // _fiscalOperatonController = new FiscalOperationController();
         }
 
         public ProductEntity? Search(string barCode)
@@ -35,16 +34,16 @@ namespace ShopProject.Model.SalePage
 
         public bool SendCheck(List<ProductEntity> products, OperationEntity operation)
         {
-            var id = _fiscalOperatonController.SendReturnFiscalCheck(operation, products);
-            if (id != string.Empty)
-            {
-                SaveDataBase(operation, products);
-                return true;
-            } 
+           // var id = _fiscalOperatonController.SendReturnFiscalCheck(operation, products);
+            //if (id != string.Empty)
+            //{
+            //    SaveDataBase(operation, products);
+            //    return true;
+            //} 
             return false;
         } 
 
-        public string? GetMac() => _fiscalOperatonController.GetMac();
+       // public string? GetMac() => _fiscalOperatonController.GetMac();
 
         public string? GetLocalNumber()
         {

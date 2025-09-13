@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.Controllers.Attribute;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Helpers;
-using ShopProjectWebServer.Models;
-using System.Data.Entity.Infrastructure;
+using ShopProjectWebServer.Models; 
 
 namespace ShopProjectWebServer.Controllers
 {

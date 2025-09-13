@@ -1,21 +1,21 @@
-﻿using ShopProjectSQLDataBase.Context;
-using ShopProjectSQLDataBase.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Data.Entity;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OperationRecorderUserTableAccess : IOperationRecorederUserTableAccess 
     {
-        private string _connectionString;
-        public OperationRecorderUserTableAccess(string ConnectionString)
+        private DbContextOptions<ContextDataBase> _option;
+        public OperationRecorderUserTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            _connectionString = ConnectionString;
+            _option = option;
         }
 
         public void Add(OperationsRecorderUserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -27,9 +27,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public void AddRange(IEnumerable<OperationsRecorderUserEntity> items)
+        public void AddRange(Guid userId, IEnumerable<OperationsRecorderEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
@@ -37,15 +37,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Users.Load();
                     context.OperationsRecorderUsers.Load();
 
-                    foreach (var item in items)
+                    if (context.OperationsRecorderUsers != null)
                     {
-                        item.Users = context.Users.Find(item.Users.ID);
-                        item.OpertionsRecorders = context.OperationsRecorders.Find(item.OpertionsRecorders.ID);
-
-                        context.OperationsRecorderUsers.Add(item);
+                        foreach (var item in items)
+                        {
+                            context.OperationsRecorderUsers.Add(new OperationsRecorderUserEntity()
+                            {
+                                Users = context.Users.Find(userId),
+                                OpertionsRecorders = context.OperationsRecorders.Find(item.ID),
+                            });
+                        }
                     }
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
             }
         }
 
@@ -56,7 +60,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderUserEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_connectionString))
+            using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {

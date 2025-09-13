@@ -1,4 +1,4 @@
-﻿using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectDataBase.Entities; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
