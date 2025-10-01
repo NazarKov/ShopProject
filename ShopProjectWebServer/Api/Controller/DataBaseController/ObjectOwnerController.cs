@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.ObjectOwner;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,15 +15,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     public class ObjectOwnerController : ControllerBase
     {
         [HttpPost("DeleteObjectsOwner")]
-        public async Task<IActionResult> DeleteObjectsOwner([FromQuery] string token, ObjectOwnerEntity item)
+        public async Task<IActionResult> DeleteObjectsOwner([FromQuery] string token, DeleteObjectOwnerDto item)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-
-
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Delete(item);
+                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Delete(item.ToObjectOwnerEntity());
 
                     return Ok(new Message()
                     {
@@ -143,13 +143,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddObjectOwner")]
-        public async Task<IActionResult> AddObjectOwner(string token, ObjectOwnerEntity objectOwner)
+        public async Task<IActionResult> AddObjectOwner(string token, CreateObjectOwnerDto objectOwner)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Add(objectOwner);
+                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Add(objectOwner.ToObjectOwnerEntity());
 
                         return Ok(new Message()
                         {
@@ -172,13 +172,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddObjectsOwners")]
-        public async Task<IActionResult> AddObjectsOwners(string token, IEnumerable<ObjectOwnerEntity> objectOwner)
+        public async Task<IActionResult> AddObjectsOwners(string token, IEnumerable<CreateObjectOwnerDto> objectOwner)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.AddRange(objectOwner);
+                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.AddRange(objectOwner.ToObjectOwnerEntity());
 
                         return Ok(new Message()
                         {

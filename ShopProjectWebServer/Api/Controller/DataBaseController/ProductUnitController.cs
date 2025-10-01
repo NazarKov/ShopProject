@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.Product;
+using ShopProjectWebServer.Api.DtoModels.ProductUnit;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,13 +18,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     {
 
         [HttpPost("AddUnit")]
-        public IActionResult AddUnit(string token, ProductUnitEntity unit)
+        public IActionResult AddUnit(string token, CreateProductUnitDto unit)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Add(unit);
+                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Add(unit.ToProductUnitEntity());
 
 
                     return Ok(new Message()
@@ -45,14 +48,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateUnit")]
-        public IActionResult UpdateUnit(string token, ProductUnitEntity unit)
+        public IActionResult UpdateUnit(string token, UpdateProductUnitDto unit)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
 
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Update(unit);
+                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Update(unit.ToProductUnitEntity());
 
                     return Ok(new Message()
                     {
@@ -75,13 +78,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateParameterUnit")]
-        public IActionResult UpdateParameterUnit(string token, [FromQuery] string parameter, [FromQuery] string value, ProductUnitEntity unit)
+        public IActionResult UpdateParameterUnit(string token, [FromQuery] string parameter, [FromQuery] string value, UpdateProductUnitDto unit)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.UpdateParameter(unit, parameter, value);
+                    DataBaseMainController.DataBaseAccess.ProductUnitTable.UpdateParameter(unit.ToProductUnitEntity(), parameter, value);
 
                     return Ok(new Message()
                     {
@@ -104,7 +107,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("DeleteUnit")]
-        public IActionResult DeleteUnit(string token, ProductUnitEntity unit)
+        public IActionResult DeleteUnit(string token, ProductUnitEntity unit)// переробити на int ID
         {
             try
             {

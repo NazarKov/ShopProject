@@ -22,7 +22,7 @@
         /// <summary>
         /// позначка про відкриття зміної
         /// </summary>
-        public TypeWokingShiftDto TypeShiftCrateAt { get; set; }
+        public int TypeShiftCrateAt { get; set; }
         /// <summary>
         /// hesh відкриття зміни
         /// </summary> 

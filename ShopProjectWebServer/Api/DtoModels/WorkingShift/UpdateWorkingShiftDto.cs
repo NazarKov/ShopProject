@@ -23,11 +23,11 @@ namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
         /// <summary>
         /// позначка про відкриття зміної
         /// </summary>
-        public TypeWokingShiftDto TypeShiftCrateAt { get; set; }
+        public int TypeShiftCrateAt { get; set; }
         /// <summary>
         /// позначка про закриття зміної
         /// </summary>
-        public TypeWokingShiftDto TypeShiftEndAt { get; set; }
+        public int TypeShiftEndAt { get; set; }
         /// <summary>
         /// Загальна кільскість чеків за зміну
         /// </summary>

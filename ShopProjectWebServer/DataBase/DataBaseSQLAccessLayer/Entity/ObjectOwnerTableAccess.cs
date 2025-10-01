@@ -14,8 +14,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         public ObjectOwnerTableAccess(DbContextOptions<ContextDataBase> option)
         { 
             _option = option;
-        }
-
+        } 
 
         public void Add(ObjectOwnerEntity item)
         {
@@ -26,8 +25,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.ObjectOwners.Load();
 
                     context.ObjectOwners.Add(item);
+                    
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
             }
         }
 
@@ -39,8 +39,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.ObjectOwners.Load();
                     context.ObjectOwners.AddRange(items);
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
             }
         }
 

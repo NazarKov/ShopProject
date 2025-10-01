@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.User;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Helpers;
 using System.Text.Json;
@@ -84,7 +86,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("DeleteUser")]
-        public async Task<IActionResult> DeleteUser([FromQuery] string token, UserEntity user)
+        public async Task<IActionResult> DeleteUser([FromQuery] string token, UserEntity user) // переробити на int ID
         {
             try
             {
@@ -116,14 +118,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
 
 
         [HttpPost("UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromQuery] string token, UserEntity user)
+        public async Task<IActionResult> UpdateUser([FromQuery] string token, UpdateUserDto user)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
                    
-                    DataBaseMainController.DataBaseAccess.UserTable.Update(user);
+                    DataBaseMainController.DataBaseAccess.UserTable.Update(user.ToUserEntity());
 
 
                     return Ok(new Message()
@@ -148,13 +150,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
 
 
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromQuery]string token, UserEntity user)
+        public async Task<IActionResult> AddUser([FromQuery]string token, CreateUserDto user)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {  
-                    DataBaseMainController.DataBaseAccess.UserTable.Add(user);
+                    DataBaseMainController.DataBaseAccess.UserTable.Add(user.ToUserEntity());
 
 
                     return Ok(new Message()
@@ -304,9 +306,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
 
                 }.ToString());
             }
-        }
-
-
+        } 
 
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser(string token)
@@ -339,9 +339,6 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
 
                 }.ToString());
             }
-        }
-
-
-
+        } 
     }
 }

@@ -3,11 +3,11 @@ namespace ShopProjectWebServer.Api.DtoModels.Operation
 {
     public class CreateOperationDto
     { 
-        public TypePaymentDto TypePayment { get; set; }
+        public int TypePayment { get; set; }
         /// <summary>
         /// Тип операції
         /// </summary>
-        public TypeOperationDto TypeOperation { get; set; }
+        public int TypeOperation { get; set; }
         /// <summary>
         /// сума  що вносить користувачі
         /// </summary>

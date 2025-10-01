@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -84,15 +86,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("DeleteOperationRecorder")]
-        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, OperationsRecorderEntity operationsRecorder)
+        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, DeleteOperaionRecorderDto operationsRecorder)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-
-
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Delete(operationsRecorder);
+                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Delete(operationsRecorder.ToOperationRecorderEntity());
 
                     return Ok(new Message()
                     {
@@ -220,13 +220,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddOperationRecorder")]
-        public async Task<IActionResult> AddOperationRecorder(string token, OperationsRecorderEntity objectOwner)
+        public async Task<IActionResult> AddOperationRecorder(string token, CreateOperationRecorderDto operationsRecorder)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Add(objectOwner);
+                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Add(operationsRecorder.ToOperationRecorderEntity());
 
                         return Ok(new Message()
                         {
@@ -249,14 +249,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddOperationRecorders")]
-        public async Task<IActionResult> AddOperationRecorders(string token, IEnumerable<OperationsRecorderEntity> objectOwner)
+        public async Task<IActionResult> AddOperationRecorders(string token, IEnumerable<CreateOperationRecorderDto> operationRecorders)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
 
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.AddRange(objectOwner);
+                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.AddRange(operationRecorders.ToOperationRecordersEntity());
 
                         return Ok(new Message()
                         {

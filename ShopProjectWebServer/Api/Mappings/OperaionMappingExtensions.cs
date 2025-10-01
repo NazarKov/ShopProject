@@ -23,59 +23,10 @@ namespace ShopProjectWebServer.Api.Mappings
                 TotalPayment = operation.TotalPayment, 
             };
 
-            switch (operation.TypePayment)
-            {
-                case TypePaymentDto.None:
-                    {
-                        result.TypePayment = TypePayment.None;
-                        break;
-                    }
-                case TypePaymentDto.Cash: 
-                    {
-                        result.TypePayment = TypePayment.Cash;
-                        break;
-                    }
-                case TypePaymentDto.Card:
-                    {
-                        result.TypePayment = TypePayment.Card;
-                        break;
-                    }
-                case TypePaymentDto.GiftCertificate:
-                    {
-                        result.TypePayment = TypePayment.GiftCertificate;
-                        break;
-                } 
-            }
-
-            switch (operation.TypeOperation)
-            {
-                case TypeOperationDto.None:
-                    {
-                        result.TypeOperation = TypeOperation.None;
-                        break;
-                    }
-                case TypeOperationDto.FiscalCheck:
-                    {
-                        result.TypeOperation = TypeOperation.FiscalCheck;
-                        break;
-                    }
-                case TypeOperationDto.ReturnCheck:
-                    {
-                        result.TypeOperation = TypeOperation.ReturnCheck;
-                        break;
-                    }
-                case TypeOperationDto.DepositMoney:
-                    {
-                        result.TypeOperation = TypeOperation.DepositMoney;
-                        break;
-                    }
-                case TypeOperationDto.WithdrawalMoney:
-                    {
-                        result.TypeOperation = TypeOperation.WithdrawalMoney;
-                        break;
-                    }
-            }
-             
+            Enum.TryParse(operation.TypeOperation.ToString(), out TypeOperation typeOperation);
+            result.TypeOperation = typeOperation;
+            Enum.TryParse(operation.TypePayment.ToString(), out TypeOperation TypePayment);
+            result.TypeOperation = TypePayment; 
             return result;
         }
     }

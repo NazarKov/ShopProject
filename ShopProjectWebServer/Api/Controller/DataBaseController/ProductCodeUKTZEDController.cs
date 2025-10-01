@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.ProductCodeUKTZED;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 
@@ -13,13 +15,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     public class ProductCodeUKTZEDController : ControllerBase
     {
         [HttpPost("AddCodeUKTZED")]
-        public IActionResult AddCodeUKTZED(string token, ProductCodeUKTZEDEntity codeUKTZED)
+        public IActionResult AddCodeUKTZED(string token, CreateProductUKTZEDDto codeUKTZED)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Add(codeUKTZED);
+                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Add(codeUKTZED.ToProductCodeUKTZEDEntity());
 
 
                     return Ok(new Message()
@@ -43,14 +45,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateCodeUKTZED")]
-        public IActionResult UpdateCodeUKTZED(string token, ProductCodeUKTZEDEntity codeUKTZED)
+        public IActionResult UpdateCodeUKTZED(string token, UpdateProductCodeUKTZEDDto codeUKTZED)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
 
-                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Update(codeUKTZED);
+                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Update(codeUKTZED.ToProductCodeUKTZEDEntity());
 
                     return Ok(new Message()
                     {
@@ -73,13 +75,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateParameterCodeUKTZED")]
-        public IActionResult UpdateParameterCodeUKTZED(string token, [FromQuery] string parameter, [FromQuery] string value, ProductCodeUKTZEDEntity codeUKTZEDE)
+        public IActionResult UpdateParameterCodeUKTZED(string token, [FromQuery] string parameter, [FromQuery] string value, UpdateProductCodeUKTZEDDto codeUKTZEDE)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
-                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.UpdateParameter(codeUKTZEDE, parameter, value);
+                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.UpdateParameter(codeUKTZEDE.ToProductCodeUKTZEDEntity(), parameter, value);
 
                     return Ok(new Message()
                     {
@@ -102,14 +104,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("DeleteCodeUKTZEDE")]
-        public IActionResult DeleteCodeUKTZEDE(string token, ProductCodeUKTZEDEntity codeUKTZEDE)
+        public IActionResult DeleteCodeUKTZEDE(string token, DeleteProductCodeUKTZEDDto codeUKTZEDE)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
 
-                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Delete(codeUKTZEDE);
+                    DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Delete(codeUKTZEDE.ToProductCodeUKTZEDEntity());
 
                     return Ok(new Message()
                     {

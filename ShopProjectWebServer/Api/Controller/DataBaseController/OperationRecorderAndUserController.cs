@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Entities; 
+using ShopProjectWebServer.Api.DtoModels.OperationRecorderUser;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,14 +15,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     public class OperationRecorderAndUserController : ControllerBase
     {
         [HttpPost("AddOperationRecordersAndUser")]
-        public async Task<IActionResult> AddOperationRecordersAndUser(string token,Guid userId, List<OperationsRecorderEntity> operationsRecorderUserEntity)
+        public async Task<IActionResult> AddOperationRecordersAndUser(string token,Guid userId, IEnumerable<BindingUserToOperationRecorderDto> operationsRecorderUserEntity)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 {
 
-                    DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(userId,operationsRecorderUserEntity);
+                    DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(userId,operationsRecorderUserEntity.ToOperationRecordersEntity());
 
                     return Ok(new Message()
                     {

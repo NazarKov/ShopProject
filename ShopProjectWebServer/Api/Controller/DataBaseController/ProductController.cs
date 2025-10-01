@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.Product;
 using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using System.Reflection.Metadata;
 using System.Text.Json;
@@ -189,7 +191,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddProduct")]
-        public async Task<IActionResult> AddProduct(string token, ProductEntity product)
+        public async Task<IActionResult> AddProduct(string token, CreateProductDto product)
         {
             try
             {
@@ -206,7 +208,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
                                 throw new Exception("Товар існує");
                             }
                         }
-                        DataBaseMainController.DataBaseAccess.ProductTable.Add(product);
+                        DataBaseMainController.DataBaseAccess.ProductTable.Add(product.ToProductEntity());
 
 
                         return Ok(new Message()
@@ -230,14 +232,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddProductRange")]
-        public async Task<IActionResult> AddProductRange(string token, List<ProductEntity> product)
+        public async Task<IActionResult> AddProductRange(string token, IEnumerable<CreateProductDto> product)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
 
-                    DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product);
+                    DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product.ToProductEnity());
 
 
                         return Ok(new Message()
@@ -261,14 +263,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateProduct")]
-        public async Task<IActionResult> UpdateProduct(string token, ProductEntity product)
+        public async Task<IActionResult> UpdateProduct(string token, UpdateProductDto product)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
 
-                    DataBaseMainController.DataBaseAccess.ProductTable.Update(product);
+                    DataBaseMainController.DataBaseAccess.ProductTable.Update(product.ToProductEntity());
 
                         return Ok(new Message()
                         {
@@ -291,13 +293,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateProductRange")]
-        public async Task<IActionResult> UpdateProductRange(string token, List<ProductEntity> product)
+        public async Task<IActionResult> UpdateProductRange(string token, IEnumerable<UpdateProductDto> product)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
-                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateRange(product);
+                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateRange(product.ToProductEnity());
 
                         return Ok(new Message()
                         {
@@ -320,13 +322,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("UpdateParameterProduct")]
-        public async Task<IActionResult> UpdateParameterProduct(string token,[FromQuery]string parameter , [FromQuery]string value ,ProductEntity product)
+        public async Task<IActionResult> UpdateParameterProduct(string token,[FromQuery]string parameter , [FromQuery]string value ,UpdateProductDto product)
         {
             try
             {
                 if (AuthorizationApi.LoginToken(token))
                 { 
-                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateParameter(product, parameter, value);
+                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateParameter(product.ToProductEntity(), parameter, value);
 
                         return Ok(new Message()
                         {

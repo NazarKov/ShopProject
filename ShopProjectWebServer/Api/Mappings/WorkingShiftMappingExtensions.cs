@@ -19,19 +19,9 @@ namespace ShopProjectWebServer.Api.Mappings
             entity.FactoryNumberRRO = workingShift.FactoryNumberRRO;
             entity.MACCreateAt = new MediaAccessControlEntity() { ID=workingShift.MACCreateAtID };
             entity.CreateAt = DateTime.Now;
-            switch (workingShift.TypeShiftCrateAt)
-            {
-                case TypeWokingShiftDto.OpenShift:
-                    {
-                        entity.TypeShiftCrateAt = TypeWorkingShift.OpenShift;
-                        break;
-                    }
-                default:
-                    {
-                        entity.TypeShiftCrateAt = TypeWorkingShift.None;
-                        break;
-                    }
-            }
+            
+            Enum.TryParse(workingShift.TypeShiftCrateAt.ToString(), out TypeWorkingShift type);
+            entity.TypeShiftCrateAt = type; 
             return entity;
         }
 
@@ -65,33 +55,11 @@ namespace ShopProjectWebServer.Api.Mappings
             shift.TypeRRO = workingShift.TypeRRO; 
             shift.EndAt = DateTime.Now;
 
-            switch (workingShift.TypeShiftCrateAt)
-            {
-                case TypeWokingShiftDto.OpenShift:
-                    {
-                        shift.TypeShiftCrateAt = TypeWorkingShift.OpenShift;
-                        break;
-                    }
-                default:
-                    {
-                        shift.TypeShiftCrateAt = TypeWorkingShift.None;
-                        break;
-                    }
-            }
+            Enum.TryParse(workingShift.TypeShiftCrateAt.ToString(), out TypeWorkingShift type);
+            shift.TypeShiftCrateAt = type;
 
-            switch (workingShift.TypeShiftEndAt)
-            {
-                case TypeWokingShiftDto.CloseShift:
-                    {
-                        shift.TypeShiftEndAt = TypeWorkingShift.CloseShift;
-                        break;
-                    }
-                default:
-                    {
-                        shift.TypeShiftCrateAt = TypeWorkingShift.None;
-                        break;
-                    }
-            } 
+            Enum.TryParse(workingShift.TypeShiftEndAt.ToString(), out TypeWorkingShift typeShift);
+            shift.TypeShiftEndAt = typeShift; 
             return shift;
         }
 
