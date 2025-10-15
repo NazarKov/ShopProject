@@ -1,7 +1,9 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +18,20 @@ namespace ShopProject.ViewModel.UserPage
     internal class OperationsRecorderViewModel : ViewModel<OperationsRecorderViewModel>
     {
         private OperationsRecorderOperationsModel _model;
-        private List<OperationsRecorderEntity> _operationsRecorders;
+        private List<OperationRecorder> _operationsRecorders;
 
 
         public OperationsRecorderViewModel() 
         {
-            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
+            _softwareDeviceSettlementOperationsList = new List<OperationRecorder>();
             _model = new OperationsRecorderOperationsModel();
-            _operationsRecorders = new List<OperationsRecorderEntity>();
+            _operationsRecorders = new List<OperationRecorder>();
             SetFieldPage();
         }
 
 
-        private List<OperationsRecorderEntity> _softwareDeviceSettlementOperationsList;
-        public List<OperationsRecorderEntity> SoftwareDeviceSettlementOperationsList
+        private List<OperationRecorder> _softwareDeviceSettlementOperationsList;
+        public List<OperationRecorder> SoftwareDeviceSettlementOperationsList
         {
             get { return _softwareDeviceSettlementOperationsList; }
             set { _softwareDeviceSettlementOperationsList = value; OnPropertyChanged(nameof(SoftwareDeviceSettlementOperationsList)); }
@@ -90,9 +92,8 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenWorkShifMenuCommand { get => new DelegateParameterCommand(OpenWorkShiftMenu, CanRegister); }
         private void OpenWorkShiftMenu(object parameter)
         {
-            Session.FocusDevices = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter);
-            Mediator.Notify("RedirectToWorkShiftMenu", "");
-
+            Session.FocusDevices = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter); 
+            MediatorService.ExecuteEvent(NavigationButton.RedirectToWorkShiftMenu.ToString());
         }
         private bool CanRegister(object parameter) => true;
     }

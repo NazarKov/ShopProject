@@ -9,57 +9,111 @@
     <Window.DataContext>
         <local:UserDataViewModel></local:UserDataViewModel>
     </Window.DataContext>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
+    <ScrollViewer>
+        <Grid Margin="50">
+            <Border Background="White" CornerRadius="12" Padding="30" 
+                    BorderBrush="#e1e1e1" BorderThickness="1">
+                <StackPanel> 
+                    <TextBlock Text="Деталі профілю" 
+                               FontSize="22" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,20"/>
+ 
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        
-        
-        <Label x:Name="label" Content="ПІБ" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0"  Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label1" Content="Login" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock1" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="2" Text="{Binding Login}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label2" Content="Податовий номер" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock2" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Tin}" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label3" Content="Посада" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock3" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Role}" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label4" Content="Статус" HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock4" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="5" Text="{Binding Status}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label5" Content="Ключ ЕЦП" HorizontalAlignment="Left" Grid.Row="6" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock5" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="6" Text="{}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-        
-        <Label x:Name="label6" Content="Автоматичний вхід" HorizontalAlignment="Left" Grid.Row="7" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
-        <CheckBox x:Name="textBlock6" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="7" VerticalAlignment="Center" IsChecked="{Binding AutomaticLogin}"/>
+                        <Ellipse Width="70" Height="70" Fill="#ccc" />
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding Role}" Foreground="Gray"/>
+                        </StackPanel> 
+                    </Grid>
 
-        <Label x:Name="label7" Content="Дата створення" HorizontalAlignment="Left" Grid.Row="8" Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center"/>
-        <TextBlock x:Name="textBlock7" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="8" Text="{Binding DateCreate}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-
-
-        <Button x:Name="button" Grid.Column="1" Content="Оновити ключ" HorizontalAlignment="Left" Width="120" Margin="15,0,0,0" Grid.Row="9" VerticalAlignment="Center"/>
-        <Button x:Name="button1" Grid.Column="1" Content="Вийти" HorizontalAlignment="Right" Width="60" Margin="0,0,15,0" Grid.Row="9" VerticalAlignment="Center"/>
-
-
-    </Grid>
+                    <Separator/>
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="Податковий номер" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding Tin}" 
+                                Foreground="Gray" 
+                                Margin="0,3,0,0"/>
+                        <Button Content="+ Додати електронну адресу" 
+                                Foreground="#4CAF50" 
+                                Background="Transparent" 
+                                BorderThickness="0"
+                                HorizontalAlignment="Left"
+                                Cursor="Hand"/>
+                    </StackPanel> 
+                    
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="Електронна пошта" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="example@store.com" 
+                                   Foreground="Gray" 
+                                   Margin="0,3,0,0"/>
+                        <Button Content="+ Додати електронну адресу" 
+                                   Foreground="#4CAF50" 
+                                   Background="Transparent" 
+                                   BorderThickness="0"
+                                   HorizontalAlignment="Left"
+                                   Cursor="Hand"/>
+                    </StackPanel>
+ 
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="Номер телефону" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="+380 93 282 2005" 
+                                   Foreground="Gray" 
+                                   Margin="0,3,0,0"/>
+                        <Button Content="+ Додати номер телефону" 
+                                   Foreground="#4CAF50" 
+                                   Background="Transparent" 
+                                   BorderThickness="0"
+                                   HorizontalAlignment="Left"
+                                   Cursor="Hand"/>
+                    </StackPanel>
+                    <Separator></Separator>
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="Ключ ЕЦП" 
+                                FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding Status}" 
+                                Foreground="Gray" 
+                                Margin="0,3,0,0"/>
+                        <Button Content="+ Додати електронну адресу" 
+                                Foreground="#4CAF50" 
+                                Background="Transparent" 
+                                BorderThickness="0"
+                                HorizontalAlignment="Left"
+                                Cursor="Hand"/>
+                    </StackPanel>
+ 
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="Безпека" 
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Остання зміна пароля: 12.10.2025" 
+                                   Foreground="Gray" 
+                                   Margin="0,3,0,0"/>
+                        <Button Content="Змінити пароль" 
+                                   Foreground="#4CAF50" 
+                                   Background="Transparent" 
+                                   BorderThickness="0"
+                                   HorizontalAlignment="Left"
+                                   Cursor="Hand"/>
+                    </StackPanel>
+                    <Separator></Separator>
+                    <StackPanel Margin="0,15,0,0">
+                        <TextBlock Text="{Binding DateCreate}" 
+                                Foreground="Gray" 
+                                Margin="0,3,0,0"/>
+                        <TextBlock Text="Дата останнього оновлення: 12.10.2025" 
+                                Foreground="Gray" 
+                                Margin="0,3,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </Window>

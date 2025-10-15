@@ -1,12 +1,11 @@
 ﻿using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
-using ShopProject.Model.ToolsPage; 
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.Model.ToolsPage;
+using ShopProjectDataBase.Entities; 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
+using System.Collections.Generic; 
 using System.Linq;
 using System.Text;
 using System.Threading;

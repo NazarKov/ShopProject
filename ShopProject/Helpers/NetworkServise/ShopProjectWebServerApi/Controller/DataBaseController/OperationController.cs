@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
-using ShopProject.UIModel;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.SalePage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return (IEnumerable<OperationEntity>)result; 
         }
 
-        public async Task<bool> AddOperation(string token, UIOperationModel item)
+        public async Task<bool> AddOperation(string token, Operation item)
         { 
             var operation = JsonSerializer.Serialize(item.ToCreateOperationDto());
             HttpContent httpContent = new StringContent(operation, Encoding.UTF8, "application/json");

@@ -10,49 +10,126 @@
     <Page.DataContext>
         <local:StartViewModel></local:StartViewModel>
     </Page.DataContext>
-    <Grid>
+    <Grid Background="#F3F3F3">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="350"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="440"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="{Binding HeightGrid}"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="{Binding HeightGrid}"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
-        <Label x:Name="label" Grid.Column="1" Grid.Row="1" Margin="15,0,0,0"  Content="Url DataBase" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="1"  HorizontalAlignment="Center"  Text="{Binding Url}" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="button2" Grid.Column="1" Grid.Row="1" Margin="0,0,46,0"  Content="Авто пошук" HorizontalAlignment="Right"   VerticalAlignment="Top" Command="{Binding ShowSettingAutoFindCommand}"/>
+        <Border Grid.Column="1" Grid.Row="1"
+            Background="#FFFFFF"
+            CornerRadius="12"
+            Padding="20"
+            BorderBrush="#D0D0D0"
+            BorderThickness="1" >
 
-        <Grid Grid.Column="1" Grid.Row="1" Visibility="{Binding VisibilitySettingAutoFind}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+ 
+                <TextBlock Text="Налаштування підключення"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="#2E2E2E"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+ 
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Label Content="URL бази даних:"
+                       Foreground="#4A4A4A"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"/>
+                    <TextBox Width="180"
+                         Text="{Binding Url}"
+                         Background="#F7F7F7"
+                         Foreground="#2E2E2E"
+                         BorderBrush="#C0C0C0"
+                         BorderThickness="1"
+                         Padding="5" />
+                    <Button Content="Авто пошук"
+                        Command="{Binding ShowSettingAutoFindCommand}"
+                        Margin="10,0,0,0"
+                        Background="#DCE6F9"
+                        Foreground="#1E3A8A"
+                        Padding="6,3"
+                        BorderBrush="#A5B4FC"
+                        BorderThickness="1" 
+                        Cursor="Hand"/>
+                </StackPanel>
+ 
+                <StackPanel Grid.Row="2"
+                        Visibility="{Binding VisibilitySettingAutoFind}"
+                        Margin="0,20,0,0"
+                        HorizontalAlignment="Center">
 
-            <Label x:Name="label1" Grid.Row="1" Content="IPRouter" Margin="15,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-            <TextBox x:Name="textBox1"  Grid.Row="1" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding IpRouter}" VerticalAlignment="Top" Width="120"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Label Content="IP Router:" Foreground="#4A4A4A" Width="100"/>
+                        <TextBox Width="160" Text="{Binding IpRouter}" Background="#F7F7F7" Foreground="#2E2E2E"
+                             BorderBrush="#C0C0C0" BorderThickness="1" Padding="5" />
+                    </StackPanel>
 
-            <Label x:Name="Port"  Grid.Row="2" Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"   VerticalAlignment="Top"/>
-            <TextBox x:Name="textBox2" Grid.Row="2" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding Port}" VerticalAlignment="Top" Width="120"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Label Content="Port:" Foreground="#4A4A4A" Width="100"/>
+                        <TextBox Width="160" Text="{Binding Port}" Background="#F7F7F7" Foreground="#2E2E2E"
+                             BorderBrush="#C0C0C0" BorderThickness="1" Padding="5"  />
+                    </StackPanel>
 
-            <Label x:Name="MinIpAddress" Grid.Row="3"  Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-            <TextBox x:Name="textBox4"  Grid.Row="3"  HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding MinIPAddress}" VerticalAlignment="Top" Width="120"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Label Content="Min IP:" Foreground="#4A4A4A" Width="100"/>
+                        <TextBox Width="160" Text="{Binding MinIPAddress}" Background="#F7F7F7" Foreground="#2E2E2E"
+                             BorderBrush="#C0C0C0" BorderThickness="1" Padding="5"  />
+                    </StackPanel>
 
-            <Label x:Name="MaxIpAddress"  Grid.Row="4"   Content="Label" Margin="15,0,0,0" HorizontalAlignment="Left"   VerticalAlignment="Top"/>
-            <TextBox x:Name="textBox3"  Grid.Row="4" HorizontalAlignment="Center"   TextWrapping="Wrap" Text="{Binding MaxIPadress}" VerticalAlignment="Top" Width="120"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Label Content="Max IP:" Foreground="#4A4A4A" Width="100"/>
+                        <TextBox Width="160" Text="{Binding MaxIPadress}" Background="#F7F7F7" Foreground="#2E2E2E"
+                             BorderBrush="#C0C0C0" BorderThickness="1" Padding="5"  />
+                    </StackPanel>
 
-            <Button x:Name="button3"  Grid.Row="5" Content="Пошук" HorizontalAlignment="Center" Command="{Binding AutoFindUrlCommand}" VerticalAlignment="Top" Width="120"/>
-        </Grid>
-
-
-        <Button x:Name="exit" Grid.Column="1" Grid.Row="1" Content="Вихід" Margin="0,0,55,0" HorizontalAlignment="Right" Width="100" VerticalAlignment="Bottom"/>
-        <Button x:Name="connect" Grid.Column="1" Grid.Row="1" Margin="55,0,0,0" Content="Підключитися" Command="{Binding ConnectCommand}" HorizontalAlignment="Left" Width="100"  VerticalAlignment="Bottom"/>
+                    <Button Content="Пошук"
+                        Command="{Binding AutoFindUrlCommand}"
+                        Margin="0,10,0,0"
+                        Background="#E3EFFE"
+                        Foreground="#1E40AF"
+                        Padding="6,3"
+                        BorderBrush="#A5B4FC"
+                        BorderThickness="1" 
+                        Cursor="Hand"
+                        Width="120"
+                        HorizontalAlignment="Center"/>
+                </StackPanel>
+ 
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button Content="Підключитися"
+                        Command="{Binding ConnectCommand}"
+                        Background="#DFF6DD"
+                        Foreground="#166534"
+                        Padding="6,3"
+                        BorderBrush="#9FE2A1"
+                        BorderThickness="1" 
+                        Cursor="Hand"
+                        Width="120"
+                        Margin="0,0,10,0"/>
+                    <Button Content="Вихід"
+                        Background="#FDE2E1"
+                        Foreground="#7F1D1D"
+                        Padding="6,3"
+                        BorderBrush="#FCA5A5"
+                        BorderThickness="1" 
+                        Cursor="Hand"
+                        Width="120"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

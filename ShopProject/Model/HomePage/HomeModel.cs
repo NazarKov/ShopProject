@@ -3,8 +3,7 @@ using ShopProject.Helpers.NetworkServise;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.Entity;
+using System.Configuration; 
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
@@ -22,6 +21,7 @@ namespace ShopProject.Model.HomePage
         public void Init()
         {
             Resources.Init();
+            Resources.InitWebServerResourses();
         }
         public async Task<bool> IsConnectWebServer()
         {
@@ -55,7 +55,7 @@ namespace ShopProject.Model.HomePage
 
             url.Url = URlwebServer;
             AppSettingsManager.SetParameterFile("URL", url.Serialize());
-            MainWebServerController.Init();
+            MainWebServerController.Init(url.Url);
         }
     }
 }

@@ -68,7 +68,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.ObjectOwners.Load();
                     context.OperationsRecorders.Load();
                     context.OperationsRecorderUsers.Load();
-                  
+                    context.UserTokens.Load();
                     if (context.OperationsRecorderUsers.Count() != 0)
                     {
                         return context.OperationsRecorderUsers.ToList();

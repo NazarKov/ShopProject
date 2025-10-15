@@ -1,7 +1,6 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Operation;
-using ShopProject.UIModel;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.SalePage;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
 {
     public static class OperaionMappingExtensions
     {
-        public static CreateOperationDto ToCreateOperationDto(this UIOperationModel operation)
+        public static CreateOperationDto ToCreateOperationDto(this Operation operation)
         {
             var result = new CreateOperationDto()
             {

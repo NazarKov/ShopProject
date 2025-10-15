@@ -1,7 +1,10 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.ProductCodeUKTZED;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +25,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<bool> AddProductCodeUKTZED(string token, ProductCodeUKTZEDEntity codeUKTZED)
+        public async Task<bool> AddProductCodeUKTZED(string token, CreateProductUKTZEDDto codeUKTZED)
         {
             var content = JsonSerializer.Serialize(codeUKTZED);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -31,12 +34,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> UpdateCodeUKTZED(string token, ProductCodeUKTZEDEntity codeUKTZED)
+        public async Task<bool> UpdateCodeUKTZED(string token, UpdateProductCodeUKTZEDDto codeUKTZED)
         {
             var content = JsonSerializer.Serialize(codeUKTZED);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -45,12 +48,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> UpdateParameterCodeUKTZED(string token, string parameter, object value, ProductCodeUKTZEDEntity codeUKTZED)
+        public async Task<bool> UpdateParameterCodeUKTZED(string token, string parameter, object value, UpdateProductCodeUKTZEDDto codeUKTZED)
         {
             var content = JsonSerializer.Serialize(codeUKTZED);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -59,67 +62,67 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> DeleteCodeUKTZED(string token, ProductCodeUKTZEDEntity codeUKTZED)
+        public async Task<bool> DeleteCodeUKTZED(string token, ProductCodeUKTZED codeUKTZED)
         {
-            var content = JsonSerializer.Serialize(codeUKTZED);
+            var content = string.Empty;
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductCodeUKTZED/DeleteCodeUKTZEDE?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductCodeUKTZED/DeleteCodeUKTZEDE?token={token}&id={codeUKTZED.ID}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<ProductCodeUKTZEDEntity> GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status)
+        public async Task<ProductCodeUKTZEDDto> GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductCodeUKTZED/GetCodeUKTZEDEByCode?token={token}&code={code}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<ProductCodeUKTZEDEntity>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<ProductCodeUKTZEDDto>.Unpacking(responseBody);
 
-            return (ProductCodeUKTZEDEntity)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ProductCodeUKTZEDEntity>> GetCodeUKTZEDByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusCodeUKTZED status)
+        public async Task<PaginatorData<ProductCodeUKTZEDDto>> GetCodeUKTZEDByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductCodeUKTZED/GetCodeUKTZEDByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<ProductCodeUKTZEDEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<ProductCodeUKTZEDDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<ProductCodeUKTZEDEntity>)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ProductCodeUKTZEDEntity>> GetCodeUKTZEDPageColumn(string token, int page, int countColumn, TypeStatusCodeUKTZED status)
+        public async Task<PaginatorData<ProductCodeUKTZEDDto>> GetCodeUKTZEDPageColumn(string token, int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductCodeUKTZED/GetCodeUKTZEDPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<ProductCodeUKTZEDEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<ProductCodeUKTZEDDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<ProductCodeUKTZEDEntity>)result;
+            return result.Data;
         }
 
-        public async Task<IEnumerable<ProductCodeUKTZEDEntity>> GetCodeUKTZED(string token)
+        public async Task<IEnumerable<ProductCodeUKTZEDDto>> GetCodeUKTZED(string token)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductCodeUKTZED/GetCodeUKTZED?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<ProductCodeUKTZEDEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<ProductCodeUKTZEDDto>>.Unpacking(responseBody);
 
-            return (IEnumerable<ProductCodeUKTZEDEntity>)result;
+            return result.Data;
         }
     }
 }

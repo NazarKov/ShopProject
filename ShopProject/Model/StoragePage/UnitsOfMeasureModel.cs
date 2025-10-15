@@ -1,65 +1,89 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using ShopProject.Helpers; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.Template.Paginator;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShopProject.Helpers.Template.Paginator;
 using System.Windows;
 
 namespace ShopProject.Model.StoragePage
 {
     internal class UnitsOfMeasureModel
     {
+        private readonly string _token; 
 
-        public UnitsOfMeasureModel() { }
+        public UnitsOfMeasureModel()
+        {
+            _token = Session.User.Token;
+        }
 
-        public async Task<PaginatorData<ProductUnitEntity>> GetUnitsPageColumn(int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<PaginatorData<ProductUnit>> GetUnitsPageColumn(int page, int countColumn, TypeStatusUnit statusUnit)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitsPageColumn(Session.Token, page, countColumn, statusUnit);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitsPageColumn(_token, page, countColumn, statusUnit);
+
+                var paginator = new PaginatorData<ProductUnit>()
+                {
+                    Data = result.Data.ToProductUnit(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductUnitEntity>();
+                return new PaginatorData<ProductUnit>();
             }
         }
 
-        public async Task<PaginatorData<ProductUnitEntity>> SearchByName(string item, int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<PaginatorData<ProductUnit>> SearchByName(string item, int page, int countColumn, TypeStatusUnit statusUnit)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitsByNamePageColumn(Session.Token, item, page, countColumn, statusUnit);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitsByNamePageColumn(_token, item, page, countColumn, statusUnit);
+
+                var paginator = new PaginatorData<ProductUnit>()
+                {
+                    Data = result.Data.ToProductUnit(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductUnitEntity>();
+                return new PaginatorData<ProductUnit>();
             }
         }
-        public async Task<ProductUnitEntity> SearchByBarCode(string item, TypeStatusUnit statusUnit)
+        public async Task<ProductUnit> SearchByBarCode(string item, TypeStatusUnit statusUnit)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitByCode(Session.Token, item, statusUnit);
+                return (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnitByCode(_token, item, statusUnit)).ToProductUnit();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new ProductUnitEntity();
+                return new ProductUnit();
             }
         }
 
-        public async Task<bool> Delete(ProductUnitEntity item)
+        public async Task<bool> Delete(ProductUnit item)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.DeleteUnit(Session.Token, item);
+                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.DeleteUnit(_token, item);
             }
             catch (Exception ex)
             {
@@ -68,11 +92,11 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public async Task<bool> ChangeStatus(ProductUnitEntity item , TypeStatusUnit status)
+        public async Task<bool> ChangeStatus(ProductUnit item , TypeStatusUnit status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.UpdateParameterUnit(Session.Token,nameof(item.Status),status , item);
+                return await MainWebServerController.MainDataBaseConntroller.ProductUnitController.UpdateParameterUnit(_token, nameof(item.Status),status , item.ToUpdateProductUnit());
             }
             catch (Exception ex)
             {

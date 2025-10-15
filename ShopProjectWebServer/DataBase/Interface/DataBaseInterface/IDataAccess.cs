@@ -22,7 +22,7 @@ namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
         ITokenTableAccess TokenTable { get; set; }
         IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
         IWorkingShiftTableAccess WorkingShiftTable { get; set; }
-         
+        ISignatureKeyTableAccess SignatureKeyTable { get; set; }
         public bool IsCreate();
         public string Сonnection(string connectionString);
         public void Clear();

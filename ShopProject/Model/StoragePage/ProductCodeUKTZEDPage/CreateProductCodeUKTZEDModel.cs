@@ -1,6 +1,8 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +14,11 @@ namespace ShopProject.Model.StoragePage.ProductCodeUKTZEDPage
 {
     internal class CreateProductCodeUKTZEDModel
     {
-        public async Task<bool> SaveItemDataBase(ProductCodeUKTZEDEntity codeUKTZED)
+        public async Task<bool> SaveItemDataBase(ProductCodeUKTZED codeUKTZED)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.AddProductCodeUKTZED(Session.Token, codeUKTZED);
+                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.AddProductCodeUKTZED(Session.User.Token, codeUKTZED.ToProductCodeUKTZED());
             }
             catch (Exception ex)
             {

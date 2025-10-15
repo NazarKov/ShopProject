@@ -1,6 +1,5 @@
 ﻿using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Helpers.ProductContoller;
+using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Helpers;
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
@@ -13,13 +12,12 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(ProductEntity item);
         void UpdateRange(IEnumerable<ProductEntity> items);
         void UpdateParameter(ProductEntity item , string parameter , object value);
-        void Delete(ProductEntity item);
-
-        ProductInfo GetProductInfo();
+        void Delete(ProductEntity item); 
         IEnumerable<ProductEntity> GetAll();
         ProductEntity GetByBarCode(string barCode);
         ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct);
-        PaginatorData<ProductEntity> GetAllPageColumn(double page, double countColumn,TypeStatusProduct statusProduct);
-        PaginatorData<ProductEntity> GetProductByNamePageColumn(string name, double page, double countColumn, TypeStatusProduct statusProduct);
+
+        IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status);
+
     }
 }

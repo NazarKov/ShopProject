@@ -3,9 +3,12 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -23,41 +26,59 @@ namespace ShopProject.Model.AdminPage
         private SigningFileContoller _signingFileController;
         private MainElectronicTaxAccountController _mainControllerHttp;
 
-        private List<OperationsRecorderEntity> _softwareDeviceSettlementOperationsList;
-
+        private List<OperationRecorder> _softwareDeviceSettlementOperationsList;
+        private readonly string _token;
         public OperationsRecorderModel()
         { 
-            _softwareDeviceSettlementOperationsList = new List<OperationsRecorderEntity>();
-
+            _softwareDeviceSettlementOperationsList = new List<OperationRecorder>();
+            _token = Session.User.Token;
             _signingFileController = new SigningFileContoller();
             _mainControllerHttp = new MainElectronicTaxAccountController();
             _signingFileController.Initialize(false);
         }
 
 
-        public async Task<PaginatorData<OperationsRecorderEntity>> GetOperationsRecorderPageColumn(int page, int countColumn, TypeStatusOperationRecorder status)
+        public async Task<PaginatorData<OperationRecorder>> GetOperationsRecorderPageColumn(int page, int countColumn, TypeStatusOperationRecorder status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderPageColumn(Session.Token, page, countColumn, status);
+                var result = await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderPageColumn(_token, page, countColumn, status);
+
+                var paginator = new PaginatorData<OperationRecorder>()
+                {
+                    Data = result.Data.ToOperationRecorder(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<OperationsRecorderEntity>();
+                return new PaginatorData<OperationRecorder>();
             }
         }
 
-        public async Task<PaginatorData<OperationsRecorderEntity>> SearchByName(string item, int page, int countColumn, TypeStatusOperationRecorder status)
+        public async Task<PaginatorData<OperationRecorder>> SearchByName(string item, int page, int countColumn, TypeStatusOperationRecorder status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderByNamePageColumn(Session.Token, item, page, countColumn, status);
+                var result = await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationsRecorderByNamePageColumn(_token, item, page, countColumn, status);
+
+                var paginator = new PaginatorData<OperationRecorder>()
+                {
+                    Data = result.Data.ToOperationRecorder(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<OperationsRecorderEntity>();
+                return new PaginatorData<OperationRecorder>();
             }
         } 
 
@@ -82,14 +103,20 @@ namespace ShopProject.Model.AdminPage
 
                     foreach (var item in infoUser.ElementAt(7).listValues)
                     {
-                        OperationsRecorderEntity tempList = new OperationsRecorderEntity()
+                        OperationRecorder tempList = new OperationRecorder()
                         {
                             Status = item.STATUS,
-                            Address = item.ADDRESS,
-                            FiscalNumber = item.FNUM.ToString(),
-                            LocalNumber = item.LNUM.ToString(),
+                            Address = item.ADDRESS, 
                             Name = item.NAME,
                         };
+                        if (item.FNUM != null)
+                        {
+                            tempList.FiscalNumber = item.FNUM.ToString();
+                        }
+                        if (item.LNUM != null)
+                        {
+                            tempList.LocalNumber = item.LNUM.ToString();
+                        }
                         if (item.STATUS == "Активний")
                         {
                             tempList.Status = item.STATUS;
@@ -122,11 +149,11 @@ namespace ShopProject.Model.AdminPage
 
         } 
 
-        public async Task<bool> SaveDataBaseItem(List<SoftwareDeviceSettlementOperationsHelper> items)
+        public async Task<bool> SaveDataBaseItem(List<OperationRecorderDialogWindow> items)
         {
             try
             {
-                List<OperationsRecorderEntity> result = new List<OperationsRecorderEntity>();
+                List<OperationRecorder> result = new List<OperationRecorder>();
                 for (int i = 0; i < items.Count; i++)
                 {
                     if (items.ElementAt(i).isActive)
@@ -136,7 +163,7 @@ namespace ShopProject.Model.AdminPage
                     }
                 }
                 
-                 return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddOperationRecorders(Session.Token,result);
+                 return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddOperationRecorders(_token,result.ToOperationRecorder());
                 
             }
             catch (Exception ex)
@@ -146,7 +173,7 @@ namespace ShopProject.Model.AdminPage
             }
 
         }
-        public List<OperationsRecorderEntity> GetListObjecyOwner()
+        public List<OperationRecorder> GetListObjecyOwner()
         {
             return _softwareDeviceSettlementOperationsList;
         }
@@ -156,12 +183,11 @@ namespace ShopProject.Model.AdminPage
         }
 
 
-        public async Task<bool> DeleteItem(OperationsRecorderEntity item)
+        public async Task<bool> DeleteItem(OperationRecorder item)
         {
             try
-            {
-                
-                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.DeleteOperationsRecorder(Session.Token,item);
+            { 
+                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.DeleteOperationsRecorder(_token,item);
             }
             catch (Exception ex)
             {
@@ -169,34 +195,27 @@ namespace ShopProject.Model.AdminPage
                 return false;
             }
         }
-        public List<ObjectOwnerHelpers> GetAllObjectOwner()
+        public async Task<List<ObjectOwnerDialogWindow>> GetAllObjectOwner()
         {
             try
             {
-                List<ObjectOwnerHelpers> result = new List<ObjectOwnerHelpers>();
+                var result = new List<ObjectOwnerDialogWindow>();  
+                var items = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwners(_token); 
 
-                List<ObjectOwnerEntity> list = new List<ObjectOwnerEntity>();
-                
-                Task t = Task.Run(async () =>
+                foreach (var item in items.ToObjectOwner())
                 {
-                    list = (await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwners(Session.Token)).ToList();
-                });
-                t.Wait();
-
-                foreach (var item in list)
-                {
-                    result.Add(new ObjectOwnerHelpers(item));
+                    result.Add(new ObjectOwnerDialogWindow(item));
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<ObjectOwnerHelpers>();
+                return new List<ObjectOwnerDialogWindow>();
             }
 
         }
-        public bool SaveBinding(OperationsRecorderEntity softwareDeviceSettlement, List<ObjectOwnerHelpers> objectOwnerHelpers)
+        public async Task<bool> SaveBinding(OperationRecorder softwareDeviceSettlement, List<ObjectOwnerDialogWindow> objectOwnerHelpers)
         {
             try
             {
@@ -204,17 +223,11 @@ namespace ShopProject.Model.AdminPage
                 {
                     throw new Exception("Виберіть один обєкт");
                 }
-                bool result = false;
-                Task t = Task.Run(async () =>
-                {
-                    result = (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddBindingOperationRecorder(
-                        Session.Token,
-                        softwareDeviceSettlement.ID.ToString(), 
-                        objectOwnerHelpers.Where(item => item.isActive).FirstOrDefault().item.ID.ToString()));
-                });
-                t.Wait();
 
-                return result;
+                return await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.AddBindingOperationRecorder(
+                        _token,
+                        softwareDeviceSettlement.ID.ToString(),
+                        objectOwnerHelpers.Where(item => item.isActive).FirstOrDefault().item.ID.ToString());
 
             }
             catch (Exception ex)

@@ -1,61 +1,85 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using ShopProject.Helpers; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.Template.Paginator;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System; 
 using System.Threading.Tasks;
-using ShopProject.Helpers.Template.Paginator;
 using System.Windows;
 
 namespace ShopProject.Model.StoragePage
 {
     internal class ProductCodeUKTZEDModel
     {
-        public ProductCodeUKTZEDModel() { }
+        private readonly string _token;
+        public ProductCodeUKTZEDModel()
+        {
+            _token = Session.User.Token;
+        }
 
-        public async Task<PaginatorData<ProductCodeUKTZEDEntity>> GetCodeUKTZEDPageColumn(int page, int countColumn, TypeStatusCodeUKTZED status)
+        public async Task<PaginatorData<ProductCodeUKTZED>> GetCodeUKTZEDPageColumn(int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDPageColumn(Session.Token, page, countColumn, status);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDPageColumn(_token, page, countColumn, status);
+
+                var paginator = new PaginatorData<ProductCodeUKTZED>()
+                {
+                    Data = result.Data.ToProductCodeUKTZED(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductCodeUKTZEDEntity>();
+                return new PaginatorData<ProductCodeUKTZED>();
             }
         }
 
-        public async Task<PaginatorData<ProductCodeUKTZEDEntity>> SearchByName(string item, int page, int countColumn, TypeStatusCodeUKTZED status)
+        public async Task<PaginatorData<ProductCodeUKTZED>> SearchByName(string item, int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDByNamePageColumn(Session.Token, item, page, countColumn, status);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDByNamePageColumn(_token, item, page, countColumn, status);
+
+                var paginator = new PaginatorData<ProductCodeUKTZED>()
+                {
+                    Data = result.Data.ToProductCodeUKTZED(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductCodeUKTZEDEntity>();
+                return new PaginatorData<ProductCodeUKTZED>();
             }
         }
-        public async Task<ProductCodeUKTZEDEntity> SearchByBarCode(string item, TypeStatusCodeUKTZED status)
+        public async Task<ProductCodeUKTZED> SearchByBarCode(string item, TypeStatusCodeUKTZED status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDEByCode(Session.Token, item, status);
+                return (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZEDEByCode(_token, item, status)).ToProductCodeUKTZED();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new ProductCodeUKTZEDEntity();
+                return new ProductCodeUKTZED();
             }
         }
 
-        public async Task<bool> Delete(ProductCodeUKTZEDEntity item)
+        public async Task<bool> Delete(ProductCodeUKTZED item)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.DeleteCodeUKTZED(Session.Token, item);
+                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.DeleteCodeUKTZED(_token, item);
             }
             catch (Exception ex)
             {
@@ -64,11 +88,11 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public async Task<bool> ChangeStatus(ProductCodeUKTZEDEntity item, TypeStatusCodeUKTZED status)
+        public async Task<bool> ChangeStatus(ProductCodeUKTZED item, TypeStatusCodeUKTZED status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.UpdateParameterCodeUKTZED(Session.Token, nameof(item.Status), status, item);
+                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.UpdateParameterCodeUKTZED(_token, nameof(item.Status), status, item.ToUpdateProductCodeUKTZED());
             }
             catch (Exception ex)
             {

@@ -24,6 +24,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
         public ITokenTableAccess TokenTable { get; set; }
         public IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
         public IWorkingShiftTableAccess WorkingShiftTable { get; set; }
+        public ISignatureKeyTableAccess SignatureKeyTable { get; set; }
 
         private readonly DbContextOptionsBuilder<ContextDataBase> optionsBuilder;
 
@@ -49,6 +50,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                 WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
                 DiscountTable = new DiscountTableAccess();
                 GiftCertificatesTable = new GiftCertificatesTableAccess();
+                SignatureKeyTable = new SignatureKeyTableAccess(optionsBuilder.Options);
             }
             else
             {
@@ -69,8 +71,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                         context.Initial();
                     }
 
-                    context.Database.Migrate();
-                    context.Initial();
+                    context.Database.Migrate(); 
                     return true;
                 }
             }

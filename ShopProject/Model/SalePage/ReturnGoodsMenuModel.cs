@@ -3,8 +3,8 @@ using ShopProject.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;   
-using ShopProjectSQLDataBase.Entities;
+using System.Windows;    
+using ShopProjectDataBase.Entities;
 
 namespace ShopProject.Model.SalePage
 {

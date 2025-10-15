@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.WorkingShift;
 using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
 {
     public static class WorkingShiftMappingExtensions
     {
-        public static CreateWorkingShiftDto ToCreateWorkingShiftDto(this UIWorkingShiftModel workingShift)
+        public static CreateWorkingShiftDto ToCreateWorkingShiftDto(this WorkingShift workingShift)
         {
             var item = new CreateWorkingShiftDto()
             {
@@ -26,7 +26,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             }; 
             return item;
         }
-        public static UpdateWorkingShiftDto ToUpdateWorkingShiftDto(this UIWorkingShiftModel workingShift) 
+        public static UpdateWorkingShiftDto ToUpdateWorkingShiftDto(this WorkingShift workingShift) 
         { 
             var shift = new UpdateWorkingShiftDto();
             shift.ID= workingShift.ID;

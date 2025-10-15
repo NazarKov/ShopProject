@@ -1,4 +1,4 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +22,11 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller
         { 
             HttpResponseMessage responseMessage = await _httpClient.GetAsync("/api/Settings/Ping");
             string responseBody = await responseMessage.Content.ReadAsStringAsync();
-
-            var result = CheckingResponse.Unpacking<string>(responseBody);
             responseMessage.EnsureSuccessStatusCode();
+
+            var result = ApiResponse<string>.Unpacking(responseBody);
             
-            return result.ToString(); 
+            return result.Data.ToString(); 
         }
     }
 }

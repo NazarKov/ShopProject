@@ -5,10 +5,7 @@
     <Setting Name="URL" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TokenUser" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="AutoLogin" Type="System.Boolean" Scope="User">
+    <Setting Name="User" Type="System.String" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Port" Type="System.Int32" Scope="User">

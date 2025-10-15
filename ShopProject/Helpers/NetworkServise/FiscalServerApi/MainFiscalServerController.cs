@@ -1,9 +1,10 @@
 ﻿using FiscalServerApi;
 using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi.Helpers;
-using ShopProject.UIModel;
 using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.StoragePage;
+using ShopProject.UIModel.UserPage;
+using ShopProjectDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
         private SigningFileContoller _signFileContoller;
         private FiscalServerController _fiscalServerController;
         private bool _testMode = false;
-        private ElectronicSignatureKey _key;
+        private SignatureKey _key;
         private TypeChek _typeChek;
 
         public MainFiscalServerController()
@@ -28,15 +29,15 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
             _fiscalServerController = new FiscalServerController();
             _testMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
             _signFileContoller.Initialize(false);
-            _key = new ElectronicSignatureKey();
+            _key = new SignatureKey();
         }
 
-        public void AddKey(ElectronicSignatureKey key)
+        public void AddKey(SignatureKey key)
         {
             _key = key;
         }
 
-        private string ChoseTypeOperationRecursive(UIWorkingShiftModel shift, int depth, int maxDepth, UIOperationModel? operation = null, List<OrderEntity>? orders = null, List<ProductEntity>? products = null)
+        private string ChoseTypeOperationRecursive(WorkingShift shift, int depth, int maxDepth, Operation? operation = null, List<Order>? orders = null, List<Product>? products = null)
         {
             try
             {
@@ -84,38 +85,38 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
                 return string.Empty;
             }
         }
-        public string OpenShift(UIWorkingShiftModel shift)
+        public string OpenShift(WorkingShift shift)
         {
             _typeChek = TypeChek.OpenShift;
             return ChoseTypeOperationRecursive(shift, 0, 5);
         }
-        public string CloseShift(UIWorkingShiftModel shift)
+        public string CloseShift(WorkingShift shift)
         {
             _typeChek = TypeChek.CloseShift;
             return ChoseTypeOperationRecursive(shift, 0, 5); 
         }
 
-        public string DepositAndWithdrawalMoney(UIWorkingShiftModel shift)
+        public string DepositAndWithdrawalMoney(WorkingShift shift)
         {
             _typeChek = TypeChek.DepositAndWithdrawalMoney;
             return ChoseTypeOperationRecursive(shift, 0, 5);
 
         }
 
-        public string SendFiscalCheck(UIWorkingShiftModel shift, UIOperationModel operation, List<ProductEntity> products)
+        public string SendFiscalCheck(WorkingShift shift, Operation operation, List<Product> products)
         {
             _typeChek = TypeChek.FiscalCheck;
             return ChoseTypeOperationRecursive(shift, 0, 5, operation, null, products);
 
         }
-        public string SendReturnFiscalCheck(UIWorkingShiftModel shift, UIOperationModel operation, List<ProductEntity> products)
+        public string SendReturnFiscalCheck(WorkingShift shift, Operation operation, List<Product> products)
         {
             _typeChek = TypeChek.ReturnCheck;
             return ChoseTypeOperationRecursive(shift, 0, 5, operation, null, products);
 
         }
 
-        private string SendCheck(UIWorkingShiftModel shift, UIOperationModel? operation, List<OrderEntity>? orders, List<ProductEntity>? products)
+        private string SendCheck(WorkingShift shift, Operation? operation, List<Order>? orders, List<Product>? products)
         {
             WriteReadXmlFile.WriteXMLFile(shift, operation, orders, products);
 

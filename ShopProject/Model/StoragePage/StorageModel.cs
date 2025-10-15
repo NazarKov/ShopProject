@@ -1,9 +1,9 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper.ProductContoller;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.StoragePage; 
+using ShopProjectDataBase.Helper; 
 using System;
 using System.Collections;
 using System.Collections.Generic; 
@@ -14,69 +14,86 @@ namespace ShopProject.Model.StoragePage
 {
 
     internal class StorageModel
-    { 
-        public StorageModel() {  }
+    {
+        private readonly string _token; 
+        public StorageModel()
+        {
+            _token = Session.User.Token;
+        }
 
-        public async Task<PaginatorData<ProductEntity>> GetProductsPageColumn(int page , int countColumn, TypeStatusProduct statusProduct)
+        public async Task<PaginatorData<Product>> GetProductsPageColumn(int page , int countColumn, TypeStatusProduct statusProduct)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductsPageColumn(Session.Token, page, countColumn, statusProduct);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductsPageColumn(_token, page, countColumn, statusProduct);
+
+                var paginator = new PaginatorData<Product>()
+                {
+                    Data = result.Data.ToProduct(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductEntity>();
+                return new PaginatorData<Product>();
             }
         }
 
-        public async Task<PaginatorData<ProductEntity>> SearchByName(string item, int page, int countColumn, TypeStatusProduct statusProduct)
+        public async Task<PaginatorData<Product>> SearchByName(string item, int page, int countColumn, TypeStatusProduct statusProduct)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByNamePageColumn(Session.Token,item, page, countColumn, statusProduct);
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByNamePageColumn(_token, item, page, countColumn, statusProduct);
+
+                var paginator = new PaginatorData<Product>()
+                {
+                    Data = result.Data.ToProduct(),
+                    DataType = result.DataType,
+                    Page = result.Page,
+                    Pages = result.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new PaginatorData<ProductEntity>();
+                return new PaginatorData<Product>();
             }
         }
-        public async Task<ProductEntity> SearchByBarCode(string item, TypeStatusProduct statusProduct)
+        public async Task<Product> SearchByBarCode(string item, TypeStatusProduct statusProduct)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, item , statusProduct);
+                return (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, item , statusProduct)).ToProduct();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new ProductEntity();
+                return new Product();
             } 
         }
-        public async Task<ProductInfo> GetProductInfo()
+        public async Task<ProductsInfo> GetProductInfo()
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductInfo(Session.Token);
+                return (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductInfo(_token)).ToProductsInfo();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return  new ProductInfo();
+                return  new ProductsInfo();
             }
         }
 
-        public bool SetItemInArhive(ProductEntity item)
+        public async Task<bool> SetItemInArhive(Product item)
         {
             try
-            {
-                Task t = Task.Run(async () =>
-                {
-                   await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(item.Status), TypeStatusProduct.Archived, item);
-                });
-                t.Wait();
-                return true;
+            { 
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(_token, nameof(item.Status), TypeStatusProduct.Archived, item.ToUpdateProductDto());
             }
             catch (Exception ex)
             {
@@ -85,17 +102,11 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public bool SetItemOutOfStock(ProductEntity item)
+        public async Task<bool> SetItemOutOfStock(Product item)
         {
             try
-            {
-                Task t = Task.Run(async () =>
-                {
-                    await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(item.Status), TypeStatusProduct.OutStock, item);
-                });
-                t.Wait();
-
-                return true;
+            { 
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(_token, nameof(item.Status), TypeStatusProduct.OutStock, item.ToUpdateProductDto());
             }
             catch (Exception ex)
             {
@@ -104,9 +115,9 @@ namespace ShopProject.Model.StoragePage
             }
         }
 
-        public void ContertIListToList(IList list, List<ProductEntity> _products)
+        public void ContertIListToList(IList list, List<Product> _products)
         {
-            foreach (ProductEntity item in list)
+            foreach (Product item in list)
             {
                 _products.Add(item);
             }

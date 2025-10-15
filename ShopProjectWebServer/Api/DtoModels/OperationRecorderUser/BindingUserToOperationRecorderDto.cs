@@ -1,7 +1,10 @@
-﻿namespace ShopProjectWebServer.Api.DtoModels.OperationRecorderUser
+﻿using System.Text.Json.Serialization;
+
+namespace ShopProjectWebServer.Api.DtoModels.OperationRecorderUser
 {
     public class BindingUserToOperationRecorderDto
     {
-        public Guid ID { get; set; } 
+        [JsonPropertyName("ID")]
+        public string ID { get; set; } 
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

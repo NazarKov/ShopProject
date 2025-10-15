@@ -1,8 +1,11 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.OperationRecorder;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +25,15 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(url);
         }
-        public async Task<IEnumerable<OperationsRecorderEntity>> GetOperationRecordersByNumberAndUser(string token, string number,  Guid userId)
+        public async Task<IEnumerable<OperationRecorderDto>> GetOperationRecordersByNumberAndUser(string token, string number,  Guid userId)
         { 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersByNumberAndUser?token={token}&number={number}&userId={userId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<OperationsRecorderEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<OperationRecorderDto>>.Unpacking(responseBody);
 
-            return (IEnumerable<OperationsRecorderEntity>)result;
+            return result.Data;
         }
 
         public async Task<IEnumerable<OperationsRecorderEntity>> GetOperationRecordersByNameAndUser(string token, string name, Guid userId)
@@ -45,55 +48,53 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return (IEnumerable<OperationsRecorderEntity>)result;
         }
 
-        public async Task<bool> DeleteOperationsRecorder(string token, OperationsRecorderEntity operationsRecorder)
+        public async Task<bool> DeleteOperationsRecorder(string token, OperationRecorder operationsRecorder)
         {
-            var content = JsonSerializer.Serialize(operationsRecorder);
-
-
+            var content = string.Empty;  
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/OperationRecorder/DeleteOperationRecorder?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/OperationRecorder/DeleteOperationRecorder?token={token}&id={operationsRecorder.ID}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<OperationsRecorderEntity>> GetOperationsRecorderByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status )
+        public async Task<PaginatorData<OperationRecorderDto>> GetOperationsRecorderByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status )
         {
 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<OperationsRecorderEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<OperationRecorderDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<OperationsRecorderEntity>)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<OperationsRecorderEntity>> GetOperationsRecorderPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status )
+        public async Task<PaginatorData<OperationRecorderDto>> GetOperationsRecorderPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status )
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<OperationsRecorderEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<OperationRecorderDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<OperationsRecorderEntity>)result;
+            return result.Data;
         }
 
-        public async Task<IEnumerable<OperationsRecorderEntity>> GetOperationRecorders(string token)
+        public async Task<IEnumerable<OperationRecorderDto>> GetOperationRecorders(string token)
         { 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecorders?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<OperationsRecorderEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<OperationRecorderDto>>.Unpacking(responseBody);
 
-            return (IEnumerable<OperationsRecorderEntity>)result; 
+            return result.Data; 
         }
 
         public async Task<bool> AddOperationRecorder(string token, OperationsRecorderEntity item)
@@ -110,7 +111,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return (bool)result; 
         }
 
-        public async Task<bool> AddOperationRecorders(string token, List<OperationsRecorderEntity> item)
+        public async Task<bool> AddOperationRecorders(string token, List<CreateOperationRecorderDto> item)
         { 
             var content = JsonSerializer.Serialize(item);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -118,10 +119,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/OperationRecorder/AddOperationRecorders?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (bool)result; 
+            return result.Data; 
         }
 
         public async Task<bool> AddBindingOperationRecorder(string token, string idoperationrecoreder, string idobjectowner)
@@ -132,10 +133,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/OperationRecorder/AddBindingOperationRecorder?token={token}&idoperationrecoreder={idoperationrecoreder}&idobjectowner={idobjectowner}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (bool)result; 
+            return result.Data; 
         }
 
     }

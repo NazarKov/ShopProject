@@ -1,10 +1,10 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi; 
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+using System.Data; 
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,7 +124,7 @@ namespace ShopProject.Model.ToolsPage
                         }
 
                         product.CreatedAt = DateTime.Now;
-                        product.Status = ShopProjectSQLDataBase.Helper.TypeStatusProduct.InStock;
+                        product.Status =  TypeStatusProduct.InStock;
                         product.CodeUKTZED = new ProductCodeUKTZEDEntity() { Code = "9507" };
 
                         _product.Add(product);
@@ -148,7 +148,7 @@ namespace ShopProject.Model.ToolsPage
         {
             Task t = Task.Run(async () =>
             {
-                await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(ProductEntity.Count), count, new ProductEntity() { Code = Validation.ChekParamsIsNull(code, i, dataTable) });
+                //await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(ProductEntity.Count), count, new ProductEntity() { Code = Validation.ChekParamsIsNull(code, i, dataTable) });
             });
         }
     }

@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model; 
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;  
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using SigningFileLib;
 using System.IO;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 
 namespace ShopProject.Model.AdminPage.UserPage
 {
@@ -38,7 +39,7 @@ namespace ShopProject.Model.AdminPage.UserPage
                     Email = email,
                     Password = password,
                     UserRole = role, 
-                    Status = ShopProjectSQLDataBase.Helper.TypeStatusUser.NotAvailableElectronicKey,
+                    Status =  TypeStatusUser.NotAvailableElectronicKey,
                     SignatureKey = null,
                 };
 
@@ -86,7 +87,7 @@ namespace ShopProject.Model.AdminPage.UserPage
                             Email = email,
                             Password = password,
                             SignatureKey = signature,
-                            Status = ShopProjectSQLDataBase.Helper.TypeStatusUser.AvailableElectronicKey, 
+                            Status =  TypeStatusUser.AvailableElectronicKey, 
                             UserRole = role,
                         };
                         return await MainWebServerController.MainDataBaseConntroller.UserController.UpdateUser(Session.Token, user);
@@ -105,7 +106,7 @@ namespace ShopProject.Model.AdminPage.UserPage
         {
             try
             {
-                return (await MainWebServerController.MainDataBaseConntroller.UserRoleController.GetRoles(Session.Token)).ToList();
+                return null;// (await MainWebServerController.MainDataBaseConntroller.UserRoleController.GetRoles(Session.Token)).ToList();
             }
             catch (Exception ex)
             {

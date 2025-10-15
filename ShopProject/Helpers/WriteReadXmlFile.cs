@@ -1,13 +1,12 @@
-﻿
-using ShopProject.UIModel;
-using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+﻿using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml; 
+using System.Xml;
 
 namespace ShopProject.Helpers
 {
@@ -15,7 +14,7 @@ namespace ShopProject.Helpers
     { 
         private static readonly string pathxml = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml";
  
-        private static void WriteHeader(UIWorkingShiftModel shift , XmlTextWriter writer)
+        private static void WriteHeader(WorkingShift shift , XmlTextWriter writer)
         {
             writer.WriteStartDocument();
             writer.WriteStartElement("RQ");
@@ -40,7 +39,7 @@ namespace ShopProject.Helpers
             writer.WriteAttributeString("V", "1");
             writer.WriteAttributeString("ZN", shift.FactoryNumberRRO.ToString());  
         }
-        private static void WriteFooter(UIWorkingShiftModel shift, DateTimeOffset time,UIMediaAccessControlModel MAC, XmlTextWriter writer)
+        private static void WriteFooter(WorkingShift shift, DateTimeOffset time,MediaAccessControl MAC, XmlTextWriter writer)
         {
 
             writer.WriteElementString("TS", time.ToString("yyyyMMddHHmmss"));
@@ -61,7 +60,7 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
             writer.WriteEndDocument(); 
         }
-        private static void WriteElementCheckByOrder(string fiscalNumberRRO, UIOperationModel operation, List<OrderEntity> orders, XmlTextWriter writer)
+        private static void WriteElementCheckByOrder(string fiscalNumberRRO, Operation operation, List<Order> orders, XmlTextWriter writer)
         {
             writer.WriteStartElement("C");
             writer.WriteAttributeString("T", operation.TypeOperation.ToString("D"));
@@ -127,7 +126,7 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
         }
        
-        private static void WriteElementChekByProduct(string fiscalNumberRRO , UIOperationModel operation, List<ProductEntity> products, XmlTextWriter writer)
+        private static void WriteElementChekByProduct(string fiscalNumberRRO , Operation operation, List<Product> products, XmlTextWriter writer)
         {
             writer.WriteStartElement("C");
             writer.WriteAttributeString("T", operation.TypeOperation.ToString("D"));
@@ -190,7 +189,7 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
         }
 
-        private static void WriteElementDepositWithdrawalMoney(UIOperationModel operation, XmlTextWriter writer, bool type)
+        private static void WriteElementDepositWithdrawalMoney(Operation operation, XmlTextWriter writer, bool type)
         {
             writer.WriteStartElement("C");
             writer.WriteAttributeString("T", operation.TypeOperation.ToString("0"));
@@ -260,7 +259,7 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
         }
 
-        private static void WriteElementOpenShift(UIWorkingShiftModel shift, XmlTextWriter writer)
+        private static void WriteElementOpenShift(WorkingShift shift, XmlTextWriter writer)
         {
 
             writer.WriteStartElement("C");
@@ -268,7 +267,7 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
         }
 
-        private static void WriteElementCloseShift(UIWorkingShiftModel shift, XmlTextWriter writer)
+        private static void WriteElementCloseShift(WorkingShift shift, XmlTextWriter writer)
         {
             writer.WriteStartElement("Z");
 
@@ -302,13 +301,13 @@ namespace ShopProject.Helpers
             writer.WriteEndElement();
         }
 
-        public static void WriteXMLFile(UIWorkingShiftModel workingShift, UIOperationModel? operation, List<OrderEntity>? orders, List<ProductEntity>? products)
+        public static void WriteXMLFile(WorkingShift workingShift, Operation? operation, List<Order>? orders, List<Product>? products)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             using (XmlTextWriter writer = new XmlTextWriter(pathxml, System.Text.Encoding.GetEncoding("windows-1251")))
             {
                 DateTimeOffset time = DateTime.Now;
-                UIMediaAccessControlModel mac = new UIMediaAccessControlModel();
+                MediaAccessControl mac = new MediaAccessControl();
                 WriteHeader(workingShift, writer);
 
                 if (operation != null && operation.TypeOperation != TypeOperation.None)

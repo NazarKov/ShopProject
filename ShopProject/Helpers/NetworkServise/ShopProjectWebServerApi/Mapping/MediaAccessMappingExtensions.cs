@@ -10,7 +10,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
 {
     public static class MediaAccessMappingExtensions
     {
-        public static CreateMediaAccessControlDto ToCreatMediaAccessControlDto(this UIMediaAccessControlModel mediaAccessControl)
+        public static CreateMediaAccessControlDto ToCreatMediaAccessControlDto(this MediaAccessControl mediaAccessControl)
         {
             var item = new CreateMediaAccessControlDto()
             {
@@ -34,9 +34,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             return item;
         }
 
-        public static UIMediaAccessControlModel ToUIMediaAccessControl(this MediaAccessControlDto mediaAccessControl) 
+        public static MediaAccessControl ToUIMediaAccessControl(this MediaAccessControlDto mediaAccessControl) 
         {
-            return new UIMediaAccessControlModel()
+            return new MediaAccessControl()
             {
                 Content = mediaAccessControl.Content,
                 SequenceNumber = mediaAccessControl.SequenceNumber,

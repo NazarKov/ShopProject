@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using SigningFileLib; 
-using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model; 
+using ShopProjectDataBase.Helper;
+using ShopProject.UIModel.UserPage;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 
 namespace ShopProject.Model.AdminPage.UserPage
 {
@@ -17,31 +19,33 @@ namespace ShopProject.Model.AdminPage.UserPage
     {
         private MainElectronicTaxAccountController _mainTaxAccauntController;
         private SigningFileContoller _mainSigningFileController;
+        private readonly string _token;
 
         public CreateUserModel() 
         {
             _mainTaxAccauntController = new MainElectronicTaxAccountController();
             _mainSigningFileController = new SigningFileContoller();
             _mainSigningFileController.Initialize(false);
+            _token = Session.User.Token;
         }
 
-        public async Task<bool> CreateUser(string fullName , string login , string email ,string password , UserRoleEntity role)
+        public async Task<bool> CreateUser(string fullName , string login , string email ,string password , UserRole role)
         {
             try
             {
-                var user = new UserEntity()
+                var user = new User()
                 {
                     FullName = fullName,
                     Login = login,
                     Email = email,
                     Password = password,
-                    UserRole = role, 
+                    Role = role, 
                     CreatedAt = DateTime.Now,
-                    Status = ShopProjectSQLDataBase.Helper.TypeStatusUser.NotAvailableElectronicKey,
+                    Status =  TypeStatusUser.NotAvailableElectronicKey,
                     SignatureKey =  null,
                 };
 
-                return await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(Session.Token, user); 
+                return await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(_token, user.ToCreateUserDto()); 
             }
             catch (Exception ex)
             {
@@ -51,7 +55,7 @@ namespace ShopProject.Model.AdminPage.UserPage
             }
         }
 
-        public async Task<bool> CreateUserKey(string pathKey, string namefile, string login, string email, string password, string passwrodKey, UserRoleEntity role)
+        public async Task<bool> CreateUserKey(string pathKey, string namefile, string login, string email, string password, string passwrodKey, UserRole role)
         {
             try
             { 
@@ -70,14 +74,14 @@ namespace ShopProject.Model.AdminPage.UserPage
                        
                         string pathFile = FileDirectory.CopyKeyInUserFolder(namefile, pathKey, nameUser);
 
-                        var signature = new ElectronicSignatureKey()
+                        var signature = new SignatureKey()
                         {
                             Signature = File.ReadAllBytes(pathFile),
                             CreateAt = DateTime.Now,
                             SignaturePassword = passwrodKey,
                         };
 
-                        var user = new UserEntity()
+                        var user = new User()
                         {
                             FullName = nameUser,
                             TIN = infoUser.ElementAt(0).values.TIN,
@@ -85,11 +89,11 @@ namespace ShopProject.Model.AdminPage.UserPage
                             Email = email,
                             Password = password,
                             SignatureKey = signature,
-                            Status = ShopProjectSQLDataBase.Helper.TypeStatusUser.AvailableElectronicKey,
+                            Status =  TypeStatusUser.AvailableElectronicKey,
                             CreatedAt = DateTime.Now,
-                            UserRole = role,
+                            Role = role,
                         };
-                        return await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(Session.Token, user);
+                        return await MainWebServerController.MainDataBaseConntroller.UserController.AddUser(_token, user.ToCreateUserDto());
                     }
                 }
                 return false;
@@ -99,19 +103,6 @@ namespace ShopProject.Model.AdminPage.UserPage
                 MessageBox.Show(ex.Message);
                 return false;
             }
-        }
-
-        public async Task<List<UserRoleEntity>> GetUserRoles()
-        {
-            try
-            {
-                return (await MainWebServerController.MainDataBaseConntroller.UserRoleController.GetRoles(Session.Token)).ToList();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new List<UserRoleEntity>();
-            }
-        }
+        } 
     }
 }

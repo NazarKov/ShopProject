@@ -8,26 +8,19 @@ using System.Threading.Tasks;
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
 {
     public static class MainWebServerController
-    {
-        private static string _url;
+    { 
         internal static MainDataBaseController MainDataBaseConntroller { get; set; }
         internal static SettingsController settings;
         
-        public static void Init()
+        public static void Init(string url)
         {
-            var networkURL = AppSettingsManager.GetParameterFiles("URL").ToString();
-
-            _url = NetworkURL.Deserialize(networkURL).Url; 
-
-            MainDataBaseConntroller = new MainDataBaseController(_url);
-            settings = new SettingsController(_url); 
+            MainDataBaseConntroller = new MainDataBaseController(url);
+            settings = new SettingsController(url); 
         }
 
         public static async Task<string> IsConnectServer()
         { 
             return await settings.Ping();
-        }
-
-
+        }   
     }
 }

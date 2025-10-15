@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Order;
-using ShopProject.UIModel;
+using ShopProject.UIModel.SalePage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
 {
     public static class OrderMappingExtensions
     {
-        public static List<CreateOrderDto> ToListCreatOrderDto(this List<UIOrderModel> orders)
+        public static List<CreateOrderDto> ToListCreatOrderDto(this List<Order> orders)
         {
             var result = new List<CreateOrderDto>();
             foreach (var order in orders) 

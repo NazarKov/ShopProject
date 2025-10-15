@@ -1,9 +1,13 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
+using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.UserPage;
 using ShopProject.Views.SalePage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,8 +42,8 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _exitWorkShiftMenuCommand;
         private ICommand _printLastCheckCommand;
 
-        private UserEntity _user;
-        private OperationsRecorderEntity _operationsRecorder;
+        private User _user;
+        private OperationRecorder _operationsRecorder;
 
         public WorkShiftMenuViewModel ()
         {
@@ -69,7 +73,7 @@ namespace ShopProject.ViewModel.SalePage
             _tabs = new ObservableCollection<TabItem>();
 
             _user = Session.User;
-            _operationsRecorder = new OperationsRecorderEntity();
+            _operationsRecorder = new OperationRecorder();
             _operationsRecorder = Session.FocusDevices;
             _fnNumber = string.Empty;
             _economicUnit = string.Empty;
@@ -266,16 +270,16 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand OpenShiftCommand => _openShiftCommand;
         private void OpenShift()
         {
-            UIWorkingShiftModel workingShiftEntity = new UIWorkingShiftModel();
+            WorkingShift workingShiftEntity = new WorkingShift();
 
             Task t = Task.Run(async () => {
 
                 _model.AddKey(_user.SignatureKey);
-                workingShiftEntity = new UIWorkingShiftModel()
+                workingShiftEntity = new WorkingShift()
                 {
                     TypeRRO = 0,
                     FiscalNumberRRO = _operationsRecorder.FiscalNumber,
-                    TypeShiftCrateAt = ShopProjectSQLDataBase.Helper.TypeWorkingShift.OpenShift,
+                    TypeShiftCrateAt =  TypeWorkingShift.OpenShift,
                     UserOpenShift = _user,
                     DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber), 
                     FactoryNumberRRO = "v1",
@@ -324,7 +328,7 @@ namespace ShopProject.ViewModel.SalePage
                 shift.AmountOfOfficialFundsReceivedCard = 0;
                 shift.EndAt = DateTimeOffset.Now;
                 shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
-                shift.TypeShiftEndAt = ShopProjectSQLDataBase.Helper.TypeWorkingShift.CloseShift;
+                shift.TypeShiftEndAt =  TypeWorkingShift.CloseShift;
             });
             t.ContinueWith(t => {
                 if (_model.CloseShift(shift))
@@ -514,7 +518,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
         private void ExitWorkShiftMenu()
         {
-            Mediator.Notify("OpenOperationRerocderMenu", "");
+            MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString()); 
             Session.FocusDevices = null;
         }
 

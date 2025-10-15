@@ -81,7 +81,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TextBox>
-            <ComboBox x:Name="comboBoxTypeStatusProduct" ItemsSource="{Binding StatusProducts}" SelectedIndex="{Binding SelectedStatusProduct}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
+            <ComboBox x:Name="comboBoxTypeStatusProduct" ItemsSource="{Binding StatusProducts}" Height="35" SelectedIndex="{Binding SelectedStatusProduct}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
 
             <Button Grid.Column="0" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Left" Margin="10,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateProductDataGridView}">
                 <Button.Content>
@@ -91,20 +91,68 @@
             <Button Grid.Column="3" Height="35" Content="Добавити товар" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenCreateProductWindowCommand}"/>
             <Button Grid.Column="4" Height="35" Content="Сформувати товар" Width="110" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenFormationProductWindowCommand}"/>
             <Button Grid.Column="5" Height="35" Content="Імпортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenImportProductWhichExelCommand}"/>
-            <Button Grid.Column="6" Height="35" Content="Експортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,30,25" Command="{Binding OpenExportProductToExelCommand}"/>
+            <Button Grid.Column="6" Height="35" Content="Експортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,14,25" Command="{Binding OpenExportProductToExelCommand}"/>
 
 
         </Grid>
 
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0" Grid.Row="1"  Width="120"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0,0,14,0" Grid.Row="1"  Width="120"/>
  
         <DataGrid Name="list" 
-                      Grid.Column="0" Grid.Row="2" ItemsSource="{Binding ProductList}" AutoGenerateColumns="False"
-                      HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
-                      HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
-                      VerticalAlignment="Stretch"  ColumnWidth="*"
-                      CanUserAddRows="False" >
-                    <DataGrid.Columns>
+                      Grid.Column="0" Grid.Row="2" ItemsSource="{Binding ProductList}"        AutoGenerateColumns="False"
+       ColumnWidth="*"
+       HeadersVisibility="Column"
+       CanUserAddRows="False"
+       CanUserDeleteRows="False"
+       FontSize="16"
+       Margin="10"
+       RowHeight="40"
+       GridLinesVisibility="None"
+       AlternatingRowBackground="#F9F9F9"
+       RowBackground="White"
+       BorderBrush="LightGray"
+       BorderThickness="1"
+       SelectionMode="Single"
+       SelectionUnit="FullRow"
+       HorizontalGridLinesBrush="#E0E0E0"
+       VerticalGridLinesBrush="#E0E0E0">
+
+            <!-- Стиль заголовків -->
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="CadetBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="BorderBrush" Value="#517a7b"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <!-- Стиль рядків -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <!-- Виділений рядок -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                        <!-- Наведення мишки -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
                         <DataGridTextColumn Header="Штрих код"  Binding="{Binding Code}" />
                         <DataGridTextColumn Header="Артикул" Binding="{Binding Articule}" />
                         <DataGridTextColumn Header="Назва"  Binding="{Binding NameProduct}" />

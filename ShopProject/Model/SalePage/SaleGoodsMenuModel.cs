@@ -5,9 +5,9 @@ using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.PrintingServise;
-using ShopProject.UIModel;
 using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -35,11 +35,12 @@ namespace ShopProject.Model.SalePage
             _fiscalOperationController = new MainFiscalServerController();
         }
 
-        public async Task<ProductEntity>? Search(string barCode)
+        public async Task<Product>? Search(string barCode)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token,barCode);
+                var item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.User.Token,barCode); 
+                return item.ToProduct();
             }
             catch (Exception ex)
             {
@@ -48,7 +49,7 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public bool SendCheck(List<ProductEntity> products, UIOperationModel operation)
+        public bool SendCheck(List<Product> products, Operation operation)
         {
             var id =  _fiscalOperationController.SendFiscalCheck(Session.WorkingShift,operation, products);
             if (id != string.Empty)
@@ -70,19 +71,19 @@ namespace ShopProject.Model.SalePage
         }
 
 
-        private async Task SaveDataBase(UIOperationModel operation, List<ProductEntity> goods)
+        private async Task SaveDataBase(Operation operation, List<Product> goods)
         {
             try
             {
                 operation.Shift = Session.WorkingShift;
                 bool result = false;
-                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.Token, operation));
+                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.User.Token, operation));
                 if (result)
                 {
-                    List<UIOrderModel> orders = new List<UIOrderModel>();
-                    foreach (ProductEntity item in goods)
+                    List<Order> orders = new List<Order>();
+                    foreach (Product item in goods)
                     {
-                        orders.Add(new UIOrderModel()
+                        orders.Add(new Order()
                         {
                             Operation = operation,
                             Product = item,
@@ -90,7 +91,7 @@ namespace ShopProject.Model.SalePage
 
                         });
                     } 
-                    await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(Session.Token, orders);
+                    await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(Session.User.Token, orders);
                 }
 
             }
@@ -106,7 +107,7 @@ namespace ShopProject.Model.SalePage
 
             if (mac != null)
             {
-                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new UIMediaAccessControlModel()
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.User.Token, new MediaAccessControl()
                 {
                     OperationsRecorder = Session.FocusDevices,
                     Content = mac,
@@ -117,16 +118,16 @@ namespace ShopProject.Model.SalePage
             return false;
         }
 
-        public async Task<UIMediaAccessControlModel> GetMAC(Guid operationRecorderId)
+        public async Task<MediaAccessControl> GetMAC(Guid operationRecorderId)
         {
             try
             {
-                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.Token, operationRecorderId)).ToUIMediaAccessControl();
+                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.User.Token, operationRecorderId)).ToUIMediaAccessControl();
             } 
             catch (Exception ex)
             {
                 MessageBox.Show("Невдалося отримати MAC");
-                return new UIMediaAccessControlModel();
+                return new MediaAccessControl();
             }
         }
 
@@ -136,7 +137,7 @@ namespace ShopProject.Model.SalePage
             {
                 OperationEntity operation = new OperationEntity();
                  
-                operation = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.Token,Session.WorkingShift.ID);
+                operation = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.User.Token,Session.WorkingShift.ID);
 
                 if (operation.NumberPayment == string.Empty)
                 {

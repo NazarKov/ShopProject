@@ -1,4 +1,4 @@
-﻿using ShopProjectSQLDataBase.Entities;
+﻿using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;

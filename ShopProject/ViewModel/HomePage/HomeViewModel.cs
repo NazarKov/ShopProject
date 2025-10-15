@@ -1,48 +1,52 @@
-﻿using ShopProject.Model.HomePage;
-using ShopProject.Views.SettingPage; 
-using System.Windows.Input;
-using System.Windows;
-using System.Windows.Controls;
+﻿using ShopProject.Helpers; 
+using ShopProject.Helpers.Exceptions;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
-using ShopProject.Views.SalePage;
-using System.Windows.Forms;
-using ShopProject.Views.AdminPage;
-using ShopProject.Views.UserPage;
-using ShopProject.Helpers; 
-using ShopProject.View.StoragePage;
-using ShopProject.View.ToolsPage;
-using ShopProject.View.UserPage;
-using ShopProject.View.StatisticsPage;  
+using ShopProject.Model.HomePage;
 using ShopProject.View.AdminPage.WebServer;
 using ShopProject.View.HomePage;
-using System.Threading.Tasks;
-using ShopProject.Helpers.NetworkServise;
+using ShopProject.View.HomePage.HomePageComponent;
+using ShopProject.View.StatisticsPage;  
+using ShopProject.View.StoragePage;
 using ShopProject.View.TemplatePage;
+using ShopProject.View.ToolsPage;
+using ShopProject.View.UserPage;
+using ShopProject.Views.AdminPage;
+using ShopProject.Views.SalePage;
+using ShopProject.Views.SettingPage; 
+using ShopProject.Views.UserPage;
+using System;
+using System.Threading.Tasks; 
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace ShopProject.ViewModel.HomePage
 {
     internal class HomeViewModel: ViewModel<HomeViewModel> 
     {
-        private ICommand exitApp;
-        private ICommand openSetting;
-        private ICommand openStorage;
-        private ICommand openExportProduct;
-        private ICommand opemImportProduct;
-        private ICommand openCreateStiker;
-        private ICommand openSaleMenuCommand;
-        private ICommand openDeliveryOfGoods;
-        private ICommand openUserPageCommand;
-        private ICommand openObjectOwnerPageCommand;
-        private ICommand openSoftwareDeviceSettlementOperationsPageCommand;
-        private ICommand openStatisticsPage;
+        private ICommand _exitAppCommand;
+        private ICommand _openSettingCommand;
+        private ICommand _openStorageCommand;
+        private ICommand _openExportProductCommand;
+        private ICommand _openImportProductCommand;
+        private ICommand _openCreateStikerCommand;
+        private ICommand _openSaleMenuCommand;
+        private ICommand _openDeliveryOfGoodsCommand;
+        private ICommand _openUsersPageCommand;
+        private ICommand _openObjectOwnerPageCommand;
+        private ICommand _openSoftwareDeviceSettlementOperationsPageCommand;
+        private ICommand _openStatisticsPageCommand;
         private ICommand _openWebServerPageCommand;
         private ICommand _openUnitOfMeasurePageCommand;
         private ICommand _openProductCodeUKTZEDPageCommand;
+        private ICommand _openUserPageCommand;
 
         private ICommand _exitUserCommand;
-        
-        
+         
         private HomeModel _model;
+        
 
         public HomeViewModel()
         {
@@ -53,99 +57,60 @@ namespace ShopProject.ViewModel.HomePage
 
             _userName = string.Empty;
             _page = new Page();
-
+            _statusMenu = new System.Windows.Controls.UserControl();
             Width = Screen.PrimaryScreen.Bounds.Width;
             Height = Screen.PrimaryScreen.Bounds.Height;
 
-            exitApp = new DelegateCommand(() => {/* Application.Current.MainWindow.Close();*/});
-            openSetting = new DelegateCommand(() => { new Setting().ShowDialog(); }); 
-            openStorage = new DelegateCommand(() => { Page = new StorageView(); });
-            openExportProduct = new DelegateCommand(() => { new ExportProductExelView().Show(); });
-            opemImportProduct = new DelegateCommand(() => { new ImportProductExelView().Show(); });
-            openCreateStiker = new DelegateCommand(() => { new CreateStickerView().Show(); });
-            openSaleMenuCommand = new DelegateCommand(OpenSaleMenu);
-            openDeliveryOfGoods = new DelegateCommand(() => { new DeliveryProductView().Show(); });
-            openUserPageCommand = new DelegateCommand(() => { Page = new UsersView(); });
-            openObjectOwnerPageCommand = new DelegateCommand(() => { Page = new ObjectOwnerShip(); });
-            openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
-            openStatisticsPage = new DelegateCommand(() => { Page = new StatisticsView(); });
+            _exitAppCommand = new DelegateCommand(() => { ExitApp(null); });
+            _openSettingCommand = new DelegateCommand(() => { new Setting().ShowDialog(); }); 
+            _openStorageCommand = new DelegateCommand(() => { Page = new StorageView(); });
+            _openExportProductCommand = new DelegateCommand(() => { new ExportProductExelView().Show(); });
+            _openImportProductCommand = new DelegateCommand(() => { new ImportProductExelView().Show(); });
+            _openCreateStikerCommand = new DelegateCommand(() => { new CreateStickerView().Show(); });
+            _openSaleMenuCommand = new DelegateCommand(OpenSaleMenu);
+            _openDeliveryOfGoodsCommand = new DelegateCommand(() => { new DeliveryProductView().Show(); });
+            _openUsersPageCommand = new DelegateCommand(() => { Page = new UsersView(); });
+            _openObjectOwnerPageCommand = new DelegateCommand(() => { Page = new ObjectOwnerShip(); });
+            _openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
+            _openStatisticsPageCommand = new DelegateCommand(() => { Page = new StatisticsView(); });
             _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
             _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
             _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
+            _openUserPageCommand = new DelegateCommand(() => { Page = new UserView(); });
+            
             _visibilitiMenu = Visibility.Hidden;
 
-            Page = new LoadingView();
-
+            StatusMenu = new DeviceStatusView();
+            Page = new LoadingView(); 
             InitResourse();
-        }
-
-
-        private void InitResourse()
-        {
-            if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
-            {
-                Page = new StartView();
-            }
-            else
-            {
-                _model.Init();
-                var result = false;
-
-                Task t = Task.Run(async () =>
-                {
-                    result = await _model.IsConnectWebServer();
-                });
-                t.ContinueWith(t =>
-                {
-                    if (result)
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(async () =>
-                        {
-                           await  SetFieldWindow();
-                        });
-                        Mediator.Subscribe("RedirectToAuthorizationView", (object obg) => { Page = new AuthorizationView(); });
-                        Mediator.Subscribe("RedirectToOperationsRecorderView", (object obg) => { SetFieldWindow(); });
-                        Mediator.Subscribe("RedirectToWorkShiftMenu", OpenWorkShiftMenu);
-                        Mediator.Subscribe("OpenWorkShiftMenu", OpenWorkShiftMenu);
-                        Mediator.Subscribe("OpenChangePassword", (object obg) => { Page = new ChangePassword(); });
-                        Mediator.Subscribe("OpenAuthorization", (object obg) => { Page = new AuthorizationView(); });
-                        Mediator.Subscribe("OpenOperationRerocderMenu", (object obg) => { Page = new OperationsRecorderView(); });
-                    }
-                    else
-                    {
-                        Page = new StartView();
-                    }
-                });
-
-            }
-        }
+        } 
 
         private string _userName;
         public string UserName
         {
             get { return _userName; }
-            set { _userName = value; OnPropertyChanged("UserName"); }
+            set { _userName = value; OnPropertyChanged(nameof(UserName)); }
 
         }
         private Visibility _visibilitiMenu;
         public Visibility VisibilityMenu
         {
             get { return _visibilitiMenu; }
-            set { _visibilitiMenu = value; OnPropertyChanged("VisibilityMenu"); }
+            set { _visibilitiMenu = value; OnPropertyChanged(nameof(VisibilityMenu)); }
 
         }
         private int _widht;
         public int Width
         {
             get { return _widht; } 
-            set{ _widht = value;OnPropertyChanged("Width"); }
+            set{ _widht = value;OnPropertyChanged(nameof(Width)); }
         }
         private int _height;
         public int Height
         {
             get { return _height; } 
-            set { _height = value; OnPropertyChanged("Height"); }
+            set { _height = value; OnPropertyChanged(nameof(Height)); }
         }
 
         private Page _page;
@@ -154,19 +119,73 @@ namespace ShopProject.ViewModel.HomePage
             get { return _page; }
             set {_page = value; OnPropertyChanged(nameof(Page));}
         }
-        private async Task SetFieldWindow()
+
+        private System.Windows.Controls.UserControl _statusMenu;
+        public System.Windows.Controls.UserControl StatusMenu
         {
-            if (await Session.CheckSession())
-            {
-                _visibilitiMenu = Visibility.Visible;
-                if (Session.FocusDevices != null)
+            get { return _statusMenu; }
+            set { _statusMenu = value; OnPropertyChanged(nameof(StatusMenu)); }
+        } 
+        private void InitResourse()
+        {
+            try
+            { 
+                InitStartViewButton();
+                if (AppSettingsManager.GetParameterFiles("URL").ToString() == string.Empty)
                 {
-                    Page = new StorageView();
+                    Page = new StartView();
                 }
                 else
                 {
-                    Page = new OperationsRecorderView();
+                    _model.Init();
+                    var result = false;
+
+                    Task t = Task.Run(async () =>
+                    {
+                        result = await _model.IsConnectWebServer();
+                    });
+                    t.ContinueWith(t =>
+                    {
+                        if (result)
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                SetFieldWindow();
+                            }); 
+                            MediatorService.AddEvent(NavigationButton.RedirectToWorkShiftMenu.ToString(), OpenWorkShiftMenu);
+                            MediatorService.AddEvent(NavigationButton.RedirectToChangePassword.ToString(), (object obj) => { Page = new ChangePassword(); });
+                            MediatorService.AddEvent(NavigationButton.RedirectToOperationsRecorderView.ToString(), (object obj) => { Page = new OperationsRecorderView(); }); 
+                        }
+                        else
+                        {
+                            Page = new StartView();
+                        }
+                    });
+
                 }
+
+            }
+            catch (ExceptionURL)
+            {
+                Page = new StartView();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void InitStartViewButton()
+        {
+            MediatorService.AddEvent(NavigationButton.RedirectToAuthorizationView.ToString(), (object obg) => { Page = new AuthorizationView(); });
+            MediatorService.AddEvent(NavigationButton.ExitApp.ToString(), ExitApp);
+        }
+        private void SetFieldWindow()
+        {
+            if (Session.CheckSession())
+            {
+                _visibilitiMenu = Visibility.Visible;
+                Page = new TitleView();
                 SetName();
             }
             else
@@ -175,20 +194,21 @@ namespace ShopProject.ViewModel.HomePage
                 _visibilitiMenu = Visibility.Collapsed;
             }
             OnPropertyChanged(nameof(VisibilityMenu));
-        }
-
- 
+        } 
 
         private void SetName()
         {
             var item = Session.User;
-            if (item.FullName != null && item.FullName != string.Empty)
+            if (item != null) 
             {
-                UserName = item.FullName;
-            }
-            else
-            {
-                UserName = item.Login;
+                if (item.FullName != null && item.FullName != string.Empty)
+                {
+                    UserName = item.FullName;
+                }
+                else
+                {
+                    UserName = item.Login;
+                }
             }
         }
         private void OpenWorkShiftMenu(object obj)
@@ -205,22 +225,26 @@ namespace ShopProject.ViewModel.HomePage
             {
                 Page = new OperationsRecorderView();
             }
+        } 
+        private void ExitApp(object obj)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
-
-        public ICommand OpenSetting => openSetting;
-        public ICommand ExitApp => exitApp;
-        public ICommand OpenStorage => openStorage;
-        public ICommand OpenExportProduct => openExportProduct;
-        public ICommand OpenImportProduct => opemImportProduct;
-        public ICommand OpenCreateStiker => openCreateStiker;
-        public ICommand OpenSaleMenuCommand => openSaleMenuCommand;
-        public ICommand OpenDeliveryOfGoods => openDeliveryOfGoods;
-        public ICommand OpenUserCommand => openUserPageCommand;
-        public ICommand OpenObjectOwnerPageCommand => openObjectOwnerPageCommand;
-        public ICommand OpenSoftwareDeviceSettlementOperationsPageCommand => openSoftwareDeviceSettlementOperationsPageCommand;
+        public ICommand OpenSettingCommand => _openSettingCommand;
+        public ICommand ExitAppCommand => _exitAppCommand;
+        public ICommand OpenStorageCommand => _openStorageCommand;
+        public ICommand OpenExportProductCommand => _openExportProductCommand;
+        public ICommand OpenImportProductCommnad => _openImportProductCommand;
+        public ICommand OpenCreateStikerCommnad => _openCreateStikerCommand;
+        public ICommand OpenSaleMenuCommand => _openSaleMenuCommand;
+        public ICommand OpenDeliveryOfGoodsCommnad => _openDeliveryOfGoodsCommand;
+        public ICommand OpenUsersCommand => _openUsersPageCommand;
+        public ICommand OpenUserCommand => _openUserPageCommand;
+        public ICommand OpenObjectOwnerPageCommand => _openObjectOwnerPageCommand;
+        public ICommand OpenSoftwareDeviceSettlementOperationsPageCommand => _openSoftwareDeviceSettlementOperationsPageCommand;
         public ICommand ExitUserCommand => _exitUserCommand;
-        public ICommand OpenStatisticsPage => openStatisticsPage;
+        public ICommand OpenStatisticsPageCommand => _openStatisticsPageCommand;
         public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
         public ICommand OpenUnitOfMeasurePageCommand => _openUnitOfMeasurePageCommand;
         public ICommand OpenProductCodeUKTZEDPageCommand => _openProductCodeUKTZEDPageCommand;

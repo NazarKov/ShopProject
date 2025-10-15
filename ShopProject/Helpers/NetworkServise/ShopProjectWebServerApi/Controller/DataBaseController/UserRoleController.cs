@@ -1,5 +1,7 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.UserRole;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+using ShopProjectDataBase.Entities; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
         {
             _url = url;
         }
-        public async Task<IEnumerable<UserRoleEntity>> GetRoles(string token)
+        public async Task<IEnumerable<UserRoleDto>> GetRoles(string token)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -26,10 +28,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
                 HttpResponseMessage httpResponse = await client.GetAsync($"/api/UserRole/GetRoles?token={token}");
                 string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                var result = CheckingResponse.Unpacking<IEnumerable<UserRoleEntity>>(responseBody);
+                var result = ApiResponse<IEnumerable<UserRoleDto>>.Unpacking(responseBody);
                 httpResponse.EnsureSuccessStatusCode();
 
-                return (IEnumerable<UserRoleEntity>)result;
+                return result.Data;
             }
         }
     }

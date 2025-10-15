@@ -1,6 +1,8 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProject.Helpers;
-using ShopProjectSQLDataBase.Entities;
+﻿using ShopProject.Helpers; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,11 @@ namespace ShopProject.Model.StoragePage.ProductCodeUKTZEDPage
     {
         public UpdateProductCodeUKTZEDModel() { }
 
-        public async Task<bool> UpdateItemDataBase(ProductCodeUKTZEDEntity unit)
+        public async Task<bool> UpdateItemDataBase(ProductCodeUKTZED unit)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.UpdateCodeUKTZED(Session.Token, unit);
+                return await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.UpdateCodeUKTZED(Session.User.Token, unit.ToUpdateProductCodeUKTZED());
             }
             catch (Exception ex)
             {

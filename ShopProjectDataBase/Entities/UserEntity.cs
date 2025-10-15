@@ -49,7 +49,7 @@ namespace ShopProjectDataBase.Entities
         /// <summary>
         /// Списко токенів користувача
         /// </summary>
-        private ICollection<TokenEntity>? Tokens { get; set; }
+        public ICollection<TokenEntity>? Tokens { get; set; }
         /// <summary>
         /// дата створення користувача
         /// </summary>

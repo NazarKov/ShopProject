@@ -1,33 +1,43 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;  
-using System.Threading.Tasks;
+using ShopProject.UIModel;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.StoragePage;
+using ShopProject.UIModel.UserPage; 
+using ShopProjectDataBase.Entities;
 using System;
-using System.Windows;
 using System.Collections.Generic; 
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using ShopProjectSQLDataBase.Entities;
-using ShopProject.UIModel;
-using ShopProject.UIModel.SalePage;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls; 
 
 namespace ShopProject.Helpers
 {
     public class Session
     {
-        public static UserEntity User { get; set; }
-        public static string Token { get; set; }
+        public static User? User { get; set; } 
 
-        public static ProductEntity Product { get; set; }
+        public static string Token { get; set; }
+         
         public static List<ProductEntity> ProductList { get; set; }
 
-        public static UserEntity UserItem { get; set; }
+
+        #region resourse
+        public static User? UserItem { get; set; }       
+        public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }
+        public static ProductUnit? ProductUnit { get; set; }
+        public static Product? Product { get; set; } 
+        public static OperationRecorder? FocusDevices;
+        public static IEnumerable<UserRole>? Roles { get; set; }
+        public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
+        public static IEnumerable<ProductUnit>? ProductUnits { get; set; }
+        #endregion
 
 
-
-        #region 
-        public static ProductUnitEntity ProductUnit { get; set; }
-        public static ProductCodeUKTZEDEntity ProductCodeUKTZEDEntity { get; set; }
+        #region  
         public static UserEntity UserEntity { get; set; }
-        public static UIWorkingShiftModel WorkingShift { get; set; }
+        public static WorkingShift WorkingShift { get; set; }
         #endregion
 
 
@@ -53,8 +63,7 @@ namespace ShopProject.Helpers
         //public static List<OperationsRecorderEntiti> Devices
         //{
         //    get { return _devicesSettlementOperations; }
-        //}
-        public static OperationsRecorderEntity? FocusDevices;
+        //} 
 
         //private static void Init()
         //{
@@ -65,32 +74,32 @@ namespace ShopProject.Helpers
         //    _isInit = true;
         //}
 
-        public static async Task<bool> CheckSession()
+        public static bool CheckSession()
         {
             try
-            {
+            { 
                 if (User == null)
-                {
-                    var autoLogin = (bool)AppSettingsManager.GetParameterFiles("AutoLogin");
-                    string token = AppSettingsManager.GetParameterFiles("TokenUser").ToString();
-
-                    if (autoLogin)
+                { 
+                    var user = User.Deserialize(AppSettingsManager.GetParameterFiles("User").ToString());
+                    User = user;  
+                    if (user != null)
                     {
-                        if (token != null && token != string.Empty)
-                        { 
-                            await WriteSession(token); 
-
-                            if (User != null)
-                            {
-                                return true;
-                            }
+                        InitResourse();
+                        user.AutomaticLogin = true;
+                        if (user.Token == null && user.Token == string.Empty)
+                        {
+                            return false;
                         }
-                        return false;
+                        if (!user.AutomaticLogin)
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
                         return false;
                     }
+                    return true;
                 }
                 else
                 {
@@ -102,18 +111,18 @@ namespace ShopProject.Helpers
                 MessageBox.Show(ex.Message);
                 return false;
             }
-        }
-
-
-        private static async Task WriteSession(string token)
-        {
-            User = await MainWebServerController.MainDataBaseConntroller.UserController.GetUser(token);
-            Token = token;
-        }
-
+        }  
         public static void RemoveSession()
         {
             User  = null;
+            AppSettingsManager.SetParameterFile("User", string.Empty);
+        } 
+        private static void InitResourse()
+        {
+            if (Roles == null)
+            {
+                Resources.InitWebServerResourses();
+            } 
         }
     }
 }

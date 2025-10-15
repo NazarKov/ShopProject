@@ -2,10 +2,7 @@
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -22,7 +19,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<bool> AddMAC(string token, UIMediaAccessControlModel item)
+        public async Task<bool> AddMAC(string token, MediaAccessControl item)
         { 
             var content = JsonSerializer.Serialize(item.ToCreatMediaAccessControlDto());
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");

@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Entities;
+﻿using Microsoft.AspNetCore.Mvc; 
 using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.DtoModels.Product;
+using ShopProjectWebServer.Api.Common; 
 using ShopProjectWebServer.Api.DtoModels.ProductUnit;
-using ShopProjectWebServer.Api.Helpers;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using ShopProjectWebServer.Api.Interface.Services; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -16,34 +10,23 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class ProductUnitController : ControllerBase
     {
+        private IProductUnitServise _servise;
+        public ProductUnitController(IProductUnitServise servise)
+        {
+            _servise = servise;
+        }
 
         [HttpPost("AddUnit")]
         public IActionResult AddUnit(string token, CreateProductUnitDto unit)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Add(unit.ToProductUnitEntity());
-
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.AddUnit(token,unit);
+                return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -52,28 +35,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Update(unit.ToProductUnitEntity());
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.UpdateUnit(token, unit);
+                return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -82,57 +49,26 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.UpdateParameter(unit.ToProductUnitEntity(), parameter, value);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.UpdateParameterUnit(token,parameter,value, unit);
+                return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
         [HttpPost("DeleteUnit")]
-        public IActionResult DeleteUnit(string token, ProductUnitEntity unit)// переробити на int ID
+        public IActionResult DeleteUnit(string token, int id)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-
-                    DataBaseMainController.DataBaseAccess.ProductUnitTable.Delete(unit);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.DeleteUnit(token, id);
+                return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -141,27 +77,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetUnitByCode(int.Parse(code), status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetUnitByCode(token, code,status);
+                return Ok(ApiResponse<ProductUnitDto>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -170,27 +91,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetUnitByNamePageColumn(name, page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetUnitsByNamePageColumn(token, name,page,countColumn, status);
+                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -199,27 +105,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetAllPageColumn(page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати одиниці виміру");
-
+                var result = _servise.GetUnitsPageColumn(token, page, countColumn, status);
+                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -228,33 +119,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
-
-                    var units = DataBaseMainController.DataBaseAccess.ProductUnitTable.GetAll();
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(units),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
+                var result = _servise.GetUnits(token);
+                return Ok(ApiResponse<IEnumerable<ProductUnitDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
     }

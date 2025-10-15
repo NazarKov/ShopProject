@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers; 
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.HomePage; 
 using System.Threading.Tasks;
@@ -29,24 +30,21 @@ namespace ShopProject.ViewModel.HomePage
             _port = 0;
             _minIPAddress = 0;
             _maxIPAddress = 0;
-            _url = string.Empty; 
+            _url = string.Empty;
 
-
-            SetSettingPage();
+            SetFieldPage();
         }
 
-        private void SetSettingPage()
+        private void SetFieldPage()
         {
-            HeightGrid = 50;
-            VisibilitySettingAutoFind = Visibility.Collapsed;
-
+            HeightGrid = 170;
+            VisibilitySettingAutoFind = Visibility.Collapsed; 
             IpRouter = "192.168.0.";
             Port = 5000;
             MinIPAddress = 1;
             MaxIPadress = 255;
         }
-
-
+         
         private string _url;
         public string Url
         {
@@ -94,8 +92,16 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand ShowSettingAutoFindCommand => _showSettingAutoFindCommand;
         public void ShowSettingAutoFind()
         {
-            HeightGrid = 250;
-            VisibilitySettingAutoFind = Visibility.Visible;
+            if(VisibilitySettingAutoFind == Visibility.Collapsed)
+            {
+                HeightGrid = 370;
+                VisibilitySettingAutoFind = Visibility.Visible;
+            }
+            else if(VisibilitySettingAutoFind == Visibility.Visible)
+            {
+                HeightGrid = 170;
+                VisibilitySettingAutoFind = Visibility.Collapsed;
+            }
         }
 
         public ICommand AutoFindUrlCommand => _autofindUrlCommand;
@@ -105,17 +111,14 @@ namespace ShopProject.ViewModel.HomePage
             {
                 Url = await _model.GetUrl(IpRouter, Port, MinIPAddress, MaxIPadress);
 
-            });
-
+            }); 
         }
 
         public ICommand ConnectCommand => _connectCommand;
         public void Connect()
-        {
-
+        { 
             string result = string.Empty;
-            Task t = Task.Run(async () => {
-
+            Task t = Task.Run(async () => { 
                 result = await _model.ConnectWebServer();
             }); 
             t.ContinueWith(t =>
@@ -124,8 +127,8 @@ namespace ShopProject.ViewModel.HomePage
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MessageBox.Show("Підключення успішно дата підключення: " + result);
-                        Mediator.Notify("RedirectToAuthorizationView", "");
+                        MessageBox.Show("Дата підключення: " + result, "Підключення успішно", MessageBoxButton.OK);
+                        MediatorService.ExecuteEvent(NavigationButton.RedirectToAuthorizationView.ToString()); 
                     });
                 }
                 else

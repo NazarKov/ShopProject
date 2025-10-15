@@ -2,11 +2,12 @@
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
+using ShopProject.UIModel.StoragePage;
 using ShopProject.View.StoragePage.ProductCodeUKTZEDPage;
 using ShopProject.View.StoragePage.ProductUnitPage;
 using ShopProject.ViewModel.TemplatePage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace ShopProject.ViewModel.StoragePage
 
             _heigth = 150;
 
-            _codeUKTZED = new List<ProductCodeUKTZEDEntity>();
+            _codeUKTZED = new List<ProductCodeUKTZED>();
             _statusCodeUKTZED = new List<string>();
             _paginator = new TemplatePaginatorButtonViewModel();
             _countShowList = new List<string>();
@@ -58,8 +59,8 @@ namespace ShopProject.ViewModel.StoragePage
             Mediator.Subscribe("ReloadCodeUKTEDGriedView", (object obj) => { UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList))); });
         }
 
-        private List<ProductCodeUKTZEDEntity> _codeUKTZED;
-        public List<ProductCodeUKTZEDEntity> CodeUKTZED
+        private List<ProductCodeUKTZED> _codeUKTZED;
+        public List<ProductCodeUKTZED> CodeUKTZED
         {
             get { return _codeUKTZED; }
             set
@@ -153,7 +154,7 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            PaginatorData<ProductCodeUKTZEDEntity> result = new PaginatorData<ProductCodeUKTZEDEntity>();
+            PaginatorData<ProductCodeUKTZED> result = new PaginatorData<ProductCodeUKTZED>();
             Task t = Task.Run(async () =>
             { 
                 result = await _model.GetCodeUKTZEDPageColumn(page, countCoulmn, Enum.Parse<TypeStatusCodeUKTZED>(StatusCodeUKTZED.ElementAt(SelectedStatusCodeUKTZED)));
@@ -162,10 +163,16 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 if (reloadbutton)
                 {
-                    Paginator.CountButton = result.Pages;
-                }
-                Paginator.CountColumn = countCoulmn;
-                CodeUKTZED = result.Data;
+                    if(result.Pages == 0)
+                    {
+                        Paginator.CountButton = 1;
+                    }
+                    else
+                    {
+                        Paginator.CountButton = result.Pages;
+                    }
+                } 
+                CodeUKTZED = result.Data.ToList();
                 _isReadyUpdateDataGriedView = true;
             });
         }
@@ -177,13 +184,12 @@ namespace ShopProject.ViewModel.StoragePage
                 if (CodeUKTZED.Count > 0)
                 {
                     CodeUKTZED.Clear();
-                }
-                PaginatorData<ProductCodeUKTZEDEntity> result = new PaginatorData<ProductCodeUKTZEDEntity>();
+                } 
 
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_itemSearch == string.Empty && _itemSearch == "")
                 {
-                    SetFieldDataGridView(countCoulmn, page, false);
+                    SetFieldDataGridView(countCoulmn, page, true);
                 }
                 else
                 {
@@ -210,13 +216,13 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void SearchByNameAndByBarCode(int countColumn, int page)
         {
-            PaginatorData<ProductCodeUKTZEDEntity> result = new PaginatorData<ProductCodeUKTZEDEntity>();
+            PaginatorData<ProductCodeUKTZED> result = new PaginatorData<ProductCodeUKTZED>();
 
             Task t = Task.Run(async () =>
             {
                 if (Regex.Matches(_itemSearch, "[0-9]").Count == _itemSearch.Length)
                 {
-                    result.Data = new List<ProductCodeUKTZEDEntity>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusCodeUKTZED>(StatusCodeUKTZED.ElementAt(SelectedStatusCodeUKTZED)))) };
+                    result.Data = new List<ProductCodeUKTZED>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusCodeUKTZED>(StatusCodeUKTZED.ElementAt(SelectedStatusCodeUKTZED)))) };
                 }
                 else
                 {
@@ -226,12 +232,15 @@ namespace ShopProject.ViewModel.StoragePage
             });
             t.ContinueWith(t =>
             {
-                if (!(Paginator.CountButton == result.Pages))
+                if (result.Pages == 0)
+                {
+                    Paginator.CountButton = 1; 
+                }
+                else
                 {
                     Paginator.CountButton = result.Pages;
                 }
-                Paginator.CountColumn = countColumn;
-                CodeUKTZED = result.Data;
+                CodeUKTZED = result.Data.ToList();
             });
         }
 
@@ -247,7 +256,7 @@ namespace ShopProject.ViewModel.StoragePage
             var items = (parameter as IList);
             if (items != null && items.Count > 0)
             {
-                Session.ProductCodeUKTZEDEntity = (ProductCodeUKTZEDEntity)(items[0]);
+                Session.ProductCodeUKTZEDEntity = (ProductCodeUKTZED)(items[0]);
                 new UpdateProductCodeUKTZEDView().Show();
             }
             else
@@ -269,7 +278,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Task t = Task.Run(async () =>
                 {
 
-                    result = await _model.Delete((ProductCodeUKTZEDEntity)items[0]);
+                    result = await _model.Delete((ProductCodeUKTZED)items[0]);
                 });
                 t.ContinueWith(t =>
                 {
@@ -298,7 +307,7 @@ namespace ShopProject.ViewModel.StoragePage
                 bool result = false;
                 Task t = Task.Run(async () =>
                 { 
-                    result = await _model.ChangeStatus((ProductCodeUKTZEDEntity)items[0], TypeStatusCodeUKTZED.Favorite);
+                    result = await _model.ChangeStatus((ProductCodeUKTZED)items[0], TypeStatusCodeUKTZED.Favorite);
                 });
                 t.ContinueWith(t =>
                 {
@@ -328,7 +337,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Task t = Task.Run(async () =>
                 {
 
-                    result = await _model.ChangeStatus((ProductCodeUKTZEDEntity)items[0], TypeStatusCodeUKTZED.UnFavorite);
+                    result = await _model.ChangeStatus((ProductCodeUKTZED)items[0], TypeStatusCodeUKTZED.UnFavorite);
                 });
                 t.ContinueWith(t =>
                 {

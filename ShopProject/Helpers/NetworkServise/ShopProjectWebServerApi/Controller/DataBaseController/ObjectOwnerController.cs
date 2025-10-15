@@ -1,7 +1,10 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.ObjectOwner;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +25,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<bool> DeleteObjectsOwner(string token, ObjectOwnerEntity item)
+        public async Task<bool> DeleteObjectsOwner(string token, ObjectOwner item)
         {
             var content = JsonSerializer.Serialize(item);
 
@@ -30,47 +33,47 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/DeleteObjectsOwner?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/DeleteObjectsOwner?token={token}&id={item.ID}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ObjectOwnerEntity>> GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
+        public async Task<PaginatorData<ObjectOwnerDto>> GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
         {
 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwnersByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = CheckingResponse.Unpacking<PaginatorData<ObjectOwnerEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (PaginatorData<ObjectOwnerEntity>)result;
+            var result = ApiResponse<PaginatorData<ObjectOwnerDto>>.Unpacking(responseBody);
+
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ObjectOwnerEntity>> GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
+        public async Task<PaginatorData<ObjectOwnerDto>> GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwnersPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = CheckingResponse.Unpacking<PaginatorData<ObjectOwnerEntity>>(responseBody);
+            
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<ObjectOwnerDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<ObjectOwnerEntity>)result;
+            return result.Data;
         }
 
-        public async Task<IEnumerable<ObjectOwnerEntity>> GetObjectsOwners(string token)
+        public async Task<IEnumerable<ObjectOwnerDto>> GetObjectsOwners(string token)
         { 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwners?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<ObjectOwnerEntity>>(responseBody);
+            var result = ApiResponse<IEnumerable<ObjectOwnerDto>>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (IEnumerable<ObjectOwnerEntity>)result; 
+            return result.Data; 
         }
 
         public async Task<bool> AddObjectOwner(string token, ObjectOwnerEntity item)
@@ -81,13 +84,13 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/AddObjectOwner?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
 
-        public async Task<bool> AddObjectsOwners(string token, List<ObjectOwnerEntity> item)
+        public async Task<bool> AddObjectsOwners(string token, List<CreateObjectOwnerDto> item)
         { 
             var content = JsonSerializer.Serialize(item);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -95,10 +98,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/AddObjectsOwners?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result =  CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result =  ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
 
     }

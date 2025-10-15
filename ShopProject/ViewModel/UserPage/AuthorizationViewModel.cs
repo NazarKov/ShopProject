@@ -1,7 +1,9 @@
 ﻿
 using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
+using ShopProject.UIModel.UserPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace ShopProject.ViewModel.UserPage
 
         private ICommand _logInCommnad;
         private ICommand _openChangePassowordCommand;
+        private ICommand _exitCommand;
 
         public AuthorizationViewModel()
         {
@@ -25,11 +28,11 @@ namespace ShopProject.ViewModel.UserPage
 
             _logInCommnad = new DelegateCommand(LogIn);
             _openChangePassowordCommand = new DelegateCommand(OpenChangePassword);
-
+            _exitCommand = new DelegateCommand(Exit);
             _login = string.Empty;
             _password = string.Empty;
 
-            _autoLogin = (bool)AppSettingsManager.GetParameterFiles("AutoLogin");
+            SetFieldPage(); 
         }
 
         private string _login;
@@ -50,8 +53,17 @@ namespace ShopProject.ViewModel.UserPage
         {
             get { return _autoLogin; }
             set { _autoLogin = value; OnPropertyChanged(nameof(AutoLogin));}
-        }
+        } 
+        private void SetFieldPage()
+        {
+            var user = Session.User;
 
+            if(user != null)
+            {
+                AutoLogin = user.AutomaticLogin;
+                Login = user.Login;
+            }
+        }
         public ICommand LogInCommnad => _logInCommnad;
         private void LogIn()
         {
@@ -60,24 +72,31 @@ namespace ShopProject.ViewModel.UserPage
             {
                 if (await _model.LogIn(Login, Password))
                 {
-                    Mediator.Notify("VisibleMenu", "");
-                    MessageBox.Show("Вхід успішно виконано");
-                    AppSettingsManager.SetParameterFile("AutoLogin", AutoLogin);
+                    _model.Init();
                     entranse = true;
                 }
             });
-            t.Wait();
+            t.ContinueWith(t => { 
+                if(entranse) 
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(async () =>
+                    {
+                        MessageBox.Show("Вхід успішно виконано");
+                        MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString()); 
+                    });
+                }
+            });
 
-            if(entranse) 
-            {
-                Mediator.Notify("RedirectToOperationsRecorderView", "");
-            }
         }
         public ICommand OpenChangePasswordCommand => _openChangePassowordCommand;
         private void OpenChangePassword()
         {
-            Mediator.Notify("OpenChangePassword", "");
+            MediatorService.ExecuteEvent(NavigationButton.RedirectToChangePassword.ToString()); 
         }
-
+        public ICommand ExitCommand=> _exitCommand;
+        private void Exit()
+        {
+            MediatorService.ExecuteEvent(NavigationButton.ExitApp.ToString());
+        }
     }
 }

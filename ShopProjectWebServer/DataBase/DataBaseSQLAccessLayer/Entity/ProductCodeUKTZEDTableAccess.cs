@@ -54,60 +54,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return new List<ProductCodeUKTZEDEntity>();
             }
-        }
-
-        public PaginatorData<ProductCodeUKTZEDEntity> GetAllPageColumn(double page, double countColumn, TypeStatusCodeUKTZED statusCodeUKTZED)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductCodeUKTZED.Load();
-
-                    if (context.ProductCodeUKTZED != null && context.ProductCodeUKTZED.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductCodeUKTZEDEntity> result = new PaginatorData<ProductCodeUKTZEDEntity>();
-
-                        if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
-                        {
-                            result.Page = (int)page;
-                            result.Data = context.ProductCodeUKTZED.OrderBy(i => i.ID)
-                                                              .Skip(countStart)
-                                                              .Take((int)countColumn).ToList();
-                            pages = context.ProductCodeUKTZED.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var units = context.ProductCodeUKTZED.Where(item => item.Status == statusCodeUKTZED).ToList();
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-
-                            pages = units.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                }
-            }
-            return new PaginatorData<ProductCodeUKTZEDEntity>();
-        }
-
+        } 
         public ProductCodeUKTZEDEntity GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
@@ -137,71 +84,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return new ProductCodeUKTZEDEntity();
             }
-        }
-
-        public PaginatorData<ProductCodeUKTZEDEntity> GetCodeUKTZEDByNamePageColumn(string name, double page, double countColumn, TypeStatusCodeUKTZED statusCodeUKTZED)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductCodeUKTZED.Load();
-
-                    if (context.ProductCodeUKTZED != null && context.ProductCodeUKTZED.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductCodeUKTZEDEntity> result = new PaginatorData<ProductCodeUKTZEDEntity>();
-
-                        if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
-                        {
-                            result.Page = (int)page;
-
-                            var units = context.ProductCodeUKTZED.Where(i => i.NameCode.Contains(name)).ToList();
-
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-                            pages = units.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var units = context.ProductCodeUKTZED.Where(t => t.Status == statusCodeUKTZED)
-                                                            .Where(i => i.NameCode.Contains(name)).ToList();
-
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-
-                            pages = units.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
-                }
-                return new PaginatorData<ProductCodeUKTZEDEntity>();
-            }
-        }
-
+        } 
         public void Update(ProductCodeUKTZEDEntity item)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
@@ -299,6 +182,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     }
                     context.SaveChanges();
                 }
+            }
+        }
+
+        public IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<ProductCodeUKTZEDEntity> query = context.ProductCodeUKTZED.AsNoTracking();
+
+                if (status != TypeStatusCodeUKTZED.Unknown)
+                {
+                    query = query.Where(o => o.Status == status);
+                }
+
+                if (!(name == string.Empty))
+                {
+                    query = query.Where(o => o.NameCode.Contains(name));
+                }
+
+                var result = query.ToList();
+                return result;
             }
         }
     }

@@ -2,10 +2,11 @@
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
+using ShopProject.UIModel.StoragePage;
 using ShopProject.View.StoragePage.ProductUnitPage; 
 using ShopProject.ViewModel.TemplatePage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace ShopProject.ViewModel.StoragePage
             _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
             _heigth = 150;
 
-            _units = new List<ProductUnitEntity>();
+            _units = new List<ProductUnit>();
             _statusUnits = new List<string>();
             _paginator = new TemplatePaginatorButtonViewModel();
             _countShowList = new List<string>();
@@ -60,8 +61,8 @@ namespace ShopProject.ViewModel.StoragePage
             Mediator.Subscribe("ReloadUnitsGriedView", (object obj) => { UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList))); });
         }
 
-        private List<ProductUnitEntity> _units;
-        public List<ProductUnitEntity> Units
+        private List<ProductUnit> _units;
+        public List<ProductUnit> Units
         {
             get { return _units; }
             set
@@ -155,7 +156,7 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            PaginatorData<ProductUnitEntity> result = new PaginatorData<ProductUnitEntity>();
+            PaginatorData<ProductUnit> result = new PaginatorData<ProductUnit>();
             Task t = Task.Run(async () =>
             {
 
@@ -165,10 +166,16 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 if (reloadbutton)
                 {
-                    Paginator.CountButton = result.Pages;
-                }
-                Paginator.CountColumn = countCoulmn;
-                Units = result.Data;
+                    if(result.Pages == 0)
+                    {
+                        Paginator.CountButton = 1;  
+                    }
+                    else
+                    {
+                        Paginator.CountButton = result.Pages;
+                    }
+                } 
+                Units = result.Data.ToList();
                 _isReadyUpdateDataGriedView = true;
             });
         }
@@ -180,8 +187,7 @@ namespace ShopProject.ViewModel.StoragePage
                 if (Units.Count > 0)
                 {
                     Units.Clear();
-                }
-                PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
+                } 
 
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_itemSearch == string.Empty && _itemSearch == "")
@@ -213,13 +219,13 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void SearchByNameAndByBarCode(int countColumn, int page)
         {
-            PaginatorData<ProductUnitEntity> result = new PaginatorData<ProductUnitEntity>();
+            PaginatorData<ProductUnit> result = new PaginatorData<ProductUnit>();
 
             Task t = Task.Run(async () =>
             {
                 if (Regex.Matches(_itemSearch, "[0-9]").Count == _itemSearch.Length)
                 {
-                    result.Data = new List<ProductUnitEntity>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusUnit>(StatusUnits.ElementAt(SelectedStatusUnit)))) };
+                    result.Data = new List<ProductUnit>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusUnit>(StatusUnits.ElementAt(SelectedStatusUnit)))) };
                 }
                 else
                 {
@@ -229,12 +235,15 @@ namespace ShopProject.ViewModel.StoragePage
             });
             t.ContinueWith(t =>
             {
-                if (!(Paginator.CountButton == result.Pages))
+                if (result.Pages == 0)
+                {
+                    Paginator.CountButton = 1;
+                }
+                else
                 {
                     Paginator.CountButton = result.Pages;
                 }
-                Paginator.CountColumn = countColumn;
-                Units = result.Data;
+                Units = result.Data.ToList();
             });
         }
 
@@ -250,7 +259,7 @@ namespace ShopProject.ViewModel.StoragePage
             var items = (parameter as IList);
             if (items != null && items.Count > 0)
             {
-                Session.ProductUnit = (ProductUnitEntity)(items[0]);
+                Session.ProductUnit = (ProductUnit)(items[0]);
                 new UpdateProductUnitView().ShowDialog();
             }
             else
@@ -272,7 +281,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Task t = Task.Run(async () =>
                 {
 
-                    result = await _model.Delete((ProductUnitEntity)items[0]);
+                    result = await _model.Delete((ProductUnit)items[0]);
                 });
                 t.ContinueWith(t =>
                 {
@@ -302,7 +311,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Task t = Task.Run(async () =>
                 {
 
-                    result = await _model.ChangeStatus((ProductUnitEntity)items[0], TypeStatusUnit.Favorite);
+                    result = await _model.ChangeStatus((ProductUnit)items[0], TypeStatusUnit.Favorite);
                 });
                 t.ContinueWith(t =>
                 {
@@ -332,7 +341,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Task t = Task.Run(async () =>
                 {
 
-                    result = await _model.ChangeStatus((ProductUnitEntity)items[0], TypeStatusUnit.UnFavorite);
+                    result = await _model.ChangeStatus((ProductUnit)items[0], TypeStatusUnit.UnFavorite);
                 });
                 t.ContinueWith(t =>
                 {

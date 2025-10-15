@@ -1,4 +1,5 @@
 using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
-
+builder.Services.AddApplicationServices();
 builder.Services.AddSession(option =>
 {
     option.IOTimeout = TimeSpan.FromDays(1);
@@ -31,6 +32,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+
 
 app.UseAuthorization();
 app.UseSession();

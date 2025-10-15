@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
-using ShopProject.UIModel;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.SalePage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
         {
             _url = url;
         }
-        public async Task<bool> AddOrderRange(string token, List<UIOrderModel> orders)
+        public async Task<bool> AddOrderRange(string token, List<Order> orders)
         {
             using (HttpClient client = new HttpClient())
             {

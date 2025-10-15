@@ -2,8 +2,9 @@
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductUnitPage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         private readonly ICommand _updateProductUnitCommand;
         private readonly ICommand _exitWindowCommand;
 
-        private ProductUnitEntity _unit;
+        private ProductUnit _unit;
 
         public UpdateProductUnitViewModel()
         {
@@ -33,7 +34,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
             _numberUnit = 0;
             _statusUnit = new List<string>();
             _statusUnitEnumType = new List<string>();
-            _unit = new ProductUnitEntity();
+            _unit = new ProductUnit();
 
             _updateProductUnitCommand = new DelegateCommand(UpdateProductUnit);
             _exitWindowCommand = new DelegateCommand(() => { });
@@ -113,7 +114,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.UpdateItemDataBase(new  ProductUnitEntity()
+                await _model.UpdateItemDataBase(new ProductUnit()
                 {
                     ID = _unit.ID,
                     ShortNameUnit = _shortNameUnit,

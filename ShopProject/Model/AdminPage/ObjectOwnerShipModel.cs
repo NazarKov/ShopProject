@@ -3,9 +3,11 @@ using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper; 
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
@@ -20,82 +22,68 @@ namespace ShopProject.Model.AdminPage
     {
         private SigningFileContoller _signingFileController;
         private MainElectronicTaxAccountController _accountController;
-
-        private List<ObjectOwnerEntity> _objectOwnerList;
+        private List<ObjectOwner> _objectOwnerList;
+        private readonly string _token;
 
         public ObjectOwnerShipModel()
         {
-            _objectOwnerList = new List<ObjectOwnerEntity>();
+            _objectOwnerList = new List<ObjectOwner>();
 
             _signingFileController = new SigningFileContoller();
             _accountController = new MainElectronicTaxAccountController();
             _signingFileController.Initialize(false);
-
+            _token = Session.User.Token;
         }
 
-        public async Task<PaginatorData<ObjectOwnerEntity>> GetObjectOwnerPageColumn(int page, int countColumn, TypeStatusObjectOwner status)
+        public async Task<PaginatorData<ObjectOwner>> GetObjectOwnerPageColumn(int page, int countColumn, TypeStatusObjectOwner status)
         {
             try
             {
-                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersPageColumn(Session.Token, page, countColumn, status);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new PaginatorData<ObjectOwnerEntity>();
-            }
-        }
+                var items = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersPageColumn(_token, page, countColumn, status);
 
-        public async Task<PaginatorData<ObjectOwnerEntity>> SearchByName(string item, int page, int countColumn, TypeStatusObjectOwner status)
-        {
-            try
-            {
-                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersByNamePageColumn(Session.Token, item, page, countColumn, status);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new PaginatorData<ObjectOwnerEntity>();
-            }
-        }
-
-
-        public List<ObjectOwnerEntity> GetAll() 
-        {
-            Task t = Task.Run(async () =>
-            {
-                _objectOwnerList = (await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwners(Session.Token)).ToList();
-            });
-            t.Wait();
-            return _objectOwnerList;
-        }
-        public List<ObjectOwnerEntity> SearchObject(string item)
-        {
-            try
-            {
-                var items = GetAll();
-                if (items != null)
+                var paginator = new PaginatorData<ObjectOwner>()
                 {
-                    if (item != " ")
-                    {
-                        return items.Where(i => i.NameObject.ToLower().Contains(item.ToLower())).ToList();
-                    }
-                }
-                return new List<ObjectOwnerEntity>();
+                    Data = items.Data.ToObjectOwner(),
+                    DataType = items.DataType,
+                    Page = items.Page,
+                    Pages = items.Pages,
+                };
+                return paginator;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new List<ObjectOwnerEntity>();
+                return new PaginatorData<ObjectOwner>();
             }
         }
+
+        public async Task<PaginatorData<ObjectOwner>> SearchByName(string item, int page, int countColumn, TypeStatusObjectOwner status)
+        {
+            try
+            {
+                var items = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.GetObjectsOwnersByNamePageColumn(_token, item, page, countColumn, status);
+                var paginator = new PaginatorData<ObjectOwner>()
+                {
+                    Data = items.Data.ToObjectOwner(),
+                    DataType = items.DataType,
+                    Page = items.Page,
+                    Pages = items.Pages,
+                };
+                return paginator;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new PaginatorData<ObjectOwner>();
+            }
+        } 
 
         public async Task<bool> GetServerObjectOwner(string pathFile, string passwordKey)
         {
             try
             {
 
-                _objectOwnerList = new List<ObjectOwnerEntity>();
+                _objectOwnerList = new List<ObjectOwner>();
                 if (_signingFileController.GetDataToFile(pathFile, passwordKey))
                 {
                    
@@ -109,19 +97,28 @@ namespace ShopProject.Model.AdminPage
                     foreach (var item in infoUser.ElementAt(8).listValues)
                     {
 
-                        ObjectOwnerEntity objectOwner = new ObjectOwnerEntity()
+                        ObjectOwner objectOwner = new ObjectOwner()
                         {
                             NameObject = item.NAME, 
                             Address = item.ADDRESS,
                             C_DISTR = item.C_DISTR,
-                            TypeOfRights = item.TYPE_OF_RIGHTS,
-                            C_TERRIT = item.C_TERRIT.ToString(),
-                            KATOTTG = item.KATOTTG,
-                            REG_NUM_OBJ = item.REG_NUM_OBJ,
-                            CodeObject = item.TO_CODE.ToString(),
-                            TypeObjectName = item.TYPE_OF_RIGHTS.ToString(),
+                            TypeOfRights = item.TYPE_OF_RIGHTS, 
+                            KATOTTG = item.KATOTTG, 
 
                         };
+                        if (objectOwner.C_TERRIT != null)
+                        {
+                            objectOwner.C_TERRIT = item.C_TERRIT.ToString();
+                        }
+                        if (objectOwner.REG_NUM_OBJ != null)
+                        {
+                            objectOwner.REG_NUM_OBJ = item.REG_NUM_OBJ.ToString();
+                        }
+                        if (objectOwner.TypeObjectName != null)
+                        {
+                            objectOwner.TypeObjectName = item.TYPE_OF_RIGHTS.ToString();
+                        }
+
 
                         if (item.STAN_OBJECT == "Об'єкт відчужено / повернено власнику")
                         {
@@ -168,12 +165,12 @@ namespace ShopProject.Model.AdminPage
 
         }
 
-        public bool SaveDataBaseItem(List<ObjectOwnerHelpers> objectOwnerHelpers)
+        public bool SaveDataBaseItem(List<ObjectOwnerDialogWindow> objectOwnerHelpers)
         {
             try
             {
 
-                List<ObjectOwnerEntity> result = new List<ObjectOwnerEntity>();
+                List<ObjectOwner> result = new List<ObjectOwner>();
                 for (int i = 0; i < objectOwnerHelpers.Count; i++)
                 {
                     if (objectOwnerHelpers.ElementAt(i).isActive)
@@ -185,7 +182,7 @@ namespace ShopProject.Model.AdminPage
                 bool response = false;
                 Task t = Task.Run(async () =>
                 {
-                    response = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.AddObjectsOwners(Session.Token, result);
+                    response = await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.AddObjectsOwners(_token, result.ToObjectOwner());
                 });
 
                 t.Wait();
@@ -199,15 +196,15 @@ namespace ShopProject.Model.AdminPage
 
         }
 
-        public List<ObjectOwnerEntity> GetListObjecyOwner()
+        public List<ObjectOwner> GetListObjectOwner()
         {
             return _objectOwnerList;
         }
-        public async Task<bool> DeleteItem(ObjectOwnerEntity item)
+        public async Task<bool> DeleteItem(ObjectOwner item)
         {
             try
             { 
-                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.DeleteObjectsOwner(Session.Token, item);
+                return await MainWebServerController.MainDataBaseConntroller.ObjectOwnerController.DeleteObjectsOwner(_token, item);
             }
             catch (Exception ex)
             {

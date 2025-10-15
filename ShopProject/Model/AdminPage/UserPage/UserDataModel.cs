@@ -1,6 +1,7 @@
 ﻿ using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.UserPage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +12,16 @@ namespace ShopProject.Model.AdminPage.UserPage
 {
     internal class UserDataModel
     { 
-        private UserEntity _user;
+        private User _user;
 
         public UserDataModel()
         {
-            _user = new UserEntity();
+            _user = new User();
         }
 
-        public UserEntity? GetUser()
-        {
-            Task t = Task.Run(async () =>
-            {
-                _user = await MainWebServerController.MainDataBaseConntroller.UserController.GetUserById(Session.Token, Session.UserItem.ID.ToString());
-            });
-            t.Wait();
-
-            return _user;
+        public async Task<User>? GetUser()
+        { 
+            return await MainWebServerController.MainDataBaseConntroller.UserController.GetUserById(Session.User.Token, Session.UserItem.ID.ToString());
         }
     }
 }

@@ -12,10 +12,14 @@ using System.Windows.Input;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 using ShopProject.Helpers.DataGridViewHelperModel; 
-using ShopProject.ViewModel.TemplatePage; 
-using ShopProjectSQLDataBase.Helper;
-using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.ViewModel.TemplatePage;  
+using ShopProject.Helpers.Template.Paginator; 
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProject.View.UserPage;
+using ShopProject.View.AdminPage.OperationRecorderPage;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -43,10 +47,10 @@ namespace ShopProject.ViewModel.AdminPage
         public OperationsRecorderViewModel()
         {
             _model = new OperationsRecorderModel();
-            _objectList = new List<OperationsRecorderEntity>();
+            _objectList = new List<OperationRecorder>();
             _visibilitiDialogWindow = Visibility.Hidden;
             _openFileDialog = new OpenFileDialog();
-            _objectListDialogWindow = new List<SoftwareDeviceSettlementOperationsHelper>();
+            _objectListDialogWindow = new List<OperationRecorderDialogWindow>();
             _countShowList = new List<string>();
             _paginator = new TemplatePaginatorButtonViewModel();
             _password = string.Empty;
@@ -65,7 +69,7 @@ namespace ShopProject.ViewModel.AdminPage
             _saveBindingObjectOwnerCommand = new DelegateCommand(SaveBindingObjectOwner);
 
             _updateItemDataGridView = new DelegateCommand(() => { SetFieldPage(); });
-            _objectOwners = new List<ObjectOwnerHelpers>();
+            _objectOwners = new List<ObjectOwnerDialogWindow>();
 
 
             _timer = new System.Threading.Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
@@ -78,14 +82,14 @@ namespace ShopProject.ViewModel.AdminPage
             get { return _password; }
             set { _password = value; OnPropertyChanged(nameof(Password)); }
         }
-        private List<OperationsRecorderEntity> _objectList;
-        public List<OperationsRecorderEntity> ObjectList
+        private List<OperationRecorder> _objectList;
+        public List<OperationRecorder> ObjectList
         {
             get { return _objectList; }
             set { _objectList = value; OnPropertyChanged(nameof(ObjectList)); }
         }
-        private List<SoftwareDeviceSettlementOperationsHelper> _objectListDialogWindow;
-        public List<SoftwareDeviceSettlementOperationsHelper> ObjectListDialogWindow
+        private List<OperationRecorderDialogWindow> _objectListDialogWindow;
+        public List<OperationRecorderDialogWindow> ObjectListDialogWindow
         {
             get { return _objectListDialogWindow; }
             set { _objectListDialogWindow = value; OnPropertyChanged(nameof(ObjectListDialogWindow)); }
@@ -110,8 +114,8 @@ namespace ShopProject.ViewModel.AdminPage
             set { _selectedItem = value; OnPropertyChanged(nameof(SelectedItem)); }
         }
 
-        private List<ObjectOwnerHelpers> _objectOwners;
-        public List<ObjectOwnerHelpers> ObjectOwners
+        private List<ObjectOwnerDialogWindow> _objectOwners;
+        public List<ObjectOwnerDialogWindow> ObjectOwners
         {
             get { return _objectOwners; }
             set { _objectOwners = value; OnPropertyChanged(nameof(ObjectOwners)); }
@@ -147,17 +151,17 @@ namespace ShopProject.ViewModel.AdminPage
             _openFileDialog.ShowDialog();
 
 
-            List<SoftwareDeviceSettlementOperationsHelper> temp = new List<SoftwareDeviceSettlementOperationsHelper>();
+            List<OperationRecorderDialogWindow> temp = new List<OperationRecorderDialogWindow>();
             if (await _model.GetServerSoftwareDeviceSettlementOperations(_openFileDialog.FileName, Password))
             {
                 VisibilitiFieldDialogWindow = Visibility.Visible;
 
                 foreach (var item in _model.GetListObjecyOwner())
                 {
-                    temp.Add(new SoftwareDeviceSettlementOperationsHelper(item));
+                    temp.Add(new OperationRecorderDialogWindow(item));
                 }
 
-                ObjectListDialogWindow = new List<SoftwareDeviceSettlementOperationsHelper>(temp);
+                ObjectListDialogWindow = new List<OperationRecorderDialogWindow>(temp);
 
             }
 
@@ -207,23 +211,28 @@ namespace ShopProject.ViewModel.AdminPage
         public ICommand OpenWindowDataObjectCommand => _openWindowDataObjectCommand;
         private void OpenWindowObjectData()
         {
-            //new ObjectOwnerShipData().ShowDialog();
+            new OperationRecorderDataView().ShowDialog();
         }
         public ICommand BindingObjectOwnerCommand => _bindingObjectOwnerCommandl;
         private void BindingObjectOwner()
         {
-            ObjectOwners = _model.GetAllObjectOwner();
-            VisibilityDialogWindow = Visibility.Visible;
+            Task t = Task.Run(async () => {
+                ObjectOwners = await _model.GetAllObjectOwner();
+            });
+            t.ContinueWith(t => {
+                VisibilityDialogWindow = Visibility.Visible;
+            });
         }
         public ICommand SaveBindingObjectOwnerCommand => _saveBindingObjectOwnerCommand;
         private void SaveBindingObjectOwner()
         {
-            if (_model.SaveBinding(ObjectList.ElementAt(SelectedItem), ObjectOwners))
-            {
-                MessageBox.Show("Првиязка успішна");
-                VisibilityDialogWindow = Visibility.Hidden;
-            }
+            Task t = Task.Run(async () => {
+                if(await _model.SaveBinding(ObjectList.ElementAt(SelectedItem), ObjectOwners)){
 
+                    MessageBox.Show("Првиязка успішна");
+                    VisibilityDialogWindow = Visibility.Hidden;
+                }
+            }); 
         }
 
         private TemplatePaginatorButtonViewModel _paginator;
@@ -319,7 +328,7 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
+            PaginatorData<OperationRecorder> result = new PaginatorData<OperationRecorder>();
             Task t = Task.Run(async () => {
 
                 result = await _model.GetOperationsRecorderPageColumn(page, countCoulmn, Enum.Parse<TypeStatusOperationRecorder>(StatusOperationRecorder.ElementAt(SelectedStatusOperationRecorder)));
@@ -327,10 +336,16 @@ namespace ShopProject.ViewModel.AdminPage
             t.ContinueWith(t => {
                 if (reloadbutton)
                 {
-                    Paginator.CountButton = result.Pages;
+                    if(result.Pages == 0)
+                    {
+                        Paginator.CountButton = 1;
+                    }
+                    else
+                    {
+                        Paginator.CountButton = result.Pages;
+                    }
                 }
-                Paginator.CountColumn = countCoulmn;
-                ObjectList = result.Data;
+                ObjectList = result.Data.ToList();
                 _isReadyUpdateDataGriedView = true;
             });
         }
@@ -374,7 +389,7 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void SearchByNameAndByBarCode(int countColumn, int page)
         {
-            PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
+            PaginatorData<OperationRecorder> result = new PaginatorData<OperationRecorder>();
 
             Task t = Task.Run(async () =>
             {
@@ -388,7 +403,7 @@ namespace ShopProject.ViewModel.AdminPage
                     Paginator.CountButton = result.Pages;
                 }
                 Paginator.CountColumn = countColumn;
-                ObjectList = result.Data;
+                ObjectList = result.Data.ToList();
             });
         }
         public ICommand UpdateSizeCommand => _updateSizeGridCommand;

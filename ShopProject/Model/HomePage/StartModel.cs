@@ -50,7 +50,7 @@ namespace ShopProject.Model.HomePage
             try 
             { 
                 AppSettingsManager.SetParameterFile("URL", _networkURL.Serialize());
-                MainWebServerController.Init(); 
+                MainWebServerController.Init(_networkURL.Url); 
                 return await MainWebServerController.settings.Ping();
             }
             catch

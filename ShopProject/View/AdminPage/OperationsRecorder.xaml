@@ -45,10 +45,63 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
 
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0" Grid.Row="1"  Width="120"/>
-        
-        <DataGrid Grid.Row="2" x:Name="listView" ItemsSource="{Binding ObjectList}" 
-     ColumnWidth="*" AutoGenerateColumns="False" CanUserAddRows="False" SelectedIndex="{Binding SelectedItem}">
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0,0,14,0" Grid.Row="1"  Width="120"/>
+
+        <DataGrid Grid.Row="2" x:Name="listView" ItemsSource="{Binding ObjectList}"    
+                  SelectedIndex="{Binding SelectedItem}"
+                  AutoGenerateColumns="False"
+                  ColumnWidth="*"
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  FontSize="16"
+                  Margin="10"
+                  RowHeight="40"
+                  GridLinesVisibility="None"
+                  AlternatingRowBackground="#F9F9F9"
+                  RowBackground="White"
+                  BorderBrush="LightGray"
+                  BorderThickness="1"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  VerticalGridLinesBrush="#E0E0E0">
+
+            <!-- Стиль заголовків -->
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="CadetBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="BorderBrush" Value="#517a7b"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <!-- Стиль рядків -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <!-- Виділений рядок -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                        <!-- Наведення мишки -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№"  Binding="{Binding ID}" />
                 <DataGridTextColumn Header="Локальний номер" Binding="{Binding LocalNumber}" />
@@ -101,14 +154,14 @@
             </TextBox>
 
             <Button Grid.Column="5" Grid.ColumnSpan="2" Height="35" Width="150" Content="Добавити РРО" VerticalAlignment="Bottom"
-                HorizontalAlignment="Left" Margin="15,0,15,25" Command="{Binding OpenDialogWindowCommand}"/>
+                HorizontalAlignment="Right" Margin="15,0,14,25" Command="{Binding OpenDialogWindowCommand}"/>
             <Button Grid.Column="0" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Left"  Margin="10,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateItemDataGridView }">
                 <Button.Content>
                     <Image Source="/Resource/Images/reboot.png"></Image>
                 </Button.Content>
             </Button>
 
-            <ComboBox x:Name="comboBoxTypeStatusProduct" ItemsSource="{Binding StatusOperationRecorder}" SelectedIndex="{Binding SelectedStatusOperationRecorder}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
+            <ComboBox x:Name="comboBoxTypeStatusProduct" Height="35" ItemsSource="{Binding StatusOperationRecorder}" SelectedIndex="{Binding SelectedStatusOperationRecorder}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
 
 
 

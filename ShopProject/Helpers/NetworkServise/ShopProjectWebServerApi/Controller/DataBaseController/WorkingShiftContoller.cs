@@ -20,7 +20,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<int> AddWorkingShift(string token, UIWorkingShiftModel shift)
+        public async Task<int> AddWorkingShift(string token, WorkingShift shift)
         {
             var content = JsonSerializer.Serialize(shift.ToCreateWorkingShiftDto());
 
@@ -36,7 +36,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return (int)result;
         }
 
-        public async Task<bool> UpdateWorkingShift(string token, UIWorkingShiftModel shift)
+        public async Task<bool> UpdateWorkingShift(string token, WorkingShift shift)
         {
             var content = JsonSerializer.Serialize(shift.ToUpdateWorkingShiftDto());
 

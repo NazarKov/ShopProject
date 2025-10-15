@@ -36,7 +36,7 @@
         
             <!-- 📋 Таблиця з товарами -->
             <DataGrid x:Name="dataGrid"
-              ItemsSource="{Binding Goods, UpdateSourceTrigger=PropertyChanged}"
+              ItemsSource="{Binding Product, UpdateSourceTrigger=PropertyChanged}"
               AutoGenerateColumns="False"
               ColumnWidth="*"
               HeadersVisibility="Column"
@@ -96,9 +96,9 @@
                     <DataGridTextColumn Header="Назва товару" Binding="{Binding NameProduct}" Width="*"/>
                     <DataGridTextColumn Header="Артикул" Binding="{Binding Articule}" Width="100"/>
                     <DataGridTextColumn Header="Кількість" Binding="{Binding Count}" Width="100"/>
-                    <DataGridTextColumn Header="Одиниці" Binding="{Binding Unit.ShortNameUnit}" Width="100"/>
+                    <DataGridTextColumn Header="Одиниці" Binding="{Binding Unit.NameUnit}" Width="100"/>
                     <DataGridTextColumn Header="Ціна" Binding="{Binding Price}" Width="100"  />
-                    <DataGridTextColumn Header="Знижка" Binding="{Binding Sales}" Width="100"/>
+                    <DataGridTextColumn Header="Знижка" Binding="{Binding CodeUKTZED.Code}" Width="100"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

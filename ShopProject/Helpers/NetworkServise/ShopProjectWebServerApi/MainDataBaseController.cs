@@ -23,7 +23,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
         public OrderController OrderController { get; set; }
         public MediaAccessControlController MediaAccessControlController { get; set; }
         public WorkingShiftContoller WorkingShiftContoller { get; set; }
-
+        public SignatureKeyController SignatureKeyController { get; set; }
         public MainDataBaseController(string url)
         { 
             UserController = new UserController(url);
@@ -38,6 +38,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
             OrderController = new OrderController(url);
             MediaAccessControlController = new MediaAccessControlController(url);
             WorkingShiftContoller = new WorkingShiftContoller(url);
+            SignatureKeyController = new SignatureKeyController(url);
         }
     }
 }

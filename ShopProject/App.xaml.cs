@@ -17,7 +17,7 @@ namespace ShopProject
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             // Create the startup window
-            Home wnd = new Home();
+            HomeView wnd = new HomeView();
             wnd.Show();
         }
     }

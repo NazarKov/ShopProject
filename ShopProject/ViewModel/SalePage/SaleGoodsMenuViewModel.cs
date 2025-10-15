@@ -1,8 +1,10 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
-using ShopProject.UIModel;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,7 +38,7 @@ namespace ShopProject.ViewModel.SalePage
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
 
-            _product = new List<ProductEntity>();
+            _product = new List<Product>();
             _barCodeSearch = string.Empty;
 
             _typeOplatu = new List<string>();
@@ -56,8 +58,8 @@ namespace ShopProject.ViewModel.SalePage
             set { _barCodeSearch = value; OnPropertyChanged(nameof(BarCodeSearch)); }
         }
 
-        private List<ProductEntity> _product;
-        public List<ProductEntity> Product
+        private List<Product> _product;
+        public List<Product> Product
         {
             get { return _product; }
             set { _product = value; OnPropertyChanged(nameof(Product)); }
@@ -114,7 +116,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
-            Product = new List<ProductEntity>();
+            Product = new List<Product>();
             SumaUser = 0;
             SumaOrder = 0;
             _selectIndex = 0;
@@ -137,7 +139,7 @@ namespace ShopProject.ViewModel.SalePage
 
         private async Task SearchBarCodeGoods()
         {
-            List<ProductEntity> temp;
+            List<Product> temp;
             if (BarCodeSearch.Length > 12)
             {
                 if (BarCodeSearch != "2")
@@ -147,7 +149,7 @@ namespace ShopProject.ViewModel.SalePage
                     {
                         
                         item.Count = 1;
-                        temp = new List<ProductEntity>();
+                        temp = new List<Product>();
                         temp = Product;
 
                         if (temp.Find(pr => pr.Code == item.Code) != null)
@@ -161,7 +163,7 @@ namespace ShopProject.ViewModel.SalePage
 
                         CountingSumaOrder(temp);
 
-                        Product = new List<ProductEntity>();
+                        Product = new List<Product>();
                         Product = temp;
                         BarCodeSearch = string.Empty;
                     }
@@ -172,22 +174,22 @@ namespace ShopProject.ViewModel.SalePage
                     {
                         if (Product.ElementAt(Product.Count - 1).Count == 1)
                         {
-                            temp = new List<ProductEntity>();
+                            temp = new List<Product>();
                             temp = Product;
 
                             temp.Remove(temp.ElementAt(temp.Count - 1));
-                            Product = new List<ProductEntity>();
+                            Product = new List<Product>();
                             Product = temp;
                             CountingSumaOrder(Product);
                         }
                         else
                         {
-                            temp = new List<ProductEntity>();
+                            temp = new List<Product>();
                             temp = Product;
 
 
                             temp.ElementAt(Product.Count - 1).Count -= 1;
-                            Product = new List<ProductEntity>();
+                            Product = new List<Product>();
                             Product = temp;
                             CountingSumaOrder(Product);
                         }
@@ -197,10 +199,10 @@ namespace ShopProject.ViewModel.SalePage
             }
         }
 
-        private void CountingSumaOrder(List<ProductEntity> products)
+        private void CountingSumaOrder(List<Product> products)
         {
             SumaOrder = 0;
-            foreach (ProductEntity orderProduct in products)
+            foreach (Product orderProduct in products)
             {
                 SumaOrder += (orderProduct.Price * orderProduct.Count);
             }
@@ -227,9 +229,9 @@ namespace ShopProject.ViewModel.SalePage
 
                 Task t = Task.Run(async () =>{
 
-                    UIOperationModel operation = new UIOperationModel()
+                    Operation operation = new Operation()
                     { 
-                        TypeOperation = ShopProjectSQLDataBase.Helper.TypeOperation.FiscalCheck,
+                        TypeOperation =  TypeOperation.FiscalCheck,
                         MAC = await _model.GetMAC(Session.FocusDevices.ID),
                         CreatedAt = DateTime.Now,
                         NumberPayment = await _model.GetLocalNumber(),
@@ -237,14 +239,14 @@ namespace ShopProject.ViewModel.SalePage
                         RestPayment = Convert.ToDecimal(rest),
                         TotalPayment = (decimal)SumaOrder,
                         BuyersAmount = (decimal)SumaUser,
-                        TypePayment = ShopProjectSQLDataBase.Helper.TypePayment.Cash,  
+                        TypePayment =  TypePayment.Cash,  
                     };
 
                     if (_model.SendCheck(Product, operation))
                     
                     {
                         MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
-                        Product = new List<ProductEntity>();
+                        Product = new List<Product>();
                         BarCodeSearch = string.Empty;
                         SumaUser = new decimal();
                         SumaUser = 0;

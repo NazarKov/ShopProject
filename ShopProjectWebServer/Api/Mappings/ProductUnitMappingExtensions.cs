@@ -36,5 +36,25 @@ namespace ShopProjectWebServer.Api.Mappings
             return productUnitEntity;
         }
 
+        public static ProductUnitDto ToProductUnitDto(this ProductUnitEntity item)
+        {
+            return new ProductUnitDto()
+            {
+                ID = item.ID,
+                ShortNameUnit = item.ShortNameUnit,
+                Status = (int)item.Status,
+                NameUnit = item.NameUnit,
+                Number = item.Number
+            };
+        }
+        public static IEnumerable<ProductUnitDto> ToProductUnitDto(this IEnumerable<ProductUnitEntity> items) 
+        {
+            var result  = new List<ProductUnitDto>();
+            foreach (var item in items) 
+            {
+                result.Add(ToProductUnitDto(item));
+            }
+            return result;
+        } 
     }
 }

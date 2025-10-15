@@ -11,9 +11,9 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void UpdateParameter(ProductCodeUKTZEDEntity item, string parameter, object value);
 
         void Delete(ProductCodeUKTZEDEntity item);
-        IEnumerable<ProductCodeUKTZEDEntity> GetAll();
-        PaginatorData<ProductCodeUKTZEDEntity> GetAllPageColumn(double page, double countColumn, TypeStatusCodeUKTZED statusCodeUKTZED);
+        IEnumerable<ProductCodeUKTZEDEntity> GetAll(); 
         ProductCodeUKTZEDEntity GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED);
-        PaginatorData<ProductCodeUKTZEDEntity> GetCodeUKTZEDByNamePageColumn(string name, double page, double countColumn, TypeStatusCodeUKTZED statusCodeUKTZED);
+
+        IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status);
     } 
 }

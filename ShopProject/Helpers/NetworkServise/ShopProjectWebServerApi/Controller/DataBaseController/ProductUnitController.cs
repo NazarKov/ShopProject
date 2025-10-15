@@ -1,7 +1,10 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.ProductUnit;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper; 
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -20,7 +23,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public async Task<bool> AddProductUnit(string token, ProductUnitEntity unit)
+        public async Task<bool> AddProductUnit(string token, CreateProductUnitDto unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -29,12 +32,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> UpdateUnit(string token, ProductUnitEntity unit)
+        public async Task<bool> UpdateUnit(string token, UpdateProductUnitDto unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -43,12 +46,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> UpdateParameterUnit(string token, string parameter, object value, ProductUnitEntity product)
+        public async Task<bool> UpdateParameterUnit(string token, string parameter, object value, UpdateProductUnitDto product)
         {
             var content = JsonSerializer.Serialize(product);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -57,12 +60,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<bool> DeleteUnit(string token, ProductUnitEntity unit)
+        public async Task<bool> DeleteUnit(string token, ProductUnit unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -71,53 +74,53 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result;
+            return result.Data;
         }
 
-        public async Task<ProductUnitEntity> GetUnitByCode(string token, string code,TypeStatusUnit statusUnit)
+        public async Task<ProductUnitDto> GetUnitByCode(string token, string code,TypeStatusUnit statusUnit)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitByCode?token={token}&code={code}&status={statusUnit}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<ProductUnitEntity>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<ProductUnitDto>.Unpacking(responseBody);
 
-            return (ProductUnitEntity)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ProductUnitEntity>> GetUnitsByNamePageColumn(string token, string name,int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<PaginatorData<ProductUnitDto>> GetUnitsByNamePageColumn(string token, string name,int page, int countColumn, TypeStatusUnit statusUnit)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitsByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={statusUnit}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<ProductUnitEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<ProductUnitDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<ProductUnitEntity>)result;
+            return result.Data;
         }
 
-        public async Task<PaginatorData<ProductUnitEntity>> GetUnitsPageColumn(string token ,int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<PaginatorData<ProductUnitDto>> GetUnitsPageColumn(string token ,int page, int countColumn, TypeStatusUnit statusUnit)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitsPageColumn?token={token}&countColumn={countColumn}&page={page}&status={statusUnit}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<PaginatorData<ProductUnitEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorData<ProductUnitDto>>.Unpacking(responseBody);
 
-            return (PaginatorData<ProductUnitEntity>)result;
+            return result.Data;
         }
 
-        public async Task<IEnumerable<ProductUnitEntity>> GetUnits(string token)
+        public async Task<IEnumerable<ProductUnitDto>> GetUnits(string token)
         { 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnits?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<ProductUnitEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<ProductUnitDto>>.Unpacking(responseBody);
 
-            return (IEnumerable<ProductUnitEntity>)result; 
+            return result.Data; 
         }
     }
 }

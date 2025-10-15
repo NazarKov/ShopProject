@@ -1,12 +1,32 @@
-﻿using System;
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
-namespace ShopProject.Model.StoragePage.ProductPage
+namespace ShopProject.Model.StoragePage.ProductsPage
 {
     internal class CreateProductModel
-    {
+    { 
+
+        public CreateProductModel()  {  } 
+
+        public async Task<bool> SaveItemDataBase(Product product)
+        {
+            try
+            {  
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.User.Token, product.ToCreateProductDto());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK,MessageBoxImage.Error);
+                return false;
+            }
+        }  
     }
 }

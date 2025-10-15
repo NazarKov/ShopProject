@@ -5,7 +5,7 @@ using ShopProjectWebServer.Helpers.Settings;
 
 namespace ShopProjectWebServer.DataBase
 {
-    public static class DataBaseMainController
+    public static class DataBaseMainController // прибрати static винести налашування 
     {
         private static Settings _settings;
         private static FileSettingManager _settingManager;
@@ -26,7 +26,7 @@ namespace ShopProjectWebServer.DataBase
             if (_settings.SettingConnect != null)
             {
                 _dataBaseAccess = new DataBaseSQLAccess(_settings.SettingConnect.ConnectionString.ToString());
-                //pattern singelton
+                
             }
         }
 

@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="ShopProject.View.HomePage.HomePageComponent.DeviceStatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ShopProject.ViewModel.HomePage.HomePageComponent"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <local:DeviceStatusViewModel></local:DeviceStatusViewModel>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="25"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 🖨️ Принтер -->
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="🖨️" 
+               FontSize="13"
+               FontWeight="Bold"
+               Foreground="#444"
+               HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+             Margin="0,2,0,0"
+             Fill="{Binding PrinterStatusColor}"
+             Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding PrinterTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 📠 Сканер -->
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="📠" 
+               FontSize="13"
+               FontWeight="Bold"
+               Foreground="#444"
+               HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+             Margin="0,2,0,0"
+             Fill="{Binding ScannerStatusColor}"
+             Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding ScannerTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 🌐 Сервер -->
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="🌐" 
+               FontSize="13"
+               FontWeight="Bold"
+               Foreground="#444"
+               HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+             Margin="0,2,0,0"
+             Fill="{Binding ServerStatusColor}"
+             Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding ServerTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 🌍 Інтернет -->
+            <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="🌍" 
+               FontSize="13"
+               FontWeight="Bold"
+               Foreground="#444"
+               HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+             Margin="0,2,0,0"
+             Fill="{Binding InternetStatusColor}"
+             Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding InternetTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

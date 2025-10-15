@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +12,7 @@ using ZXing;
 namespace ShopProject.Model.UserPage
 {
     internal class AuthorizationModel
-    {
-
+    { 
         public async Task<bool> LogIn(string login, string password)
         {
             try
@@ -22,25 +21,24 @@ namespace ShopProject.Model.UserPage
 
                 if(response != null)
                 {
-                    AppSettingsManager.SetParameterFile("TokenUser", response.Token);
-                    Session.User = response.User;
-                    Session.Token = response.Token;
-                    return true;
+                    Session.User = response.ToUser();
+                    AppSettingsManager.SetParameterFile("User", response.ToUser().Serialize());   
+                    return  true;
                 }
                 else
                 {
                     throw new Exception("Не вдалося авторизуватися");
-                }
-
-                 
+                } 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return false;
             }
+        } 
+        public void Init()
+        {
+            Resources.InitWebServerResourses();
         }
-
-
     }
 }

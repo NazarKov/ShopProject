@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.WorkingShift;
-using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.Api.Services;
 using ShopProjectWebServer.DataBase;
-using System.Text.Json; 
+using System.Text.Json;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -11,32 +13,25 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class WorkingShiftController : ControllerBase
     {
+        private IWorkingShiftServise _servise;
+
+        public WorkingShiftController(IWorkingShiftServise servise)
+        {
+            _servise = servise;
+        }
+
         [HttpPost("AddWorkingShift")]
         public async Task<IActionResult> AddWorkingShift([FromQuery] string token, CreateWorkingShiftDto item)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {  
-                    int id = DataBaseMainController.DataBaseAccess.WorkingShiftTable.Add(item.ToWorkingShiftEntity());
+                _servise.Add(token, item);
 
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(id),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                return Ok(ApiResponse<bool>.Ok(true, "Обєкт створено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -45,29 +40,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
+                _servise.Update(token, item);
 
-
-                    DataBaseMainController.DataBaseAccess.WorkingShiftTable.Update(item.ToWorkingShiftEntity());
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
+                return Ok(ApiResponse<bool>.Ok(true, "Обєкт оновлено"));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
     }

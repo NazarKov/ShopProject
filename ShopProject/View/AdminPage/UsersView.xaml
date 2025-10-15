@@ -45,17 +45,101 @@
         </i:Interaction.Triggers>
 
 
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0" Grid.Row="1"  Width="120"/>
-
+        <ComboBox x:Name="comboBox"
+                  Grid.Row="1"
+                  ItemsSource="{Binding CountShowList}"
+                  SelectedIndex="{Binding SelectIndexCountShowList}"
+                  Width="120"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Margin="10"
+                  FontSize="16"
+                  Background="White"
+                  Foreground="Black"
+                  BorderBrush="LightGray"
+                  BorderThickness="1"
+                  Padding="4,2"
+                  Cursor="Hand">
+            <ComboBox.Resources>
+                <!-- Стиль елементів списку -->
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Padding" Value="5,3"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Resources>
+        </ComboBox>
+        
         <DataGrid Grid.Row="2" Grid.RowSpan="1" x:Name="listView" ItemsSource="{Binding Users}" 
-                   ColumnWidth="*" AutoGenerateColumns="False"  SelectedIndex="{Binding SelectedItem}" CanUserAddRows="False" >
-            <DataGrid.Columns>
-                <DataGridTextColumn Header=""  Binding="{Binding ID}" />
+                   SelectedIndex="{Binding SelectedItem}"
+                   AutoGenerateColumns="False"
+                   ColumnWidth="*"
+                   HeadersVisibility="Column"
+                   CanUserAddRows="False"
+                   CanUserDeleteRows="False"
+                   FontSize="16"
+                   Margin="10"
+                   RowHeight="40"
+                   GridLinesVisibility="None"
+                   AlternatingRowBackground="#F9F9F9"
+                   RowBackground="White"
+                   BorderBrush="LightGray"
+                   BorderThickness="1"
+                   SelectionMode="Single"
+                   SelectionUnit="FullRow"
+                   HorizontalGridLinesBrush="#E0E0E0"
+                   VerticalGridLinesBrush="#E0E0E0">
+
+            <!-- Стиль заголовків -->
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="CadetBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="BorderBrush" Value="#517a7b"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <!-- Стиль рядків -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <!-- Виділений рядок -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                        <!-- Наведення мишки -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns> 
                 <DataGridTextColumn Header="ПІБ" Binding="{Binding FullName}" />
                 <DataGridTextColumn Header="Логін"  Binding="{Binding Login}" />
-                <DataGridTextColumn Header="Логін"  Binding="{Binding Email}" />
+                <DataGridTextColumn Header="Email"  Binding="{Binding Email}" />
                 <DataGridTextColumn Header="Статус" Binding="{Binding Status}" />
-                <DataGridTextColumn Header="Посада"  Binding="{Binding UserRole.NameRole}" />
+                <DataGridTextColumn Header="Посада"  Binding="{Binding Role.NameRole}" />
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -82,6 +166,7 @@
         </DataGrid>
 
         <paginator:TemplatePaginatorButtonView x:Name="BottomButtomPaginator1" Grid.Row="3" DataContext="{Binding Paginator}"  HorizontalAlignment="Center" VerticalAlignment="Center"></paginator:TemplatePaginatorButtonView>
+       
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="350"></ColumnDefinition>
@@ -104,7 +189,7 @@
 
             
             
-            <Button Grid.Column="5" Grid.ColumnSpan="2" Height="35" Width="150" Content="Добавити Користувача" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15,0,15,25" Command="{Binding OpenWindowCreateUserCommand}"/>
+            <Button Grid.Column="5" Grid.ColumnSpan="2" Height="35" Width="150" Content="Добавити Користувача" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,0,10,25" Command="{Binding OpenWindowCreateUserCommand}"/>
             
             <Button Grid.Column="0" x:Name="button" Height="35" Width="35"  HorizontalAlignment="Left" Margin="10,0,0,25" VerticalAlignment="Bottom" Command="{Binding UpdateUserDataGridView}">
                 <Button.Content>
@@ -112,7 +197,7 @@
                 </Button.Content>
             </Button>
 
-            <ComboBox x:Name="comboBoxTypeStatusProduct" ItemsSource="{Binding StatusUsers}" SelectedIndex="{Binding SelectedStatusUser}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
+            <ComboBox x:Name="comboBoxTypeStatusProduct" Height="35" ItemsSource="{Binding StatusUsers}" SelectedIndex="{Binding SelectedStatusUser}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,25" FontSize="20"/>
 
          </Grid>
         <Grid x:Name="InputBox1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="{Binding VisibilityDialogWindow , UpdateSourceTrigger=PropertyChanged}">

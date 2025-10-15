@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Common;
 using System.Text.Json;
 
 namespace ShopProjectWebServer.Api.Controller
@@ -12,7 +12,7 @@ namespace ShopProjectWebServer.Api.Controller
         [HttpGet("Ping")]
         public IActionResult GetSettings()
         {
-            return Ok(new Message() { MessageBody = JsonSerializer.Serialize<string>(DateTime.Now.ToString()), Type = TypeMessage.Message }.ToString());
+            return Ok(ApiResponse<string>.Ok(DateTime.Now.ToString())); 
         }
     }
 }

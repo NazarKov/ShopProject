@@ -29,5 +29,33 @@ namespace ShopProjectWebServer.Api.Mappings
             result.TypeOperation = TypePayment; 
             return result;
         }
+
+        public static OperationDto ToOperationDto(this OperationEntity operation)
+        {
+            return new OperationDto()
+            {
+                AmountOfFundsReceived = operation.AmountOfFundsReceived,
+                BuyersAmount = operation.BuyersAmount,
+                CreatedAt = operation.CreatedAt,
+                Discount = operation.Discount,
+                GoodsTax = operation.GoodsTax,
+                MACId = operation.MACId,
+                ID = operation.ID,
+                NumberPayment = operation.NumberPayment,
+                RestPayment = operation.RestPayment,
+                TotalPayment = operation.TotalPayment,
+                TypeOperation = (int)operation.TypeOperation,
+                TypePayment = (int)operation.TypePayment,
+            };
+        }
+        public static IEnumerable<OperationDto> ToOperationDto(this IEnumerable<OperationEntity> operations)
+        {
+            var result = new List<OperationDto>();
+            foreach (var item in operations)
+            {
+                result.Add(ToOperationDto(item));
+            }
+            return result;
+        }
     }
 }

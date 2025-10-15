@@ -9,8 +9,7 @@ namespace ShopProjectWebServer.Api.Mappings
         public static UserEntity ToUserEntity(this CreateUserDto item)
         {
             var userEntity = new UserEntity()
-            {
-                SignatureKey = item.SignatureKey,
+            {  
                 AutomaticLogin = item.AutomaticLogin,
                 CreatedAt = item.CreatedAt,
                 Email = item.Email,
@@ -18,8 +17,18 @@ namespace ShopProjectWebServer.Api.Mappings
                 Login = item.Login,
                 Password = item.Password,
                 TIN = item.TIN,
-                UserRole = new UserRoleEntity() { ID = item.UserRole_ID }
+                UserRole = new UserRoleEntity() { ID = item.UserRoleID }
             };
+
+            if (item.SignatureKey != null) 
+            {
+                userEntity.SignatureKey = new ElectronicSignatureKey();
+                userEntity.SignatureKey.CreateAt = item.SignatureKey.CreateAt;
+                userEntity.SignatureKey.EndAt = item.SignatureKey.EndAt;
+                userEntity.SignatureKey.SignaturePassword = item.SignatureKey.SignaturePassword;
+                userEntity.SignatureKey.Signature = item.SignatureKey.Signature;
+            }
+            
 
             Enum.TryParse(item.Status.ToString(), out TypeStatusUser type);
             userEntity.Status = type;
@@ -45,6 +54,36 @@ namespace ShopProjectWebServer.Api.Mappings
             Enum.TryParse(item.Status.ToString(), out TypeStatusUser type);
             userEntity.Status = type;
             return userEntity;
+        }
+        public static UserDto ToUserDto(this UserEntity item) 
+        {
+            var result = new UserDto()
+            {
+                ID = item.ID.ToString(),
+                UserRoleID = item.UserRole.ID,
+                Status = (int)item.Status,
+                AutomaticLogin = item.AutomaticLogin,
+                CreatedAt = item.CreatedAt,
+                Email = item.Email,
+                FullName = item.FullName,
+                Login = item.Login,
+                Password = item.Password,
+                TIN = item.TIN,
+            };
+            if (item.SignatureKey != null) {
+
+                result.SignatureKeyID = item.SignatureKey.ID;
+            }
+            return result;
+        }
+        public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserEntity> item) 
+        {
+            var result = new List<UserDto>();
+            foreach (var itemEntity in item) 
+            {
+                result.Add(ToUserDto(itemEntity));
+            }
+            return result;
         }
     }
 }

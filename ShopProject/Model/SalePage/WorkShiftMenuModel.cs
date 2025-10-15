@@ -4,7 +4,8 @@ using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.PrintingServise;
 using ShopProject.UIModel.SalePage;
-using ShopProjectSQLDataBase.Entities;
+using ShopProject.UIModel.UserPage;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace ShopProject.Model.SalePage
             _fiscalOperationController = new MainFiscalServerController();
         }
 
-        public bool OpenShift(UIWorkingShiftModel shiftEntity)
+        public bool OpenShift(WorkingShift shiftEntity)
         {
             try
             {
@@ -48,9 +49,9 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public void AddKey(ElectronicSignatureKey key) => _fiscalOperationController.AddKey(key);
+        public void AddKey(SignatureKey key) => _fiscalOperationController.AddKey(key);
 
-        public bool CloseShift(UIWorkingShiftModel shiftEntity)
+        public bool CloseShift(WorkingShift shiftEntity)
         {
             if (_fiscalOperationController.CloseShift(shiftEntity) == "OK")
             {
@@ -72,23 +73,23 @@ namespace ShopProject.Model.SalePage
             //}
             return false;
         }
-        private async Task<int> SaveDataBaseOpenShift(UIWorkingShiftModel shift)
+        private async Task<int> SaveDataBaseOpenShift(WorkingShift shift)
         {
             return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.AddWorkingShift(Session.Token, shift);
         }
-        private async Task<bool> SaveDataBaseCloseShift(UIWorkingShiftModel shift)
+        private async Task<bool> SaveDataBaseCloseShift(WorkingShift shift)
         {
             return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.UpdateWorkingShift(Session.Token, shift);
         }
 
-        private async Task<bool?> CreateMac(UIWorkingShiftModel workingShift )
+        private async Task<bool?> CreateMac(WorkingShift workingShift )
         {
 
             var mac = WriteReadXmlFile.GenerationMACForXML();
 
             if (mac != null)
             {
-                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new UIMediaAccessControlModel()
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new MediaAccessControl()
                 {
                     OperationsRecorder = Session.FocusDevices,
                     Content = mac,
@@ -99,7 +100,7 @@ namespace ShopProject.Model.SalePage
             return false;
         }  
 
-        public async Task<UIMediaAccessControlModel> GetMAC(Guid operationRecorderId)
+        public async Task<MediaAccessControl> GetMAC(Guid operationRecorderId)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace ShopProject.Model.SalePage
             catch (Exception ex)
             {
                 MessageBox.Show("Невдалося отримати MAC");
-                return new UIMediaAccessControlModel();
+                return new MediaAccessControl();
             }
         } 
     }

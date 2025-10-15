@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
@@ -64,59 +63,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return null;
             }
-        }
-
-        public PaginatorData<ProductUnitEntity> GetAllPageColumn(double page, double countColumn, TypeStatusUnit statusUnit)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductUnits.Load();
-
-                    if (context.ProductUnits != null && context.ProductUnits.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductUnitEntity> result = new PaginatorData<ProductUnitEntity>();
-
-                        if (statusUnit == TypeStatusUnit.Unknown)
-                        {
-                            result.Page = (int)page;
-                            result.Data = context.ProductUnits.OrderBy(i => i.ID)
-                                                              .Skip(countStart)
-                                                              .Take((int)countColumn).ToList();
-                            pages = context.ProductUnits.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var units = context.ProductUnits.Where(item => item.Status == statusUnit).ToList();
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-
-                            pages = units.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                }
-            }
-            return new PaginatorData<ProductUnitEntity>();
-        }
+        } 
 
         public ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit statusUnit)
         {
@@ -147,70 +94,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return new ProductUnitEntity();
             }
-        }
-
-        public PaginatorData<ProductUnitEntity> GetUnitByNamePageColumn(string name, double page, double countColumn, TypeStatusUnit statusUnit)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductUnits.Load();
-
-                    if (context.ProductUnits != null && context.ProductUnits.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductUnitEntity> result = new PaginatorData<ProductUnitEntity>();
-
-                        if (statusUnit == TypeStatusUnit.Unknown)
-                        {
-                            result.Page = (int)page;
-
-                            var units = context.ProductUnits.Where(i => i.NameUnit.Contains(name)).ToList();
-
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-                            pages = units.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var units = context.ProductUnits.Where(t => t.Status == statusUnit)
-                                                            .Where(i => i.NameUnit.Contains(name)).ToList();
-
-                            result.Data = units.OrderBy(i => i.ID)
-                                               .Skip(countStart)
-                                               .Take((int)countColumn).ToList();
-
-                            pages = units.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
-                }
-                return new PaginatorData<ProductUnitEntity>();
-            }
-        }
+        } 
 
         public void Update(ProductUnitEntity item)
         {
@@ -315,6 +199,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     } 
                     context.SaveChanges();
                 } 
+            }
+        }
+
+        public IEnumerable<ProductUnitEntity> GetByNameAndStatus(string name, TypeStatusUnit status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<ProductUnitEntity> query = context.ProductUnits.AsNoTracking();
+
+                if (status != TypeStatusUnit.Unknown)
+                {
+                    query = query.Where(o => o.Status == status);
+                }
+
+                if (!(name == string.Empty))
+                {
+                    query = query.Where(o => o.NameUnit.Contains(name));
+                }
+
+                var result = query.ToList();
+                return result;
             }
         }
     }

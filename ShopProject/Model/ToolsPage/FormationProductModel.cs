@@ -2,7 +2,8 @@
 using ShopProject.Helpers;
 using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -88,13 +89,13 @@ namespace ShopProject.Model.ToolsPage
             {
 
                 product.CreatedAt = DateTime.Now;
-                product.Status = ShopProjectSQLDataBase.Helper.TypeStatusProduct.InStock;
+                product.Status =  TypeStatusProduct.InStock;
 
 
                 bool response = false;
                 Task t = Task.Run(async () =>
                 {
-                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.Token, product);
+                    //response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.Token, product);
                 });
                 t.Wait();
 
@@ -107,7 +108,7 @@ namespace ShopProject.Model.ToolsPage
                         {
                             t = Task.Run(async () =>
                             {
-                                await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(ProductEntity.Count),-itemCount ,item);
+                               // await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(Session.Token, nameof(ProductEntity.Count),-itemCount ,item);
                             });
 
                         }
@@ -129,7 +130,7 @@ namespace ShopProject.Model.ToolsPage
         {
             Task t = Task.Run(async () =>
             {
-                _productUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
+                //_productUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
             });
             t.Wait();
             return _productUnitsList;
@@ -139,7 +140,7 @@ namespace ShopProject.Model.ToolsPage
         {
             Task t = Task.Run(async () =>
             {
-                _codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
+               // _codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
             });
             t.Wait();
 

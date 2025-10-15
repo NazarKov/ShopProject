@@ -7,15 +7,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using System.Windows;
-using MessageBox = System.Windows.MessageBox;
+using System.Windows; 
 using System.Threading.Tasks; 
 using ShopProject.View.AdminPage.UserPage;
-using ShopProject.ViewModel.TemplatePage;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.ViewModel.TemplatePage; 
 using ShopProject.Helpers.Template.Paginator;
-using System.Collections;
-using ShopProjectSQLDataBase.Entities;
+using System.Collections; 
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
+using ShopProject.UIModel.UserPage;
+using ShopProject.Helpers.Navigation;
+using ShopProject.UIModel.OperationRecorderPage;
 
 namespace ShopProject.ViewModel.AdminPage
 {
@@ -40,7 +42,7 @@ namespace ShopProject.ViewModel.AdminPage
         public UsersViewModel() 
         {
             _model = new UsersModel();
-            _users = new List<UserEntity>();
+            _users = new List<User>();
             _paginator = new TemplatePaginatorButtonViewModel(); 
             _statusUsers = new List<string>();
             _countShowList = new List<string>();
@@ -55,19 +57,16 @@ namespace ShopProject.ViewModel.AdminPage
             _updateItemDataGridView = new DelegateCommand(() => { SetFieldPage(); });
             _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
 
-            _objectListDialogWindow = new List<SoftwareDeviceSettlementOperationsHelper>();
-            _timer = new System.Threading.Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
-
-
+            _objectListDialogWindow = new List<OperationRecorderDialogWindow>();
+            _timer = new System.Threading.Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite); 
             
             Paginator.Callback = UpdateDataGridView;
 
-            SetFieldPage();
-            Mediator.Subscribe("ReloadUser", (object obg) => { SetFieldPage(); });
+            SetFieldPage(); 
         }
 
-        private List<UserEntity> _users;
-        public List<UserEntity> Users
+        private List<User> _users;
+        public List<User> Users
         {
             get { return _users; }
             set { _users = value; OnPropertyChanged(nameof(Users)); }
@@ -78,8 +77,8 @@ namespace ShopProject.ViewModel.AdminPage
             get { return _selectedItem; }
             set { _selectedItem = value; OnPropertyChanged(nameof(SelectedItem)); }
         }
-        private List<SoftwareDeviceSettlementOperationsHelper> _objectListDialogWindow;
-        public List<SoftwareDeviceSettlementOperationsHelper> ObjectListDialogWindow
+        private List<OperationRecorderDialogWindow> _objectListDialogWindow;
+        public List<OperationRecorderDialogWindow> ObjectListDialogWindow
         {
             get { return _objectListDialogWindow; }
             set { _objectListDialogWindow = value; OnPropertyChanged(nameof(ObjectListDialogWindow)); }
@@ -107,16 +106,16 @@ namespace ShopProject.ViewModel.AdminPage
         public ICommand UpdateUserCommand { get => new DelegateParameterCommand(UpdateUser, CanRegister); }
         private void UpdateUser(object parameter)
         {
-            var user = parameter as IList;
+            //var user = parameter as IList;
 
-            if (user != null) 
-            {
-                if (user[0] != null)
-                {
-                    Session.UserEntity = (UserEntity)user[0];
-                    new UpdateUserView().ShowDialog();
-                }
-            }
+            //if (user != null) 
+            //{
+            //    if (user[0] != null)
+            //    {
+            //        Session.UserEntity = (UserEntity)user[0];
+            //        new UpdateUserView().ShowDialog();
+            //    }
+            //}
         }
 
         public ICommand DeleteSelecteUserCommand => _deleteUserCommand;
@@ -142,24 +141,28 @@ namespace ShopProject.ViewModel.AdminPage
         public ICommand BindingObjectOwnerCommand => _bindingObjectOwnerCommandl;
         private void BindingObjectOwner()
         {
-            var items = _model.GetAllObject();
-            if (items != null)
-            {
 
-                ObjectListDialogWindow = items;
-                VisibilityDialogWindow = Visibility.Visible;
-            }
+            Task.Run(async () =>
+            {
+                var items = await _model.GetAllObject();
+                if (items != null)
+                {
+                    ObjectListDialogWindow = items;
+                    VisibilityDialogWindow = Visibility.Visible;
+                }
+            });
         }
         public ICommand SaveBindingObjectOwnerCommand => _saveBindingObjectOwnerCommand;
         private void SaveBindingObjectOwner()
         {
-            if (_model.SaveBinding(Users.ElementAt(SelectedItem), ObjectListDialogWindow))
-            {
-                MessageBox.Show("Првиязка успішна");
-                VisibilityDialogWindow = Visibility.Hidden;
-            }
-
-        } 
+            Task.Run(async () => { 
+                if (await _model.SaveBinding(Users.ElementAt(SelectedItem), ObjectListDialogWindow))
+                {
+                    MessageBox.Show("Првиязка успішна");
+                    VisibilityDialogWindow = Visibility.Hidden;
+                }
+            });
+        }
 
         private TemplatePaginatorButtonViewModel _paginator;
         public TemplatePaginatorButtonViewModel Paginator
@@ -252,7 +255,7 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            PaginatorData<UserEntity> result = new PaginatorData<UserEntity>();
+            PaginatorData<User> result = new PaginatorData<User>();
             Task t = Task.Run(async () => {
 
                 result = await _model.GetUsersPageColumn(page, countCoulmn, Enum.Parse<TypeStatusUser>(StatusUsers.ElementAt(SelectedStatusUser)));
@@ -260,10 +263,20 @@ namespace ShopProject.ViewModel.AdminPage
             t.ContinueWith(t => {
                 if (reloadbutton)
                 {
-                    Paginator.CountButton = result.Pages;
+                    if(result.Pages == 0)
+                    {
+                        Paginator.CountButton = 1;
+                    }
+                    else
+                    {
+                        Paginator.CountButton = result.Pages;
+                    }
                 }
                 Paginator.CountColumn = countCoulmn;
-                Users = result.Data;
+                if (result.Data != null)
+                {
+                    Users = result.Data.ToList();
+                }
                 _isReadyUpdateDataGriedView = true;
             });
         }
@@ -307,11 +320,14 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void SearchByNameAndByBarCode(int countColumn, int page)
         {
-            PaginatorData<UserEntity> result = new PaginatorData<UserEntity>();
+            PaginatorData<User> result = new PaginatorData<User>();
 
             Task t = Task.Run(async () =>
             {
-                result = await _model.SearchByName(_nameSearch, page, countColumn, Enum.Parse<TypeStatusUser>(StatusUsers.ElementAt(SelectedStatusUser)));
+                if(_nameSearch !=null && _nameSearch != string.Empty)
+                {
+                    result = await _model.SearchByName(_nameSearch, page, countColumn, Enum.Parse<TypeStatusUser>(StatusUsers.ElementAt(SelectedStatusUser)));
+                }
 
             });
             t.ContinueWith(t =>
@@ -321,7 +337,10 @@ namespace ShopProject.ViewModel.AdminPage
                     Paginator.CountButton = result.Pages;
                 }
                 Paginator.CountColumn = countColumn;
-                Users = result.Data;
+                if (result.Data != null)
+                {
+                    Users = result.Data.ToList();
+                }
             });
         }
         public ICommand UpdateSizeCommand => _updateSizeGridCommand;

@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows; 
-using ShopProjectSQLDataBase.Entities;
+using System.Windows;   
+using ShopProject.UIModel.UserPage;
+using ShopProject.Helpers;
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
@@ -36,7 +37,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             _password = string.Empty;
             _pathKey = string.Empty;
             _passwordKey = string.Empty;
-            _userRoles = new List<UserRoleEntity>();
+            _userRoles = new List<UserRole>();
             _backgroundButtonWihtKey = Brushes.LightGray;
             _backgroundButtonWithoutKey = Brushes.LightGray;
 
@@ -96,8 +97,8 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             set { _passwordKey = value; OnPropertyChanged(nameof(PasswordKey)); }
         }
 
-        private List<UserRoleEntity> _userRoles;
-        public List<UserRoleEntity> UserRoles
+        private List<UserRole> _userRoles;
+        public List<UserRole> UserRoles
         {
             get { return _userRoles; }
             set { _userRoles = value; OnPropertyChanged(nameof(UserRoles)); }
@@ -163,16 +164,10 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
 
         private void SetFielComboBoxRole()
         {
-            var item = new List<UserRoleEntity>();
-            Task t = Task.Run(async () => {
-                item = await _model.GetUserRoles();
-            });
-            t.ContinueWith(t => {
-                if (item.Count > 0)
-                {
-                    UserRoles = item;
-                }
-            });
+            if (Session.Roles != null)
+            {
+                UserRoles = Session.Roles.ToList();
+            }
         }
 
         public ICommand CreateUserCommand => _createUserCommand;
@@ -189,7 +184,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
                 }
                 else
                 {
-                    if(await _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
+                    if (await _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
                     {
                         MessageBox.Show("Корисувача створено");
                     }
@@ -229,8 +224,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             {
                 PathKey = openFileDialog.FileName;
                 _nameFile = openFileDialog.SafeFileName;
-            }
-
+            } 
         }
         public ICommand ClearWindowCommadn => _clearWindowCommand;
         private void ClearWindow()

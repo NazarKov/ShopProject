@@ -1,4 +1,5 @@
-﻿using ShopProjectDataBase.Entities; 
+﻿using ShopProjectDataBase.Entities;
+using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
 using ShopProjectWebServer.Api.DtoModels.OperationRecorderUser;
 
 namespace ShopProjectWebServer.Api.Mappings
@@ -7,7 +8,7 @@ namespace ShopProjectWebServer.Api.Mappings
     {
         public static OperationsRecorderEntity ToOperationRecorderEntity(this BindingUserToOperationRecorderDto item)
         {
-            return new OperationsRecorderEntity() { ID = item.ID };
+            return new OperationsRecorderEntity() { ID = Guid.Parse(item.ID) };
         }
 
         public static IEnumerable<OperationsRecorderEntity> ToOperationRecordersEntity(this IEnumerable<BindingUserToOperationRecorderDto> items)
@@ -19,6 +20,6 @@ namespace ShopProjectWebServer.Api.Mappings
                 result.Add(ToOperationRecorderEntity(item));
             }
             return result;
-        }
+        } 
     }
 }

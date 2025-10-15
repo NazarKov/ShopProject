@@ -2,8 +2,9 @@
 using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductCodeUKTZEDPage;
-using ShopProjectSQLDataBase.Entities;
-using ShopProjectSQLDataBase.Helper;
+using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         private readonly ICommand _updateProductCodeUKTZEDCommand;
         private readonly ICommand _exitWindowCommand;
 
-        private ProductCodeUKTZEDEntity _codeUKTZED;
+        private ProductCodeUKTZED _codeUKTZED;
 
         public UpdateProductCodeUKTZEDViewModel()
         {
@@ -32,7 +33,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
             _code = string.Empty;
             _statusCodeUKTZED = new List<string>();
             _statusCodeUKTZEDEnumType = new List<string>();
-            _codeUKTZED = new ProductCodeUKTZEDEntity();
+            _codeUKTZED = new ProductCodeUKTZED();
 
             _updateProductCodeUKTZEDCommand = new DelegateCommand(UpdateProductCodeUKTZED);
             _exitWindowCommand = new DelegateCommand(() => { });
@@ -106,7 +107,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         {
             Task t = Task.Run(async () =>
             {
-                await _model.UpdateItemDataBase(new  ProductCodeUKTZEDEntity()
+                await _model.UpdateItemDataBase(new ProductCodeUKTZED()
                 {
                     ID = _codeUKTZED.ID,
                     Code = Code,

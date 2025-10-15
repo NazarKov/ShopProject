@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
-using ShopProjectSQLDataBase.Entities;
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,18 +19,18 @@ namespace ShopProject.Model.ToolsPage
             try
             {
                 bool result = false;
-                Task t =Task .Run(async () => {
+                //Task t =Task .Run(async () => {
 
-                    result = await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(
-                    Session.Token,
-                    nameof(ProductEntity.Count),
-                    count,
-                    new ProductEntity() { Code = barCode }
-                    );
+                //    result = await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateParameterProduct(
+                //    Session.Token,
+                //    nameof(ProductEntity.Count),
+                //    count,
+                //    new ProductEntity() { Code = barCode }
+                //    );
                 
-                });
+                //});
 
-                t.Wait();
+                //t.Wait();
                 return result;
                 
                 throw new Exception("Товар не знайдено");

@@ -2,8 +2,7 @@
 using ShopProject.Helpers.DataGridViewHelperModel;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data; 
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;

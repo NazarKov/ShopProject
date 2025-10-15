@@ -32,7 +32,7 @@ namespace ShopProject.ViewModel.TemplatePage
             _paginatorButtons = new List<PaginatorButton>(); 
             _paginatorButtonLast = new PaginatorButton();
             _selectLastButton = new PaginatorButton();
-            selectdedBrush = new SolidColorBrush(Colors.BlueViolet);
+            selectdedBrush = new SolidColorBrush(Colors.CadetBlue);
             clearBrush = new SolidColorBrush(Colors.White); 
 
             _paginatorButtonFirst = new PaginatorButton();
