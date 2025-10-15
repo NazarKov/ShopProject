@@ -45,6 +45,32 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
+        public UserEntity Authorization(string login, string password)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Users.Load();
+
+                    var user = context.Users.Where(item => item.Login == login).First();
+
+                    if (user != null) 
+                    {
+                        if(user.Password == password)
+                        {
+                            return user;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Користувача не занайдено");
+                    }
+                }
+                return null;
+            }
+        }
+
         public void Delete(UserEntity item)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
@@ -91,63 +117,44 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public PaginatorData<UserEntity> GetAllPageColumn(double page, double countColumn, TypeStatusUser statusUser)
+        public UserEntity GetById(Guid id)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
                 {
-                    context.UserRoles.Load();
-                    context.UserTokens.Load(); 
-                    context.ElectronicSignatureKeys.Load();
                     context.Users.Load();
+                    context.ElectronicSignatureKeys.Load();
+                    context.UserRoles.Load(); 
 
-                    if (context.Users!=null && context.Users.Count() != 0)
+                    if (context.Users != null && context.Users.Count() > 0)
                     {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<UserEntity> result = new PaginatorData<UserEntity>();
-
-                        if (statusUser == TypeStatusUser.Unknown)
-                        {
-                            result.Page = (int)page;
-                            result.Data = context.Users.OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
-
-                            pages = context.Users.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var users = context.Users.Where(item => item.Status == statusUser).ToList();
-                            result.Data = users.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = users.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                    else
-                    {
-                        return new PaginatorData<UserEntity>();
+                        var user = context.Users.FirstOrDefault(t => t.ID == id);
+                        return user;
                     }
                 }
-                return new PaginatorData<UserEntity>();
+                return new UserEntity();
+            }
+        }
+
+        public IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<UserEntity> query = context.Users.AsNoTracking();
+
+                if (status != TypeStatusUser.Unknown)
+                {
+                    query = query.Where(o => o.Status == status);
+                }
+
+                if (!(name == string.Empty))
+                {
+                    query = query.Where(o => o.FullName.Contains(name));
+                }
+
+                var result = query.ToList();
+                return result;
             }
         }
 
@@ -177,72 +184,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return new UserEntity();
             }
-        }
-
-        public PaginatorData<UserEntity> GetUsersByNamePageColumn(string name, double page, double countColumn, TypeStatusUser statusUser)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.UserRoles.Load();
-                    context.UserTokens.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    context.Users.Load();
-
-                    if (context.Users != null && context.Users.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<UserEntity> result = new PaginatorData<UserEntity>();
-
-                        if (statusUser == TypeStatusUser.Unknown)
-                        {
-                            result.Page = (int)page;
-                            var users = context.Users.Where(i => i.FullName.Contains(name)).ToList();
-                            result.Data = users.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = users.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var users = context.Users.Where(t => t.Status == statusUser)
-                                                           .Where(i => i.FullName.Contains(name)).ToList();
-                            result.Data = users.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = users.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
-                }
-                return new PaginatorData<UserEntity>();
-            }
-        }
-
+        } 
         public void Update(UserEntity item)
         {
             using (ContextDataBase context = new ContextDataBase(_option))

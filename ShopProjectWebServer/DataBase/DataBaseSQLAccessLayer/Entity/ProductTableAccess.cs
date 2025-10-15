@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Helpers.ProductContoller;
+using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Linq;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class ProductTableAccess : IProductTableAccess 
+    public class ProductTableAccess : IProductTableAccess
     {
         private DbContextOptions<ContextDataBase> _option;
         public ProductTableAccess(DbContextOptions<ContextDataBase> option)
@@ -212,66 +211,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return null;
             }
-        }
-
-        public PaginatorData<ProductEntity> GetAllPageColumn(double page , double countColumn,TypeStatusProduct productstatus)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductCodeUKTZED.Load();
-                    context.ProductUnits.Load();
-                    context.Products.Load();
-
-                    if (context.Products.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>();
-
-                        if (productstatus == TypeStatusProduct.Unknown)
-                        {
-                            result.Page = (int)page; 
-                            result.Data = context.Products.OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
-                            
-                            pages = context.Products.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var products = context.Products.Where(item => item.Status == productstatus).ToList();
-                            result.Data = products.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = products.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                    else
-                    {
-                        return new PaginatorData<ProductEntity>();
-                    }
-                }
-                return new PaginatorData<ProductEntity>();
-            }
-        }
+        } 
 
         public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
         {
@@ -306,96 +246,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public PaginatorData<ProductEntity> GetProductByNamePageColumn(string name , double page, double countColumn, TypeStatusProduct statusProduct)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductCodeUKTZED.Load();
-                    context.ProductUnits.Load();
-                    context.Products.Load();
-
-                    if (context.Products != null && context.Products.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ProductEntity> result = new PaginatorData<ProductEntity>(); 
-
-                        if (statusProduct == TypeStatusProduct.Unknown)
-                        {
-                            result.Page = (int)page;
-                            var products = context.Products.Where(i => i.NameProduct.Contains(name)).ToList();
-                            result.Data = products.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = products.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var products = context.Products.Where(t => t.Status == statusProduct)
-                                                           .Where(i => i.NameProduct.Contains(name)).ToList();
-                            result.Data = products.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = products.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
- 
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
-                }
-                return new PaginatorData<ProductEntity>();
-            }
-        }
-
-        public ProductInfo GetProductInfo()
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                { 
-                    context.Products.Load();
-
-                    if (context.Products != null && context.Products.Count() != 0)
-                    {
-                        return new ProductInfo()
-                        {
-                            CountProductAllStatus = context.Products.Count(),
-                            CountProductInStockStatus = context.Products.Where(i => i.Status == TypeStatusProduct.InStock).Count(),
-                            CountProductOutStockStatus = context.Products.Where(i => i.Status == TypeStatusProduct.OutStock).Count(),
-                            CountProductArchivedStauts = context.Products.Where(i => i.Status == TypeStatusProduct.Archived).Count(),
-                        };
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
-                }
-                return new ProductInfo();
-            }
-        }
+    
 
         public ProductEntity GetByBarCode(string barCode)
         {
@@ -418,6 +269,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
                 }
                 return new ProductEntity();
+            }
+        }
+
+        public IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<ProductEntity> query = context.Products.AsNoTracking();
+
+                if (status != TypeStatusProduct.Unknown)
+                {
+                    query = query.Where(o => o.Status == status);
+                }
+
+                if (!(name == string.Empty))
+                {
+                    query = query.Where(o => o.NameProduct.Contains(name));
+                }
+
+                var result = query.ToList();
+                return result;
             }
         }
     }

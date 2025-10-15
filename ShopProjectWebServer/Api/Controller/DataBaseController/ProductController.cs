@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Entities;
+using Microsoft.AspNetCore.Mvc; 
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Product;
-using ShopProjectWebServer.Api.Helpers;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using System.Reflection.Metadata;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using ShopProjectWebServer.Api.Interface.Services; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -16,90 +11,37 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private IProductServise _servise;
+        public ProductController (IProductServise servise)
+        {
+            _servise = servise;
+        }
+
         [HttpGet("GetInfoProducts")]
         public IActionResult GetInfoProducts(string token)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var informations = DataBaseMainController.DataBaseAccess.ProductTable.GetProductInfo();
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(informations),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetInfoProducts(token);
+                return BadRequest(ApiResponseDto<ProductInfoDto>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
-        }
-
-        //[HttpGet("GetProductsByBarCode")]
-        //public IActionResult GetProductsByBarCode(string token, string barCode, TypeStatusProduct status)
-        //{
-        //    try
-        //    {
-        //        if (AuthorizationApi.LoginToken(token))
-        //        {
-        //            var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barCode, status);
-
-        //            return Ok(new Message()
-        //            {
-        //                MessageBody = JsonSerializer.Serialize(products),
-        //                Type = TypeMessage.Message
-        //            }.ToString());
-        //        }
-        //        throw new Exception("Невдалося отримати товари");
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new Message()
-        //        {
-        //            MessageBody = ex.ToString(),
-        //            Type = TypeMessage.Error,
-
-        //        }.ToString());
-        //    }
-        //}
+        } 
 
         [HttpGet("GetProductsByBarCode")]
         public IActionResult GetProductsByBarCode(string token, string barCode)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barCode);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetProductsByBarCode(token,barCode);
+                return BadRequest(ApiResponseDto<ProductDto>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -108,27 +50,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetProductByNamePageColumn(name,page,countColumn ,status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetProductByNamePageColumn(token, name,page,countColumn,status);
+                return BadRequest(ApiResponseDto<PaginatorDto<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -137,27 +64,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetAllPageColumn(page,countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetProductsPageColumn(token, page, countColumn, status);
+                return BadRequest(ApiResponseDto<PaginatorDto<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -166,27 +78,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var products = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(products),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                } 
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetProducts(token);
+                return BadRequest(ApiResponseDto<IEnumerable<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -195,39 +92,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-
-                    var productItem = DataBaseMainController.DataBaseAccess.ProductTable.GetAll();
-                        if (productItem.Count() > 0)
-                        {
-                            var item = productItem.FirstOrDefault(i => i.Code == product.Code);
-
-                            if (item != null)
-                            {
-                                throw new Exception("Товар існує");
-                            }
-                        }
-                        DataBaseMainController.DataBaseAccess.ProductTable.Add(product.ToProductEntity());
-
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.Add(token,product);
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -236,29 +106,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-
-                    DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product.ToProductEnity());
-
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.AddProductRange(token, product);
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -267,28 +120,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-
-                    DataBaseMainController.DataBaseAccess.ProductTable.Update(product.ToProductEntity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.UpdateProduct(token, product);
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -297,27 +134,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateRange(product.ToProductEnity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.UpdateProductRange(token, product);
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -326,27 +148,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-                    DataBaseMainController.DataBaseAccess.ProductTable.UpdateParameter(product.ToProductEntity(), parameter, value);
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
+                var result = _servise.UpdateParameterProduct(token, parameter,value,product);
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
     }

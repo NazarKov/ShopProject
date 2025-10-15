@@ -57,7 +57,7 @@ namespace ShopProjectWebServer.Api.Mappings
             }
             return products;
         }
-        public static IEnumerable<ProductEntity> ToProductEnity(this IEnumerable<UpdateProductDto> items)
+        public static IEnumerable<ProductEntity> ToProductEntity(this IEnumerable<UpdateProductDto> items)
         {
             var products = new List<ProductEntity>();
             foreach (var item in items)
@@ -65,6 +65,35 @@ namespace ShopProjectWebServer.Api.Mappings
                 products.Add(ToProductEntity(item));
             }
             return products;
+        }
+
+        public static ProductDto ToProductDto(this ProductEntity product)
+        {
+            return new ProductDto()
+            {
+                Status = (int)product.Status,
+                OutStockAt = product.OutStockAt,
+                ArhivedAt = product.ArhivedAt,
+                Articule = product.Articule,
+                Code = product.Code,
+                CodeUKTZED_ID = product.CodeUKTZED.ID,
+                Count = product.Count,
+                CreatedAt = product.CreatedAt,
+                Discount_ID = product.Discount.ID,
+                NameProduct = product.NameProduct,
+                Price = product.Price,
+                Unit_ID =product.Unit.ID
+            };
+        }
+
+        public static IEnumerable<ProductDto> ToProductDto(this IEnumerable<ProductEntity> items)
+        {
+            var result  = new List<ProductDto>();   
+            foreach(var item in items)
+            {
+                result.Add(ToProductDto(item));
+            }
+            return result;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ShopProjectWebServer.DataBase;
 
-namespace ShopProjectWebServer.Api.Helpers
+namespace ShopProjectWebServer.Api.Services
 {
     public class AuthorizationApi
     {

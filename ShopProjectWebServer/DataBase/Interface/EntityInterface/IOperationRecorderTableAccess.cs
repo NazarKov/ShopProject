@@ -14,8 +14,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         IEnumerable<OperationsRecorderEntity> GetAll();
         IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId);
         IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId);
-
-        PaginatorData<OperationsRecorderEntity> GetAllPageColumn(double page, double countColumn, TypeStatusOperationRecorder status);
-        PaginatorData<OperationsRecorderEntity> GetOperationRecorderByNamePageColumn(string name, double page, double countColumn, TypeStatusOperationRecorder status);
+        IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status); 
     }
 } 

@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Operation;
-using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.Api.Services;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,32 +15,24 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class OperationController : ControllerBase
     {
+        private IOperationServise _servise;
+
+        public OperationController(IOperationServise servise)
+        {
+            _servise = servise;
+        } 
         [HttpPost("AddOperation")]
         public  IActionResult AddOperationRecorder([FromQuery] string token, CreateOperationDto operation)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.OperationTable.Add(operation.ToOperationEntiti());
+                _servise.Add(token, operation);
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкт збережено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -46,34 +41,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
+                var result = _servise.GetAll(token);
 
-                    var options = new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
- 
-                    var operations = DataBaseMainController.DataBaseAccess.OperationTable.GetAll();
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(operations,options),
-                        Type = TypeMessage.Message
-                    }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                return Ok(ApiResponseDto<IEnumerable<OperationDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -82,34 +56,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
+                var result = _servise.GetLast(token,shiftId);
 
-                    var options = new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
-
-                    var operation = DataBaseMainController.DataBaseAccess.OperationTable.GetLastItem(shiftId);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(operation, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
+                return Ok(ApiResponseDto<OperationDto>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
     }

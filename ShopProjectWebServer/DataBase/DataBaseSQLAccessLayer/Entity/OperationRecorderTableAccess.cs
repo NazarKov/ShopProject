@@ -99,127 +99,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return null;
             }
-        }
-
-        public PaginatorData<OperationsRecorderEntity> GetAllPageColumn(double page, double countColumn, TypeStatusOperationRecorder status)
+        } 
+        public IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             {
-                if (context != null)
-                { 
-                    context.OperationsRecorders.Load();
+                IQueryable<OperationsRecorderEntity> query = context.OperationsRecorders.AsNoTracking();
 
-                    if (context.OperationsRecorders != null && context.OperationsRecorders.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
-
-                        if (status == TypeStatusOperationRecorder.Unknown)
-                        {
-                            result.Page = (int)page;
-                            result.Data = context.OperationsRecorders.OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
-
-                            pages = context.OperationsRecorders.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var operationsRecorders = context.OperationsRecorders.Where(item => item.TypeStatus == status).ToList();
-                            result.Data = operationsRecorders.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = operationsRecorders.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                    else
-                    {
-                        return new PaginatorData<OperationsRecorderEntity>();
-                    }
-                }
-                return new PaginatorData<OperationsRecorderEntity>();
-            }
-        }
-
-        public PaginatorData<OperationsRecorderEntity> GetOperationRecorderByNamePageColumn(string name, double page, double countColumn, TypeStatusOperationRecorder status)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
+                if (status != TypeStatusOperationRecorder.Unknown)
                 {
-                    context.OperationsRecorders.Load(); 
-
-                    if (context.OperationsRecorders != null && context.OperationsRecorders.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<OperationsRecorderEntity> result = new PaginatorData<OperationsRecorderEntity>();
-
-                        if (status == TypeStatusOperationRecorder.Unknown)
-                        {
-                            result.Page = (int)page;
-                            var operationsRecorder = context.OperationsRecorders.Where(i => i.Name.Contains(name)).ToList();
-                            result.Data = operationsRecorder.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = operationsRecorder.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var operationsRecorder = context.OperationsRecorders.Where(t => t.TypeStatus == status)
-                                                           .Where(i => i.Name.Contains(name)).ToList();
-                            result.Data = operationsRecorder.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = operationsRecorder.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
+                    query = query.Where(o => o.TypeStatus == status);
                 }
-                return new PaginatorData<OperationsRecorderEntity>();
-            }
-        }
-         
 
+                if (!(name == string.Empty))
+                {
+                    query = query.Where(o => o.Name.Contains(name));
+                }
+
+                var result = query.ToList();
+                return result;
+            }
+        } 
         public IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId)
         {
             using (ContextDataBase context = new ContextDataBase(_option))

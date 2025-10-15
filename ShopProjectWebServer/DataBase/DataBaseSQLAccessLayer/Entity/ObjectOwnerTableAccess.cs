@@ -82,126 +82,28 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return null;
             }
-        }
-
-        public PaginatorData<ObjectOwnerEntity> GetAllPageColumn(double page, double countColumn, TypeStatusObjectOwner status)
+        } 
+        public IEnumerable<ObjectOwnerEntity> GetByNameAndStatus(string name, TypeStatusObjectOwner status)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             {
-                if (context != null)
+                IQueryable<ObjectOwnerEntity> query = context.ObjectOwners.AsNoTracking();
+
+                if (status != TypeStatusObjectOwner.Unknown)
                 {
-                    context.ObjectOwners.Load();
-
-                    if (context.ObjectOwners != null && context.ObjectOwners.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ObjectOwnerEntity> result = new PaginatorData<ObjectOwnerEntity>();
-
-                        if (status == TypeStatusObjectOwner.Unknown)
-                        {
-                            result.Page = (int)page;
-                            result.Data = context.ObjectOwners.OrderBy(i => i.ID)
-                                                          .Skip(countStart)
-                                                          .Take((int)countColumn).ToList();
-
-                            pages = context.ObjectOwners.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var objectOwners = context.ObjectOwners.Where(item => item.TypeStatus == status).ToList();
-                            result.Data = objectOwners.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = objectOwners.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-                    }
-                    else
-                    {
-                        return new PaginatorData<ObjectOwnerEntity>();
-                    }
+                    query = query.Where(o => o.TypeStatus == status);
                 }
-                return new PaginatorData<ObjectOwnerEntity>();
-            }
-        }
 
-        public PaginatorData<ObjectOwnerEntity> GetObjectOwnerByNamePageColumn(string name, double page, double countColumn, TypeStatusObjectOwner status)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
+                if (!(name == string.Empty))
                 {
-                    context.ObjectOwners.Load();
-
-                    if (context.ObjectOwners != null && context.ObjectOwners.Count() != 0)
-                    {
-                        double pages;
-
-                        int countEnd = (int)(page * countColumn);
-                        int countStart = (int)(countEnd - countColumn);
-
-                        PaginatorData<ObjectOwnerEntity> result = new PaginatorData<ObjectOwnerEntity>();
-
-                        if (status == TypeStatusObjectOwner.Unknown)
-                        {
-                            result.Page = (int)page;
-                            var objectOwnerEntity = context.ObjectOwners.Where(i => i.NameObject.Contains(name)).ToList();
-                            result.Data = objectOwnerEntity.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = objectOwnerEntity.Count() / countColumn;
-                        }
-                        else
-                        {
-                            result.Page = (int)page;
-                            var objectOwnerEntity = context.ObjectOwners.Where(t => t.TypeStatus == status)
-                                                           .Where(i => i.NameObject.Contains(name)).ToList();
-                            result.Data = objectOwnerEntity.OrderBy(i => i.ID)
-                                                  .Skip(countStart)
-                                                  .Take((int)countColumn).ToList();
-
-                            pages = objectOwnerEntity.Count() / countColumn;
-                        }
-
-                        int pagesCount = 0;
-
-                        if (!(pages % 2 == 0))
-                        {
-                            pagesCount = (int)pages;
-                            pagesCount++;
-                        }
-                        result.Pages = pagesCount;
-
-                        return result;
-
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
+                    query = query.Where(o => o.NameObject.Contains(name));
                 }
-                return new PaginatorData<ObjectOwnerEntity>();
-            }
-        }
 
+                var result = query.ToList();
+                return result; 
+            }
+        } 
+      
         public void Update(ObjectOwnerEntity item)
         {
             throw new NotImplementedException();

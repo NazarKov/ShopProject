@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Common;
+using ShopProjectWebServer.Api.DtoModels.Operation;
+using ShopProjectWebServer.Api.DtoModels.UserRole;
+using ShopProjectWebServer.Api.Interface.Services;
+using ShopProjectWebServer.Api.Services;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,33 +14,26 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class UserRoleController : ControllerBase
     {
+        private IUserRoleServise _servise;
+
+        public UserRoleController(IUserRoleServise servise)
+        {
+            _servise = servise;
+        }
     
         [HttpGet("GetRoles")]
         public async Task<IActionResult> GetRoles(string token)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-                    var roles = DataBaseMainController.DataBaseAccess.UserRoleTable.GetAll();
+                var result = _servise.GetAll(token);
 
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(roles),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
+                return Ok(ApiResponseDto<IEnumerable<UserRoleDto>>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
     }

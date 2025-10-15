@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.ObjectOwner;
-using ShopProjectWebServer.Api.Helpers;
+using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.Api.Services;
 using ShopProjectWebServer.DataBase;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,32 +16,23 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class ObjectOwnerController : ControllerBase
     {
+        private readonly IObjectOwnerServise _servise;
+        public ObjectOwnerController(IObjectOwnerServise objectOwnerServise)
+        {
+            _servise = objectOwnerServise;
+        }
+
         [HttpPost("DeleteObjectsOwner")]
-        public async Task<IActionResult> DeleteObjectsOwner([FromQuery] string token, DeleteObjectOwnerDto item)
+        public async Task<IActionResult> DeleteObjectsOwner([FromQuery] string token, string id)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Delete(item.ToObjectOwnerEntity());
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.Delete(token, id);
+                return Ok(ApiResponseDto<bool>.Ok(result, "Обєкт Власності видалено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -48,33 +41,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.ObjectOwnerTable.GetObjectOwnerByNamePageColumn(name, page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetPageColumnByName(token, name, page, countColumn, status);
+                return Ok(ApiResponseDto<PaginatorDto<ObjectOwnerListDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -82,33 +54,14 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         public IActionResult GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
         {
             try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.ObjectOwnerTable.GetAllPageColumn(page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
+            { 
+                var result = _servise.GetPageColumn(token, page, countColumn, status);
+                return Ok(ApiResponseDto<PaginatorDto<ObjectOwnerListDto>>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -117,28 +70,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         public async Task<IActionResult> GetObjectsOwners(string token)
         {
             try
-            {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var objectsOwners = DataBaseMainController.DataBaseAccess.ObjectOwnerTable.GetAll();
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(objectsOwners),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                } 
-                throw new Exception("Невірний токен авторизації");
-
+            { 
+                var result = _servise.GetAll(token); 
+                return Ok(ApiResponseDto<List<ObjectOwnerListDto>>.Ok(result.ToList())); 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -147,27 +85,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Add(objectOwner.ToObjectOwnerEntity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                _servise.Add(token, objectOwner);
+                return Ok(ApiResponseDto<bool>.Ok(true));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -176,27 +99,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.ObjectOwnerTable.AddRange(objectOwner.ToObjectOwnerEntity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                _servise.AddRange(token, objectOwner);
+                return Ok(ApiResponseDto<bool>.Ok(true)); 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 

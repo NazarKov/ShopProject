@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
-using ShopProjectWebServer.Api.Helpers;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using System.Text.Json;
+using ShopProjectWebServer.Api.Interface.Services; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -11,32 +9,24 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class MediaAccessControlController : ControllerBase
     {
+        private readonly IMediaAccessContolServise _servise;
+        public MediaAccessControlController(IMediaAccessContolServise mediaAccessContolServise)
+        {
+            _servise = mediaAccessContolServise;
+        }
+
+
         [HttpPost("AddMAC")]
         public async Task<IActionResult> AddMAC(string token, CreateMediaAccessControlDto mediaAccessControl)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.MediaAccessControlTable.Add(mediaAccessControl.ToMediaAccessEntity());
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.Add(token, mediaAccessControl); 
+                return Ok(ApiResponseDto<bool>.Ok(result ,"Mac створено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message)); 
             }
         }
 
@@ -45,27 +35,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var mac = DataBaseMainController.DataBaseAccess.MediaAccessControlTable.GetLastMAC(operationRecorderId).ToMediaAccessDto();
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(mac),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
+                var result = _servise.GetLastMediaAccessControl(token, operationRecorderId);
+                return Ok(ApiResponseDto<MediaAccessControlDto>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
     }

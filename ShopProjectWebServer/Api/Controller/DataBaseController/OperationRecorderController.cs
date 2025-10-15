@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Entities;
+using Microsoft.AspNetCore.Mvc; 
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
-using ShopProjectWebServer.Api.Helpers;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Api.Interface.Services; 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,38 +13,25 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class OperationRecorderController : ControllerBase
     {
+
+        private IOperationRecorderServise _servise;
+        
+        public OperationRecorderController(IOperationRecorderServise servise)
+        {
+            _servise = servise;
+        }
+
         [HttpGet(nameof(GetOperationRecordersByNumberAndUser))]
         public IActionResult GetOperationRecordersByNumberAndUser(string token, string number, Guid userId)
         {
             try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.SearchByNumberAndUser(number, userId);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+            { 
+               var result = _servise.GetOperationRecordersByNumberAndUser(token, number, userId);
+               return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -55,62 +40,27 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.SearchByNameAndUser(name, userId);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetOperationRecordersByNameAndUser(token, name, userId);
+                return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
         [HttpPost("DeleteOperationRecorder")]
-        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, DeleteOperaionRecorderDto operationsRecorder)
+        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, string id)
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Delete(operationsRecorder.ToOperationRecorderEntity());
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(true),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невірний токен авторизації");
+                var result = _servise.Delete(token, id);
+                return Ok(ApiResponseDto<bool>.Ok(result, "Обєкт Власності видалено"));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -119,33 +69,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetOperationRecorderByNamePageColumn(name, page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetOperationRecordersByNamePageColumn(token, name, page,countColumn , status);
+                return Ok(ApiResponseDto<PaginatorDto<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -154,32 +83,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve,
-                    WriteIndented = true
-                };
-                if (AuthorizationApi.LoginToken(token))
-                {
-                    var items = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetAllPageColumn(page, countColumn, status);
-
-                    return Ok(new Message()
-                    {
-                        MessageBody = JsonSerializer.Serialize(items, options),
-                        Type = TypeMessage.Message
-                    }.ToString());
-                }
-                throw new Exception("Невдалося отримати товари");
-
+                var result = _servise.GetOperationRecordersPageColumn(token, page, countColumn, status);
+                return Ok(ApiResponseDto<PaginatorDto<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -188,34 +97,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
-
-                    var operationRecorders = DataBaseMainController.DataBaseAccess.OperationRecorderTable.GetAll();
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(operationRecorders,options),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
+                var result = _servise.GetOperationRecorders(token);
+                return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -224,27 +112,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.Add(operationsRecorder.ToOperationRecorderEntity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.Add(token , operationsRecorder);
+                return Ok(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
 
@@ -253,28 +126,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                { 
-
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.AddRange(operationRecorders.ToOperationRecordersEntity());
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.AddRange(token, operationRecorders);
+                return Ok(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
         [HttpPost("AddBindingOperationRecorder")]
@@ -282,34 +139,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                if (AuthorizationApi.LoginToken(token))
-                {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.Preserve,
-                        WriteIndented = true
-                    };
-
-                    DataBaseMainController.DataBaseAccess.OperationRecorderTable.AddBinding(Guid.Parse(idoperationrecoreder),Guid.Parse(idobjectowner));
-
-                        return Ok(new Message()
-                        {
-                            MessageBody = JsonSerializer.Serialize(true),
-                            Type = TypeMessage.Message
-                        }.ToString()); 
-                }
-                throw new Exception("Невірний токен авторизації");
-
+                var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner);
+                return Ok(ApiResponseDto<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(new Message()
-                {
-                    MessageBody = ex.ToString(),
-                    Type = TypeMessage.Error,
-
-                }.ToString());
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
             }
         }
     }

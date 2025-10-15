@@ -12,6 +12,6 @@ namespace ShopProjectWebServer.Api.DtoModels.ProductCodeUKTZED
         /// <summary>
         /// вибрані коди користувачем
         /// </summary>
-        public TypeStatusCodeUKTZEDDto Status { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -46,5 +46,30 @@ namespace ShopProjectWebServer.Api.Mappings
             userEntity.Status = type;
             return userEntity;
         }
+        public static UserDto ToUserDto(this UserEntity item) 
+        {
+            return new UserDto()
+            {
+                UserRole_ID = item.UserRole.ID,
+                SignatureKey_ID = item.SignatureKey.ID,
+                Status = (int)item.Status,
+                AutomaticLogin = item.AutomaticLogin,
+                CreatedAt = item.CreatedAt,
+                Email = item.Email,
+                FullName = item.FullName,
+                Login = item.Login,
+                Password = item.Password,
+                TIN = item.TIN,
+            };
+        }
+        public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserEntity> item) 
+        {
+            var result = new List<UserDto>();
+            foreach (var itemEntity in item) 
+            {
+                result.Add(ToUserDto(itemEntity));
+            }
+            return result;
+        }
     }
 }

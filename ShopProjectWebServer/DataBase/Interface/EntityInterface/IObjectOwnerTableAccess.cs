@@ -11,8 +11,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(ObjectOwnerEntity item);
         void Delete(ObjectOwnerEntity item);
         IEnumerable<ObjectOwnerEntity> GetAll();
-
-        PaginatorData<ObjectOwnerEntity> GetAllPageColumn(double page, double countColumn, TypeStatusObjectOwner status);
-        PaginatorData<ObjectOwnerEntity> GetObjectOwnerByNamePageColumn(string name, double page, double countColumn, TypeStatusObjectOwner status);
+        IEnumerable<ObjectOwnerEntity> GetByNameAndStatus(string name, TypeStatusObjectOwner status);  
     }
 }
