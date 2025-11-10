@@ -23,11 +23,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetInfoProducts(token);
+<<<<<<< HEAD
                 return Ok(ApiResponse<ProductInfoDto>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<ProductInfoDto>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         } 
 
@@ -37,11 +45,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetProductsByBarCode(token,barCode);
+<<<<<<< HEAD
                 return Ok(ApiResponse<ProductDto>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<ProductDto>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -51,11 +67,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetProductByNamePageColumn(token, name,page,countColumn,status);
+<<<<<<< HEAD
                 return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<PaginatorDto<ProductDto>>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -65,11 +89,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetProductsPageColumn(token, page, countColumn, status);
+<<<<<<< HEAD
                 return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<PaginatorDto<ProductDto>>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -79,11 +111,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetProducts(token);
+<<<<<<< HEAD
                 return Ok(ApiResponse<IEnumerable<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<IEnumerable<ProductDto>>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -93,11 +133,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.Add(token,product);
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -107,11 +155,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.AddProductRange(token, product);
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -121,11 +177,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.UpdateProduct(token, product);
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -135,11 +199,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.UpdateProductRange(token, product);
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -149,12 +221,20 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.UpdateParameterProduct(token, parameter,value,product);
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(result));
+=======
+                return BadRequest(ApiResponseDto<bool>.Ok(result));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
 
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
     }

@@ -57,10 +57,17 @@ namespace ShopProjectWebServer.Api.Mappings
         }
         public static UserDto ToUserDto(this UserEntity item) 
         {
+<<<<<<< HEAD
             var result = new UserDto()
             {
                 ID = item.ID.ToString(),
                 UserRoleID = item.UserRole.ID,
+=======
+            return new UserDto()
+            {
+                UserRole_ID = item.UserRole.ID,
+                SignatureKey_ID = item.SignatureKey.ID,
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
                 Status = (int)item.Status,
                 AutomaticLogin = item.AutomaticLogin,
                 CreatedAt = item.CreatedAt,
@@ -70,11 +77,14 @@ namespace ShopProjectWebServer.Api.Mappings
                 Password = item.Password,
                 TIN = item.TIN,
             };
+<<<<<<< HEAD
             if (item.SignatureKey != null) {
 
                 result.SignatureKeyID = item.SignatureKey.ID;
             }
             return result;
+=======
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
         }
         public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserEntity> item) 
         {

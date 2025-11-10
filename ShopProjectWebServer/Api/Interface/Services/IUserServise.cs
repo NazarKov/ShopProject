@@ -13,7 +13,11 @@ namespace ShopProjectWebServer.Api.Interface.Services
         public bool DeleteUser(string token, string id);
         public bool UpdateUser(string token, UpdateUserDto user);
         public bool AddUser(string token, CreateUserDto user); 
+<<<<<<< HEAD
         public AuthorizationUserDto Authorization(string login, string password, string devise); 
+=======
+        public TokenDto Authorization(string login, string password, string devise); 
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
         public IEnumerable<UserDto> GetUsers(string token);
         public UserDto GetUserById(string token, string id);
         public UserDto GetUser(string token);

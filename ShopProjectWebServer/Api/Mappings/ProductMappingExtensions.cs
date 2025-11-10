@@ -68,13 +68,19 @@ namespace ShopProjectWebServer.Api.Mappings
 
         public static ProductDto ToProductDto(this ProductEntity product)
         {
+<<<<<<< HEAD
             var item=  new ProductDto()
             {
                 ID = product.ID.ToString(),
+=======
+            return new ProductDto()
+            {
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
                 Status = (int)product.Status,
                 OutStockAt = product.OutStockAt,
                 ArhivedAt = product.ArhivedAt,
                 Articule = product.Articule,
+<<<<<<< HEAD
                 Code = product.Code, 
                 Count = product.Count,
                 CreatedAt = product.CreatedAt, 
@@ -94,6 +100,17 @@ namespace ShopProjectWebServer.Api.Mappings
                 item.Unit_ID = product.Unit.ID;
             }
             return item;
+=======
+                Code = product.Code,
+                CodeUKTZED_ID = product.CodeUKTZED.ID,
+                Count = product.Count,
+                CreatedAt = product.CreatedAt,
+                Discount_ID = product.Discount.ID,
+                NameProduct = product.NameProduct,
+                Price = product.Price,
+                Unit_ID =product.Unit.ID
+            };
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
         }
 
         public static IEnumerable<ProductDto> ToProductDto(this IEnumerable<ProductEntity> items)

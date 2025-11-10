@@ -28,12 +28,20 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 var result = _servise.GetAll(token);
 
+<<<<<<< HEAD
                 return Ok(ApiResponse<IEnumerable<UserRoleDto>>.Ok(result));
+=======
+                return Ok(ApiResponseDto<IEnumerable<UserRoleDto>>.Ok(result));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
 
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
     }

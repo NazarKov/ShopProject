@@ -34,7 +34,10 @@ namespace ShopProjectWebServer.Api.Mappings
         {
             return new ProductCodeUKTZEDDto()
             {
+<<<<<<< HEAD
                 ID= item.ID,
+=======
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
                 Status = (int)item.Status,
                 Code = item.Code,
                 NameCode= item.NameCode,

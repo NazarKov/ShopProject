@@ -40,7 +40,10 @@ namespace ShopProjectWebServer.Api.Mappings
         {
             return new ProductUnitDto()
             {
+<<<<<<< HEAD
                 ID = item.ID,
+=======
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
                 ShortNameUnit = item.ShortNameUnit,
                 Status = (int)item.Status,
                 NameUnit = item.NameUnit,

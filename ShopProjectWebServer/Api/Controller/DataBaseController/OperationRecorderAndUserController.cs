@@ -30,12 +30,20 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 _servise.Add(token,userId ,operationsRecorderUserEntity);
 
+<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(true, "Обєкт збережено"));
+=======
+                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкт збережено"));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
 
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -44,14 +52,24 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
+<<<<<<< HEAD
                 var result = _servise.GetOperationRecorderForUser(token);
 
                 return Ok(ApiResponse<OperationRecorderUserDto>.Ok(result));
+=======
+                var result = _servise.GetAll(token);
+
+                return Ok(ApiResponseDto<IEnumerable<OperationRecorderUserDto>>.Ok(result));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
 
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
+=======
+                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 

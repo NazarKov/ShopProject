@@ -22,7 +22,11 @@ namespace ShopProjectWebServer.Api.Services
             return true;
         }
 
+<<<<<<< HEAD
         public AuthorizationUserDto Authorization(string login, string password, string devise)
+=======
+        public TokenDto Authorization(string login, string password, string devise)
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
         {
             var user = DataBaseMainController.DataBaseAccess.UserTable.Authorization(login, password);
 
@@ -40,6 +44,7 @@ namespace ShopProjectWebServer.Api.Services
                 DataBaseMainController.DataBaseAccess.TokenTable.Add(token);
                 AuthorizationApi.AddToken(tokenbody);
 
+<<<<<<< HEAD
                 var result = new AuthorizationUserDto()
                 {
                     AutomaticLogin = user.AutomaticLogin, 
@@ -52,6 +57,9 @@ namespace ShopProjectWebServer.Api.Services
                 };
 
                 return result;
+=======
+                return token.ToTokenDto();
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
             throw new Exception("Не вдалося авторизуватися");
         }

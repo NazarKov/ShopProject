@@ -12,7 +12,11 @@ namespace ShopProjectWebServer.Api.Controller
         [HttpGet("Ping")]
         public IActionResult GetSettings()
         {
+<<<<<<< HEAD
             return Ok(ApiResponse<string>.Ok(DateTime.Now.ToString())); 
+=======
+            return Ok(ApiResponseDto<string>.Ok(DateTime.Now.ToString())); 
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
         }
     }
 }

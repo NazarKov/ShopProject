@@ -20,6 +20,25 @@ namespace ShopProjectWebServer.Api.Mappings
                 result.Add(ToOperationRecorderEntity(item));
             }
             return result;
+<<<<<<< HEAD
         } 
+=======
+        }
+        public static OperationRecorderUserDto ToOperationRecorderEntity(this OperationsRecorderUserEntity item)
+        {
+            return new OperationRecorderUserDto() { ID = item.ID , UserID = item.Users.ID };
+        }
+
+        public static IEnumerable<OperationRecorderUserDto> ToOperationRecordersDto(this IEnumerable<OperationsRecorderUserEntity> items) 
+        {
+            var result = new List<OperationRecorderUserDto>();
+
+            foreach (var item in items)
+            { 
+                result.Add(ToOperationRecorderEntity(item));
+            }
+            return result;
+        }
+>>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
     }
 }
