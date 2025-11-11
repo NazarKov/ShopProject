@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
@@ -57,8 +58,8 @@ namespace ShopProject.ViewModel.StoragePage
 
             _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
             SetFieldPage();
-
-            Mediator.Subscribe("ReloadUnitsGriedView", (object obj) => { UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList))); });
+             
+            MediatorService.AddEvent("ReloadUnitsGriedView", (object obj) => { UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList))); });
         }
 
         private List<ProductUnit> _units;

@@ -50,8 +50,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
-                {
-<<<<<<< HEAD
+                { 
                     IQueryable<UserEntity> query = context.Users.Include(u => u.UserRole).Include(s => s.SignatureKey).AsNoTracking();
 
                     var user = query.FirstOrDefault(item => item.Login == login);
@@ -63,24 +62,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     else
                     { 
                         throw new Exception("Користувача не занайдено");
-                    }  
-=======
-                    context.Users.Load();
-
-                    var user = context.Users.Where(item => item.Login == login).First();
-
-                    if (user != null) 
-                    {
-                        if(user.Password == password)
-                        {
-                            return user;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Користувача не занайдено");
-                    }
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                    }   
                 }
                 return null;
             }
@@ -154,14 +136,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-<<<<<<< HEAD
+            using (ContextDataBase context = new ContextDataBase(_option)) 
             { 
-                IQueryable<UserEntity> query = context.Users.Include(u=>u.UserRole).Include(s=>s.SignatureKey).AsNoTracking();
-=======
-            {
-                IQueryable<UserEntity> query = context.Users.AsNoTracking();
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                IQueryable<UserEntity> query = context.Users.Include(u=>u.UserRole).Include(s=>s.SignatureKey).AsNoTracking(); 
 
                 if (status != TypeStatusUser.Unknown)
                 {

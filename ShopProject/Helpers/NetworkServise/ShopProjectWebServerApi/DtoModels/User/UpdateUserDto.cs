@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.User
 {
-    public class UserDto
+    public class UpdateUserDto
     {
         [JsonPropertyName("ID")]
         public string ID { get; set; }

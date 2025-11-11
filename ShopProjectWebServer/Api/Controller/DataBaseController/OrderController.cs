@@ -26,21 +26,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                _servise.AddRange(token, orders);
-
-<<<<<<< HEAD
+                _servise.AddRange(token, orders); 
                 return Ok(ApiResponse<bool>.Ok(true, "Обєкти створено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкти створено"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -49,22 +40,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetAll(token);
-
-<<<<<<< HEAD
-                return Ok(ApiResponse<IEnumerable<OrderDto>>.Ok(result));
-=======
-                return Ok(ApiResponseDto<IEnumerable<OrderDto>>.Ok(result));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-
+                var result = _servise.GetAll(token); 
+                return Ok(ApiResponse<IEnumerable<OrderDto>>.Ok(result)); 
             }
             catch (Exception ex)
-            {
-<<<<<<< HEAD
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
     }

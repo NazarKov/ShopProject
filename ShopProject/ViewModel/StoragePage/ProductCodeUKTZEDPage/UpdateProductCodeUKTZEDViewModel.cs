@@ -1,5 +1,6 @@
 ﻿ 
 using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductCodeUKTZEDPage;
 using ShopProject.UIModel.StoragePage;
@@ -118,7 +119,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
             t.ContinueWith(t =>
             {
                 MessageBox.Show("Одиниця добавленна");
-                Mediator.Notify("ReloadCodeUKTEDGriedView");
+                MediatorService.ExecuteEvent("ReloadCodeUKTEDGriedView");
             });
         }
 

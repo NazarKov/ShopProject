@@ -39,8 +39,8 @@ namespace ShopProjectWebServer.Api.Mappings
         {
             var userEntity = new UserEntity()
             {
-                ID = item.ID,
-                SignatureKey = item.SignatureKey,
+                ID = Guid.Parse(item.ID),
+                SignatureKey = new ElectronicSignatureKey() { ID = Guid.Parse(item.SignatureKeyID)},
                 AutomaticLogin = item.AutomaticLogin,
                 CreatedAt = item.CreatedAt,
                 Email = item.Email,
@@ -48,7 +48,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 Login = item.Login,
                 Password = item.Password,
                 TIN = item.TIN,
-                UserRole = new UserRoleEntity() { ID = item.UserRole_ID }
+                UserRole = new UserRoleEntity() { ID = item.UserRoleID.Value }
             };
 
             Enum.TryParse(item.Status.ToString(), out TypeStatusUser type);
@@ -56,18 +56,11 @@ namespace ShopProjectWebServer.Api.Mappings
             return userEntity;
         }
         public static UserDto ToUserDto(this UserEntity item) 
-        {
-<<<<<<< HEAD
+        { 
             var result = new UserDto()
             {
                 ID = item.ID.ToString(),
-                UserRoleID = item.UserRole.ID,
-=======
-            return new UserDto()
-            {
-                UserRole_ID = item.UserRole.ID,
-                SignatureKey_ID = item.SignatureKey.ID,
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                UserRoleID = item.UserRole.ID, 
                 Status = (int)item.Status,
                 AutomaticLogin = item.AutomaticLogin,
                 CreatedAt = item.CreatedAt,
@@ -76,15 +69,12 @@ namespace ShopProjectWebServer.Api.Mappings
                 Login = item.Login,
                 Password = item.Password,
                 TIN = item.TIN,
-            };
-<<<<<<< HEAD
+            }; 
             if (item.SignatureKey != null) {
 
-                result.SignatureKeyID = item.SignatureKey.ID;
+                result.SignatureKeyID = item.SignatureKey.ID.ToString();
             }
-            return result;
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            return result; 
         }
         public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserEntity> item) 
         {

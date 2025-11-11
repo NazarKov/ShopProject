@@ -39,11 +39,8 @@ namespace ShopProjectWebServer.Api.Mappings
         public static ProductUnitDto ToProductUnitDto(this ProductUnitEntity item)
         {
             return new ProductUnitDto()
-            {
-<<<<<<< HEAD
-                ID = item.ID,
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                ID = item.ID, 
                 ShortNameUnit = item.ShortNameUnit,
                 Status = (int)item.Status,
                 NameUnit = item.NameUnit,

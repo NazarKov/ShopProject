@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
 using System;
@@ -108,7 +109,7 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenPageAuthorizationCommand => _openPageAuthorizationCommand;
         private void OpenPageAuthorization()
         {
-            Mediator.Notify("OpenAuthorization", "");
+            MediatorService.ExecuteEvent(NavigationButton.RedirectToAuthorizationView.ToString()); 
         }
     }
 }

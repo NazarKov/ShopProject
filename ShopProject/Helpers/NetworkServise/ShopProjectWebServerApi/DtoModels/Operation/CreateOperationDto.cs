@@ -2,60 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Operation
 {
     public class CreateOperationDto
     {
-        public TypePaymentDto TypePayment { get; set; }
-        /// <summary>
-        /// Тип операції
-        /// </summary>
-        public TypeOperationDto TypeOperation { get; set; }
-        /// <summary>
-        /// сума  що вносить користувачі
-        /// </summary>
+        [JsonPropertyName("TypePayment")]
+        public int TypePayment { get; set; }
+        [JsonPropertyName("TypeOperation")]
+        public int TypeOperation { get; set; }
+        [JsonPropertyName("BuyersAmount")]
         public decimal BuyersAmount { get; set; } = decimal.Zero;
-        /// <summary>
-        /// решта 
-        /// </summary>
+        [JsonPropertyName("RestPayment")]
         public decimal RestPayment { get; set; } = decimal.Zero;
-        /// <summary>
-        /// загальна сума чеку
-        /// </summary>
+        [JsonPropertyName("TotalPayment")]
         public decimal TotalPayment { get; set; } = decimal.Zero;
-        /// <summary>
-        /// номер фіксального чеку
-        /// </summary>
+        [JsonPropertyName("NumberPayment")]
         public string NumberPayment { get; set; } = string.Empty;
-        /// <summary>
-        /// податок на товари в чеку 0 - без податку 
-        /// </summary>
+        [JsonPropertyName("GoodsTax")]
         public string GoodsTax { get; set; } = string.Empty;
-        /// <summary>
-        /// сума отриманих коштів (службове внесення)
-        /// </summary>
+        [JsonPropertyName("AmountOfFundsReceived")]
         public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума отриманих коштів (службова видача)
-        /// </summary>
+        [JsonPropertyName("AmountOfIssuedFunds")]
         public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
-        /// <summary>
-        /// код підтвердження на сервері
-        /// </summary> 
+        [JsonPropertyName("MACID")]
         public int MACID { get; set; }
-        /// <summary>
-        /// час створення чеку
-        /// </summary>
+        [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
-        /// <summary>
-        /// знижка на чек
-        /// </summary>
+        [JsonPropertyName("Discount")]
         public decimal Discount { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Змінна під час якої була операція
-        /// </summary>
+        [JsonPropertyName("ShiftID")]
         public int ShiftID { get; set; }
     }
 }

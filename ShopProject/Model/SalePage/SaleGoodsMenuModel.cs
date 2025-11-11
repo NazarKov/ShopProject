@@ -23,6 +23,7 @@ namespace ShopProject.Model.SalePage
         private PrintingFiscalCheck _printingFiscalCheck;
         private bool _isDrawingChek; 
         private MainFiscalServerController _fiscalOperationController;
+        private readonly string _token;
           
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
          
@@ -33,13 +34,15 @@ namespace ShopProject.Model.SalePage
             _isDrawingChek = true; 
 
             _fiscalOperationController = new MainFiscalServerController();
+
+            _token = Session.User.Token;
         }
 
         public async Task<Product>? Search(string barCode)
         {
             try
             {
-                var item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.User.Token,barCode); 
+                var item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, barCode); 
                 return item.ToProduct();
             }
             catch (Exception ex)
@@ -77,7 +80,7 @@ namespace ShopProject.Model.SalePage
             {
                 operation.Shift = Session.WorkingShift;
                 bool result = false;
-                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(Session.User.Token, operation));
+                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(_token, operation));
                 if (result)
                 {
                     List<Order> orders = new List<Order>();
@@ -91,7 +94,7 @@ namespace ShopProject.Model.SalePage
 
                         });
                     } 
-                    await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(Session.User.Token, orders);
+                    await MainWebServerController.MainDataBaseConntroller.OrderController.AddOrderRange(_token, orders);
                 }
 
             }
@@ -107,7 +110,7 @@ namespace ShopProject.Model.SalePage
 
             if (mac != null)
             {
-                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.User.Token, new MediaAccessControl()
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(_token, new MediaAccessControl()
                 {
                     OperationsRecorder = Session.FocusDevices,
                     Content = mac,
@@ -122,7 +125,7 @@ namespace ShopProject.Model.SalePage
         {
             try
             {
-                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.User.Token, operationRecorderId)).ToUIMediaAccessControl();
+                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(_token, operationRecorderId)).ToUIMediaAccessControl();
             } 
             catch (Exception ex)
             {
@@ -134,18 +137,16 @@ namespace ShopProject.Model.SalePage
         public async Task<string> GetLocalNumber()
         {
             try
-            {
-                OperationEntity operation = new OperationEntity();
-                 
-                operation = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastOperation(Session.User.Token,Session.WorkingShift.ID);
+            { 
+                var item = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastNumberOperation(_token, Session.WorkingShift.ID);
 
-                if (operation.NumberPayment == string.Empty)
+                if (item == string.Empty)
                 {
                     return "1";
                 } 
                 else
                 {
-                    return (Convert.ToInt32(operation.NumberPayment) + 1).ToString();
+                    return (Convert.ToInt32(item) + 1).ToString();
                 }
             }
             catch (Exception ex)
@@ -153,7 +154,7 @@ namespace ShopProject.Model.SalePage
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return "1";
             }
-        }
+        } 
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common; 
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.UIModel.SalePage;
 using ShopProjectDataBase.Entities;
@@ -31,10 +31,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
                 HttpResponseMessage httpResponse = await client.PostAsync($"/api/Order/AddOrderRange?token={token}", httpContent);
                 string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                var result = CheckingResponse.Unpacking<bool>(responseBody);
+                var result = ApiResponse<bool>.Unpacking(responseBody);
                 httpResponse.EnsureSuccessStatusCode();
 
-                return (bool)result;
+                return result.Data;
             }
         }
 
@@ -47,10 +47,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
                 HttpResponseMessage httpResponse = await client.GetAsync($"/api/Order/GetOrders?token={token}");
                 string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                var result = CheckingResponse.Unpacking<IEnumerable<OrderEntity>>(responseBody);
+                var result = ApiResponse<IEnumerable<OrderEntity>>.Unpacking(responseBody);
                 httpResponse.EnsureSuccessStatusCode();
 
-                return (IEnumerable<OrderEntity>)result;
+                return result.Data;
             }
         }
     }

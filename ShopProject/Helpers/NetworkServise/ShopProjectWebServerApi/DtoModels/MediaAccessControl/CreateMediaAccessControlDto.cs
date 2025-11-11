@@ -2,28 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl
 {
     public class CreateMediaAccessControlDto
     {
+        [JsonPropertyName("ID")]
         public int ID { get; set; }
-        /// <summary>
-        /// хешоване значення MAC 
-        /// </summary>
+        [JsonPropertyName("Content")]
         public string Content { get; set; } = string.Empty;
-        /// <summary>
-        /// Зміни до яких належить MAC
-        /// </summary>
+        [JsonPropertyName("WorkingShiftsID")]
         public int WorkingShiftsID { get; set; }
-        /// <summary>
-        /// Операція до яких належить MAC
-        /// </summary>
+        [JsonPropertyName("OperationID")]
         public int OperationID { get; set; }
-        /// <summary>
-        /// ПРРО який видав MAC
-        /// </summary>
+        [JsonPropertyName("OperationsRecorderID")]
         public Guid OperationsRecorderID { get; set; }
     }
 }

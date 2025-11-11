@@ -45,11 +45,8 @@ namespace ShopProjectWebServer.Api.Mappings
         public static ObjectOwnerListDto ToObjectOwnerEntity(this ObjectOwnerEntity item)
         {
             var result = new ObjectOwnerListDto()
-            { 
-<<<<<<< HEAD
-                ID = item.ID.ToString(),
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            {  
+                ID = item.ID.ToString(), 
                 C_TERRIT = item.C_TERRIT,
                 D_ACC_END = item.D_ACC_END,
                 REG_NUM_OBJ = item.REG_NUM_OBJ,

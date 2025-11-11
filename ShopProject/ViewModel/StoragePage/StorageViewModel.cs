@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers; 
+﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
@@ -62,7 +63,7 @@ namespace ShopProject.ViewModel.StoragePage
             _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite); 
 
             SetFieldPage();
-            Mediator.Subscribe("ReloadProduct", (object obg) => { SetFieldPage(); });
+            MediatorService.AddEvent("ReloadProduct", (object obg) => { SetFieldPage(); });
         }
 
         private TemplatePaginatorButtonViewModel _paginator;

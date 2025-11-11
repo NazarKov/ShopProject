@@ -1,10 +1,16 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace ShopProjectWebServer.Api.DtoModels.Operation
+namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Operation
 {
-    public class CreateOperationDto
+    public class OperationDto
     {
+        [JsonPropertyName("ID")]
+        public int ID { get; set; }
         [JsonPropertyName("TypePayment")]
         public int TypePayment { get; set; }
         [JsonPropertyName("TypeOperation")]
@@ -21,15 +27,11 @@ namespace ShopProjectWebServer.Api.DtoModels.Operation
         public string GoodsTax { get; set; } = string.Empty;
         [JsonPropertyName("AmountOfFundsReceived")]
         public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        [JsonPropertyName("AmountOfIssuedFunds")]
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
-        [JsonPropertyName("MACID")]
-        public int MACID { get; set; }
+        [JsonPropertyName("MACId")]
+        public int? MACId { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]
         public decimal Discount { get; set; } = decimal.Zero;
-        [JsonPropertyName("ShiftID")]
-        public int ShiftID { get; set; }
     }
 }

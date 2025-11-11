@@ -50,7 +50,24 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         public IEnumerable<WorkingShiftEntity> GetAll()
         {
             throw new NotImplementedException();
-        } 
+        }
+
+        public WorkingShiftEntity GetById(int id)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            { 
+                if(context != null)
+                {
+                    context.WorkingShift.Load();
+                    context.Users.Load();
+                    context.MediaAccessControls.Load();
+
+                    var result = context.WorkingShift.Where(w => w.ID == id).First();
+                    return result;
+                }
+                return null;
+            }
+        }
 
         public void Update(WorkingShiftEntity item)
         {

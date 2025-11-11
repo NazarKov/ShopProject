@@ -1,6 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.UserRole;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.UserRole; 
 using ShopProjectDataBase.Entities; 
 using System;
 using System.Collections.Generic;

@@ -275,15 +275,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         public IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
-            {
-<<<<<<< HEAD
+            { 
                 IQueryable<ProductEntity> query = context.Products.Include(c=>c.CodeUKTZED)
                     .Include(u=>u.Unit)
                     .Include(d=>d.Discount)
-                    .AsNoTracking();
-=======
-                IQueryable<ProductEntity> query = context.Products.AsNoTracking();
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                    .AsNoTracking(); 
 
                 if (status != TypeStatusProduct.Unknown)
                 {

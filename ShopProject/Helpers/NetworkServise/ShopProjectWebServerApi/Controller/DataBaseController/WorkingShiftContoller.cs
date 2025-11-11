@@ -1,5 +1,7 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.WorkingShift;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.Template.Paginator;
 using ShopProject.UIModel.SalePage; 
 using System; 
 using System.Net.Http;
@@ -30,10 +32,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/AddWorkingShift?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<int>(responseBody);
+            var result = ApiResponse<int>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (int)result;
+            return result.Data;
         }
 
         public async Task<bool> UpdateWorkingShift(string token, WorkingShift shift)
@@ -46,10 +48,19 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/UpdateWorkingShift?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (bool)result;
+            return result.Data;
+        }
+        public async Task<WorkingShiftDto> GetWorkingShift(string token, string id)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetWorkingShift?token={token}&id={id}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
+            return result.Data;
         }
     }
 }

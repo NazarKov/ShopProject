@@ -71,7 +71,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Operations.Load();
                     if (context.Operations.Count() != 0)
                     {
-                        return context.Operations.Where(i=>i.Shift.ID==shiftId).ElementAt(context.Operations.Count() - 1);
+                        return context.Operations.First(i=>i.Shift.ID==shiftId);
                     }
                     else
                     {

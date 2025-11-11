@@ -16,9 +16,7 @@ namespace ShopProject.Helpers
 {
     public class Session
     {
-        public static User? User { get; set; } 
-
-        public static string Token { get; set; }
+        public static User? User { get; set; }  
          
         public static List<ProductEntity> ProductList { get; set; }
 
@@ -29,6 +27,7 @@ namespace ShopProject.Helpers
         public static ProductUnit? ProductUnit { get; set; }
         public static Product? Product { get; set; } 
         public static OperationRecorder? FocusDevices;
+        public static WorkingShift? WorkingShift { get; set; }
         public static IEnumerable<UserRole>? Roles { get; set; }
         public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
         public static IEnumerable<ProductUnit>? ProductUnits { get; set; }
@@ -37,7 +36,6 @@ namespace ShopProject.Helpers
 
         #region  
         public static UserEntity UserEntity { get; set; }
-        public static WorkingShift WorkingShift { get; set; }
         #endregion
 
 

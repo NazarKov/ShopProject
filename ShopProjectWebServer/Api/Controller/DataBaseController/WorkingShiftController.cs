@@ -26,20 +26,11 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 _servise.Add(token, item);
-
-<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(true, "Обєкт створено"));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкт створено"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -50,20 +41,26 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 _servise.Update(token, item);
 
-<<<<<<< HEAD
                 return Ok(ApiResponse<bool>.Ok(true, "Обєкт оновлено"));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкт оновлено"));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            }
+        }
+
+        [HttpGet("GetWorkingShift")]
+        public async Task<IActionResult> GetWorkingShift([FromQuery] string token, [FromQuery] string id)
+        {
+            try
+            {
+                var result = _servise.GetById(token, id);
+
+                return Ok(ApiResponse<WorkingShiftDto>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
     }

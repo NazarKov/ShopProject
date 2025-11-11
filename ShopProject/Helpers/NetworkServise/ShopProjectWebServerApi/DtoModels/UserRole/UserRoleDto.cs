@@ -9,11 +9,11 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.U
 {
     public class UserRoleDto
     {
-        [JsonPropertyName("id")]
+        [JsonPropertyName("ID")]
         public int ID { get; set; }
-        [JsonPropertyName("nameRole")]
+        [JsonPropertyName("NameRole")]
         public string NameRole { get; set; } = string.Empty;
-        [JsonPropertyName("typeAccess")]
+        [JsonPropertyName("TypeAccess")]
         public int TypeAccess { get; set; } = 0;
     }
 }

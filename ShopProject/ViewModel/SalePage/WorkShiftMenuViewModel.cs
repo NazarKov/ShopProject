@@ -226,10 +226,19 @@ namespace ShopProject.ViewModel.SalePage
 
         private void SetHeaderLabelField()
         {
+            WorkingShiftStatus workingShift = new WorkingShiftStatus();
+            workingShift.WorkingShift = new WorkingShift();
+            workingShift.StatusShift = "Зміна відкрита";
+            workingShift.WorkingShift.ID = 1;
 
-            StatusShift = AppSettingsManager.GetParameterFiles("StatusWorkShift").ToString();
-            StatusOnline = AppSettingsManager.GetParameterFiles("StatusWorkShiftTime").ToString();
-           
+            AppSettingsManager.SetParameterFile("WorkingShiftStatus", workingShift.Serialize());
+
+            var workingShiftStatus = AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString();
+
+            Task.Run(async () => {
+                Session.WorkingShift = await _model.GetWorkingShift(workingShift.WorkingShift.ID.ToString());
+            });
+
             if (StatusShift == "Зміна відкрита")
             {
                 StatusColor = "Green";

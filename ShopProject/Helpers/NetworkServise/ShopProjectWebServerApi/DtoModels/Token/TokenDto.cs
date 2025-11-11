@@ -9,13 +9,13 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.T
 {
     public class TokenDto
     {
-        [JsonPropertyName("userID")]
+        [JsonPropertyName("UserID")]
         public string? UserID { get; set; }
-        [JsonPropertyName("token")]
+        [JsonPropertyName("Token")]
         public string Token { get; set; } = string.Empty;
-        [JsonPropertyName("device")]
+        [JsonPropertyName("Device")]
         public string Device { get; set; } = string.Empty;
-        [JsonPropertyName("createAt")]
+        [JsonPropertyName("CreateAt")]
         public DateTime CreateAt { get; set; }
     }
 }

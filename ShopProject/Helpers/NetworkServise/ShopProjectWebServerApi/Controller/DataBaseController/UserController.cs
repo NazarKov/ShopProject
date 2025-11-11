@@ -1,7 +1,6 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Token;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.User;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.User; 
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.UIModel.UserPage;
@@ -76,10 +75,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/User/UpdateUser?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (bool)result;
+            return result.Data;
         }
 
         public async Task<bool> AddUser(string token, CreateUserDto user)

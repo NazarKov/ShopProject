@@ -1,35 +1,24 @@
-﻿namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
+﻿using System.Text.Json.Serialization;
+
+namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
 {
     public class CreateWorkingShiftDto
     {
+        [JsonPropertyName("ID")]
         public int ID { get; set; }
-        /// <summary>
-        /// фіксальний номер рро
-        /// </summary>
+        [JsonPropertyName("FiscalNumberRRO")]
         public string FiscalNumberRRO { get; set; } = string.Empty;
-        /// <summary>
-        /// Заводьській номер рро
-        /// </summary>
+        [JsonPropertyName("FactoryNumberRRO")]
         public string FactoryNumberRRO { get; set; } = string.Empty;
-        /// <summary>
-        /// індифікатор пакету даних
-        /// </summary>
+        [JsonPropertyName("DataPacketIdentifier")]
         public decimal DataPacketIdentifier { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Тип рро
-        /// </summary>
+        [JsonPropertyName("TypeRRO")]
         public decimal TypeRRO { get; set; } = decimal.Zero;
-        /// <summary>
-        /// позначка про відкриття зміної
-        /// </summary>
+        [JsonPropertyName("TypeShiftCrateAt")]
         public int TypeShiftCrateAt { get; set; }
-        /// <summary>
-        /// hesh відкриття зміни
-        /// </summary> 
-        public int MACCreateAtID { get; set; } 
-        /// <summary>
-        /// користувач який відкрив зміну
-        /// </summary>
-        public Guid UserOpenShiftID { get; set; } 
+        [JsonPropertyName("MACCreateAtID")]
+        public int MACCreateAtID { get; set; }
+        [JsonPropertyName("UserOpenShiftID")]
+        public string UserOpenShiftID { get; set; }
     }
 }

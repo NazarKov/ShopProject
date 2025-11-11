@@ -1,8 +1,5 @@
-﻿using ShopProjectDataBase.Entities;
-<<<<<<< HEAD
-using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+﻿using ShopProjectDataBase.Entities; 
+using ShopProjectWebServer.Api.DtoModels.OperationRecorder; 
 using ShopProjectWebServer.Api.DtoModels.OperationRecorderUser;
 using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
@@ -21,19 +18,14 @@ namespace ShopProjectWebServer.Api.Services
 
             DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(userID, operationRecorders.ToOperationRecordersEntity());
         }
-
-<<<<<<< HEAD
-        public OperationRecorderUserDto GetOperationRecorderForUser(string token)
-=======
-        public IEnumerable<OperationRecorderUserDto> GetAll(string token)
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+         
+        public OperationRecorderUserDto GetOperationRecorderForUser(string token) 
         {
             if (!AuthorizationApi.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-
-<<<<<<< HEAD
+             
             var items = DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.GetAll();
 
             var user = DataBaseMainController.DataBaseAccess.UserTable.GetUser(token);
@@ -52,12 +44,7 @@ namespace ShopProjectWebServer.Api.Services
                 User = user.ToUserDto(),
                 OpertionsRecorders = operationRecoreder.ToOperationRecorderDto(),
             }; 
-            return result;
-=======
-            var result = DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.GetAll();
-
-            return result.ToOperationRecordersDto();
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            return result; 
         }
     }
 }

@@ -10,14 +10,14 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
 {
     public static class OrderMappingExtensions
     {
-        public static List<CreateOrderDto> ToListCreatOrderDto(this List<Order> orders)
+        public static IEnumerable<CreateOrderDto> ToListCreatOrderDto(this List<Order> orders)
         {
             var result = new List<CreateOrderDto>();
             foreach (var order in orders) 
             {
                 result.Add(new CreateOrderDto()
                 {
-                    ProductID = order.Product.ID,
+                    ProductID = order.Product.ID.ToString(),
                     OperationID = order.Operation.ID,
                     Count = order.Count,
                 });

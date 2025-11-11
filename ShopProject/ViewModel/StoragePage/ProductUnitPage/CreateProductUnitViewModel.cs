@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductUnitPage;
 using ShopProject.UIModel.StoragePage;
@@ -104,7 +105,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
             t.ContinueWith(t =>
             {
                 MessageBox.Show("Одиниця добавленна");
-                Mediator.Notify("ReloadUnitsGriedView");
+                MediatorService.ExecuteEvent("ReloadUnitsGriedView");
             });
         }
 

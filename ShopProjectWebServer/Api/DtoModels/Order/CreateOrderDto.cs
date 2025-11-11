@@ -1,21 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.Order
 {
     public class CreateOrderDto
-    { 
-        /// <summary>
-        /// кількість товару
-        /// </summary>
+    {
+        [JsonPropertyName("Count")]
         public int Count { get; set; } = 0;
-        /// <summary>
-        /// товар
-        /// </summary>
-        public Guid ProductID { get; set; }
-        /// <summary>
-        /// операція до якої належить товар
-        /// </summary>
+        [JsonPropertyName("ProductID")]
+        public string ProductID { get; set; }
+        [JsonPropertyName("OperationID")]
         public int OperationID { get; set; }
     }
 }

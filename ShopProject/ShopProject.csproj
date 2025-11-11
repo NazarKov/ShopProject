@@ -68,7 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\NetworkServise\ShopProjectWebServerApi\Helper\Setting\" />
+    <Folder Include="Helpers\NetworkServise\ShopProjectWebServerApi\Helper\" />
     <Folder Include="Model\TemplatePage\" />
   </ItemGroup>
  

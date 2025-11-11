@@ -98,24 +98,24 @@ namespace ShopProject.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string StatusWorkShift {
+        public string WorkingShiftStatus {
             get {
-                return ((string)(this["StatusWorkShift"]));
+                return ((string)(this["WorkingShiftStatus"]));
             }
             set {
-                this["StatusWorkShift"] = value;
+                this["WorkingShiftStatus"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string StatusWorkShiftTime {
+        public string empty {
             get {
-                return ((string)(this["StatusWorkShiftTime"]));
+                return ((string)(this["empty"]));
             }
             set {
-                this["StatusWorkShiftTime"] = value;
+                this["empty"] = value;
             }
         }
         
@@ -176,6 +176,18 @@ namespace ShopProject.Properties {
             }
             set {
                 this["TestMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string empty1 {
+            get {
+                return ((string)(this["empty1"]));
+            }
+            set {
+                this["empty1"] = value;
             }
         }
     }

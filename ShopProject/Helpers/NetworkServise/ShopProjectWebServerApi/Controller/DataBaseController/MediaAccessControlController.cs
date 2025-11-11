@@ -1,5 +1,5 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl; 
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.UIModel.SalePage;
 using System;
@@ -27,10 +27,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/MediaAccessControl/AddMAC?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
 
         public async Task<MediaAccessControlDto> GetLastMAC(string token,Guid operationRecorderId)
@@ -38,10 +38,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/MediaAccessControl/GetLastMAC?token={token}&operationRecorderId={operationRecorderId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<MediaAccessControlDto>(responseBody);
+            var result = ApiResponse<MediaAccessControlDto>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (MediaAccessControlDto)result; 
+            return result.Data; 
         }
     }
 }

@@ -33,11 +33,8 @@ namespace ShopProjectWebServer.Api.Mappings
         public static ProductCodeUKTZEDDto ToProductCodeUKTZEDDto(this ProductCodeUKTZEDEntity item) 
         {
             return new ProductCodeUKTZEDDto()
-            {
-<<<<<<< HEAD
-                ID= item.ID,
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                ID= item.ID, 
                 Status = (int)item.Status,
                 Code = item.Code,
                 NameCode= item.NameCode,

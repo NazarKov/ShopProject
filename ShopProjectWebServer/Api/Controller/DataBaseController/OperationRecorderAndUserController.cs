@@ -28,22 +28,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                _servise.Add(token,userId ,operationsRecorderUserEntity);
-
-<<<<<<< HEAD
-                return Ok(ApiResponse<bool>.Ok(true, "Обєкт збережено"));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(true, "Обєкт збережено"));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-
+                _servise.Add(token,userId ,operationsRecorderUserEntity); 
+                return Ok(ApiResponse<bool>.Ok(true, "Обєкт збережено")); 
             }
             catch (Exception ex)
-            {
-<<<<<<< HEAD
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -51,25 +41,15 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         public async Task<IActionResult> GetOperationRecordersAndUser(string token)
         {
             try
-            {
-<<<<<<< HEAD
+            { 
                 var result = _servise.GetOperationRecorderForUser(token);
 
-                return Ok(ApiResponse<OperationRecorderUserDto>.Ok(result));
-=======
-                var result = _servise.GetAll(token);
-
-                return Ok(ApiResponseDto<IEnumerable<OperationRecorderUserDto>>.Ok(result));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return Ok(ApiResponse<OperationRecorderUserDto>.Ok(result)); 
 
             }
             catch (Exception ex)
-            {
-<<<<<<< HEAD
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 

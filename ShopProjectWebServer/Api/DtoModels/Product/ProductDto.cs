@@ -1,15 +1,11 @@
 ﻿using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-<<<<<<< HEAD
-using System.Text.Json.Serialization;
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+using ShopProjectDataBase.Helper; 
+using System.Text.Json.Serialization; 
 
 namespace ShopProjectWebServer.Api.DtoModels.Product
 {
     public class ProductDto
-    {
-<<<<<<< HEAD
+    { 
         [JsonPropertyName("ID")]
         public string ID { get; set; }
         [JsonPropertyName("Code")]
@@ -35,20 +31,6 @@ namespace ShopProjectWebServer.Api.DtoModels.Product
         [JsonPropertyName("Unit_ID")]
         public int Unit_ID { get; set; }
         [JsonPropertyName("CodeUKTZED_ID")]
-        public int CodeUKTZED_ID { get; set; }
-=======
-        public string Code { get; set; } = string.Empty; 
-        public string NameProduct { get; set; } = string.Empty; 
-        public string Articule { get; set; } = string.Empty; 
-        public decimal Price { get; set; } = decimal.Zero; 
-        public decimal Count { get; set; } = decimal.Zero; 
-        public int? Discount_ID { get; set; } 
-        public int Status { get; set; } 
-        public DateTimeOffset? CreatedAt { get; set; } 
-        public DateTimeOffset? ArhivedAt { get; set; } 
-        public DateTimeOffset? OutStockAt { get; set; } 
-        public int? Unit_ID { get; set; } 
-        public int? CodeUKTZED_ID { get; set; }
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+        public int CodeUKTZED_ID { get; set; } 
     }
 }

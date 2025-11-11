@@ -21,21 +21,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.Add(token, mediaAccessControl); 
-<<<<<<< HEAD
+                var result = _servise.Add(token, mediaAccessControl);  
                 return Ok(ApiResponse<bool>.Ok(result ,"Mac створено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-=======
-                return Ok(ApiResponseDto<bool>.Ok(result ,"Mac створено"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message)); 
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-            }
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));  
+            } 
         }
 
         [HttpGet("GetLastMAC")]
@@ -43,21 +35,13 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetLastMediaAccessControl(token, operationRecorderId);
-<<<<<<< HEAD
-                return Ok(ApiResponse<MediaAccessControlDto>.Ok(result));
-=======
-                return Ok(ApiResponseDto<MediaAccessControlDto>.Ok(result));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                var result = _servise.GetLastMediaAccessControl(token, operationRecorderId); 
+                return Ok(ApiResponse<MediaAccessControlDto>.Ok(result)); 
 
             }
             catch (Exception ex)
-            {
-<<<<<<< HEAD
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
     }

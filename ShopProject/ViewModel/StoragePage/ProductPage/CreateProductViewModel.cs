@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductsPage;
 using ShopProject.UIModel.StoragePage;
@@ -158,7 +159,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
                 })) ;
                 {
                     MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Mediator.Notify("ReloadProduct", "");
+                    MediatorService.ExecuteEvent("ReloadProduct", "");
                 }
             });
         }

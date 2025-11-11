@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Operation;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.UIModel.SalePage;
 using ShopProjectDataBase.Entities;
@@ -21,15 +22,15 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(url); 
         }
-        public async Task<OperationEntity> GetLastOperation(string token,int shiftId)
+        public async Task<string> GetLastNumberOperation(string token,int shiftId)
         {   
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetLastOperation?token={token}&shiftId={shiftId}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetLastNumberOperation?token={token}&shiftId={shiftId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<OperationEntity>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<string>.Unpacking(responseBody);
 
-            return (OperationEntity)result; 
+            return result.Data; 
         }
 
         public async Task<IEnumerable<OperationEntity>> GetOperations(string token)
@@ -37,10 +38,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperations?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<OperationEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<OperationEntity>>.Unpacking(responseBody);
 
-            return (IEnumerable<OperationEntity>)result; 
+            return result.Data; 
         }
 
         public async Task<bool> AddOperation(string token, Operation item)
@@ -51,10 +52,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Operation/AddOperation?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
     }
 }

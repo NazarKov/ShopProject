@@ -20,10 +20,10 @@
     <Setting Name="IsValidFormationProduct" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="StatusWorkShift" Type="System.String" Scope="User">
+    <Setting Name="WorkingShiftStatus" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="StatusWorkShiftTime" Type="System.String" Scope="User">
+    <Setting Name="empty" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PrinterCheck" Type="System.String" Scope="User">
@@ -40,6 +40,9 @@
     </Setting>
     <Setting Name="TestMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="empty1" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

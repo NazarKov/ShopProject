@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.WorkingShift
 {
-    public class UpdateWorkingShiftDto
+    public class WorkingShiftDto
     {
         [JsonPropertyName("ID")]
         public int ID { get; set; }

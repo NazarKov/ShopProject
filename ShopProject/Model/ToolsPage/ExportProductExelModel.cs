@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ZXing.Aztec.Internal;
 
 namespace ShopProject.Model.ToolsPage
 {
@@ -45,7 +46,7 @@ namespace ShopProject.Model.ToolsPage
 
                 Task task = Task.Run(async ()=>{
                 
-                    items = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+                    items = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.User.Token)).ToList();
                 });
 
                 task.Wait();

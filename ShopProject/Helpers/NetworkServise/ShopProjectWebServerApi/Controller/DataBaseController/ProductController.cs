@@ -1,6 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product; 
 using ShopProject.Helpers.Template.Paginator;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper; 
@@ -37,11 +36,11 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barCode={barCode}&status={statusProduct}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = CheckingResponse.Unpacking<ProductEntity>(responseBody);
+             
+            var result = ApiResponse<ProductEntity>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return (ProductEntity)result;
+            return result.Data;
         }
 
         public async Task<PaginatorData<ProductDto>> GetProductByNamePageColumn(string token,string name, int page, int countColumn, TypeStatusProduct statusProduct)
@@ -72,9 +71,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<IEnumerable<ProductEntity>>(responseBody);
+            var result = ApiResponse<IEnumerable<ProductEntity>>.Unpacking(responseBody);
 
-            return (IEnumerable<ProductEntity>)result;
+            return result.Data;
         }
 
         public async Task<ProductDto> GetProductByBarCode(string token, string barCode)
@@ -123,9 +122,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
 
         public async Task<bool> UpdateProduct(string token, UpdateProductDto product)

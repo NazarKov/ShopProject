@@ -1,6 +1,5 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.ObjectOwner;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.ObjectOwner; 
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProjectDataBase.Entities;

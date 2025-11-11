@@ -25,7 +25,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 Login = user.Login,
                 Password = user.Password,
                 TIN = user.TIN,
-                SignatureKey = new SignatureKey() { ID = user.SignatureKeyID },
+                SignatureKey = new SignatureKey() { ID = Guid.Parse(user.SignatureKeyID) },
             };
             result.Role = Session.Roles.Where(i => i.ID == user.UserRoleID).First();
             return result;

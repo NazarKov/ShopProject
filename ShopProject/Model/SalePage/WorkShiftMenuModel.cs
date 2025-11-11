@@ -18,12 +18,14 @@ namespace ShopProject.Model.SalePage
     {  
         private PrintingDayReport _printingController;
         private MainFiscalServerController _fiscalOperationController;
-
+        private readonly string _token;
         public WorkShiftMenuModel()
         {  
+
             _printingController = new PrintingDayReport();
 
             _fiscalOperationController = new MainFiscalServerController();
+            _token = Session.User.Token;
         }
 
         public bool OpenShift(WorkingShift shiftEntity)
@@ -75,11 +77,11 @@ namespace ShopProject.Model.SalePage
         }
         private async Task<int> SaveDataBaseOpenShift(WorkingShift shift)
         {
-            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.AddWorkingShift(Session.Token, shift);
+            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.AddWorkingShift(_token, shift);
         }
         private async Task<bool> SaveDataBaseCloseShift(WorkingShift shift)
         {
-            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.UpdateWorkingShift(Session.Token, shift);
+            return await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.UpdateWorkingShift(_token, shift);
         }
 
         private async Task<bool?> CreateMac(WorkingShift workingShift )
@@ -89,7 +91,7 @@ namespace ShopProject.Model.SalePage
 
             if (mac != null)
             {
-                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(Session.Token, new MediaAccessControl()
+                return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(_token, new MediaAccessControl()
                 {
                     OperationsRecorder = Session.FocusDevices,
                     Content = mac,
@@ -104,13 +106,27 @@ namespace ShopProject.Model.SalePage
         {
             try
             {
-                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(Session.Token, operationRecorderId)).ToUIMediaAccessControl();
+                return (await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.GetLastMAC(_token, operationRecorderId)).ToUIMediaAccessControl();
             } 
             catch (Exception ex)
             {
                 MessageBox.Show("Невдалося отримати MAC");
                 return new MediaAccessControl();
             }
-        } 
+        }
+
+        public async Task<WorkingShift> GetWorkingShift(string id)
+        {
+            try
+            {
+                var result = await MainWebServerController.MainDataBaseConntroller.WorkingShiftContoller.GetWorkingShift(_token, id);
+                return result.ToWorkingShift();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace ShopProjectWebServer.Api.Mappings
 
             entity.TypeRRO = workingShift.TypeRRO;
             entity.FiscalNumberRRO = workingShift.FiscalNumberRRO;
-            entity.UserOpenShift = new UserEntity() { ID = workingShift.UserOpenShiftID };
+            entity.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
             entity.DataPacketIdentifier = workingShift.DataPacketIdentifier;
             entity.FactoryNumberRRO = workingShift.FactoryNumberRRO;
             entity.MACCreateAt = new MediaAccessControlEntity() { ID=workingShift.MACCreateAtID };
@@ -46,8 +46,8 @@ namespace ShopProjectWebServer.Api.Mappings
             shift.MACCreateAt = new MediaAccessControlEntity() { ID = workingShift.MACCreateAtID };
             shift.MACEndAt = new MediaAccessControlEntity() { ID = workingShift.MACEndAtID };
 
-            shift.UserOpenShift = new UserEntity() { ID = workingShift.UserOpenShiftID };
-            shift.UserCloseShift = new UserEntity() { ID= workingShift.UserCloseShiftID };
+            shift.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
+            shift.UserCloseShift = new UserEntity() { ID= Guid.Parse(workingShift.UserCloseShiftID) };
 
             shift.TotalCheckForShift = workingShift.TotalCheckForShift;
             shift.TotalReturnCheckForShift = workingShift.TotalReturnCheckForShift;
@@ -63,5 +63,47 @@ namespace ShopProjectWebServer.Api.Mappings
             return shift;
         }
 
+        public static WorkingShiftDto ToWorkingShiftDto(this WorkingShiftEntity shift)
+        {
+            var result = new WorkingShiftDto()
+            {
+                TotalCheckForShift = shift.TotalCheckForShift,
+                TotalReturnCheckForShift = shift.TotalReturnCheckForShift,
+                TypeShiftCrateAt = (int)shift.TypeShiftCrateAt,
+                TypeShiftEndAt = (int)shift.TypeShiftEndAt, 
+                AmountOfFundsIssued = shift.AmountOfFundsIssued,
+                AmountOfFundsReceived = shift.AmountOfFundsReceived,
+                AmountOfOfficialFundsIssuedCard = shift.AmountOfOfficialFundsIssuedCard,
+                AmountOfOfficialFundsIssuedCash = shift.AmountOfOfficialFundsIssuedCash,
+                AmountOfOfficialFundsReceivedCard = shift.AmountOfOfficialFundsReceivedCard,
+                AmountOfOfficialFundsReceivedCash = shift.AmountOfOfficialFundsReceivedCash,
+                DataPacketIdentifier = shift.DataPacketIdentifier,
+                FactoryNumberRRO = shift.FactoryNumberRRO,
+                FiscalNumberRRO = shift.FiscalNumberRRO,
+                ID = shift.ID, 
+                TypeRRO = shift.TypeRRO,
+            };
+
+            if (shift.UserCloseShift != null)
+            {
+                result.UserCloseShiftID = shift.UserCloseShift.ID.ToString();
+            }
+            if (shift.UserOpenShift != null)
+            {
+                result.UserOpenShiftID = shift.UserOpenShift.ID.ToString();
+            }
+
+            if (shift.MACIdCreateAt != null) 
+            {
+                result.MACCreateAtID = shift.MACIdCreateAt.Value;
+            }
+
+            if(shift.MACIdEndAt != null)
+            {
+                result.MACEndAtID = shift.MACIdEndAt.Value;
+            }
+
+            return result;
+        }
     }
 }

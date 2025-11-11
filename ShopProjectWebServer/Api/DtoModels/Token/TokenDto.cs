@@ -1,16 +1,17 @@
 ﻿using ShopProjectDataBase.Entities;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.Token
 {
     public class TokenDto
     {
-<<<<<<< HEAD
-        public string? UserID { get; set; } 
-=======
-        public Guid? User_ID { get; set; } 
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-        public string Token { get; set; } = string.Empty; 
-        public string Device { get; set; } = string.Empty; 
+        [JsonPropertyName("UserID")]
+        public string? UserID { get; set; }
+        [JsonPropertyName("Token")]
+        public string Token { get; set; } = string.Empty;
+        [JsonPropertyName("Device")]
+        public string Device { get; set; } = string.Empty;
+        [JsonPropertyName("CreateAt")]
         public DateTime CreateAt { get; set; }
     }
 }

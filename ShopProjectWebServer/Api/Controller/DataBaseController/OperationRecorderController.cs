@@ -26,20 +26,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             { 
-               var result = _servise.GetOperationRecordersByNumberAndUser(token, number, userId);
-<<<<<<< HEAD
+               var result = _servise.GetOperationRecordersByNumberAndUser(token, number, userId); 
                return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-               return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -48,20 +40,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetOperationRecordersByNameAndUser(token, name, userId);
-<<<<<<< HEAD
+                var result = _servise.GetOperationRecordersByNameAndUser(token, name, userId); 
                 return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -70,21 +54,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.Delete(token, id);
-<<<<<<< HEAD
-                return Ok(ApiResponse<bool>.Ok(result, "Обєкт Власності видалено"));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(result, "Обєкт Власності видалено"));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-
+                var result = _servise.Delete(token, id); 
+                return Ok(ApiResponse<bool>.Ok(result, "Обєкт Власності видалено")); 
             }
             catch (Exception ex)
-            {
-<<<<<<< HEAD
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            { 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -93,20 +68,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetOperationRecordersByNamePageColumn(token, name, page,countColumn , status);
-<<<<<<< HEAD
+                var result = _servise.GetOperationRecordersByNamePageColumn(token, name, page,countColumn , status); 
                 return Ok(ApiResponse<PaginatorDto<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<PaginatorDto<OperationRecorderDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -115,20 +82,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetOperationRecordersPageColumn(token, page, countColumn, status);
-<<<<<<< HEAD
+                var result = _servise.GetOperationRecordersPageColumn(token, page, countColumn, status); 
                 return Ok(ApiResponse<PaginatorDto<OperationRecorderDto>>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<PaginatorDto<OperationRecorderDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -137,21 +96,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetOperationRecorders(token);
-<<<<<<< HEAD
-                return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));
-=======
-                return Ok(ApiResponseDto<IEnumerable<OperationRecorderDto>>.Ok(result));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
-
+                var result = _servise.GetOperationRecorders(token); 
+                return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));  
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
             }
         }
 
@@ -160,20 +110,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.Add(token , operationsRecorder);
-<<<<<<< HEAD
+                var result = _servise.Add(token , operationsRecorder); 
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
 
@@ -182,20 +124,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.AddRange(token, operationRecorders);
-<<<<<<< HEAD
+                var result = _servise.AddRange(token, operationRecorders); 
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
         [HttpPost("AddBindingOperationRecorder")]
@@ -203,20 +137,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner);
-<<<<<<< HEAD
+                var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner); 
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-=======
-                return Ok(ApiResponseDto<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponseDto<string>.Fail(ex.Message));
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
     }

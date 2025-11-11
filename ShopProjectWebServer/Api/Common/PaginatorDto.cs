@@ -21,14 +21,8 @@ namespace ShopProjectWebServer.Api.Common
             double pages = 0;
 
             int countEnd = (int)(page * column);
-            int countStart = (int)(countEnd - column);
-<<<<<<< HEAD
-            var data = values.Skip(countStart).Take((int)column);
-=======
-            var data = values.OrderBy(i => i)
-                                   .Skip(countStart)
-                                   .Take((int)column);
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            int countStart = (int)(countEnd - column); 
+            var data = values.Skip(countStart).Take((int)column); 
 
             pages = values.Count() / column;
             int pagesCount = 0;
@@ -39,8 +33,7 @@ namespace ShopProjectWebServer.Api.Common
             }
 
             return new PaginatorDto<T>(page,pagesCount , data);
-        }
-<<<<<<< HEAD
+        } 
 
         public static PaginatorDto<T> CreationPaginator<T, TKey>(IEnumerable<T> values, int page, int column, Func<T, TKey> orderBySelector = null)
         {
@@ -64,8 +57,6 @@ namespace ShopProjectWebServer.Api.Common
             }
 
             return new PaginatorDto<T>(page, pagesCount, data);
-        }
-=======
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+        } 
     }
 }

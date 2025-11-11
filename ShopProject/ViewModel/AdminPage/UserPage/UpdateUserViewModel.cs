@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.AdminPage.UserPage;
 using ShopProject.Model.Command;
 using ShopProjectDataBase.Entities; 
@@ -212,7 +213,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
                     if (await _model.UpdateUserKey(_id,PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
                     {
                         MessageBox.Show("Корисувача створено");
-                        Mediator.Notify("ReloadUser");
+                        MediatorService.ExecuteEvent("ReloadUser");
                     }
                 }
                 else
@@ -220,7 +221,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
                     if (await _model.UpdateUser(_id,FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
                     {
                         MessageBox.Show("Корисувача створено");
-                        Mediator.Notify("ReloadUser");
+                        MediatorService.ExecuteEvent("ReloadUser");
                     }
                 }
             });

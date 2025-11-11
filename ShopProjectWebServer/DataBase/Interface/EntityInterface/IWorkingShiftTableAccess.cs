@@ -8,7 +8,8 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(WorkingShiftEntity item);
         void UpdateParameter(Guid id, string nameParameter, object valueParameter);
         void Delete(WorkingShiftEntity item);
-        IEnumerable<WorkingShiftEntity> GetAll(); 
+        IEnumerable<WorkingShiftEntity> GetAll();  
+        WorkingShiftEntity GetById(int id);
 
     }
 }

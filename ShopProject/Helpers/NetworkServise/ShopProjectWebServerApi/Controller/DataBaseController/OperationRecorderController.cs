@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.OperationRecorder;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Helper;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.OperationRecorder; 
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProjectDataBase.Entities;
@@ -42,10 +41,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/OperationRecorder/GetOperationRecordersByNameAndUser?token={token}&name={name}&userId={userId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<IEnumerable<OperationsRecorderEntity>>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<IEnumerable<OperationsRecorderEntity>>.Unpacking(responseBody);
 
-            return (IEnumerable<OperationsRecorderEntity>)result;
+            return result.Data;
         }
 
         public async Task<bool> DeleteOperationsRecorder(string token, OperationRecorder operationsRecorder)
@@ -105,10 +104,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/OperationRecorder/AddOperationRecorder?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = CheckingResponse.Unpacking<bool>(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return (bool)result; 
+            return result.Data; 
         }
 
         public async Task<bool> AddOperationRecorders(string token, List<CreateOperationRecorderDto> item)

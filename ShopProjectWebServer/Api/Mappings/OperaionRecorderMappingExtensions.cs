@@ -33,20 +33,14 @@ namespace ShopProjectWebServer.Api.Mappings
             return result;
         }
         public static OperationRecorderDto ToOperationRecorderDto(this OperationsRecorderEntity item) 
-        {
-<<<<<<< HEAD
+        { 
             var result = new OperationRecorderDto()
             {
-                ID = item.ID.ToString(),
-=======
-            return new OperationRecorderDto()
-            {
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+                ID = item.ID.ToString(), 
                 Status = item.Status,
                 TypeStatus = (int)item.TypeStatus,
                 Address = item.Address,
-                D_REG = item.D_REG,
-<<<<<<< HEAD
+                D_REG = item.D_REG, 
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
@@ -55,14 +49,7 @@ namespace ShopProjectWebServer.Api.Mappings
             {
                 result.ObjectOwner_ID = item.ObjectOwner.ID.ToString();
             }
-            return result;
-=======
-                FiscalNumber= item.FiscalNumber,
-                LocalNumber= item.LocalNumber,
-                Name= item.Name,
-                ObjectOwner_ID = item.ObjectOwner.ID
-            };
->>>>>>> 306da6b87d87ea969d9567c60bf1dbf9a079baf4
+            return result; 
         }
         public static IEnumerable<OperationRecorderDto> ToOperationRecorderDto(this IEnumerable<OperationsRecorderEntity> items) 
         {

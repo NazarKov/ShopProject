@@ -43,7 +43,7 @@ namespace ShopProject.Model.AdminPage.UserPage
                     SignatureKey = null,
                 };
 
-                return await MainWebServerController.MainDataBaseConntroller.UserController.UpdateUser(Session.Token, user);
+                return await MainWebServerController.MainDataBaseConntroller.UserController.UpdateUser(Session.User.Token, user);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace ShopProject.Model.AdminPage.UserPage
                             Status =  TypeStatusUser.AvailableElectronicKey, 
                             UserRole = role,
                         };
-                        return await MainWebServerController.MainDataBaseConntroller.UserController.UpdateUser(Session.Token, user);
+                        return await MainWebServerController.MainDataBaseConntroller.UserController.UpdateUser(Session.User.Token, user);
                     }
                 }
                 return false;

@@ -77,7 +77,7 @@ namespace ShopProject.Model.ToolsPage
 
             Task task = Task.Run(async () => {
 
-                goodslistAll = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.Token)).ToList();
+                goodslistAll = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.User.Token)).ToList();
             });
 
             task.Wait();
@@ -133,7 +133,7 @@ namespace ShopProject.Model.ToolsPage
                 bool response = false;
                 Task t = Task.Run(async () =>
                 {
-                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProductRange(Session.Token,_product);
+                    response = await MainWebServerController.MainDataBaseConntroller.ProductController.AddProductRange(Session.User.Token,_product);
                 });
                 t.Wait();
                

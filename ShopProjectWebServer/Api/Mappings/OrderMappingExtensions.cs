@@ -9,7 +9,7 @@ namespace ShopProjectWebServer.Api.Mappings
         {
             return new OrderEntity() {
                 Operation = new OperationEntity() { ID = order.OperationID },
-                Product = new ProductEntity() { ID = order.ProductID},
+                Product = new ProductEntity() { ID = Guid.Parse(order.ProductID)},
                 Count = order.Count,
             };
         }
@@ -23,7 +23,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 result.Add(new OrderEntity()
                 {
                     Operation = new OperationEntity() { ID = item.OperationID },
-                    Product = new ProductEntity() { ID = item.ProductID },
+                    Product = new ProductEntity() { ID = Guid.Parse(item.ProductID) },
                     Count = item.Count,
                 });
             }
@@ -32,7 +32,7 @@ namespace ShopProjectWebServer.Api.Mappings
 
         public static OrderDto ToOrderDto(this OrderEntity order) 
         {
-            return new OrderDto() { Count = order.Count  , OperationID = order.Operation.ID, ProductID = order.Product.ID};
+            return new OrderDto() { Count = order.Count  , OperationID = order.Operation.ID, ProductID = order.Product.ID.ToString()};
         }
 
         public static IEnumerable<OrderDto> ToOrderDto(this IEnumerable<OrderEntity> orders)

@@ -1,92 +1,47 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
 {
     public class WorkingShiftDto
     {
+        [JsonPropertyName("ID")]
         public int ID { get; set; }
-        /// <summary>
-        /// фіксальний номер рро
-        /// </summary>
+        [JsonPropertyName("FiscalNumberRRO")]
         public string FiscalNumberRRO { get; set; } = string.Empty;
-        /// <summary>
-        /// Заводьській номер рро
-        /// </summary>
+        [JsonPropertyName("FactoryNumberRRO")]
         public string FactoryNumberRRO { get; set; } = string.Empty;
-        /// <summary>
-        /// індифікатор пакету даних
-        /// </summary>
+        [JsonPropertyName("DataPacketIdentifier")]
         public decimal DataPacketIdentifier { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Тип рро
-        /// </summary>
+        [JsonPropertyName("TypeRRO")]
         public decimal TypeRRO { get; set; } = decimal.Zero;
-        /// <summary>
-        /// позначка про відкриття зміної
-        /// </summary>
-        public bool IsShiftCrateAt { get; set; }
-        /// <summary>
-        /// позначка про закриття зміної
-        /// </summary>
-        public bool IsTypeShiftEndAt { get; set; }
-        /// <summary>
-        /// Загальна кільскість чеків за зміну
-        /// </summary>
+        [JsonPropertyName("TypeShiftCrateAt")]
+        public int TypeShiftCrateAt { get; set; }
+        [JsonPropertyName("TypeShiftEndAt")]
+        public int TypeShiftEndAt { get; set; }
+        [JsonPropertyName("TotalCheckForShift")]
         public decimal TotalCheckForShift { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна кільскість чеків повернення за зміну
-        /// </summary>
+        [JsonPropertyName("TotalReturnCheckForShift")]
         public decimal TotalReturnCheckForShift { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службових внесень коштів  готівка
-        /// </summary>
+        [JsonPropertyName("AmountOfOfficialFundsReceivedCash")]
         public decimal AmountOfOfficialFundsReceivedCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службрвих видач коштів готівка
-        /// </summary>
+        [JsonPropertyName("AmountOfOfficialFundsIssuedCash")]
         public decimal AmountOfOfficialFundsIssuedCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службових внесень коштів  карта
-        /// </summary>
+        [JsonPropertyName("AmountOfOfficialFundsReceivedCard")]
         public decimal AmountOfOfficialFundsReceivedCard { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службрвих видач коштів карта
-        /// </summary>
+        [JsonPropertyName("AmountOfOfficialFundsIssuedCard")]
         public decimal AmountOfOfficialFundsIssuedCard { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума чеків за зміну 
-        /// </summary>
+        [JsonPropertyName("AmountOfFundsReceived")]
         public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума решти за зміну 
-        /// </summary>
+        [JsonPropertyName("AmountOfFundsIssued")]
         public decimal AmountOfFundsIssued { get; set; } = decimal.Zero;
-        /// <summary>
-        /// hesh відкриття зміни
-        /// </summary> 
+        [JsonPropertyName("MACCreateAtID")]
         public int MACCreateAtID { get; set; }
-        /// <summary>
-        /// hesh закриття зміни
-        /// </summary> 
+        [JsonPropertyName("MACEndAtID")]
         public int MACEndAtID { get; set; }
-        /// <summary>
-        /// час відриття зміної
-        /// </summary>
-        public DateTimeOffset CreateAt { get; set; }
-        /// <summary>
-        /// час закриття зміної
-        /// </summary>
-        public DateTimeOffset EndAt { get; set; }
-        /// <summary>
-        /// користувач який відкрив зміну
-        /// </summary>
-        public Guid UserOpenShiftID { get; set; }
-        /// <summary>
-        /// користувач який закрив зміну
-        /// </summary>
-        public Guid UserCloseShiftID { get; set; }
-        /// <summary>
-        /// Список операцій викониних під час зміної
-        /// </summary>
-        public IEnumerable<int>? OperationsID { get; set; }
+        [JsonPropertyName("UserOpenShiftID")]
+        public string UserOpenShiftID { get; set; }
+        [JsonPropertyName("UserCloseShiftID")]
+        public string UserCloseShiftID { get; set; }
     }
 }
