@@ -26,22 +26,22 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Operations.Load();
                     if (context.MediaAccessControls != null && context.OperationsRecorders != null && context.Operations != null && context.WorkingShift != null)
                     {
-                        if(item.OperationsRecorder != null)
+                        if (item.OperationsRecorder != null)
                         {
                             item.OperationsRecorder = context.OperationsRecorders.FirstOrDefault(i => i.ID == item.OperationsRecorder.ID);
                         }
-
-                        if(item.Operation != null)
+                        if (item.Operation != null)
                         {
-                            item.Operation = context.Operations.FirstOrDefault(i=>i.ID == item.Operation.ID);
+                            var operation = context.Operations.FirstOrDefault(i => i.ID == item.Operation.ID);
+                            item.Operation = operation;
                         }
 
                         if (item.WorkingShifts != null)
                         {
                             var shift = context.WorkingShift.FirstOrDefault(i => i.ID == item.WorkingShifts.ID);
                             item.WorkingShifts = shift;
-                           
-                            if(shift.MACCreateAt == null)
+
+                            if (shift.MACCreateAt == null)
                             {
                                 shift.MACCreateAt = item;
                             }
@@ -51,7 +51,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                             }
                         }
 
-                        item.SequenceNumber = context.MediaAccessControls.Where(i =>i.OperationsRecorder.ID ==  item.OperationsRecorder.ID).Count(); 
+                        item.SequenceNumber = context.MediaAccessControls.Where(i => i.OperationsRecorder.ID == item.OperationsRecorder.ID).Count();
 
                         context.MediaAccessControls.Add(item);
                     }

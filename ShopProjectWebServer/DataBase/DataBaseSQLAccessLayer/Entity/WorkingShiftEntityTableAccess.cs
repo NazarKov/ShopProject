@@ -32,14 +32,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         }
                         context.WorkingShift.Add(item);
 
-                        context.SaveChanges();
-                        var items = context.WorkingShift.Where(i=>i.UserOpenShift.ID == item.UserOpenShift.ID).ToList();
-
-                        return items.Last().ID;
+                        context.SaveChanges();  
                     }
                 }
             }
-            return 0;
+            return item.ID;
         }
 
         public void Delete(WorkingShiftEntity item)
@@ -82,30 +79,38 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     {  
                         var shift = context.WorkingShift.Find(item.ID);
 
-                        shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
-                        shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
+                        if(shift != null)
+                        {
+                            shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
+                            shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
 
-                        shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
-                        shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
-                        
-                        shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
-                        shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;
+                            shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
+                            shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
+                            
+                            shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
+                            shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;
 
-                        shift.DataPacketIdentifier = item.DataPacketIdentifier;
-                        shift.FactoryNumberRRO = item.FactoryNumberRRO;
-                        shift.FiscalNumberRRO = item.FiscalNumberRRO;
+                            shift.DataPacketIdentifier = item.DataPacketIdentifier;
+                            shift.FactoryNumberRRO = item.FactoryNumberRRO;
+                            shift.FiscalNumberRRO = item.FiscalNumberRRO;
 
-                   
-                        shift.UserOpenShift = context.Users.Find(item.UserOpenShift.ID);
-                        shift.UserCloseShift = context.Users.Find(item.UserCloseShift.ID);
+                            if(item.UserOpenShift != null)
+                            {
+                                shift.UserOpenShift = context.Users.Find(item.UserOpenShift.ID);
+                            }
+                            if(item.UserCloseShift != null)
+                            {
+                                shift.UserCloseShift = context.Users.Find(item.UserCloseShift.ID);
+                            }
 
-                        shift.TotalCheckForShift = item.TotalCheckForShift;
-                        shift.TotalReturnCheckForShift = item.TotalReturnCheckForShift;
-                        
-                        shift.TypeRRO = item.TypeRRO;
-                        shift.TypeShiftCrateAt = item.TypeShiftCrateAt;
-                        shift.TypeShiftEndAt = item.TypeShiftEndAt;
-                        shift.EndAt = item.EndAt;
+                            shift.TotalCheckForShift = item.TotalCheckForShift;
+                            shift.TotalReturnCheckForShift = item.TotalReturnCheckForShift;
+                            
+                            shift.TypeRRO = item.TypeRRO;
+                            shift.TypeShiftCrateAt = item.TypeShiftCrateAt;
+                            shift.TypeShiftEndAt = item.TypeShiftEndAt;
+                            shift.EndAt = item.EndAt; 
+                        }
                     }
                     context.SaveChanges();
                 }

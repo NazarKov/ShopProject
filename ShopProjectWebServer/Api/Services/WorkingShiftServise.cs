@@ -7,14 +7,14 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class WorkingShiftServise : IWorkingShiftServise
     {
-        public void Add(string token, CreateWorkingShiftDto item)
+        public int Add(string token, CreateWorkingShiftDto item)
         {
             if (!AuthorizationApi.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            DataBaseMainController.DataBaseAccess.WorkingShiftTable.Add(item.ToWorkingShiftEntity());
+            return DataBaseMainController.DataBaseAccess.WorkingShiftTable.Add(item.ToWorkingShiftEntity());
         }
 
         public WorkingShiftDto GetById(string token, string id)

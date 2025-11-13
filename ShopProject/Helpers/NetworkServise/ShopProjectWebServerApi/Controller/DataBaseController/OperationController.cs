@@ -44,7 +44,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return result.Data; 
         }
 
-        public async Task<bool> AddOperation(string token, Operation item)
+        public async Task<int> AddOperation(string token, Operation item)
         { 
             var operation = JsonSerializer.Serialize(item.ToCreateOperationDto());
             HttpContent httpContent = new StringContent(operation, Encoding.UTF8, "application/json");
@@ -53,7 +53,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
+            var result = ApiResponse<int>.Unpacking(responseBody);
 
             return result.Data; 
         }

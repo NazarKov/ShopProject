@@ -21,8 +21,9 @@ namespace ShopProject.Model.SalePage
     {
          
         private PrintingFiscalCheck _printingFiscalCheck;
-        private bool _isDrawingChek; 
+        private bool _isDrawingChek;
         private MainFiscalServerController _fiscalOperationController;
+        private Operation _operation;
         private readonly string _token;
           
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
@@ -36,13 +37,18 @@ namespace ShopProject.Model.SalePage
             _fiscalOperationController = new MainFiscalServerController();
 
             _token = Session.User.Token;
+            _operation = new Operation();
         }
 
         public async Task<Product>? Search(string barCode)
         {
             try
             {
-                var item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, barCode); 
+                var item = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, barCode);
+                if (item.ID == null) 
+                {
+                    return null; 
+                }
                 return item.ToProduct();
             }
             catch (Exception ex)
@@ -78,10 +84,11 @@ namespace ShopProject.Model.SalePage
         {
             try
             {
-                operation.Shift = Session.WorkingShift;
-                bool result = false;
-                result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(_token, operation));
-                if (result)
+                operation.Shift = Session.WorkingShift; 
+                var result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(_token, operation));
+                _operation = operation;
+                _operation.ID = result;
+                if (result != null)
                 {
                     List<Order> orders = new List<Order>();
                     foreach (Product item in goods)
@@ -112,6 +119,7 @@ namespace ShopProject.Model.SalePage
             {
                 return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(_token, new MediaAccessControl()
                 {
+                    Operation = _operation,
                     OperationsRecorder = Session.FocusDevices,
                     Content = mac,
                     WorkingShifts = Session.WorkingShift,
@@ -150,8 +158,7 @@ namespace ShopProject.Model.SalePage
                 }
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            { 
                 return "1";
             }
         } 

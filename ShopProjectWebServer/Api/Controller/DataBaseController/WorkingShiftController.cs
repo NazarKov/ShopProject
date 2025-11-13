@@ -25,8 +25,8 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                _servise.Add(token, item);
-                return Ok(ApiResponse<bool>.Ok(true, "Обєкт створено"));
+                var result =  _servise.Add(token, item);
+                return Ok(ApiResponse<int>.Ok(result, "Обєкт створено"));
             }
             catch (Exception ex)
             {

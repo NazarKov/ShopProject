@@ -17,7 +17,7 @@ namespace ShopProjectWebServer.Api.Mappings
             {
                 entity.OperationsRecorder = new OperationsRecorderEntity() { ID = mediaAccessControl.OperationsRecorderID };
             }
-            if(mediaAccessControl.OperationID != 0)
+            if(mediaAccessControl.OperationID != null)
             {
                 entity.Operation = new OperationEntity() { ID = mediaAccessControl.OperationID };
             }

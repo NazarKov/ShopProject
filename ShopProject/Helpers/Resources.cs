@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers.Exceptions;
+﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+using ShopProject.Helpers.Exceptions;
 using ShopProject.Helpers.NetworkServise;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
@@ -52,6 +53,10 @@ namespace ShopProject.Helpers
                     var codesUKTZED = await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.User.Token);
                     Session.ProductCodesUKTZED = codesUKTZED.ToProductCodeUKTZED();
 
+                    var user = await MainWebServerController.MainDataBaseConntroller.UserController.GetUser(Session.User.Token);
+                    var token = Session.User.Token;
+                    Session.User = user;
+                    Session.User.Token = token;
                     var signatureKey = await MainWebServerController.MainDataBaseConntroller.SignatureKeyController.GetKey(Session.User.Token.ToString());
                     Session.User.SignatureKey = signatureKey.ToSignatureKey();
                 });

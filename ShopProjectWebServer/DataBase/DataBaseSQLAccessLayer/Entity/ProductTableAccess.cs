@@ -262,10 +262,6 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     { 
                         return context.Products.First(i => i.Code == barCode);
                     }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
 
                 }
                 return new ProductEntity();
