@@ -225,18 +225,12 @@ namespace ShopProject.ViewModel.SalePage
 
 
         private void SetHeaderLabelField()
-        {
-            WorkingShiftStatus workingShift = new WorkingShiftStatus();
-            workingShift.WorkingShift = new WorkingShift();
-            workingShift.StatusShift = "Зміна відкрита";
-            workingShift.WorkingShift.ID = 1;
+        { 
 
-            AppSettingsManager.SetParameterFile("WorkingShiftStatus", workingShift.Serialize());
-
-            var workingShiftStatus = AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString();
+            var workingShiftStatus = WorkingShiftStatus.Deserialize(AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString());
 
             Task.Run(async () => {
-                Session.WorkingShift = await _model.GetWorkingShift(workingShift.WorkingShift.ID.ToString());
+                Session.WorkingShift = await _model.GetWorkingShift(workingShiftStatus.WorkingShift.ID.ToString());
             });
 
             if (StatusShift == "Зміна відкрита")
@@ -304,10 +298,10 @@ namespace ShopProject.ViewModel.SalePage
                 {
                     StatusShift = "Зміна відкрита";
                     StatusColor = "Green";
-                    AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                    //AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
                     StatusOnline = "з " + DateTime.Now.ToString("g");
-                    AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-                    AppSettingsManager.SetParameterFile("FocusDevise", _operationsRecorder.ID.ToString());
+                    //AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                    //AppSettingsManager.SetParameterFile("FocusDevise", _operationsRecorder.ID.ToString());
 
 
                     MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -344,13 +338,13 @@ namespace ShopProject.ViewModel.SalePage
                 {
                     StatusShift = "Зміна закрита";
                     StatusColor = "Red";
-                    AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+                    //AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
                     StatusOnline = string.Empty;
-                    AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                    //AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
                     //_model.Print(operation);
 
 
-                    AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
+                    //AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
 
                     MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 } 

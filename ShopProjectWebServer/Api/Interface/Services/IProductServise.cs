@@ -18,7 +18,7 @@ namespace ShopProjectWebServer.Api.Interface.Services
 
         public bool Add(string token, CreateProductDto product);
 
-        public bool AddProductRange(string token, IEnumerable<CreateProductDto> product);
+        public Task<bool> AddProductRangeAsync(string token, IEnumerable<CreateProductDto> product);
 
         public bool UpdateProduct(string token, UpdateProductDto product);
 

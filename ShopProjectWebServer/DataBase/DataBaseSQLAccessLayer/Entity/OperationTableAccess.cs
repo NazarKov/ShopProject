@@ -12,7 +12,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         {
             _option = option;
         }
-        public void Add(OperationEntity item)
+        public int Add(OperationEntity item)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             {
@@ -34,6 +34,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.SaveChanges();
                 }
             }
+            return item.ID;
         }
 
         public void Delete(OperationEntity item)
@@ -71,7 +72,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Operations.Load();
                     if (context.Operations.Count() != 0)
                     {
-                        return context.Operations.First(i=>i.Shift.ID==shiftId);
+                        return context.Operations.OrderBy(i=>i.ID).Last(i=>i.Shift.ID==shiftId);
                     }
                     else
                     {

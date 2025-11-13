@@ -38,7 +38,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
-        public void AddRange(IEnumerable<ProductEntity> items)
+        public async Task AddRangeAsync(IEnumerable<ProductEntity> items)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             {
@@ -51,14 +51,38 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     {
                         for (int i = 0; i < items.Count(); i++)
                         {
-                            items.ElementAt(i).Unit = context.ProductUnits.Find(items.ElementAt(i).Unit.ID);
-                            items.ElementAt(i).CodeUKTZED = context.ProductCodeUKTZED.Find(items.ElementAt(i).CodeUKTZED.ID);
-                        }
-                        context.Products.AddRange(items);
+                            var item = context.Products.FirstOrDefault(c=>c.Code == items.ElementAt(i).Code);
+
+                            if(item != null)
+                            {
+                                item.Count += items.ElementAt(i).Count; 
+                            }
+                            else
+                            {
+                                if (items.ElementAt(i).Unit != null)
+                                {
+                                    items.ElementAt(i).Unit = context.ProductUnits.FirstOrDefault(u=>u.ID==items.ElementAt(i).Unit.ID);
+                                }
+                                else
+                                {
+                                    items.ElementAt(i).Unit = null;
+                                }
+                                if (items.ElementAt(i).CodeUKTZED != null)
+                                {
+                                    items.ElementAt(i).CodeUKTZED = context.ProductCodeUKTZED.FirstOrDefault(c => c.ID == items.ElementAt(i).CodeUKTZED.ID);
+                                }
+                                else
+                                {
+                                    items.ElementAt(i).CodeUKTZED = null;
+                                }
+
+                                await context.Products.AddAsync(items.ElementAt(i));
+                            } 
+                        } 
                     }
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
-            }
+            } 
         }
 
 
@@ -261,10 +285,6 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     if (context.Products != null && context.Products.Count() != 0)
                     { 
                         return context.Products.First(i => i.Code == barCode);
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
                     }
 
                 }

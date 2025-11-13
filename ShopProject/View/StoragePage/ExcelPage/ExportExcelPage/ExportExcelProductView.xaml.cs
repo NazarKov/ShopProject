@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.ToolsPage
+namespace ShopProject.View.StoragePage.ExcelPage.ExportExcelPage
 {
     /// <summary>
-    /// Interaction logic for ImportGoodsExel.xaml
+    /// Interaction logic for ExportExcelProductView.xaml
     /// </summary>
-    public partial class ImportProductExelView : Window
+    public partial class ExportExcelProductView : Window
     {
-        public ImportProductExelView()
+        public ExportExcelProductView()
         {
             InitializeComponent();
         }

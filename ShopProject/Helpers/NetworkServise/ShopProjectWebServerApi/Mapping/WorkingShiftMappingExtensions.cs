@@ -46,8 +46,14 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             shift.MACCreateAtID = workingShift.MACCreateAt.ID;
             shift.MACEndAtID = workingShift.MACEndAt.ID;
 
-            shift.UserOpenShiftID = workingShift.UserOpenShift.ID.ToString();
-            shift.UserCloseShiftID = workingShift.UserCloseShift.ID.ToString();
+            if (workingShift.UserOpenShift != null)
+            {
+                shift.UserOpenShiftID = workingShift.UserOpenShift.ID.ToString();
+            }
+            if(workingShift.UserCloseShift != null)
+            {
+                shift.UserCloseShiftID = workingShift.UserCloseShift.ID.ToString();
+            }
 
             shift.TotalCheckForShift = workingShift.TotalCheckForShift;
             shift.TotalReturnCheckForShift = workingShift.TotalReturnCheckForShift;

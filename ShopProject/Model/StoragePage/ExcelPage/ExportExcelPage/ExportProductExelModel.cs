@@ -1,5 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.DataGridViewHelperModel;
+using ShopProject.Helpers.FileServise.ExcelServise;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProjectDataBase.Entities;
 using System;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using ZXing.Aztec.Internal;
 
-namespace ShopProject.Model.ToolsPage
+namespace ShopProject.Model.StoragePage.ExcelPage.ExportExcelPage
 {
     internal class ExportProductExelModel
     {
-        private FileExel? fileExel;
+        private FileExcelServise? fileExel;
 
         public ExportProductExelModel(){}
 
@@ -97,8 +98,8 @@ namespace ShopProject.Model.ToolsPage
         {
             try
             {
-                fileExel = new FileExel();
-                fileExel.Write(path, goods);
+                //fileExel = new FileExel();
+                //fileExel.Write(path, goods);
                 return true;
             }
             catch (Exception ex)

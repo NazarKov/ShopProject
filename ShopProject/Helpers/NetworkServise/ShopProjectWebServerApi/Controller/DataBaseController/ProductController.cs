@@ -1,6 +1,8 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common;
-using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product; 
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 using ShopProject.Helpers.Template.Paginator;
+using ShopProject.UIModel.StoragePage;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper; 
 using System;
@@ -113,9 +115,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return result.Data; 
         }
 
-        public async Task<bool> AddProductRange(string token, List<ProductEntity> product)
+        public async Task<bool> AddProductRange(string token, IEnumerable<Product> product)
         { 
-            var content = JsonSerializer.Serialize(product);
+            var content = JsonSerializer.Serialize(product.ToCreateProductDto());
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/AddProductRange?token={token}", httpContent);

@@ -165,7 +165,6 @@ namespace ShopProject.ViewModel.SalePage
 
                         Product = new List<Product>();
                         Product = temp;
-                        BarCodeSearch = string.Empty;
                     }
                 }
                 else
@@ -193,10 +192,10 @@ namespace ShopProject.ViewModel.SalePage
                             Product = temp;
                             CountingSumaOrder(Product);
                         }
-                        BarCodeSearch = string.Empty;
                     }
                 }
-            }
+                BarCodeSearch = string.Empty;
+            } 
         }
 
         private void CountingSumaOrder(List<Product> products)

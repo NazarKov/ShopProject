@@ -1,64 +1,22 @@
-﻿using ExcelDataReader; 
-using ShopProject.Helpers.DataGridViewHelperModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data; 
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Data;
+using System.Linq;
 using System.Text;
-using System.Windows;
+using System.Threading.Tasks;
 
-namespace ShopProject.Helpers
+namespace ShopProject.Helpers.FileServise.ExcelServise
 {
-    internal class FileExel
+    public class FileExcelServise
     {
-        private DataTableCollection? tableCollection = null;
+        private readonly DataTableCollection tableCollection;
         //private IWorkbook? workbook;
-
-        public FileExel() { }
-
-        public FileExel(string filePath)
+        public FileExcelServise() { }
+        public FileExcelServise(DataTableCollection dataTableCollection)
         {
-            Read(filePath);
+            tableCollection = dataTableCollection;
         }
 
-        private void Read(string path)
-        {
-            try
-            {
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read))
-                {
-                    IExcelDataReader read = ExcelReaderFactory.CreateReader(stream);
-
-                    DataSet db = read.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        ConfigureDataTable = (x) => new ExcelDataTableConfiguration()
-                        {
-                            UseHeaderRow = true
-                        }
-                    });
-                    tableCollection = db.Tables;
-                    stream.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        public void Write(string path, List<ExportProductInFileHelper> Product)
-        {
-            //workbook = new XSSFWorkbook();
-           // CreateExelTable(Product);
-
-            FileStream sw = File.Create(path);
-            //workbook.Write(sw, true);
-            sw.Close();
-
-        }
         //private void CreateExelTable(List<ExportProductInFileHelper> Product)
         ////{
         ////    if (workbook != null)
@@ -95,12 +53,12 @@ namespace ShopProject.Helpers
         ////    row.CreateCell(6).SetCellValue("Знижка");
         ////}
 
-        public DataTable? GetTabel(int i)
+        public DataTable GetTabel(int i)
         {
             if (tableCollection != null)
                 return tableCollection[i];
             else
-                return null;
+                return null; 
         }
 
         public List<string> GetTableName()
@@ -113,5 +71,47 @@ namespace ShopProject.Helpers
                 }
             return tableName;
         }
+        public List<string> GetHeaders(int i)
+        {
+            if (tableCollection != null)
+            {
+                var headers = new List<string>();
+
+                var columns = tableCollection[i].Columns;
+                foreach(DataColumn column in columns)
+                {
+                    headers.Add(column.ColumnName);
+                }
+                return headers;
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+        public object GetValue(int colmun, int row , int sheet , bool isSelectRow = false)
+        {
+            if(tableCollection != null)
+            {
+                var table = tableCollection[sheet];
+
+                if (isSelectRow)
+                {
+                    if (table != null)
+                    {
+                        return table.Rows[colmun][row];
+                    }
+                }
+            }
+            return null;
+        }
+        public int GetMaxRow(int i)
+        {
+            if (tableCollection != null)
+                return tableCollection[i].Rows.Count-1;
+            else
+                return 0;
+        }
+
     }
 }

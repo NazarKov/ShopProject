@@ -39,6 +39,16 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
                 var result = _servise.GetProductsByBarCode(token,barCode); 
                 return Ok(ApiResponse<ProductDto>.Ok(result));
             }
+            catch(InvalidOperationException invalidOperationException)
+            {
+                 if(invalidOperationException.Message == "Sequence contains no elements"){
+                     return Ok(ApiResponse<ProductDto>.Ok(new ProductDto()));
+                 }
+                 else
+                 {
+                     return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                 }
+            }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
@@ -106,7 +116,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.AddProductRange(token, product); 
+                var result = await _servise.AddProductRangeAsync(token, product); 
                 return Ok(ApiResponse<bool>.Ok(result));
             }
             catch (Exception ex)

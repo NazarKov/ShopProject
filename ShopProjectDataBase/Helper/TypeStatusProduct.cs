@@ -12,5 +12,6 @@ namespace ShopProjectDataBase.Helper
         InStock,
         OutStock,
         Archived,
+        ImportedExcel,
     }
 }

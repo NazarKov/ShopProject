@@ -7,13 +7,13 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class OperationServise : IOperationServise
     {
-        public void Add(string token, CreateOperationDto item)
+        public int Add(string token, CreateOperationDto item)
         {
             if (!AuthorizationApi.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            DataBaseMainController.DataBaseAccess.OperationTable.Add(item.ToOperationEntiti());
+            return DataBaseMainController.DataBaseAccess.OperationTable.Add(item.ToOperationEntiti());
         }
 
         public IEnumerable<OperationDto> GetAll(string token)

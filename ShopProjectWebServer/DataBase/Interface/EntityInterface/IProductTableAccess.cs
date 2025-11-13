@@ -7,7 +7,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
     public interface IProductTableAccess 
     {
         void Add(ProductEntity item);
-        void AddRange(IEnumerable<ProductEntity> item);
+        Task AddRangeAsync(IEnumerable<ProductEntity> item);
         
         void Update(ProductEntity item);
         void UpdateRange(IEnumerable<ProductEntity> items);

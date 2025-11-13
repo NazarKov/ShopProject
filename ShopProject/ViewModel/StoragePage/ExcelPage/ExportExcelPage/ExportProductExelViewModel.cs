@@ -2,12 +2,12 @@
 using ShopProject.Helpers.DataGridViewHelperModel;
 using ShopProject.Model;
 using ShopProject.Model.Command;
-using ShopProject.Model.ToolsPage;
+using ShopProject.Model.StoragePage.ExcelPage.ExportExcelPage;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.ToolsPage
+namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
 {
     internal class ExportProductExelViewModel : ViewModel<ExportProductExelViewModel>
     {

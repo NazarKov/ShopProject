@@ -4,6 +4,8 @@ using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.UIModel.StoragePage;
+using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
+using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage;
 using ShopProject.View.StoragePage.ProductPage;
 using ShopProject.View.ToolsPage;
 using ShopProject.ViewModel.TemplatePage;
@@ -53,8 +55,8 @@ namespace ShopProject.ViewModel.StoragePage
             _openCreateProductWindowCommand = new DelegateCommand(() => { new CreateProductView().Show(); });
             _openFormationProductWindowCommand = new DelegateCommand(() => { new FormationProductView().Show(); });
             _openDeliveriOfProductCommand = new DelegateCommand(() => { new DeliveryProductView().Show(); });
-            _openExportProductToExelCommand = new DelegateCommand(() => { new ExportProductExelView().Show(); });
-            _openImportProductWhichExelCommand = new DelegateCommand(() => { new ImportProductExelView().Show(); });
+            _openExportProductToExelCommand = new DelegateCommand(() => { new ExportExcelProductView().Show(); });
+            _openImportProductWhichExelCommand = new DelegateCommand(() => { new ImportProductExcelView().Show(); });
             _updateProductDataGridViewCommand = new DelegateCommand(() => { SetFieldPage(); });      
             _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
             
@@ -157,7 +159,8 @@ namespace ShopProject.ViewModel.StoragePage
                 StatusProducts.Add(TypeStatusProduct.InStock.ToString());
                 StatusProducts.Add(TypeStatusProduct.OutStock.ToString());
                 StatusProducts.Add(TypeStatusProduct.Archived.ToString());
-            }     
+                StatusProducts.Add(TypeStatusProduct.ImportedExcel.ToString());
+            }
         }
 
         private void SetFiledStatusBar()
@@ -212,7 +215,7 @@ namespace ShopProject.ViewModel.StoragePage
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_itemSearch == string.Empty && _itemSearch == "")
                 {
-                    SetFieldDataGridView(countCoulmn,page , false);
+                    SetFieldDataGridView(countColumn, page , false);
                 }
                 else
                 {

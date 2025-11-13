@@ -30,11 +30,15 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
             _testMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
             _signFileContoller.Initialize(false);
             _key = new SignatureKey();
+            _key = Session.User.SignatureKey;
         }
 
         public void AddKey(SignatureKey key)
         {
-            _key = key;
+            if (_key == null) 
+            {
+                _key = key;
+            }
         }
 
         private string ChoseTypeOperationRecursive(WorkingShift shift, int depth, int maxDepth, Operation? operation = null, List<Order>? orders = null, List<Product>? products = null)

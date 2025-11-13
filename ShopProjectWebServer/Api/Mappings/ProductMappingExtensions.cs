@@ -35,14 +35,25 @@ namespace ShopProjectWebServer.Api.Mappings
                 OutStockAt = item.OutStockAt,
                 ArhivedAt = item.ArhivedAt,
                 Articule = item.Articule,
-                Code = item.Code,
-                CodeUKTZED = new ProductCodeUKTZEDEntity() { ID = item.CodeUKTZED_ID, },
-                Count = item.Count, 
-                Discount = new DiscountEntity() { ID = item.Discount_ID },
+                Code = item.Code, 
+                Count = item.Count,  
                 NameProduct = item.NameProduct,
-                Price = item.Price,
-                Unit = new ProductUnitEntity() { ID = item.Unit_ID },
-            }; 
+                Price = item.Price, 
+            };
+
+            if (item.CodeUKTZED_ID != null)
+            {
+                product.CodeUKTZED = new ProductCodeUKTZEDEntity() { ID = item.CodeUKTZED_ID, };
+            }
+            if (item.Discount_ID != null)
+            {
+                product.Discount = new DiscountEntity() { ID = item.Discount_ID, };
+            }
+            if (item.Unit_ID != null)
+            {
+                product.Unit = new ProductUnitEntity() { ID = item.Unit_ID, };
+            }
+
             Enum.TryParse(item.Status.ToString(), out TypeStatusProduct statusProduct);
             product.Status = statusProduct;
             return product;

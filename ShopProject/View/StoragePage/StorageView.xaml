@@ -99,23 +99,24 @@
         <ComboBox x:Name="comboBox" HorizontalAlignment="Right" ItemsSource="{Binding CountShowList}" SelectedIndex="{Binding SelectIndexCountShowList}" VerticalAlignment="Bottom" Margin="0,0,14,0" Grid.Row="1"  Width="120"/>
  
         <DataGrid Name="list" 
-                      Grid.Column="0" Grid.Row="2" ItemsSource="{Binding ProductList}"        AutoGenerateColumns="False"
-       ColumnWidth="*"
-       HeadersVisibility="Column"
-       CanUserAddRows="False"
-       CanUserDeleteRows="False"
-       FontSize="16"
-       Margin="10"
-       RowHeight="40"
-       GridLinesVisibility="None"
-       AlternatingRowBackground="#F9F9F9"
-       RowBackground="White"
-       BorderBrush="LightGray"
-       BorderThickness="1"
-       SelectionMode="Single"
-       SelectionUnit="FullRow"
-       HorizontalGridLinesBrush="#E0E0E0"
-       VerticalGridLinesBrush="#E0E0E0">
+                  Grid.Column="0" Grid.Row="2" ItemsSource="{Binding ProductList}"       
+                  AutoGenerateColumns="False"
+                  ColumnWidth="*"
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  FontSize="16"
+                  Margin="10"
+                  RowHeight="40"
+                  GridLinesVisibility="None"
+                  AlternatingRowBackground="#F9F9F9"
+                  RowBackground="White"
+                  BorderBrush="LightGray"
+                  BorderThickness="1"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  VerticalGridLinesBrush="#E0E0E0">
 
             <!-- Стиль заголовків -->
             <DataGrid.ColumnHeaderStyle>

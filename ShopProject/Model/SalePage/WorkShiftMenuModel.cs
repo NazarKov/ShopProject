@@ -57,6 +57,7 @@ namespace ShopProject.Model.SalePage
         {
             if (_fiscalOperationController.CloseShift(shiftEntity) == "OK")
             {
+                shiftEntity.ID = Session.WorkingShift.ID;
                 Task.Run(async () =>
                 {
                     await SaveDataBaseCloseShift(shiftEntity);

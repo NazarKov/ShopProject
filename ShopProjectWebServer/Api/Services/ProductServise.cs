@@ -20,13 +20,13 @@ namespace ShopProjectWebServer.Api.Services
             return true;
         }
 
-        public bool AddProductRange(string token, IEnumerable<CreateProductDto> product)
+        public async Task<bool> AddProductRangeAsync(string token, IEnumerable<CreateProductDto> product)
         {
             if (!AuthorizationApi.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ProductTable.AddRange(product.ToProductEnity());
+            await DataBaseMainController.DataBaseAccess.ProductTable.AddRangeAsync(product.ToProductEnity());
             return true;
         }
 
