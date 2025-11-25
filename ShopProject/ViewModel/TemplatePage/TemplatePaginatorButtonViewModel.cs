@@ -41,6 +41,7 @@ namespace ShopProject.ViewModel.TemplatePage
             _paginatorButtonQuarter = new PaginatorButton();
             _paginatorButtonFifth = new PaginatorButton();
             _paginatorButtonSixth = new PaginatorButton(); 
+            //TODO пофіксити відображення кнопок і викликі функцій
         } 
         private int _countColumn;
         public int CountColumn

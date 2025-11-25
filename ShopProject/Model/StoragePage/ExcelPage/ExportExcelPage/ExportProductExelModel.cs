@@ -1,10 +1,12 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.DataGridViewHelperModel;
+﻿using ShopProject.Helpers; 
 using ShopProject.Helpers.FileServise.ExcelServise;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.UIModel.StoragePage;
 using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,41 +18,30 @@ namespace ShopProject.Model.StoragePage.ExcelPage.ExportExcelPage
     {
         private FileExcelServise? fileExel;
 
-        public ExportProductExelModel(){}
-
-        public ExportProductInFileHelper GetItem(string itemSearch)
+        public ExportProductExelModel()
         {
+            fileExel = new FileExcelServise();
+        }
 
+        public async Task<Product> GetItem(string itemSearch)
+        { 
             try
             {
-                ExportProductInFileHelper item = new ExportProductInFileHelper();
-                Task task = Task.Run(async () =>
-                {
-                    //item.Product = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.Token, itemSearch);
-                    item.ProductCount = 1;
-                });
-                task.Wait();
+                var item = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(Session.User.Token, itemSearch)).ToProduct(); 
                 return item;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return new ExportProductInFileHelper();
+                return new Product();
             }
         }
 
-        public List<ProductEntity> GetItems()
+        public async Task<IEnumerable<Product>> GetItems()
         {
             try
             {
-                List<ProductEntity> items = new List<ProductEntity>();
-
-                Task task = Task.Run(async ()=>{
-                
-                    items = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.User.Token)).ToList();
-                });
-
-                task.Wait();
+                var items = (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProducts(Session.User.Token)).ToProduct();  
                 return items;
             }
             catch (Exception ex)
@@ -59,47 +50,22 @@ namespace ShopProject.Model.StoragePage.ExcelPage.ExportExcelPage
                 return null;
             }
         }
-        public void Save(List<ExportProductInFileHelper> products, string path)
+        public bool Save(List<Product> products, string path)
         {
-            if (Export(path, products))
-            {
-                MessageBox.Show("Товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("Товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            return Export(path, fileExel.ToDataTable<Product>(products));
         }
-        public void Save(string path)
-        {
-
-            List<ExportProductInFileHelper> goods = new List<ExportProductInFileHelper>();
-
-            var list = GetItems();
-            if (list != null)
-            {
-                foreach (var item in list)
-                {
-                    goods.Add(new ExportProductInFileHelper() { Product = item, ProductCount = item.Count });
-                }
-            }
-
-            if (Export(path, goods))
-            {
-                MessageBox.Show("товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+        public async Task<bool> Save(string path)
+        { 
+            List<Product> products = new List<Product>(); 
+            var list = await GetItems();
+            return Export(path, fileExel.ToDataTable<Product>(list));
         }
 
-        public bool Export(string path, List<ExportProductInFileHelper> goods)
+        public bool Export(string path, DataTable table)
         {
             try
             {
-                //fileExel = new FileExel();
-                //fileExel.Write(path, goods);
+                FileExcel.Write(path, fileExel.CreateExelTable(table));
                 return true;
             }
             catch (Exception ex)

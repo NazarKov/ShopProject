@@ -88,10 +88,30 @@
                     <Image Source="/Resource/Images/reboot.png"></Image>
                 </Button.Content>
             </Button>
-            <Button Grid.Column="3" Height="35" Content="Добавити товар" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenCreateProductWindowCommand}"/>
-            <Button Grid.Column="4" Height="35" Content="Сформувати товар" Width="110" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenFormationProductWindowCommand}"/>
-            <Button Grid.Column="5" Height="35" Content="Імпортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenImportProductWhichExelCommand}"/>
-            <Button Grid.Column="6" Height="35" Content="Експортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,14,25" Command="{Binding OpenExportProductToExelCommand}"/>
+            <Button Grid.Column="3" Height="35" Content="Добавити товар" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenCreateProductWindowCommand}"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"/>
+            <Button Grid.Column="4" Height="35" Content="Сформувати товар" Width="110" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenFormationProductWindowCommand}"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"/>
+            <Button Grid.Column="5" Height="35" Content="Імпортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,25" Command="{Binding OpenImportProductWhichExelCommand}"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"/>
+            <Button Grid.Column="6" Height="35" Content="Експортувати товар" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,14,25" Command="{Binding OpenExportProductToExelCommand}"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"/>
 
 
         </Grid>

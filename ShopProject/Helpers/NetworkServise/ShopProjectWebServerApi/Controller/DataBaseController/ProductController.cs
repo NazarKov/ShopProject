@@ -67,20 +67,20 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return result.Data;
         }
 
-        public async Task<IEnumerable<ProductEntity>> GetProducts(string token)
+        public async Task<IEnumerable<ProductDto>> GetProducts(string token)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProducts?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<IEnumerable<ProductEntity>>.Unpacking(responseBody);
+            var result = ApiResponse<IEnumerable<ProductDto>>.Unpacking(responseBody);
 
             return result.Data;
         }
 
         public async Task<ProductDto> GetProductByBarCode(string token, string barCode)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barCode={barCode}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();

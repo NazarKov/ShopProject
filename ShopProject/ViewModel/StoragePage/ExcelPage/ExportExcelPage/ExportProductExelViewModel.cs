@@ -1,10 +1,12 @@
-﻿using Microsoft.Win32;
-using ShopProject.Helpers.DataGridViewHelperModel;
+﻿using Microsoft.Win32; 
 using ShopProject.Model;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ExcelPage.ExportExcelPage;
+using ShopProject.UIModel.StoragePage;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
@@ -27,10 +29,8 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
             _addProductCommand = new DelegateCommand(AddItemExportList);
             _saveItemInFileCommand = new DelegateCommand(SaveExprotItem);
             _saveAllItemInFileCommand = new DelegateCommand(SaveExprotItemAll);
-
-            Product = new List<ExportProductInFileHelper>();
-
-            _Product = new List<ExportProductInFileHelper>();
+  
+            _products = new List<Product>();
             _searchCode = string.Empty;
 
             SetFieldFileDialog();
@@ -43,11 +43,11 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
             _saveFileDialog.Filter = "Excel files(*.xlsx)|*.xlsx|All files(*.*)|*.*";
         }
 
-        private List<ExportProductInFileHelper> _Product;
-        public List<ExportProductInFileHelper> Product
+        private List<Product> _products;
+        public List<Product> Products
         {
-            get { return _Product; }
-            set { _Product = value; OnPropertyChanged("Product"); }
+            get { return _products; }
+            set { _products = value; OnPropertyChanged(nameof(Products)); }
         }
 
 
@@ -55,7 +55,7 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
         public string SearchCode
         {
             get { return _searchCode; }
-            set { _searchCode = value; OnPropertyChanged("SearchCode"); }
+            set { _searchCode = value; OnPropertyChanged(nameof(SearchCode)); }
         }
 
         public ICommand AddProductCommand => _addProductCommand;
@@ -63,58 +63,63 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
         private void AddItemExportList()
         {
 
-            List<ExportProductInFileHelper> _tempProduct = new List<ExportProductInFileHelper>();
+            List<Product> _tempProduct = new List<Product>();
             if (SearchCode.Length >= 12)
             {
                 if (_model != null)
                 {
                     if (SearchCode != "0000000000000")
                     {
-                        var resultProduct = _model.GetItem(SearchCode);
-                        if (resultProduct.ProductCount != 0)
-                        {
-                            _tempProduct.AddRange(Product);
+                        Task t = Task.Run(async () => {
 
-                            if (_tempProduct.Count != 0)
+                            var resultProduct = await _model.GetItem(SearchCode);
+                            if (resultProduct.Count != 0)
                             {
-                                if (_tempProduct.Where(item => item.Product.ID == resultProduct.Product.ID).FirstOrDefault() != null)
+                                _tempProduct.AddRange(Products);
+
+                                if (_tempProduct.Count != 0)
                                 {
-                                    _tempProduct.Where(item => item.Product.ID == resultProduct.Product.ID).FirstOrDefault().ProductCount += 1;
+                                    if (_tempProduct.Where(item => item.ID == resultProduct.ID).FirstOrDefault() != null)
+                                    {
+                                        _tempProduct.Where(item => item.ID == resultProduct.ID).FirstOrDefault().Count += 1;
+                                    }
+                                    else
+                                    {
+                                        _tempProduct.Add(resultProduct);
+                                    }
                                 }
                                 else
                                 {
                                     _tempProduct.Add(resultProduct);
                                 }
                             }
-                            else
-                            {
-                                _tempProduct.Add(resultProduct);
-                            }
 
-
-                            Product.Clear();
-                            Product = _tempProduct;
-
-                            SearchCode = string.Empty;
-                        }
+                        });
+                        t.ContinueWith(t =>
+                        {
+                            UpdateDataGridView(_tempProduct);
+                        });
+                        
                     }
                     else
                     {
-                        _tempProduct.AddRange(Product);
+                        _tempProduct.AddRange(Products);
 
                         if (_tempProduct.Count != 0)
                         {
                             _tempProduct.RemoveAt(_tempProduct.Count - 1);
                         }
-
-                        Product.Clear();
-                        Product = _tempProduct;
-
-                        SearchCode = string.Empty;
-                    }
-
+                        UpdateDataGridView(_tempProduct);
+                    } 
                 }
             }
+        }
+        private void UpdateDataGridView(List<Product> products )
+        {
+            Products.Clear();
+            Products = products;
+
+            SearchCode = string.Empty;
         }
         public ICommand SaveItemInFileCommand => _saveItemInFileCommand;
 
@@ -122,8 +127,15 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
         {
             _saveFileDialog.ShowDialog();
             if (_model != null)
-            {
-                _model.Save(Product, _saveFileDialog.FileName);
+            { 
+                if (_model.Save(Products, _saveFileDialog.FileName))
+                {
+                    MessageBox.Show("товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
@@ -132,10 +144,20 @@ namespace ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage
         private void SaveExprotItemAll()
         {
             _saveFileDialog.ShowDialog();
-            if (_model != null)
-            {
-                _model.Save(_saveFileDialog.FileName);
-            }
+
+            Task.Run(async () => {
+                if (_model != null)
+                {
+                    if (await _model.Save(_saveFileDialog.FileName))
+                    {
+                        MessageBox.Show("товар успішно експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("товар не експортовано", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            });
         }
     }
 }

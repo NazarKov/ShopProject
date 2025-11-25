@@ -1,5 +1,4 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.DataGridViewHelperModel;
+﻿using ShopProject.Helpers; 
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi;
 using ShopProject.Helpers.NetworkServise.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;

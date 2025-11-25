@@ -1,6 +1,5 @@
 ﻿ 
-using ShopProject.Helpers;
-using ShopProject.Helpers.DataGridViewHelperModel;
+using ShopProject.Helpers; 
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;

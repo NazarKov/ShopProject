@@ -1,4 +1,5 @@
-﻿using ExcelDataReader;
+﻿using ClosedXML.Excel;
+using ExcelDataReader;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,14 +31,9 @@ namespace ShopProject.Helpers.FileServise.ExcelServise
             } 
             return db.Tables;
         }
-        public static void Write(string path) 
-        {
-            //workbook = new XSSFWorkbook();
-            // CreateExelTable(Product);
-
-            FileStream sw = File.Create(path);
-            //workbook.Write(sw, true);
-            sw.Close();
+        public static void Write(string path, XLWorkbook workbook) 
+        { 
+            workbook.SaveAs(path); 
         }
     }
 }

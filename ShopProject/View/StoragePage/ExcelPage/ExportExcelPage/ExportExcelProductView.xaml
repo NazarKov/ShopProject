@@ -10,47 +10,127 @@
     <Window.DataContext>
         <local:ExportProductExelViewModel></local:ExportProductExelViewModel>
     </Window.DataContext>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"></ColumnDefinition>
-            <ColumnDefinition Width="150"></ColumnDefinition>
-            <ColumnDefinition Width="150"></ColumnDefinition>
-            <ColumnDefinition Width="150*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+    <Grid x:Name="MainGrid" Background="#F5F5F5">
+ 
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"></RowDefinition>
-            <RowDefinition Height="150*"></RowDefinition>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label x:Name="label" Content="Пошук по штрихкоду" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox"  Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="15,40,0,0" TextWrapping="Wrap" Text="{Binding SearchCode , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
-                    <i:InvokeCommandAction Command="{Binding AddProductCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </TextBox>
+ 
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="10,10,0,0">
+            <TextBlock Text="Пошук по штрихкоду"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="#444"
+                   HorizontalAlignment="Left"/>
 
-        <Button x:Name="button1" Grid.Column="3" Grid.Row="0" Content="Експортувати вибрані" HorizontalAlignment="Right" Margin="15,40,120,0" VerticalAlignment="Top" Command="{Binding SaveItemInFileCommand}"/>
-        <Button x:Name="button2" Grid.Column="3" Grid.Row="0" Content="Експортвати всі" HorizontalAlignment="Right" Margin="15,40,15,0" VerticalAlignment="Top" Command="{Binding SaveAllItemInFileCommand}"/>
+            <TextBox Text="{Binding SearchCode, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,10,0,0"
+                 Width="200"
+                 Height="32"
+                 HorizontalAlignment="Left"
+                 Background="White"
+                 BorderBrush="#C7C7C7"
+                 BorderThickness="1"
+                 Padding="5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction Command="{Binding AddProductCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+        </StackPanel>
 
-        <DataGrid x:Name="dataGrid" 
-              Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Product ,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
-               HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
-               HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
-               VerticalAlignment="Stretch" ColumnWidth="*"
-               CanUserAddRows="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Product.ID}" />
-                <DataGridTextColumn Header="Штрих код"  Binding="{Binding Product.Code}" />
-                <DataGridTextColumn Header="Назва"  Binding="{Binding Product.NameProduct}" />
-                <DataGridTextColumn Header="Артикуль" Binding="{Binding Product.Articule}" />
-                <DataGridTextColumn Header="Ціна"  Binding="{Binding Product.Price,StringFormat='0.00'}" />
-                <DataGridTextColumn Header="Кількість на складі" Binding="{Binding Product.Count,StringFormat='0.00'}" />
-                <DataGridTextColumn Header="Кількість для експорту" Binding="{Binding ProductCount,StringFormat='0.00'}" />
-                <DataGridTextColumn Header="Одниці"  Binding="{Binding Product.Unit.ShortNameUnit}" />
 
-            </DataGrid.Columns>
-        </DataGrid> 
+        <!-- ==== Кнопки зверху ==== -->
+        <StackPanel Grid.Column="3" Grid.Row="0" 
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,10,10" >
+
+            <Button Content="Експортувати вибрані"
+                Width="160" Height="35"
+                Command="{Binding SaveItemInFileCommand}"
+                Background="#E0E0E0"
+                Foreground="#333"
+                BorderBrush="#BDBDBD"
+                BorderThickness="1"
+                Cursor="Hand"/>
+
+            <Button Content="Експортувати всі"
+                Width="160" Height="35"
+                Command="{Binding SaveAllItemInFileCommand}"
+                Background="#E0E0E0"
+                Foreground="#333"
+                BorderBrush="#BDBDBD"
+                BorderThickness="1"
+                Cursor="Hand" Margin="10,0,0,0"/>
+        </StackPanel>
+
+ 
+        <DataGrid Grid.ColumnSpan="4"
+              Grid.Row="1"
+              ItemsSource="{Binding Products}"
+                   AutoGenerateColumns="False"
+                   ColumnWidth="*"
+                   HeadersVisibility="Column"
+                   CanUserAddRows="False"
+                   CanUserDeleteRows="False"
+                   FontSize="16"
+                   Margin="10"
+                   RowHeight="40"
+                   GridLinesVisibility="None"
+                   AlternatingRowBackground="#F9F9F9"
+                   RowBackground="White"
+                   BorderBrush="LightGray"
+                   BorderThickness="1"
+                   SelectionMode="Single"
+                   SelectionUnit="FullRow"
+                   HorizontalGridLinesBrush="#E0E0E0"
+                   VerticalGridLinesBrush="#E0E0E0">
+ 
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="CadetBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="BorderBrush" Value="#517a7b"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+ 
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers> 
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger> 
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns> 
+                <DataGridTextColumn Header="Штрих код" Binding="{Binding Code}"/>
+                <DataGridTextColumn Header="Назва" Binding="{Binding NameProduct}"/>
+                <DataGridTextColumn Header="Артикуль" Binding="{Binding Articule}"/>
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price,StringFormat='0.00'}"/>
+                <DataGridTextColumn Header="Кількість" Binding="{Binding Count,StringFormat='0.00'}"/> 
+                <DataGridTextColumn Header="Одниці" Binding="{Binding Unit.ShortNameUnit}"/>
+            </DataGrid.Columns> 
+        </DataGrid>
+
     </Grid>
 </Window>
