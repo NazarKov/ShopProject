@@ -179,17 +179,15 @@ namespace ShopProject.ViewModel.StoragePage
             });
         }
 
-        private void SetFieldDataGridView(int countCoulmn, int page = 1 , bool reloadbutton = false)
+        private void SetFieldDataGridView(int countCoulmn, int page = 1 , bool reloadbutton = true)
         {
             PaginatorData<Product> result = new PaginatorData<Product>();
-            Task t = Task.Run(async () => {
+            Task.Run(async () => {
 
                 result = await _model.GetProductsPageColumn(page, countCoulmn,Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)));
-            });
-            t.ContinueWith(t => {
-                if (reloadbutton) 
+                if (reloadbutton)
                 {
-                    if (result.Pages == 0) 
+                    if (result.Pages == 0)
                     {
                         Paginator.CountButton = 1;
                     }
@@ -197,11 +195,11 @@ namespace ShopProject.ViewModel.StoragePage
                     {
 
                         Paginator.CountButton = result.Pages;
-                    } 
-                } 
+                    }
+                }
                 ProductList = result.Data.ToList();
                 _isReadyUpdateDataGriedView = true;
-            });
+            }); 
         }  
 
         private void UpdateDataGridView(int countCoulmn, int page = 1)
@@ -215,7 +213,14 @@ namespace ShopProject.ViewModel.StoragePage
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_itemSearch == string.Empty && _itemSearch == "")
                 {
-                    SetFieldDataGridView(countColumn, page , false);
+                    if(page == 1)
+                    {
+                        SetFieldDataGridView(countColumn, page );
+                    }
+                    else
+                    {
+                        SetFieldDataGridView(countColumn, page, false);
+                    }
                 }
                 else
                 {

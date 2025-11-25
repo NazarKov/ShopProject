@@ -31,8 +31,12 @@ namespace ShopProjectWebServer.Api.Common
                 pagesCount = (int)pages;
                 pagesCount++;
             }
+            else
+            {
+                pagesCount = (int)pages;
+            }
 
-            return new PaginatorDto<T>(page,pagesCount , data);
+            return new PaginatorDto<T>(page, pagesCount, data);
         } 
 
         public static PaginatorDto<T> CreationPaginator<T, TKey>(IEnumerable<T> values, int page, int column, Func<T, TKey> orderBySelector = null)

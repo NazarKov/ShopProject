@@ -27,14 +27,28 @@
 
             <Button x:Name="buttonBeginning"  Grid.Column="0"  Content="Напочаток"  
                     HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     CommandParameter="{Binding Name , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickNavigateButtonCommand}"/>
             
             <Button x:Name="buttonBack" Grid.Column="1"  Content="Назад" HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     CommandParameter="{Binding Name , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickNavigateButtonCommand}"/>
 
-            <Button Uid="{Binding PaginatorButtonFirst.Name}" Grid.Column="2" Background="{Binding PaginatorButtonFirst.Background}"  Visibility="{Binding VisibilitiButtonFirst}"
+            <Button Uid="{Binding PaginatorButtonFirst.Name}" Grid.Column="2" Background="{Binding PaginatorButtonFirst.Background}"  Visibility="{Binding VisibilitiButtonFirst}" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
                     Content="{Binding PaginatorButtonFirst.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
@@ -43,25 +57,41 @@
             <TextBlock x:Name="separator1" Grid.Column="3" Text="..." HorizontalAlignment="Center" VerticalAlignment="center" Visibility="{Binding VisibilitySeparator1, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Uid="{Binding PaginatorButtonSecond.Name}" Grid.Column="3" Background="{Binding PaginatorButtonSecond.Background}" Visibility="{Binding VisibilitiButtonSecond , UpdateSourceTrigger=PropertyChanged}"
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonSecond.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
 
             <Button Uid ="{Binding PaginatorButtonThird.Name}" Grid.Column="4" Background="{Binding PaginatorButtonThird.Background}" Visibility="{Binding VisibilitiButtonThird}"
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonThird.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
 
             <Button Uid ="{Binding PaginatorButtonQuarter.Name}" Grid.Column="5" Background="{Binding PaginatorButtonQuarter.Background}"  Visibility="{Binding VisibilitiButtonQuarter}"
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonQuarter.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
 
             <Button Uid ="{Binding PaginatorButtonFifth.Name}" Grid.Column="6" Background="{Binding PaginatorButtonFifth.Background}" Visibility="{Binding VisibilitiButtonFifth}"
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonFifth.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
@@ -69,13 +99,21 @@
             <TextBlock x:Name="separator2" Grid.Column="7" Text="..." HorizontalAlignment="Center" VerticalAlignment="center" Visibility="{Binding VisibilitySeparator2 , UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Uid ="{Binding PaginatorButtonSixth.Name}" Grid.Column="7" Background="{Binding PaginatorButtonSixth.Background}" Visibility="{Binding VisibilitiButtonSixth , UpdateSourceTrigger=PropertyChanged}"
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonSixth.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
 
             <Button Uid="{Binding PaginatorButtonLast.Name}" Grid.Column="8" Background="{Binding PaginatorButtonLast.Background}" Visibility="{Binding VisibilitiButtonLast}"  
-                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center" 
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     Content="{Binding PaginatorButtonLast.Content}"
                     CommandParameter="{Binding Uid , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickButtonCommand}"/>
@@ -83,10 +121,20 @@
             
             <Button x:Name="buttonNext" Grid.Column="9"  Content="Вперед" 
                     HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="center"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     CommandParameter="{Binding Name , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickNavigateButtonCommand}"/>
             <Button x:Name="buttonEnd" Grid.Column="10" Content="В кінеці"
                     HorizontalAlignment="Stretch" Margin="1" VerticalAlignment="Center"
+                    Background="#E0E0E0"
+                    Foreground="#333"
+                    BorderBrush="#BDBDBD"
+                    BorderThickness="1"
+                    Cursor="Hand"
                     CommandParameter="{Binding Name , RelativeSource={RelativeSource Self}}"
                     Command="{Binding ClickNavigateButtonCommand}"/>
 
