@@ -26,7 +26,7 @@ namespace ShopProjectWebServer.Api.Common
 
             pages = values.Count() / column;
             int pagesCount = 0;
-            if (!(pages % 2 == 0))
+            if ((pages % 2 == 0))
             {
                 pagesCount = (int)pages;
                 pagesCount++;

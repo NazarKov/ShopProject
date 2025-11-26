@@ -49,126 +49,6 @@ namespace ShopProject.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Port {
-            get {
-                return ((int)(this["Port"]));
-            }
-            set {
-                this["Port"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public string IpRouter {
-            get {
-                return ((string)(this["IpRouter"]));
-            }
-            set {
-                this["IpRouter"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsValidUpdateProduct {
-            get {
-                return ((bool)(this["IsValidUpdateProduct"]));
-            }
-            set {
-                this["IsValidUpdateProduct"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsValidFormationProduct {
-            get {
-                return ((bool)(this["IsValidFormationProduct"]));
-            }
-            set {
-                this["IsValidFormationProduct"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WorkingShiftStatus {
-            get {
-                return ((string)(this["WorkingShiftStatus"]));
-            }
-            set {
-                this["WorkingShiftStatus"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string empty {
-            get {
-                return ((string)(this["empty"]));
-            }
-            set {
-                this["empty"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PrinterCheck {
-            get {
-                return ((string)(this["PrinterCheck"]));
-            }
-            set {
-                this["PrinterCheck"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PrinterSticker {
-            get {
-                return ((string)(this["PrinterSticker"]));
-            }
-            set {
-                this["PrinterSticker"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SessionID {
-            get {
-                return ((string)(this["SessionID"]));
-            }
-            set {
-                this["SessionID"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string FocusDevise {
-            get {
-                return ((string)(this["FocusDevise"]));
-            }
-            set {
-                this["FocusDevise"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool TestMode {
             get {
@@ -182,12 +62,12 @@ namespace ShopProject.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string empty1 {
+        public string WorkingShiftStatus {
             get {
-                return ((string)(this["empty1"]));
+                return ((string)(this["WorkingShiftStatus"]));
             }
             set {
-                this["empty1"] = value;
+                this["WorkingShiftStatus"] = value;
             }
         }
     }

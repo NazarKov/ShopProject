@@ -32,11 +32,11 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         } 
 
         [HttpGet("GetProductsByBarCode")]
-        public IActionResult GetProductsByBarCode(string token, string barCode)
+        public IActionResult GetProductsByBarCode(string token, string barCode, TypeStatusProduct statusProduct = TypeStatusProduct.Unknown)
         {
             try
             {
-                var result = _servise.GetProductsByBarCode(token,barCode); 
+                var result = _servise.GetProductsByBarCode(token,barCode , statusProduct); 
                 return Ok(ApiResponse<ProductDto>.Ok(result));
             }
             catch(InvalidOperationException invalidOperationException)

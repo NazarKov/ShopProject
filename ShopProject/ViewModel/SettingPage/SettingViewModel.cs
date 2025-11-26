@@ -1,8 +1,7 @@
 ﻿using ShopProject.Model.Command;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ShopProject.Views.SettingPage;
-using ShopProject.View.SettingPage;
+using ShopProject.Views.SettingPage; 
 
 namespace ShopProject.ViewModel.SettingPage
 {
@@ -18,15 +17,10 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand _opendataBaseSettingCommand;
 
         public SettingViewModel()
-        {
-            _opendataBaseSettingCommand = new DelegateCommand(() => { PageSetting = new SettingDataBaseView(); });
-            _generalSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); });
-            _serviseSingFileOpenCommand = new DelegateCommand(() => {PageSetting = new SettingServiseSingingFiles(); });
-            _deviceSettlementOperationsCommand = new DelegateCommand(() => {PageSetting = new SettingDeviceSettlementOperations(); });
-            _printingCheckCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingCheck(); });
-            _stickerSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingSticker(); });
-            _openSettingUserCommand = new DelegateCommand(() => { PageSetting = new SettingUser(); });
-            _openSettingWebServerCommand = new DelegateCommand(() => { PageSetting = new SettingConnectionAppToWebServerView(); });
+        { 
+            _generalSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); }); 
+            _printingCheckCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingCheck(); }); 
+            _openSettingUserCommand = new DelegateCommand(() => { PageSetting = new SettingUser(); }); 
 
             PageSetting = new SettingUser();
         }

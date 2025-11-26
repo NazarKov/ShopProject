@@ -48,7 +48,11 @@
 
         <Label x:Name="label" Grid.Column="1" Content="Код УКТЗЕД" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="3" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox1" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="3" VerticalAlignment="Top" Width="170" SelectedIndex="{Binding SelectCodeUKTZED}"  DisplayMemberPath="NameCode" ItemsSource="{Binding CodeUKTZED}"/>
-        
+
+        <Label x:Name="label2" Grid.Column="0" Content="Статус" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox2" Grid.Column="0" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="3" VerticalAlignment="Top" Width="170" SelectedIndex="{Binding SelectStatusProduct}"  ItemsSource="{Binding StatusProduct}"/>
+
+
         <Button x:Name="buttonSave" Content="Редагувати" Grid.Column="0" Grid.Row="4" Command="{Binding SaveProductCommand}" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" Width="100"/>
         <Button x:Name="buttonCansel"  Content="Вийти" Grid.Column="1" Grid.Row="4" Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,40,15,0" VerticalAlignment="Top" Width="100"/>
 

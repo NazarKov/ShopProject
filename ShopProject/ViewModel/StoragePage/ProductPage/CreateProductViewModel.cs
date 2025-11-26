@@ -159,7 +159,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
                 })) ;
                 {
                     MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-                    MediatorService.ExecuteEvent("ReloadProduct", "");
+                    MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
                 }
             });
         }

@@ -17,29 +17,29 @@ namespace ShopProject.Model.SettingPage
 
         public void Save(params string[] item)
         {
-            AppSettingsManager.SetParameterFile("NameShop", item[0]);
-            AppSettingsManager.SetParameterFile("NameSeller", item[1]);
-            AppSettingsManager.SetParameterFile("NameFop", item[2]);
-            AppSettingsManager.SetParameterFile("Region", item[3]);
-            AppSettingsManager.SetParameterFile("District", item[4]);
-            AppSettingsManager.SetParameterFile("Citi", item[5]);
-            AppSettingsManager.SetParameterFile("Streer", item[6]);
-            AppSettingsManager.SetParameterFile("House", item[7]);
-            AppSettingsManager.SetParameterFile("PrinterCheck", item[8]);
+            //AppSettingsManager.SetParameterFile("NameShop", item[0]);
+            //AppSettingsManager.SetParameterFile("NameSeller", item[1]);
+            //AppSettingsManager.SetParameterFile("NameFop", item[2]);
+            //AppSettingsManager.SetParameterFile("Region", item[3]);
+            //AppSettingsManager.SetParameterFile("District", item[4]);
+            //AppSettingsManager.SetParameterFile("Citi", item[5]);
+            //AppSettingsManager.SetParameterFile("Streer", item[6]);
+            //AppSettingsManager.SetParameterFile("House", item[7]);
+            //AppSettingsManager.SetParameterFile("PrinterCheck", item[8]);
         }
         public List<string> Get()
         {
             return new List<string>() 
             {
-                AppSettingsManager.GetParameterFiles("NameShop").ToString(),
-                AppSettingsManager.GetParameterFiles("NameSeller").ToString(),
-                AppSettingsManager.GetParameterFiles("NameFop").ToString(),
-                AppSettingsManager.GetParameterFiles("Region").ToString(),
-                AppSettingsManager.GetParameterFiles("District").ToString(),
-                AppSettingsManager.GetParameterFiles("Citi").ToString(),
-                AppSettingsManager.GetParameterFiles("Streer").ToString(),
-                AppSettingsManager.GetParameterFiles("House").ToString(),
-                AppSettingsManager.GetParameterFiles("PrinterCheck").ToString(),
+                //AppSettingsManager.GetParameterFiles("NameShop").ToString(),
+                //AppSettingsManager.GetParameterFiles("NameSeller").ToString(),
+                //AppSettingsManager.GetParameterFiles("NameFop").ToString(),
+                //AppSettingsManager.GetParameterFiles("Region").ToString(),
+                //AppSettingsManager.GetParameterFiles("District").ToString(),
+                //AppSettingsManager.GetParameterFiles("Citi").ToString(),
+                //AppSettingsManager.GetParameterFiles("Streer").ToString(),
+                //AppSettingsManager.GetParameterFiles("House").ToString(),
+                //AppSettingsManager.GetParameterFiles("PrinterCheck").ToString(),
             };
         }
         public void PrintTest()

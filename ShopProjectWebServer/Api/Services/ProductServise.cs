@@ -60,13 +60,13 @@ namespace ShopProjectWebServer.Api.Services
             return DataBaseMainController.DataBaseAccess.ProductTable.GetAll().ToProductDto();
         }
 
-        public ProductDto GetProductsByBarCode(string token, string barCode)
+        public ProductDto GetProductsByBarCode(string token, string barCode , TypeStatusProduct status)
         {
             if (!AuthorizationApi.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barCode).ToProductDto();
+            return DataBaseMainController.DataBaseAccess.ProductTable.GetByBarCode(barCode , status).ToProductDto();
         }
 
         public PaginatorDto<ProductDto> GetProductsPageColumn(string token, int page, int countColumn, TypeStatusProduct status)

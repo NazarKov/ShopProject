@@ -137,8 +137,7 @@
                   SelectionUnit="FullRow"
                   HorizontalGridLinesBrush="#E0E0E0"
                   VerticalGridLinesBrush="#E0E0E0">
-
-            <!-- Стиль заголовків -->
+ 
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Background" Value="CadetBlue"/>
@@ -151,8 +150,7 @@
                     <Setter Property="BorderThickness" Value="0,0,1,1"/>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
-
-            <!-- Стиль рядків -->
+ 
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Margin" Value="0,2"/>
@@ -160,13 +158,11 @@
                     <Setter Property="SnapsToDevicePixels" Value="True"/>
                     <Setter Property="VerticalAlignment" Value="Center"/>
                     <Setter Property="Cursor" Value="Hand"/>
-                    <Style.Triggers>
-                        <!-- Виділений рядок -->
+                    <Style.Triggers> 
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="#BBDEFB"/>
                             <Setter Property="Foreground" Value="Black"/>
-                        </Trigger>
-                        <!-- Наведення мишки -->
+                        </Trigger> 
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#E3F2FD"/>
                         </Trigger>
@@ -205,6 +201,24 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
+
+        <TextBlock Text="Нічого не знайдено"
+                   Grid.Column="0" Grid.Row="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="18"
+                   Opacity="0.5">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ProductList.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
         <paginator:TemplatePaginatorButtonView x:Name="BottomButtomPaginator1" Grid.Row="3" DataContext="{Binding Paginator}"  HorizontalAlignment="Center" VerticalAlignment="Center"></paginator:TemplatePaginatorButtonView>
 

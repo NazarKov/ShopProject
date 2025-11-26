@@ -11,6 +11,7 @@ using ShopProject.Helpers;
 using ShopProjectDataBase.Entities;
 using ShopProject.Model.StoragePage.ProductsPage;
 using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Helper;
 
 namespace ShopProject.ViewModel.StoragePage.ProductPage
 {
@@ -25,6 +26,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         {
             _model = new UpdateProductModel();
             _products = new Product();
+            _units = new List<ProductUnit>();
             _codeUKTZED = new List<ProductCodeUKTZED>();
 
             _saveProductCommand = new DelegateCommand(UpdateProductDataBase);
@@ -34,9 +36,8 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
             _articule = string.Empty;
             _units = null;
             _selectUnits = 0;
-
-            Units = new List<ProductUnit>();
-            CodeUKTZED = new List<ProductCodeUKTZED>();  
+            _statusProduct = new List<string>();
+            _selectStatusProduct = 0;
             SetFiledWindow();
         }
 
@@ -48,6 +49,13 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
             Units = Session.ProductUnits.ToList();
             CodeUKTZED = Session.ProductCodesUKTZED.ToList();
+           
+            StatusProduct.Add("Весь товар");
+            StatusProduct.Add("Готовий до продажі");
+            StatusProduct.Add("Товар закінчився");
+            StatusProduct.Add("Товар aрхівовано");
+            StatusProduct.Add("Завантажено з Excel порібно редагування");
+
             SetFieldText();
         }
 
@@ -57,34 +65,34 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         public string Code
         {
             get { return _code; }
-            set { _code = value; OnPropertyChanged("Code"); }
+            set { _code = value; OnPropertyChanged(nameof(Code)); }
         }
 
         private string _name;
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged("Name"); }
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
         private string _articule;
         public string Articule
         {
             get { return _articule; }
-            set { _articule = value; OnPropertyChanged("Articule"); }
+            set { _articule = value; OnPropertyChanged(nameof(Articule)); }
         }
 
         private decimal _price;
         public decimal Price
         {
             get { return _price; }
-            set { _price = value; OnPropertyChanged("Price"); }
+            set { _price = value; OnPropertyChanged(nameof(Price)); }
         }
 
         private decimal _count;
         public decimal Count
         {
             get { return _count; }
-            set { _count = value; OnPropertyChanged("Count"); }
+            set { _count = value; OnPropertyChanged(nameof(Count)); }
         }
 
         private List<ProductUnit>? _units;
@@ -112,6 +120,19 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         {
             get { return _selectCodeUKTZED; }
             set { _selectCodeUKTZED = value; OnPropertyChanged(nameof(SelectCodeUKTZED)); }
+        }
+
+        private List<string> _statusProduct;
+        public List<string> StatusProduct
+        {
+            get { return _statusProduct; }
+            set { _statusProduct = value; OnPropertyChanged(nameof(StatusProduct)); }
+        }
+        private int _selectStatusProduct;
+        public int SelectStatusProduct
+        {
+            get { return _selectStatusProduct; }
+            set { _selectStatusProduct = value; OnPropertyChanged(nameof(SelectStatusProduct)); }
         }
 
         public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -142,6 +163,12 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
                     SelectUnits = Units.IndexOf(Units.Where(i=>i.NameUnit ==_products.Unit.NameUnit).First());
                 if (_products.CodeUKTZED != null)
                     SelectCodeUKTZED = CodeUKTZED.IndexOf(CodeUKTZED.Where(i => i.NameCode == _products.CodeUKTZED.NameCode).First());
+
+                if (Enum.GetValues<TypeStatusProduct>().Where(s => s == _products.Status).Any())
+                {
+                    _selectStatusProduct = Enum.GetValues<TypeStatusProduct>().ToList()
+                        .IndexOf(Enum.GetValues<TypeStatusProduct>().Where(s => s == _products.Status).First());
+                }
             }
         } 
 
@@ -162,7 +189,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
                     Unit = Units.ElementAt(_selectUnits),
                     CodeUKTZED = CodeUKTZED.ElementAt(_selectCodeUKTZED),
                     Discount = new Discount(),
-                    Status = _products.Status,
+                    Status = Enum.GetValues<TypeStatusProduct>().ElementAt(_selectStatusProduct)
                 }))
                 {
                     MessageBox.Show("Товар редаговано", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);

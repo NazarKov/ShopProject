@@ -65,7 +65,7 @@ namespace ShopProject.ViewModel.StoragePage
             _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite); 
 
             SetFieldPage();
-            MediatorService.AddEvent("ReloadProduct", (object obg) => { SetFieldPage(); });
+            MediatorService.AddEvent(NavigationButton.ReloadProduct.ToString(), (object obg) => { SetFieldPage(); });
         }
 
         private TemplatePaginatorButtonViewModel _paginator;
@@ -155,11 +155,11 @@ namespace ShopProject.ViewModel.StoragePage
             SelectedStatusProduct = 0;
             if (StatusProducts.Count == 0)
             {
-                StatusProducts.Add(TypeStatusProduct.Unknown.ToString());
-                StatusProducts.Add(TypeStatusProduct.InStock.ToString());
-                StatusProducts.Add(TypeStatusProduct.OutStock.ToString());
-                StatusProducts.Add(TypeStatusProduct.Archived.ToString());
-                StatusProducts.Add(TypeStatusProduct.ImportedExcel.ToString());
+                StatusProducts.Add("Весь товар");
+                StatusProducts.Add("Готовий до продажі");
+                StatusProducts.Add("Товар закінчився");
+                StatusProducts.Add("Товар aрхівовано");
+                StatusProducts.Add("Завантажено з Excel порібно редагування"); 
             }
         }
 
@@ -184,7 +184,8 @@ namespace ShopProject.ViewModel.StoragePage
             PaginatorData<Product> result = new PaginatorData<Product>();
             Task.Run(async () => {
 
-                result = await _model.GetProductsPageColumn(page, countCoulmn,Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)));
+                result = await _model.GetProductsPageColumn(page, countCoulmn,
+                    Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
                 if (reloadbutton)
                 {
                     if (result.Pages == 0)
@@ -236,7 +237,7 @@ namespace ShopProject.ViewModel.StoragePage
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
             _itemSearch = parameter.ToString();
 
-            _timer.Change(2000, Timeout.Infinite);// 2000 затримка в дві секунди для продовження ведення тексту
+            _timer.Change(2000, Timeout.Infinite);
         }
 
         private void OnInputStopped(object state)
@@ -251,19 +252,29 @@ namespace ShopProject.ViewModel.StoragePage
 
             Task t = Task.Run(async () =>
             {
-                if (Regex.Matches(_itemSearch, "[1-9]").Count == 12) // 12 - довжина штрихкоду
+                if (_itemSearch.Count() == 13)
                 {
-                    result.Data = new List<Product>() { (await _model.SearchByBarCode(_itemSearch, Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)))) };
+                    if (Regex.Matches(_itemSearch, "[1-9]").Any()) // 12 - довжина штрихкоду
+                    {
+                        result.Data = new List<Product>() { (await _model.SearchByBarCode(_itemSearch,
+                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)))) };
+                    }
+                    else
+                    {
+                        result = await _model.SearchByName(_itemSearch, page, countColumn, 
+                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
+                    }
                 }
                 else
                 {
-                    result = await _model.SearchByName(_itemSearch, page, countColumn, Enum.Parse<TypeStatusProduct>(StatusProducts.ElementAt(SelectedStatusProduct)));
+                    result.Data = new List<Product>();
+                    
                 }
 
             });
             t.ContinueWith(t =>
             {
-                if (result.Pages == 0)
+                if (result.Data.Count() > 0 & result.Pages == 0)
                 {
                     Paginator.CountButton = 1;
                 }

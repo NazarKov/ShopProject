@@ -29,16 +29,16 @@ namespace ShopProject.ViewModel.SettingPage
         private void SetFieldTextBox()
         {
             List<string> setting = _model.Get();
-            NameShop = setting[0];
-            NameSeller = setting[1];
-            NameFop = setting[2];
-            Region = setting[3];
-            District = setting[4];
-            City = setting[5];
-            Street = setting[6];
-            House = setting[7];
-            Printer = PrinterSettings.InstalledPrinters.Cast<string>().ToList();
-            SelectedPrinter = setting[8];
+            //NameShop = setting[0];
+            //NameSeller = setting[1];
+            //NameFop = setting[2];
+            //Region = setting[3];
+            //District = setting[4];
+            //City = setting[5];
+            //Street = setting[6];
+            //House = setting[7];
+            //Printer = PrinterSettings.InstalledPrinters.Cast<string>().ToList();
+            //SelectedPrinter = setting[8];
         }
 
         private string _nameShop;

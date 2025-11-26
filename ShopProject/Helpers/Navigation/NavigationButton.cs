@@ -13,6 +13,7 @@ namespace ShopProject.Helpers.Navigation
         RedirectToWorkShiftMenu,
         RedirectToChangePassword,
         RedirectToOperationsRecorderView,
+        ReloadProduct,
         ExitApp, 
     }
 }

@@ -37,40 +37,10 @@ namespace ShopProject.Helpers
         #region  
         public static UserEntity UserEntity { get; set; }
         #endregion
-
-
-        //private static bool _isInit = false;
-        //private static IEntityGet<UserEntiti>? _users;
-        //private static IEntityAccess<OperationsRecorderUserEntiti> _deviceTable;
-
-
-        //public static string? NameCompany { get; set; } = string.Empty;
-        //public static ProductEntiti? Product { get; set; }
-        //public static List<ProductEntiti>? ProductList { get; set; }
-
-
-        //public static UserEntiti UserItem { get; set; }
+         
         public static ObservableCollection<TabItem> Tabs = new ObservableCollection<TabItem>();
 
-        //private static UserEntiti _user;
-        //public static UserEntiti User
-        //{
-        //    get { return _user; }
-        //}
-        //private static List<OperationsRecorderEntiti> _devicesSettlementOperations;
-        //public static List<OperationsRecorderEntiti> Devices
-        //{
-        //    get { return _devicesSettlementOperations; }
-        //} 
-
-        //private static void Init()
-        //{
-        //    _users = new UserTableAccess();
-        //    _deviceTable = new OperationsRecorderUserTableAccess();
-        //    _user = new UserEntiti();
-        //    _devicesSettlementOperations = new List<OperationsRecorderEntiti>();
-        //    _isInit = true;
-        //}
+ 
 
         public static bool CheckSession()
         {

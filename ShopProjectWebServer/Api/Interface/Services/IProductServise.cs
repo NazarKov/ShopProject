@@ -9,7 +9,7 @@ namespace ShopProjectWebServer.Api.Interface.Services
     {
         public ProductInfoDto  GetInfoProducts(string token);
 
-        public ProductDto GetProductsByBarCode(string token, string barCode);
+        public ProductDto GetProductsByBarCode(string token, string barCode , TypeStatusProduct status);
 
         public PaginatorDto<ProductDto> GetProductByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusProduct status);
         public PaginatorDto<ProductDto> GetProductsPageColumn(string token, int page, int countColumn, TypeStatusProduct status);

@@ -268,29 +268,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
                 return new ProductEntity();
             }
-        }
-
-    
-
-        public ProductEntity GetByBarCode(string barCode)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ProductCodeUKTZED.Load();
-                    context.ProductUnits.Load();
-                    context.Products.Load();
-
-                    if (context.Products != null && context.Products.Count() != 0)
-                    { 
-                        return context.Products.First(i => i.Code == barCode);
-                    }
-
-                }
-                return new ProductEntity();
-            }
-        }
+        } 
 
         public IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status)
         {

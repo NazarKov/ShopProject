@@ -13,8 +13,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void UpdateRange(IEnumerable<ProductEntity> items);
         void UpdateParameter(ProductEntity item , string parameter , object value);
         void Delete(ProductEntity item); 
-        IEnumerable<ProductEntity> GetAll();
-        ProductEntity GetByBarCode(string barCode);
+        IEnumerable<ProductEntity> GetAll(); 
         ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct);
 
         IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status);

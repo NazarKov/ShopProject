@@ -30,9 +30,9 @@ namespace ShopProject.ViewModel.SettingPage
         }
         private void SetFieldCheckBox()
         {
-            IsValidCrateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct");
-            IsValidUpdateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct");
-            IsValidFormationProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct");
+            //IsValidCrateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidCreateProduct");
+            //IsValidUpdateProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidUpdateProduct");
+            //IsValidFormationProduct = (bool)AppSettingsManager.GetParameterFiles("IsValidFormationProduct");
         }
 
         private bool _isValidCrateProduct;
