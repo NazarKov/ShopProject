@@ -3,46 +3,149 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage.ProductPage"
+        xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage.ProductPage"  
         mc:Ignorable="d"
-        Title="UpdateProductAll" Height="475" Width="800" ResizeMode="NoResize" Name="window" >
+        Title="UpdateProductAll" Height="475" Width="800"  Name="window" >
     <Window.Resources>
         <local:UpdateProductRangeViewModel x:Key="VM"  ></local:UpdateProductRangeViewModel>
         <CollectionViewSource x:Key="Units" Source="{Binding ProductUnits}"></CollectionViewSource>
         <CollectionViewSource x:Key="CodeUKTZED" Source="{Binding ProductCodeUKTZED}"></CollectionViewSource>
-     
-        
+        <CollectionViewSource x:Key="SelectUnits" Source="{Binding Product.SelectUnits}"></CollectionViewSource> 
+        <CollectionViewSource x:Key="SelectCodeUKTZED" Source="{Binding Product.SelectCodeUKTZED}"></CollectionViewSource> 
     </Window.Resources>
     <Window.DataContext>
         <Binding Source="{StaticResource VM}"></Binding>
-    </Window.DataContext>
-
+    </Window.DataContext> 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="400"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <DataGrid Name="list" Margin="15,15,15,15"
-                  Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ProductList ,UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
-                  HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled"
-                  HorizontalGridLinesBrush="DarkGray" RowBackground="LightGray" AlternatingRowBackground="White"
-                  VerticalAlignment="Stretch" ColumnWidth="*"
-                  CanUserAddRows="False"  >
+        <DataGrid Name="list"
+                  Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Product , UpdateSourceTrigger=PropertyChanged}"   
+                  AutoGenerateColumns="False"
+                  ColumnWidth="*"
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  FontSize="16"
+                  Margin="10"
+                  RowHeight="40"
+                  GridLinesVisibility="None"
+                  AlternatingRowBackground="#F9F9F9"
+                  RowBackground="White"
+                  BorderBrush="LightGray"
+                  BorderThickness="1"
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  HorizontalGridLinesBrush="#E0E0E0" 
+                  VerticalGridLinesBrush="#E0E0E0">
+
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="CadetBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="BorderBrush" Value="#517a7b"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#BBDEFB"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Артикул" Binding="{Binding Articule}" />
                 <DataGridTextColumn Header="Штрих код"  Binding="{Binding Code}" />
                 <DataGridTextColumn Header="Назва"  Binding="{Binding NameProduct}" />
                 <DataGridTextColumn Header="Ціна"  Binding="{Binding Price}" />
                 <DataGridTextColumn Header="Кількість" Binding="{Binding Count}" />
-                <DataGridComboBoxColumn x:Name="combobox1" Header="Одниці" ItemsSource="{Binding Source={StaticResource Units}}" DisplayMemberPath="NameUnit"
-                                        SelectedItemBinding="{Binding Unit.ShortNameUnit, UpdateSourceTrigger=PropertyChanged }"/>
-                <DataGridComboBoxColumn x:Name="combobox2" Header="Код УКТЗЕД" ItemsSource="{Binding Source={StaticResource CodeUKTZED}}" DisplayMemberPath="NameCode" SelectedItemBinding="{Binding CodeUKTZED.NameCode, UpdateSourceTrigger=PropertyChanged , Mode=TwoWay}"/>
+
+                <DataGridTemplateColumn Header="Статус">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Status}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.StatusProducts, 
+                                      RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                      SelectedValue="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Одниці">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Unit.ShortNameUnit}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.ProductUnits, 
+                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                        DisplayMemberPath="ShortNameUnit"
+                        SelectedValue="{Binding Unit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Код УКТЗЕД">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding CodeUKTZED.NameCode}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding DataContext.ProductCodeUKTZED, 
+                                   RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                   DisplayMemberPath="NameCode"
+                                   SelectedValue="{Binding CodeUKTZED, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+              
                
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="button1" Content="Зберегти" Width="70" HorizontalAlignment="Right" Margin="0,0,100,0" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpdateProductCommand}"/>
-        <Button x:Name="button2" Content="Вийти" Width="70" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="1" VerticalAlignment="Top" CommandParameter="{Binding ElementName=window}" Command="{Binding ExitWindowCommand}"/>
+        <Button x:Name="button1" Content="Зберегти" Width="120" HorizontalAlignment="Right" Margin="0,0,150,0" Background="#E0E0E0"
+                Foreground="#333"
+                BorderBrush="#BDBDBD"
+                BorderThickness="1"
+                Height="35"
+                Cursor="Hand" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpdateProductCommand}"/>
+        <Button x:Name="button2" Content="Вийти" Width="120" HorizontalAlignment="Right" Margin="0,0,10,0" Background="#E0E0E0"
+                Foreground="#333"
+                BorderBrush="#BDBDBD"
+                BorderThickness="1"
+                 Height="35"
+                Cursor="Hand" Grid.Row="1" VerticalAlignment="Top" CommandParameter="{Binding ElementName=window}" Command="{Binding ExitWindowCommand}"/>
         
 
     </Grid>

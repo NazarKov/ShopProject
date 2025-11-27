@@ -133,9 +133,9 @@
                   RowBackground="White"
                   BorderBrush="LightGray"
                   BorderThickness="1"
-                  SelectionMode="Single"
+                  SelectionMode="Extended"
                   SelectionUnit="FullRow"
-                  HorizontalGridLinesBrush="#E0E0E0"
+                  HorizontalGridLinesBrush="#E0E0E0" 
                   VerticalGridLinesBrush="#E0E0E0">
  
             <DataGrid.ColumnHeaderStyle>

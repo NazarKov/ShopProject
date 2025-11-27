@@ -1,9 +1,14 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductsPage;
+using ShopProject.UIModel.StoragePage;
 using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -18,49 +23,64 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         {
             _model = new UpdateProductRangeModel();
             _updateProductCommand = new DelegateCommand(UpdateProduct);
-            
-            _productList = new List<ProductEntity>();
-            _productUnits = new List<ProductUnitEntity>();
-            _productCodeUKTZED = new List<ProductCodeUKTZEDEntity>();
 
-
+            _product = new List<Product>();
+            _productCodeUKTZED = new List<ProductCodeUKTZED>();
+            _productUnits = new List<ProductUnit>();
+            _statusProducts = new List<TypeStatusProduct>();
             SetField();
         }
 
         private void SetField()
         {
-            if (_model != null)
+            var units = Session.ProductUnits;
+            if (units != null)
             {
-                ProductUnits = _model.GetUnits();
-                ProductCodeUKTZED = _model.GetCodeUKTZED();
+                ProductUnits.AddRange(units);
+            }
+            var codes = Session.ProductCodesUKTZED;
+            if (codes != null)
+            {
+                ProductCodeUKTZED.AddRange(codes);
             }
 
-            if (Session.ProductList != null)
+             
+            var products = Session.UpdateProductRange;
+            if (products != null)
             {
-                ProductList = Session.ProductList;
-            }
+                foreach(Product product in products)
+                {
+                    Product.Add(product);
+                } 
+            } 
 
+            StatusProducts = Enum.GetValues<TypeStatusProduct>().ToList();
+
+        } 
+        private List<Product> _product;
+        public List<Product> Product
+        {
+            get { return _product; }
+            set { _product = value; OnPropertyChanged(nameof(Product)); }
         }
 
-        private List<ProductUnitEntity> _productUnits;
-        public List<ProductUnitEntity> ProductUnits
+        private List<ProductUnit> _productUnits;
+        public List<ProductUnit> ProductUnits
         {
             get { return _productUnits; }
             set { _productUnits = value; OnPropertyChanged(nameof(ProductUnits)); }
         }
-
-        private List<ProductCodeUKTZEDEntity> _productCodeUKTZED;
-        public List<ProductCodeUKTZEDEntity> ProductCodeUKTZED
+        private List<ProductCodeUKTZED> _productCodeUKTZED;
+        public List<ProductCodeUKTZED> ProductCodeUKTZED
         {
             get { return _productCodeUKTZED; }
             set { _productCodeUKTZED = value; OnPropertyChanged(nameof(ProductCodeUKTZED)); }
         }
-
-        private List<ProductEntity> _productList;
-        public List<ProductEntity> ProductList
+        public List<TypeStatusProduct> _statusProducts;
+        public List<TypeStatusProduct> StatusProducts
         {
-            get { return _productList; }
-            set { _productList = value; OnPropertyChanged(nameof(ProductList)); }
+            get { return _statusProducts; }
+            set { _statusProducts = value; OnPropertyChanged(nameof(StatusProducts)); }
         }
 
         public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose, CanRegister); }
@@ -74,10 +94,17 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         public ICommand UpdateProductCommand => _updateProductCommand;
         private void UpdateProduct()
         {
-            if (_model.UpdateProduct(ProductList))
-            {
-                MessageBox.Show("Товари редаговано", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            
+            Task.Run(async () => {
+                if (await _model.UpdateProduct(Product))
+                {
+                    MessageBox.Show("Товари редаговано", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося редаговати товар", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            });
         }
 
     }

@@ -18,7 +18,6 @@ namespace ShopProject.Helpers
     {
         public static User? User { get; set; }  
          
-        public static List<ProductEntity> ProductList { get; set; }
 
 
         #region resourse
@@ -26,6 +25,7 @@ namespace ShopProject.Helpers
         public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }
         public static ProductUnit? ProductUnit { get; set; }
         public static Product? Product { get; set; } 
+        public static List<Product>? UpdateProductRange { get; set; }
         public static OperationRecorder? FocusDevices;
         public static WorkingShift? WorkingShift { get; set; }
         public static IEnumerable<UserRole>? Roles { get; set; }

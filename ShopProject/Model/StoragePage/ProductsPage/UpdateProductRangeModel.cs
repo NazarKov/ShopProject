@@ -7,63 +7,28 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ShopProjectDataBase.Entities;
+using ShopProject.UIModel.StoragePage;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
 
 namespace ShopProject.Model.StoragePage.ProductsPage
 {
     internal class UpdateProductRangeModel
-    {
+    { 
 
-        private List<ProductUnitEntity> _productUnitsList;
-        private List<ProductCodeUKTZEDEntity> _codesUKTZEDList;
+        public UpdateProductRangeModel() {  }
 
-        public UpdateProductRangeModel()
-        {
-            _productUnitsList = new List<ProductUnitEntity>();
-            _codesUKTZEDList = new List<ProductCodeUKTZEDEntity>();
- 
-        }
-
-        public bool UpdateProduct(List<ProductEntity> items)
+        public async Task<bool> UpdateProduct(List<Product> items)
         {
             try
-            {
-
-                bool response = false;
-                Task t = Task.Run(async () =>
-                {
-                    //response = await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateProductRange(Session.Token,items);
-                });
-                t.Wait();
-
-                return true;
+            { 
+                return await MainWebServerController.MainDataBaseConntroller.ProductController.UpdateProductRange(Session.User.Token, items.ToUpdateProductDto()); 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-        }
-
-        public List<ProductUnitEntity> GetUnits()
-        {
-            Task t = Task.Run(async () =>
-            {
-                //_productUnitsList = (await MainWebServerController.MainDataBaseConntroller.ProductUnitController.GetUnits(Session.Token)).ToList();
-            });
-            t.Wait();
-            return _productUnitsList;
-        }
-
-        public List<ProductCodeUKTZEDEntity> GetCodeUKTZED()
-        {
-            Task t = Task.Run(async () =>
-            {
-                //_codesUKTZEDList = (await MainWebServerController.MainDataBaseConntroller.ProductCodeUKTZEDController.GetCodeUKTZED(Session.Token)).ToList();
-            });
-            t.Wait();
-
-            return _codesUKTZEDList;
-        }
+        } 
 
     }
 }

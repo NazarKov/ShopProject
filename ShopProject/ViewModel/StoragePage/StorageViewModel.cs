@@ -302,7 +302,7 @@ namespace ShopProject.ViewModel.StoragePage
             }
             else
             {
-                //Session.ProductList = _products;
+                Session.UpdateProductRange = _products;
                 new UpdateProductRangeView().ShowDialog();
             }
             UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));

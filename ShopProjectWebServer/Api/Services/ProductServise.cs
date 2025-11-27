@@ -47,7 +47,7 @@ namespace ShopProjectWebServer.Api.Services
             } 
             var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByNameAndStatu(name, status);
 
-            var paginator = PaginatorDto<ProductEntity>.CreationPaginator(products, page, countColumn);
+            var paginator = PaginatorDto<ProductEntity>.CreationPaginator(products.Reverse(), page, countColumn);
             return new PaginatorDto<ProductDto>(paginator.Page,paginator.Pages,paginator.Data.ToProductDto());
         }
 

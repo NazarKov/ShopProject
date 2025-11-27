@@ -58,21 +58,40 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
         }
         public static UpdateProductDto ToUpdateProductDto(this Product item)
         {
-            return new UpdateProductDto()
+            var product = new UpdateProductDto()
             {
                 ID = item.ID.ToString(),
                 Status = (int)item.Status,
                 OutStockAt = item.OutStockAt,
                 Articule = item.Articule,
                 ArhivedAt = item.ArhivedAt,
-                Code = item.Code,
-                CodeUKTZED_ID = item.CodeUKTZED.ID,
+                Code = item.Code, 
                 Count = item.Count, 
-                Discount_ID = item.Discount.ID,
                 NameProduct = item.NameProduct,
-                Price = item.Price,
-                Unit_ID = item.Unit.ID,
+                Price = item.Price, 
             };
+            if (item.CodeUKTZED != null)
+            {
+                product.CodeUKTZED_ID = item.CodeUKTZED.ID;
+            }
+            if (item.Discount != null)
+            {
+                product.Discount_ID = item.Discount.ID;
+            }
+            if (item.Unit != null)
+            {
+                product.Unit_ID = item.Unit.ID;
+            }
+            return product;
+        }
+        public static IEnumerable<UpdateProductDto> ToUpdateProductDto(this List<Product> items)
+        {
+            var result = new List<UpdateProductDto>();
+            foreach (var item in items)
+            {
+                result.Add(ToUpdateProductDto(item));
+            }
+            return result;
         }
 
         public static CreateProductDto ToCreateProductDto(this Product item)

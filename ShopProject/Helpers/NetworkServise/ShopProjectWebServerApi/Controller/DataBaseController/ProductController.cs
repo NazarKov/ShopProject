@@ -143,7 +143,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             return result.Data; 
         }
 
-        public async Task<bool> UpdateProductRange(string token, List<UpdateProductDto> product)
+        public async Task<bool> UpdateProductRange(string token, IEnumerable<UpdateProductDto> product)
         { 
             var content = JsonSerializer.Serialize(product);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");

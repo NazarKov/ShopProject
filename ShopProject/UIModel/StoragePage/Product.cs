@@ -18,7 +18,7 @@ namespace ShopProject.UIModel.StoragePage
         public Discount? Discount { get; set; } 
         public TypeStatusProduct Status { get; set; } 
         public DateTimeOffset? CreatedAt { get; set; } 
-        public DateTimeOffset? ArhivedAt { get; set; } 
+        public DateTimeOffset? ArhivedAt { get; set; }
         public DateTimeOffset? OutStockAt { get; set; } 
         public ProductUnit? Unit { get; set; } 
         public ProductCodeUKTZED? CodeUKTZED { get; set; }  
