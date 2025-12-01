@@ -1,5 +1,6 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;  
 using ShopProject.UIModel;
+using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
 using ShopProject.UIModel.StoragePage;
@@ -25,12 +26,13 @@ namespace ShopProject.Helpers
         public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }
         public static ProductUnit? ProductUnit { get; set; }
         public static Product? Product { get; set; } 
+        public static ObjectOwner? ObjectOwner { get; set; }
         public static List<Product>? UpdateProductRange { get; set; }
         public static OperationRecorder? FocusDevices;
         public static WorkingShift? WorkingShift { get; set; }
         public static IEnumerable<UserRole>? Roles { get; set; }
         public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
-        public static IEnumerable<ProductUnit>? ProductUnits { get; set; }
+        public static IEnumerable<ProductUnit>? ProductUnits { get; set; }  
         #endregion
 
 

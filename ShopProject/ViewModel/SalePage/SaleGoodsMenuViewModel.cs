@@ -1,4 +1,5 @@
 ﻿using ShopProject.Helpers;
+using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.SalePage;
@@ -7,6 +8,7 @@ using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
@@ -27,7 +29,7 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _clearFieldDataGrid;
 
         private ICommand _updateSize;
-
+        private Guid _idChannel;
 
         public SaleGoodsMenuViewModel() 
         {
@@ -38,7 +40,7 @@ namespace ShopProject.ViewModel.SalePage
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
 
-            _product = new List<Product>();
+            _product = new ObservableCollection<ProductForSale>();
             _barCodeSearch = string.Empty;
 
             _typeOplatu = new List<string>();
@@ -58,8 +60,8 @@ namespace ShopProject.ViewModel.SalePage
             set { _barCodeSearch = value; OnPropertyChanged(nameof(BarCodeSearch)); }
         }
 
-        private List<Product> _product;
-        public List<Product> Product
+        private ObservableCollection<ProductForSale> _product;
+        public ObservableCollection<ProductForSale> Product
         {
             get { return _product; }
             set { _product = value; OnPropertyChanged(nameof(Product)); }
@@ -116,10 +118,14 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
-            Product = new List<Product>();
+            Product = new ObservableCollection<ProductForSale>();
             SumaUser = 0;
             SumaOrder = 0;
             _selectIndex = 0;
+             
+            _idChannel = Guid.NewGuid();
+            MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, this.CountingSumaOrder);
+            MediatorService.AddEvent(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, this.RemoveItem);
         }
         private bool _draingCheck;
         public bool DrawingCheck
@@ -139,7 +145,7 @@ namespace ShopProject.ViewModel.SalePage
 
         private async Task SearchBarCodeGoods()
         {
-            List<Product> temp;
+            ObservableCollection<ProductForSale> temp;
             if (BarCodeSearch.Length > 12)
             {
                 if (BarCodeSearch != "2")
@@ -149,21 +155,21 @@ namespace ShopProject.ViewModel.SalePage
                     {
                         
                         item.Count = 1;
-                        temp = new List<Product>();
-                        temp = Product;
+                        temp = new ObservableCollection<ProductForSale>();
+                        temp = Product; 
 
-                        if (temp.Find(pr => pr.Code == item.Code) != null)
+                        if (temp.FirstOrDefault(pr => pr.Product.Code == item.Code) != null)
                         {
-                            temp.Find(pr => pr.Code == item.Code).Count += 1;
+                            temp.FirstOrDefault(pr => pr.Product.Code == item.Code).Count += 1;
                         }
                         else
                         {
-                            temp.Add(item);
+                            temp.Add(new ProductForSale(item) {Cannnel = _idChannel });
                         }
 
-                        CountingSumaOrder(temp);
+                        CountingSumaOrder();
 
-                        Product = new List<Product>();
+                        Product = new ObservableCollection<ProductForSale>();
                         Product = temp;
                     }
                 }
@@ -173,24 +179,24 @@ namespace ShopProject.ViewModel.SalePage
                     {
                         if (Product.ElementAt(Product.Count - 1).Count == 1)
                         {
-                            temp = new List<Product>();
+                            temp = new ObservableCollection<ProductForSale>();
                             temp = Product;
 
                             temp.Remove(temp.ElementAt(temp.Count - 1));
-                            Product = new List<Product>();
+                            Product = new ObservableCollection<ProductForSale>();
                             Product = temp;
-                            CountingSumaOrder(Product);
+                            CountingSumaOrder();
                         }
                         else
                         {
-                            temp = new List<Product>();
+                            temp = new ObservableCollection<ProductForSale>();
                             temp = Product;
 
 
                             temp.ElementAt(Product.Count - 1).Count -= 1;
-                            Product = new List<Product>();
+                            Product = new ObservableCollection<ProductForSale>();
                             Product = temp;
-                            CountingSumaOrder(Product);
+                            CountingSumaOrder();
                         }
                     }
                 }
@@ -198,14 +204,24 @@ namespace ShopProject.ViewModel.SalePage
             } 
         }
 
-        private void CountingSumaOrder(List<Product> products)
+        private void CountingSumaOrder(object obj = null)
         {
             SumaOrder = 0;
-            foreach (Product orderProduct in products)
+            foreach (ProductForSale orderProduct in Product)
             {
-                SumaOrder += (orderProduct.Price * orderProduct.Count);
+                SumaOrder += (orderProduct.Product.Price * orderProduct.Count);
             }
         }
+        private void RemoveItem(object item)
+        {
+            var product = item as ProductForSale;
+            if (product != null) 
+            {
+                Product.Remove(product);
+                CountingSumaOrder();
+            }
+        }
+
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
@@ -245,7 +261,7 @@ namespace ShopProject.ViewModel.SalePage
                     
                     {
                         MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
-                        Product = new List<Product>();
+                        Product = new ObservableCollection<ProductForSale>();
                         BarCodeSearch = string.Empty;
                         SumaUser = new decimal();
                         SumaUser = 0;

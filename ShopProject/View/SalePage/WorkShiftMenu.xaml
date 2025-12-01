@@ -38,15 +38,55 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
 
-        <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="0" Grid.RowSpan="2" Command="{Binding OpenShiftCommand}" VerticalAlignment="Stretch"/>
-        <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding OpenNewCheck}"/>
+        <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="0" Grid.RowSpan="2" Command="{Binding OpenShiftCommand}" VerticalAlignment="Stretch"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding OpenNewCheck}"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
 
-        <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" VerticalAlignment="Stretch" Command="{Binding PrintLastCheckCommand}"/>
-        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="4" Command="{Binding OpenReturnGoodsMenuCommand}" VerticalAlignment="Stretch"/>
-        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="5" VerticalAlignment="Stretch" Command="{Binding OfficialDepositMoneyCommand}"/>
-        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="6" VerticalAlignment="Stretch" Command="{Binding OfficialIssuanceModeyCommand}"/>
-        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="7" Command="{Binding CloseShiftCommand}" VerticalAlignment="Stretch"/>
-        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"></Button>
+        <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" VerticalAlignment="Stretch" Command="{Binding PrintLastCheckCommand}"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="4" Command="{Binding OpenReturnGoodsMenuCommand}" VerticalAlignment="Stretch"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="5" VerticalAlignment="Stretch" Command="{Binding OfficialDepositMoneyCommand}"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="6" VerticalAlignment="Stretch" Command="{Binding OfficialIssuanceModeyCommand}"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="7" Command="{Binding CloseShiftCommand}" VerticalAlignment="Stretch"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"/>
+        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"
+                  Background="#E0E0E0"
+                  Foreground="#333"
+                  BorderBrush="#BDBDBD"
+                  BorderThickness="1"
+                  Cursor="Hand"></Button>
         <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="15,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"></ColumnDefinition>

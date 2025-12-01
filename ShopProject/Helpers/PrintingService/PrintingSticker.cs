@@ -13,8 +13,7 @@ using Image = System.Windows.Controls.Image;
 namespace ShopProject.Helpers.PrintingServise
 {
     internal class PrintingSticker
-    {
-        private string _printer;
+    { 
         private Bitmap _sticker;
         private int _width;
         private int _height;
@@ -30,7 +29,6 @@ namespace ShopProject.Helpers.PrintingServise
 
         public PrintingSticker ()
         {
-            _printer = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString();
             _height = 300;
             _width = 500;
             this.isShowNameCompany = true;
@@ -62,9 +60,7 @@ namespace ShopProject.Helpers.PrintingServise
 
                 CreateBorderSticker(_sticker);
                 SetTextSticker(name, company, description, code, _sticker);
-
-                   
-                AppSettingsManager.SetParameterFile("LastBarCode", code);
+                 
 
                 return ConvertAndCopyBitmap.BitmapForBitmapImage(_sticker);
             }
@@ -200,14 +196,16 @@ namespace ShopProject.Helpers.PrintingServise
         {
             try
             {
-                if (_printer == null || _printer == string.Empty || _printer == " ")
+                var printer = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString(); 
+
+                if (printer == null || printer == string.Empty || printer == " ")
                 {
                     throw new Exception("Ви не вказали принтера");
                 }
                 Image image = new Image();
                 image.Source = ConvertAndCopyBitmap.BitmapForBitmapImage(_sticker);
                 PrintDialog printDialog = new PrintDialog();
-                printDialog.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), _printer);
+                printDialog.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), printer);
                 if (printDialog.ShowDialog() == true)
                 {
                     printDialog.PrintVisual(image, "file");

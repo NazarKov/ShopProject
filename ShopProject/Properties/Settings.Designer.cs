@@ -70,5 +70,29 @@ namespace ShopProject.Properties {
                 this["WorkingShiftStatus"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PrinterSticker {
+            get {
+                return ((string)(this["PrinterSticker"]));
+            }
+            set {
+                this["PrinterSticker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NameCompany {
+            get {
+                return ((string)(this["NameCompany"]));
+            }
+            set {
+                this["NameCompany"] = value;
+            }
+        }
     }
 }

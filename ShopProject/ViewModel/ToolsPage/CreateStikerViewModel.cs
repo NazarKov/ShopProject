@@ -9,18 +9,18 @@ namespace ShopProject.ViewModel.ToolsPage
 {
     internal class CreateStickerViewModel : ViewModel<CreateStickerViewModel>
     {
-        private ICommand createStikerCommand;
-        private ICommand printStikerCommand;
-        private ICommand clearStikerCommand;
+        private ICommand _createStikerCommand;
+        private ICommand _printStikerCommand;
+        private ICommand _clearStikerCommand;
         private CreateStickerModel model;
 
         public CreateStickerViewModel()
         {
             model = new CreateStickerModel();
 
-            createStikerCommand = new DelegateCommand(CreateStiker);
-            printStikerCommand = new DelegateCommand(Print);
-            clearStikerCommand = new DelegateCommand(ClearField);
+            _createStikerCommand = new DelegateCommand(CreateStiker);
+            _printStikerCommand = new DelegateCommand(Print);
+            _clearStikerCommand = new DelegateCommand(ClearField);
 
             _nameProduct = string.Empty;
             _nameCompany = string.Empty;
@@ -37,18 +37,14 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void SetFeildTextBox()
         {
+            var namecompany = AppSettingsManager.GetParameterFiles("NameCompany").ToString();
+            if (namecompany != null && namecompany != string.Empty) 
+            {
+                NameCompany = namecompany;
+            }
 
             var item = Session.Product;
-            //NameCompany = Session.NameCompany;
-            if (item == null)
-            {
-
-                if (AppSettingsManager.GetParameterFiles("LastBarCode") != string.Empty)
-                {
-                    Code = AppSettingsManager.GetParameterFiles("LastBarCode").ToString();
-                }
-            }
-            else
+            if (item != null)
             {
                 if (item.Code != null)
                     Code = item.Code.ToString();
@@ -72,87 +68,92 @@ namespace ShopProject.ViewModel.ToolsPage
                             Description += splitName[i] + " ";
                     }
                 }
-
-            }
+            } 
         }
 
         private string _nameProduct;
         public string NameProduct
         {
             get { return _nameProduct; }
-            set { _nameProduct = value; OnPropertyChanged("NameProduct"); }
+            set { _nameProduct = value; OnPropertyChanged(nameof(NameProduct)); }
         }
 
         private string _nameCompany;
         public string NameCompany
         {
             get { return _nameCompany; }
-            set { _nameCompany = value; OnPropertyChanged("NameCompany"); }
+            set { _nameCompany = value; OnPropertyChanged(nameof(NameCompany)); }
         }
 
         private string _code;
         public string Code
         {
             get { return _code; }
-            set { _code = value; OnPropertyChanged("Code"); }
+            set { _code = value; OnPropertyChanged(nameof(Code)); }
         }
 
         private string _description;
         public string Description
         {
             get { return _description; }
-            set { _description = value; OnPropertyChanged("Description"); }
+            set { _description = value; OnPropertyChanged(nameof(Description)); }
         }
 
         private BitmapImage _barCode;
         public BitmapImage BarCode
         {
             get { return _barCode; }
-            set { _barCode = value; OnPropertyChanged("BarCode"); }
+            set { _barCode = value; OnPropertyChanged(nameof(BarCode)); }
         }
 
         private bool _isShowNameCompany;
         public bool IsShowNameCompany
         {
             get { return _isShowNameCompany; }
-            set { _isShowNameCompany = value; OnPropertyChanged("IsShowNameCompany"); }
+            set { _isShowNameCompany = value; OnPropertyChanged(nameof(IsShowNameCompany)); }
         }
 
         private bool _isShowProductBarCode;
         public bool IsShowProductBarCode
         {
             get { return _isShowProductBarCode; }
-            set { _isShowProductBarCode = value; OnPropertyChanged("IsShowProductBarCode"); }
+            set { _isShowProductBarCode = value; OnPropertyChanged(nameof(IsShowProductBarCode)); }
         }
         private bool _isShowProductName;
         public bool IsShowProductName
         {
             get { return _isShowProductName; }
-            set { _isShowProductName = value; OnPropertyChanged("IsShowProductName"); }
+            set { _isShowProductName = value; OnPropertyChanged(nameof(IsShowProductName)); }
         }
         private bool _isShowProductDescription;
         public bool IsShowProductDescription
         {
             get { return _isShowProductDescription; }
-            set { _isShowProductDescription = value; OnPropertyChanged("IsShowProductDescription"); }
+            set { _isShowProductDescription = value; OnPropertyChanged(nameof(IsShowProductDescription)); }
         }
 
-        public ICommand CreateStikerComman => createStikerCommand;
+        public ICommand CreateStikerComman => _createStikerCommand;
 
         private void CreateStiker()
         {
             model.SetShowTextInImage(_isShowNameCompany, _isShowProductBarCode, _isShowProductName, _isShowProductDescription);
             BarCode = model.CreateBarCode(_nameCompany, _nameProduct, _description, _code);
+            
+            var namecompany = AppSettingsManager.GetParameterFiles("NameCompany").ToString();
+            if (namecompany != null && namecompany == string.Empty)
+            {
+                AppSettingsManager.SetParameterFile("NameCompany", NameCompany);
+            }
         }
 
-        public ICommand PrintStikerCommand => printStikerCommand;
+        public ICommand PrintStikerCommand => _printStikerCommand;
 
         private void Print()
         {
             model.Print();
         }
 
-        public ICommand ClearStikerCommand => clearStikerCommand;
+        public ICommand ClearStikerCommand => _clearStikerCommand;
 
         private void ClearField()
         {

@@ -14,6 +14,8 @@ namespace ShopProject.Helpers.Navigation
         RedirectToChangePassword,
         RedirectToOperationsRecorderView,
         ReloadProduct,
+        CountingSumaOrder,
+        RemoveProduct,
         ExitApp, 
     }
 }

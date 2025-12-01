@@ -11,6 +11,7 @@ using ShopProjectDataBase.Entities;
 using SigningFileLib;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,13 +59,18 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public bool SendCheck(List<Product> products, Operation operation)
+        public bool SendCheck(ObservableCollection<ProductForSale> products, Operation operation)
         {
-            var id =  _fiscalOperationController.SendFiscalCheck(Session.WorkingShift,operation, products);
+            var product = new List<Product>();
+            foreach (var item in products) 
+            {
+                product.Add(item.Product);
+            }
+            var id =  _fiscalOperationController.SendFiscalCheck(Session.WorkingShift,operation, product);
             if (id != string.Empty)
             {
                 Task.Run(async () => {
-                    await SaveDataBase(operation, products);
+                    await SaveDataBase(operation, product);
                     await CreateMac();
                 });
                 //_printingFiscalCheck.PrintCheck(products, id, order);
