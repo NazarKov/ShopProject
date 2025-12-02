@@ -18,15 +18,22 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 AmountOfFundsReceived = operation.AmountOfFundsReceived,
                 BuyersAmount = operation.BuyersAmount,
                 AmountOfIssuedFunds = operation.AmountOfIssuedFunds,
-                CreatedAt = operation.CreatedAt,
-                MACID = operation.MAC.ID,
-                ShiftID = operation.Shift.ID,
+                CreatedAt = operation.CreatedAt, 
                 Discount = 0,
                 GoodsTax = operation.GoodsTax,
                 NumberPayment = operation.NumberPayment,
                 RestPayment = operation.RestPayment,
                 TotalPayment = operation.TotalPayment,
             };
+            if (operation.MAC != null) 
+            {
+                result.MACID = operation.MAC.ID;
+            }
+            if (operation.Shift != null) 
+            {
+                result.ShiftID = operation.Shift.ID;
+            }
+
             result.TypePayment = (int)operation.TypeOperation;
             result.TypeOperation = (int)operation.TypeOperation; 
             return result; 

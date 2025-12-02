@@ -251,10 +251,8 @@ namespace ShopProject.ViewModel.StoragePage
             PaginatorData<Product> result = new PaginatorData<Product>();
 
             Task t = Task.Run(async () =>
-            {
-                if (_itemSearch.Count() == 13)
-                {
-                    if (Regex.Matches(_itemSearch, "[1-9]").Any()) // 12 - довжина штрихкоду
+            { 
+                    if (_itemSearch.Count() == 13 && Regex.Matches(_itemSearch, "[1-9]").Any()) // 13 - довжина штрихкоду
                     {
                         result.Data = new List<Product>() { (await _model.SearchByBarCode(_itemSearch,
                             Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)))) };
@@ -264,12 +262,6 @@ namespace ShopProject.ViewModel.StoragePage
                         result = await _model.SearchByName(_itemSearch, page, countColumn, 
                             Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
                     }
-                }
-                else
-                {
-                    result.Data = new List<Product>();
-                    
-                }
 
             });
             t.ContinueWith(t =>

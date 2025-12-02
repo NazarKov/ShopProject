@@ -26,9 +26,9 @@ namespace ShopProject.ViewModel.SalePage
 
         private ICommand _searchBarCodeGoodsCommand;
         private ICommand _printingCheckCommand;
-        private ICommand _clearFieldDataGrid;
-
+        private ICommand _clearFieldDataGrid; 
         private ICommand _updateSize;
+        private ICommand _cleareSumUserCommand;
         private Guid _idChannel;
 
         public SaleGoodsMenuViewModel() 
@@ -39,6 +39,7 @@ namespace ShopProject.ViewModel.SalePage
             _printingCheckCommand = new DelegateCommand(PrintingCheck);
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
+            _cleareSumUserCommand = new DelegateCommand(ClearSumUser);
 
             _product = new ObservableCollection<ProductForSale>();
             _barCodeSearch = string.Empty;
@@ -221,7 +222,20 @@ namespace ShopProject.ViewModel.SalePage
                 CountingSumaOrder();
             }
         }
+        public ICommand AddNumberToTextBoxCommand { get => new DelegateParameterCommand(AddNumberToTextBoxField, CanRegister); }
+        private void AddNumberToTextBoxField(object parameter)
+        {
+            if (parameter!=null)
+            {
+                SumaUser += Convert.ToInt32(parameter);
+            }
+        }
 
+        public ICommand ClearSumUserCommand => _cleareSumUserCommand;
+        private void ClearSumUser()
+        {
+            SumaUser = 0;
+        }
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
@@ -279,6 +293,7 @@ namespace ShopProject.ViewModel.SalePage
                 MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
             }
         }
+        private bool CanRegister(object parameter) => true;
 
 
     }

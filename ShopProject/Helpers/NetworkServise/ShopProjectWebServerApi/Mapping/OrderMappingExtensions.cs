@@ -15,12 +15,15 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             var result = new List<CreateOrderDto>();
             foreach (var order in orders) 
             {
-                result.Add(new CreateOrderDto()
+                if(order.Product != null && order.Operation != null)
                 {
-                    ProductID = order.Product.ID.ToString(),
-                    OperationID = order.Operation.ID,
-                    Count = order.Count,
-                });
+                    result.Add(new CreateOrderDto()
+                    {
+                        ProductID = order.Product.ID.ToString(),
+                        OperationID = order.Operation.ID,
+                        Count = order.Count,
+                    });
+                }
             }
             return result;
         }

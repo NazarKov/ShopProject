@@ -74,9 +74,12 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 FullName = user.FullName,
                 Login = user.Login,
                 TIN = user.TIN,
-                Password = user.Password,
-                UserRoleID = user.Role.ID, 
+                Password = user.Password, 
             };
+            if (user.Role != null) 
+            {
+                item.UserRoleID = user.Role.ID;
+            }
 
             if (user.SignatureKey != null) 
             {
