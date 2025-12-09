@@ -92,7 +92,7 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenWorkShifMenuCommand { get => new DelegateParameterCommand(OpenWorkShiftMenu, CanRegister); }
         private void OpenWorkShiftMenu(object parameter)
         {
-            Session.FocusDevices = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter); 
+            Session.WorkingShiftStatus.OperationRecorder = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter); 
             MediatorService.ExecuteEvent(NavigationButton.RedirectToWorkShiftMenu.ToString());
         }
         private bool CanRegister(object parameter) => true;

@@ -57,7 +57,7 @@ namespace ShopProjectDataBase.Entities
         /// <summary>
         /// знижка на чек
         /// </summary>
-        public decimal Discount { get; set; } = decimal.Zero;
+        public DiscountEntity? Discount { get; set; }
         /// <summary>
         /// Змінна під час якої була операція
         /// </summary>
@@ -66,6 +66,7 @@ namespace ShopProjectDataBase.Entities
         /// Список товару який належмть до операції 
         /// </summary>
         public ICollection<OrderEntity>? Order { get; set; }
+         
 
     }
 }

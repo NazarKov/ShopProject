@@ -71,10 +71,8 @@ namespace ShopProject.ViewModel.SalePage
             _statusShift = string.Empty;
             _statusColor = string.Empty;
             _tabs = new ObservableCollection<TabItem>();
-
-            _user = Session.User;
-            _operationsRecorder = new OperationRecorder();
-            _operationsRecorder = Session.FocusDevices;
+            _user = new User();
+            _operationsRecorder = new OperationRecorder(); 
             _fnNumber = string.Empty;
             _economicUnit = string.Empty;
             _seller = string.Empty;
@@ -193,7 +191,12 @@ namespace ShopProject.ViewModel.SalePage
 
 
         private void SetFieldPage()
-        { 
+        {
+            var user = Session.User;
+            if (user != null) 
+            {
+                _user = user;
+            }
             SetTabsField();
             SetHeaderLabelField();
         }
@@ -227,11 +230,29 @@ namespace ShopProject.ViewModel.SalePage
         private void SetHeaderLabelField()
         { 
 
-            var workingShiftStatus = WorkingShiftStatus.Deserialize(AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString());
+            var workingShiftStatus = Session.WorkingShiftStatus;
 
-            Task.Run(async () => {
-                Session.WorkingShift = await _model.GetWorkingShift(workingShiftStatus.WorkingShift.ID.ToString());
-            });
+            if (workingShiftStatus != null && workingShiftStatus.WorkingShift != null)
+            {
+                Task.Run(async () =>
+                {
+                    Session.WorkingShiftStatus.WorkingShift = await _model.GetWorkingShift(workingShiftStatus.WorkingShift.ID.ToString());
+                });  
+            }
+
+
+            if ((workingShiftStatus != null && workingShiftStatus.OperationRecorder != null))
+            {
+                FNumber = workingShiftStatus.OperationRecorder.FiscalNumber;
+
+                if (workingShiftStatus.OperationRecorder.ObjectOwner != null)
+                {
+                    EconomicUnit = workingShiftStatus.OperationRecorder.ObjectOwner.NameObject;
+                }
+                _operationsRecorder = workingShiftStatus.OperationRecorder;
+            }
+            StatusShift = workingShiftStatus.StatusShift;
+            StatusOnline = workingShiftStatus.StatusOnline;
 
             if (StatusShift == "Зміна відкрита")
             {
@@ -240,14 +261,7 @@ namespace ShopProject.ViewModel.SalePage
             else
             {
                 StatusColor = "Red";
-            }
-
-            FNumber = _operationsRecorder.FiscalNumber;
-             
-            if (_operationsRecorder.ObjectOwner != null)
-            {
-                EconomicUnit = _operationsRecorder.ObjectOwner.NameObject;
-            }
+            } 
 
             if (_user.FullName != null && _user.FullName != string.Empty && _user.FullName != "")
             {
@@ -289,21 +303,26 @@ namespace ShopProject.ViewModel.SalePage
                     MACCreateAt = await _model.GetMAC(_operationsRecorder.ID),
                     CreateAt = DateTimeOffset.Now,
                     
-                }; 
-                Session.WorkingShift = workingShiftEntity;
+                };
+                Session.WorkingShiftStatus.WorkingShift = workingShiftEntity;
             });
-            t.ContinueWith(t =>
+            t.ContinueWith(async t =>
             {
-                if (_model.OpenShift(workingShiftEntity))
+                if (await _model.OpenShift(workingShiftEntity))
                 {
                     StatusShift = "Зміна відкрита";
                     StatusColor = "Green";
-                    //AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
+
+                    OnPropertyChanged(nameof(StatusColor));
                     StatusOnline = "з " + DateTime.Now.ToString("g");
-                    //AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
-                    //AppSettingsManager.SetParameterFile("FocusDevise", _operationsRecorder.ID.ToString());
+                    if (Session.WorkingShiftStatus != null)
+                    {
+                        Session.WorkingShiftStatus.StatusShift = StatusShift;
+                        Session.WorkingShiftStatus.StatusOnline = StatusOnline;
+                        Session.WorkingShiftStatus.OperationRecorder = _operationsRecorder; 
 
-
+                        AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
+                    }
                     MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             });
@@ -313,7 +332,7 @@ namespace ShopProject.ViewModel.SalePage
         private void CloseShift()
         {
 
-            var shift = Session.WorkingShift;
+            var shift = Session.WorkingShiftStatus.WorkingShift;
 
 
 
@@ -333,19 +352,21 @@ namespace ShopProject.ViewModel.SalePage
                 shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
                 shift.TypeShiftEndAt =  TypeWorkingShift.CloseShift;
             });
-            t.ContinueWith(t => {
-                if (_model.CloseShift(shift))
+            t.ContinueWith(async t => {
+                if (await _model.CloseShift(shift))
                 {
-                    StatusShift = "Зміна закрита";
+                    StatusShift = "Зміна закрита"; 
                     StatusColor = "Red";
-                    //AppSettingsManager.SetParameterFile("StatusWorkShift", StatusShift);
-                    StatusOnline = string.Empty;
-                    //AppSettingsManager.SetParameterFile("StatusWorkShiftTime", StatusOnline);
+                    OnPropertyChanged(nameof(StatusColor));
+                    StatusOnline = string.Empty; 
                     //_model.Print(operation);
+ 
+                    Session.WorkingShiftStatus.StatusShift = StatusShift;
+                    Session.WorkingShiftStatus.StatusOnline = StatusOnline;
+                    Session.WorkingShiftStatus.OperationRecorder = null;
 
 
-                    //AppSettingsManager.SetParameterFile("FocusDevise", string.Empty);
-
+                    AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
                     MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 } 
             });
@@ -514,15 +535,15 @@ namespace ShopProject.ViewModel.SalePage
                 });
                 SelectedTabItem = 0;
 
-                OnPropertyChanged("Tabs");
+                OnPropertyChanged(nameof(Tabs));
             }
         }
 
         public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
         private void ExitWorkShiftMenu()
         {
-            MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString()); 
-            Session.FocusDevices = null;
+            MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString());
+            Session.WorkingShiftStatus.OperationRecorder = null;
         }
 
         public ICommand PrintLastCheckCommand => _printLastCheckCommand;

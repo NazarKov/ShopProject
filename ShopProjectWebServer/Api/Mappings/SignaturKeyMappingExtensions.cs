@@ -7,13 +7,20 @@ namespace ShopProjectWebServer.Api.Mappings
     {
         public static SignatureKeyDto ToSignatureKeyDto(this ElectronicSignatureKey item)
         {
-            return new SignatureKeyDto()
+            if (item != null)
             {
-                Signature = item.Signature,
-                SignaturePassword = item.SignaturePassword,
-                CreateAt = item.CreateAt,
-                EndAt = item.EndAt,
-            };
+                return new SignatureKeyDto()
+                {
+                    Signature = item.Signature,
+                    SignaturePassword = item.SignaturePassword,
+                    CreateAt = item.CreateAt,
+                    EndAt = item.EndAt,
+                };
+            }
+            else
+            {
+                return new SignatureKeyDto();
+            }
         }
     }
 }

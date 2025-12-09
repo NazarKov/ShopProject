@@ -75,7 +75,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                     return true;
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }

@@ -27,12 +27,11 @@ namespace ShopProject.Helpers
         public static ProductUnit? ProductUnit { get; set; }
         public static Product? Product { get; set; } 
         public static ObjectOwner? ObjectOwner { get; set; }
-        public static List<Product>? UpdateProductRange { get; set; }
-        public static OperationRecorder? FocusDevices;
-        public static WorkingShift? WorkingShift { get; set; }
+        public static List<Product>? UpdateProductRange { get; set; } 
         public static IEnumerable<UserRole>? Roles { get; set; }
         public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
-        public static IEnumerable<ProductUnit>? ProductUnits { get; set; }  
+        public static IEnumerable<ProductUnit>? ProductUnits { get; set; }    
+        public static WorkingShiftStatus? WorkingShiftStatus { get; set; }
         #endregion
 
 
@@ -92,7 +91,13 @@ namespace ShopProject.Helpers
             if (Roles == null)
             {
                 Resources.InitWebServerResourses();
-            } 
+            }
+            WorkingShiftStatus = new WorkingShiftStatus();
+            var item = WorkingShiftStatus.Deserialize(AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString());
+            if (item != null) 
+            {
+                WorkingShiftStatus = item;
+            }
         }
     }
 }

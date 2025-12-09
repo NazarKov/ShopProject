@@ -18,13 +18,21 @@ namespace ShopProjectDataBase.Entities
         /// </summary>
         public string NameDiscount { get; set; } = string.Empty;
         /// <summary>
-        /// відсоток знижки
+        /// відсоток знижки або сума знижки залежить від типу знижки 
         /// </summary>
-        public int PercentageDiscount { get; set; } = 0;
+        public decimal Discount { get; set; } = decimal.Zero;
         /// <summary>
-        /// опис знижки
+        /// тип знижки
         /// </summary>
-        public string Description { get; set; } = string.Empty;
+        public decimal TypeDiscount { get; set; } = decimal.Zero;
+        /// <summary>
+        /// проміжна сума на яку нараховується знижка
+        /// </summary>
+        public decimal InterimAmount {  get; set; } = decimal.Zero;
+        /// <summary>
+        /// загальна сума знижки
+        /// </summary>
+        public decimal TotalDiscount {  get; set; } = decimal.Zero;
         /// <summary>
         /// дата створення знижки
         /// </summary>
@@ -33,10 +41,5 @@ namespace ShopProjectDataBase.Entities
         /// дата завершення знижки
         /// </summary>
         public DateTime FinishedAt { get; set; }
-        /// <summary>
-        /// тип знижки  0 - знижка на чек , 1 - знижка на товар
-        /// </summary>
-        public int TypeDiscount { get; set; }
-
     }
 }

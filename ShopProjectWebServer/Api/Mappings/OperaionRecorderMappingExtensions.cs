@@ -1,5 +1,4 @@
-﻿using Azure;
-using ShopProjectDataBase.Entities;
+﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
 

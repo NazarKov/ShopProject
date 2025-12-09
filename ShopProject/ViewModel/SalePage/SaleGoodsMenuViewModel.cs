@@ -3,19 +3,14 @@ using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.SalePage;
-using ShopProject.UIModel.StoragePage;
-using ShopProjectDataBase.Entities;
+using ShopProject.UIModel.UserPage;
 using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+using System.Collections.ObjectModel; 
+using System.Linq;  
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+using System.Windows; 
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.SalePage
@@ -30,6 +25,7 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _updateSize;
         private ICommand _cleareSumUserCommand;
         private Guid _idChannel;
+        private User _user;
 
         public SaleGoodsMenuViewModel() 
         {
@@ -47,10 +43,11 @@ namespace ShopProject.ViewModel.SalePage
             _typeOplatu = new List<string>();
             _typeOplatu.Add("готівкою");
             _typeOplatu.Add("безготівкові форми оплати");
-
+            _typeOplatu.Add("Сертифікат");
             //DrawingCheck = _model.IsDrawinfChek;
             IsFiscalCheck = true;
-
+            _user = new User();
+            _user = Session.User;
             ClearField();
         }
 
@@ -87,23 +84,24 @@ namespace ShopProject.ViewModel.SalePage
             get { return _typeOplatu; }
             set { _typeOplatu = value; OnPropertyChanged(nameof(TypeOplatu)); }
         }
+        private int _discount;
+        public int Discount
+        {
+            get { return _discount; }
+            set { _discount = value; OnPropertyChanged(nameof(Discount));}
+        }
         private int _selectIndex;
         public int SelectIndex
         {
             get { return _selectIndex; }
             set { _selectIndex = value;OnPropertyChanged(nameof(SelectIndex)); }
-        }
-
-        public ICommand UpdateSize => _updateSize;
-
+        } 
         private int _widght;
         public int Widght
         {
             get { return _widght; }
             set { _widght = value;OnPropertyChanged(nameof(Widght)); }
-        }
-
-
+        } 
         private int _height;
         public int Height
         {
@@ -111,6 +109,7 @@ namespace ShopProject.ViewModel.SalePage
             set { _height = value; OnPropertyChanged(nameof(Height)); }
         }
 
+        public ICommand UpdateSize => _updateSize;
         private void UpdateSizes()
         {
             Widght = (int)Application.Current.MainWindow.ActualWidth - 530;
@@ -256,12 +255,13 @@ namespace ShopProject.ViewModel.SalePage
                 //    typeOperration = 200;
                 //}
 
+                _model.AddKey(_user.SignatureKey);
                 Task t = Task.Run(async () =>{
 
                     Operation operation = new Operation()
                     { 
                         TypeOperation =  TypeOperation.FiscalCheck,
-                        MAC = await _model.GetMAC(Session.FocusDevices.ID),
+                        MAC = await _model.GetMAC(Session.WorkingShiftStatus.OperationRecorder.ID),
                         CreatedAt = DateTime.Now,
                         NumberPayment = await _model.GetLocalNumber(),
                         GoodsTax = "0",

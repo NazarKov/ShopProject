@@ -7,9 +7,11 @@ namespace ShopProjectDataBase.Entities
     public class GiftCertificatesEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
-        public string? code { get; set; }
-        public DateTime? create_at { get; set; }
-        public string? description { get; set; }
+        public int ID { get; set; }
+        public string? Code { get; set; }
+        public DateTime? CreateAt { get; set; }
+        public string? Description { get; set; }
+        public UserEntity? User { get; set; }
+
     }
 }

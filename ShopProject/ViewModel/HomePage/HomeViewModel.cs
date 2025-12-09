@@ -180,6 +180,7 @@ namespace ShopProject.ViewModel.HomePage
         private void InitStartViewButton()
         {
             MediatorService.AddEvent(NavigationButton.RedirectToAuthorizationView.ToString(), (object obg) => { Page = new AuthorizationView(); });
+            MediatorService.AddEvent(NavigationButton.RedirectToTitleView.ToString(), (object obg) => { VisibilityMenu = Visibility.Visible; SetName(); Page = new TitleView();});
             MediatorService.AddEvent(NavigationButton.ExitApp.ToString(), ExitApp);
         }
         private void SetFieldWindow()
@@ -219,7 +220,7 @@ namespace ShopProject.ViewModel.HomePage
         }
         private void OpenSaleMenu()
         {
-            if (Session.FocusDevices != null)
+            if (Session.WorkingShiftStatus!=null &&  Session.WorkingShiftStatus.OperationRecorder != null)
             {
                 Page = new WorkShiftMenu();
             }

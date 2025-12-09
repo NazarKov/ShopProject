@@ -102,7 +102,7 @@
             </Grid.RowDefinitions>
 
             <Label x:Name="label" Grid.Column="0" FontSize="20" Content="Ваш ПРРО" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"/>
-            <Label x:Name="label1" Grid.Column="0" FontSize="16" Content="{Binding StatusShift}" Foreground="{Binding StatusColor}"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
+            <Label x:Name="label1" Grid.Column="0" FontSize="16" Content="{Binding StatusShift}" Foreground="{Binding StatusColor ,UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
 
             <Label x:Name="label2" Grid.Column="1" FontSize="16" Content="ФН" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"/>
             <Label x:Name="label3" Grid.Column="1" FontSize="14" Content="{Binding FNumber}"   HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>

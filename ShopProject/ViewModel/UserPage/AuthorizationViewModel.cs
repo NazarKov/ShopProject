@@ -79,10 +79,10 @@ namespace ShopProject.ViewModel.UserPage
             t.ContinueWith(t => { 
                 if(entranse) 
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(async () =>
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         MessageBox.Show("Вхід успішно виконано");
-                        MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString()); 
+                        MediatorService.ExecuteEvent(NavigationButton.RedirectToTitleView.ToString()); 
                     });
                 }
             });

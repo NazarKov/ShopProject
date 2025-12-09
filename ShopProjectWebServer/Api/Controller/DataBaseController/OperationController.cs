@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Operation;
 using ShopProjectWebServer.Api.Interface.Services;
