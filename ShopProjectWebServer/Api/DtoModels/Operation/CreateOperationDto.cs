@@ -28,7 +28,7 @@ namespace ShopProjectWebServer.Api.DtoModels.Operation
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]
-        public decimal Discount { get; set; } = decimal.Zero;
+        public int DiscountID { get; set; }
         [JsonPropertyName("ShiftID")]
         public int ShiftID { get; set; }
     }

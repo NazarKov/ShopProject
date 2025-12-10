@@ -21,20 +21,29 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.WorkingShift.Load();
                     context.MediaAccessControls.Load();
                     context.Operations.Load();
+                    context.Discounts.Load();
                     if (context.Operations != null)
                     {
-                        item.MAC = context.MediaAccessControls.Find(item.MAC.ID);
-                        if(item.Shift != null)
+                        if (item.MAC != null)
+                        {
+                            item.MAC = context.MediaAccessControls.Find(item.MAC.ID);
+                        }
+                        if (item.Shift != null)
                         {
                             item.Shift = context.WorkingShift.Find(item.Shift.ID);
                         }
+                        if (item.Discount != null) 
+                        {
+                            item.Discount = context.Discounts.Find(item.Discount.ID);
+                        }
 
                         context.Operations.Add(item);
+                        
                     }
                     context.SaveChanges();
                 }
+                return item.ID;
             }
-            return item.ID;
         }
 
         public void Delete(OperationEntity item)

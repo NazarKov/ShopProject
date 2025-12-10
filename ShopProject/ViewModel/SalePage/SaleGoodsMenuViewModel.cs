@@ -1,8 +1,10 @@
-﻿using ShopProject.Helpers;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
 using ShopProjectDataBase.Helper;
 using System;
@@ -38,16 +40,14 @@ namespace ShopProject.ViewModel.SalePage
             _cleareSumUserCommand = new DelegateCommand(ClearSumUser);
 
             _product = new ObservableCollection<ProductForSale>();
-            _barCodeSearch = string.Empty;
-
-            _typeOplatu = new List<string>();
-            _typeOplatu.Add("готівкою");
-            _typeOplatu.Add("безготівкові форми оплати");
-            _typeOplatu.Add("Сертифікат");
-            //DrawingCheck = _model.IsDrawinfChek;
+            _barCodeSearch = string.Empty; 
+            _typeOplatu = new List<string>(); 
             IsFiscalCheck = true;
+            _totalSum = decimal.Zero;
             _user = new User();
-            _user = Session.User;
+
+
+            SetFieldPage();
             ClearField();
         }
 
@@ -65,6 +65,7 @@ namespace ShopProject.ViewModel.SalePage
             set { _product = value; OnPropertyChanged(nameof(Product)); }
         }
 
+        private decimal _totalSum;
         private decimal? _sumaOrder;
         public decimal? SumaOrder
         {
@@ -84,12 +85,23 @@ namespace ShopProject.ViewModel.SalePage
             get { return _typeOplatu; }
             set { _typeOplatu = value; OnPropertyChanged(nameof(TypeOplatu)); }
         }
-        private int _discount;
-        public int Discount
+        private decimal _discount;
+        public decimal Discount
         {
             get { return _discount; }
-            set { _discount = value; OnPropertyChanged(nameof(Discount));}
+            set { _discount = value;
+                MediatorService.ExecuteEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel); OnPropertyChanged(nameof(DiscountPrecent)); 
+                OnPropertyChanged(nameof(Discount));}
         }
+        private decimal _discountPrecent;
+        public decimal DiscountPrecent
+        {
+            get { return _discountPrecent; }
+            set { _discountPrecent = value; 
+                MediatorService.ExecuteEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel);
+                OnPropertyChanged(nameof(DiscountPrecent)); }
+        }
+
         private int _selectIndex;
         public int SelectIndex
         {
@@ -108,25 +120,6 @@ namespace ShopProject.ViewModel.SalePage
             get { return _height; }
             set { _height = value; OnPropertyChanged(nameof(Height)); }
         }
-
-        public ICommand UpdateSize => _updateSize;
-        private void UpdateSizes()
-        {
-            Widght = (int)Application.Current.MainWindow.ActualWidth - 530;
-            Height = (int)Application.Current.MainWindow.ActualHeight-220;
-        }
-        public ICommand ClearFieldDataGid => _clearFieldDataGrid;
-        private void ClearField()
-        {
-            Product = new ObservableCollection<ProductForSale>();
-            SumaUser = 0;
-            SumaOrder = 0;
-            _selectIndex = 0;
-             
-            _idChannel = Guid.NewGuid();
-            MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, this.CountingSumaOrder);
-            MediatorService.AddEvent(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, this.RemoveItem);
-        }
         private bool _draingCheck;
         public bool DrawingCheck
         {
@@ -140,6 +133,36 @@ namespace ShopProject.ViewModel.SalePage
             set { _isFiscalCheck = value; OnPropertyChanged(nameof(IsFiscalCheck)); }
         }
         public int Tag;
+        public ICommand UpdateSize => _updateSize;
+        private void UpdateSizes()
+        {
+            Widght = (int)Application.Current.MainWindow.ActualWidth - 530;
+            Height = (int)Application.Current.MainWindow.ActualHeight - 220;
+        }
+        public ICommand ClearFieldDataGid => _clearFieldDataGrid;
+        private void ClearField()
+        {
+            Product = new ObservableCollection<ProductForSale>();
+            SumaUser = 0;
+            SumaOrder = 0;
+            _selectIndex = 0;
+
+            _idChannel = Guid.NewGuid();
+            MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, this.CountingSumaOrder);
+            MediatorService.AddEvent(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, this.RemoveItem);
+        }
+         
+        private void SetFieldPage()
+        {
+            _typeOplatu.Add("готівкою");
+            _typeOplatu.Add("безготівкові форми оплати");
+            _typeOplatu.Add("Сертифікат");
+
+            //DrawingCheck = _model.IsDrawinfChek;
+
+            _user = Session.User;
+        }
+
 
         public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
@@ -211,6 +234,21 @@ namespace ShopProject.ViewModel.SalePage
             {
                 SumaOrder += (orderProduct.Product.Price * orderProduct.Count);
             }
+            _totalSum = SumaOrder.Value; 
+            if (DiscountPrecent != 0)
+            {
+                SumaOrder = SumaOrder - (SumaOrder * (DiscountPrecent / 100));
+            }
+            if(Discount != 0)
+            {
+                SumaOrder = SumaOrder - Discount;
+            }
+            if (SumaOrder < 0)
+            {
+                SumaOrder = _totalSum;
+                _discount = 0;
+                _discountPrecent = 0;
+            }
         }
         private void RemoveItem(object item)
         {
@@ -240,39 +278,56 @@ namespace ShopProject.ViewModel.SalePage
         {
             //_model.IsDrawinfChek = DrawingCheck;
 
-            if (SumaUser >= SumaOrder)
+            if (!(SumaUser >= SumaOrder))
             {
-                double rest = ((double)(SumaUser - SumaOrder));
-
-
-                //decimal typeOperration;
-                //if (IsFiscalCheck)
-                //{
-                //    typeOperration = 0;
-                //}
-                //else
-                //{
-                //    typeOperration = 200;
-                //}
-
+                MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
+            }
+            else
+            {
                 _model.AddKey(_user.SignatureKey);
-                Task t = Task.Run(async () =>{
+
+                var rest = (SumaUser - SumaOrder);
+                var discount = new Discount();
+
+                if(DiscountPrecent != 0)
+                {
+                    discount.TotalDiscount = _totalSum * (DiscountPrecent / 100);
+                    discount.TypeDiscount = 1;
+                    discount.CreateAt = DateTime.Now;
+                    discount.InterimAmount = _totalSum;
+                    discount.Rebate = DiscountPrecent; 
+                }
+                else if(Discount != 0)
+                {
+                    discount.TotalDiscount = Discount;
+                    discount.TypeDiscount = 0;
+                    discount.CreateAt = DateTime.Now;
+                    discount.InterimAmount = _totalSum;
+                    discount.Rebate = Discount;
+                }
+                else
+                {
+                    discount = null;
+                }
+
+                Task t = Task.Run(async () => {
 
                     Operation operation = new Operation()
-                    { 
-                        TypeOperation =  TypeOperation.FiscalCheck,
+                    {
+                        TypeOperation = TypeOperation.FiscalCheck,
                         MAC = await _model.GetMAC(Session.WorkingShiftStatus.OperationRecorder.ID),
                         CreatedAt = DateTime.Now,
                         NumberPayment = await _model.GetLocalNumber(),
                         GoodsTax = "0",
-                        RestPayment = Convert.ToDecimal(rest),
-                        TotalPayment = (decimal)SumaOrder,
-                        BuyersAmount = (decimal)SumaUser,
-                        TypePayment =  TypePayment.Cash,  
+                        RestPayment = rest.Value,
+                        TotalPayment = _totalSum,
+                        BuyersAmount = SumaUser.Value,
+                        TypePayment = TypePayment.Cash,
+                        Discount = discount,
                     };
 
                     if (_model.SendCheck(Product, operation))
-                    
+
                     {
                         MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
                         Product = new ObservableCollection<ProductForSale>();
@@ -285,13 +340,10 @@ namespace ShopProject.ViewModel.SalePage
                         {
                             Session.Tabs.RemoveAt(Tag);
                         }
+                        AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
                     }
-                }); 
-            }
-            else
-            {
-                MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
-            }
+                });
+            }  
         }
         private bool CanRegister(object parameter) => true;
 

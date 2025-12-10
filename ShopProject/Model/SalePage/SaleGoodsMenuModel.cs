@@ -104,6 +104,10 @@ namespace ShopProject.Model.SalePage
             try
             {
                 operation.Shift = Session.WorkingShiftStatus.WorkingShift; 
+                if(operation.Discount != null)
+                {
+                    operation.Discount.ID = (await MainWebServerController.MainDataBaseConntroller.DiscountController.AddDiscount(_token, operation.Discount));
+                } 
                 var result = (await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(_token, operation));
                 _operation = operation;
                 _operation.ID = result;

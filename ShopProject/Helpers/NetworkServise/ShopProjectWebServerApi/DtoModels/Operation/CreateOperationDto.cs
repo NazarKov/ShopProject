@@ -32,7 +32,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]
-        public decimal Discount { get; set; } = decimal.Zero;
+        public int DiscountID { get; set; }
         [JsonPropertyName("ShiftID")]
         public int ShiftID { get; set; }
     }

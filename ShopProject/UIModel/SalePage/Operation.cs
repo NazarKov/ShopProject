@@ -1,4 +1,5 @@
-﻿using ShopProjectDataBase.Entities;
+﻿using ShopProject.UIModel.StoragePage;
+using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace ShopProject.UIModel.SalePage
         /// <summary>
         /// знижка на чек
         /// </summary>
-        public decimal Discount { get; set; } = decimal.Zero;
+        public Discount? Discount { get; set; }
         /// <summary>
         /// Змінна під час якої була операція
         /// </summary>

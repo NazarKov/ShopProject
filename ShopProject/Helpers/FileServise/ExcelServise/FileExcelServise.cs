@@ -69,7 +69,7 @@ namespace ShopProject.Helpers.FileServise.ExcelServise
                 }
                 else if (type == typeof(Discount))
                 {
-                    return ((Discount)item).PercentageDiscount.ToString();
+                    return ((Discount)item).Rebate.ToString();
                 }
                 else
                 {

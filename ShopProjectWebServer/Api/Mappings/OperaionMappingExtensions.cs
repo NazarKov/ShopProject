@@ -16,7 +16,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 CreatedAt = operation.CreatedAt,
                 MAC = new MediaAccessControlEntity() { ID = operation.MACID },
                 Shift = new WorkingShiftEntity() { ID = operation.ShiftID },
-                //Discount = 0,
+                Discount = new DiscountEntity() { ID = operation.DiscountID},
                 GoodsTax = operation.GoodsTax,
                 NumberPayment = operation.NumberPayment,
                 RestPayment = operation.RestPayment,
@@ -32,12 +32,11 @@ namespace ShopProjectWebServer.Api.Mappings
 
         public static OperationDto ToOperationDto(this OperationEntity operation)
         {
-            return new OperationDto()
+            var item = new OperationDto()
             {
                 AmountOfFundsReceived = operation.AmountOfFundsReceived,
                 BuyersAmount = operation.BuyersAmount,
-                CreatedAt = operation.CreatedAt,
-                //Discount = operation.Discount,
+                CreatedAt = operation.CreatedAt, 
                 GoodsTax = operation.GoodsTax,
                 MACId = operation.MACId,
                 ID = operation.ID,
@@ -47,6 +46,11 @@ namespace ShopProjectWebServer.Api.Mappings
                 TypeOperation = (int)operation.TypeOperation,
                 TypePayment = (int)operation.TypePayment,
             };
+            if (operation.Discount != null) 
+            {
+                item.DiscountID = operation.Discount.ID;
+            }
+            return item;
         }
         public static IEnumerable<OperationDto> ToOperationDto(this IEnumerable<OperationEntity> operations)
         {

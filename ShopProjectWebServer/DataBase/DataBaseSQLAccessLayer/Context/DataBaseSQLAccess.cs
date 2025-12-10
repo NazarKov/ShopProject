@@ -48,7 +48,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                 OrderTable = new OrderTableAccess(optionsBuilder.Options);
                 MediaAccessControlTable = new MediaAccessControlTableAccess(optionsBuilder.Options);
                 WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
-                DiscountTable = new DiscountTableAccess();
+                DiscountTable = new DiscountTableAccess(optionsBuilder.Options);
                 GiftCertificatesTable = new GiftCertificatesTableAccess();
                 SignatureKeyTable = new SignatureKeyTableAccess(optionsBuilder.Options);
             }

@@ -1,13 +1,32 @@
-﻿using ShopProjectDataBase.Entities; 
+﻿using Microsoft.EntityFrameworkCore;
+using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class DiscountTableAccess : IDiscountTableAccess
     {
-        public void Add(DiscountEntity item)
+        private DbContextOptions<ContextDataBase> _option;
+        public DiscountTableAccess(DbContextOptions<ContextDataBase> option)
         {
-            throw new NotImplementedException();
+            _option = option;
+        }
+        public int Add(DiscountEntity item)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                { 
+                    context.Discounts.Load();
+                    if (context.Discounts != null)
+                    {  
+                        context.Discounts.Add(item);
+                    }
+                    context.SaveChanges(); 
+                }
+            }
+            return item.ID;
         }
 
         public void Delete(DiscountEntity item)

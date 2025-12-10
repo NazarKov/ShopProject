@@ -78,17 +78,37 @@ namespace ShopProject.Helpers.FileServise.XmlServise
             writer.WriteAttributeString("TX", "0");//податок
             writer.WriteEndElement();
         }
-        private void WriteTagD(XmlTextWriter writer, int serialNumber)
+        private void WriteTagD(XmlTextWriter writer, int serialNumber , Discount discount , int type,int minSerialNumber = 0,int maxSerialNumber = 0)
         {
             writer.WriteStartElement("D");
             writer.WriteAttributeString("N", serialNumber.ToString());//порядковий номер 
-            writer.WriteAttributeString("TR", serialNumber.ToString());//тип застусування
-            writer.WriteAttributeString("TY", serialNumber.ToString());//тип
-            writer.WriteAttributeString("ST", serialNumber.ToString());// проміжка сума чеку
-            writer.WriteAttributeString("NI", serialNumber.ToString());// порядковий номер операції до якох застосовується (присутній якщо стосується однієї операції)
+            writer.WriteAttributeString("TR", type.ToString());//тип застусування
+            writer.WriteAttributeString("TY", discount.TypeDiscount.ToString());//тип
+            writer.WriteAttributeString("ST", discount.InterimAmount.ToString().Replace(".", "").Replace(",", ""));// проміжка сума чеку
             writer.WriteAttributeString("TX", "0");//податок 
-            writer.WriteAttributeString("PR", serialNumber.ToString());//для відсоткових знизок відсоток знижки
-            writer.WriteAttributeString("SM", serialNumber.ToString());//загальна сума знижки 
+            writer.WriteAttributeString("SM", discount.TotalDiscount.ToString("0.00").Replace(".", "").Replace(",", ""));//загальна сума знижки  
+            
+            if(type == 0)
+            {
+                writer.WriteAttributeString("NI", (serialNumber - 1).ToString());// порядковий номер операції до якох застосовується (присутній якщо стосується однієї операції)
+            }  
+            if (discount.TypeDiscount == 1)
+            {
+                writer.WriteAttributeString("PR", discount.Rebate.ToString("0.00",System.Globalization.CultureInfo.InvariantCulture));//для відсоткових знизок відсоток знижки
+            }  
+
+            if (type == 1)
+            {
+                if (minSerialNumber != 0 && maxSerialNumber != 0)
+                {
+                    for (int i = minSerialNumber; i < maxSerialNumber; i++)
+                    {
+                        writer.WriteStartElement("NI");
+                        writer.WriteAttributeString("NI", i.ToString());
+                        writer.WriteEndElement();
+                    }
+                }
+            }
             writer.WriteEndElement();
         }
         private void WriteTagI(XmlTextWriter writer, int serialNumber , Operation operation) 
@@ -253,11 +273,17 @@ namespace ShopProject.Helpers.FileServise.XmlServise
                 writer.WriteStartElement("C");
                 writer.WriteAttributeString("T", operation.TypeOperation.ToString("D"));
                 var index = 1;
+                var serialNumberDiscount = index;
                 foreach (Product product in products) 
                 {
                     WriteTagP(writer,index,product);
                     index++;
                 }
+                if (operation.Discount != null)
+                {
+                    WriteTagD(writer, index, operation.Discount, 1, serialNumberDiscount, index);
+                }
+                index++;
                 WriteTagM(writer, index, operation);
                 index++;
                 WriteTagE(writer, index, operation,workingShift.FiscalNumberRRO); 

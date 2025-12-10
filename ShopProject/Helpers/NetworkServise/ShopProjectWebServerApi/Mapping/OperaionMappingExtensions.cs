@@ -19,7 +19,6 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 BuyersAmount = operation.BuyersAmount,
                 AmountOfIssuedFunds = operation.AmountOfIssuedFunds,
                 CreatedAt = operation.CreatedAt, 
-                Discount = 0,
                 GoodsTax = operation.GoodsTax,
                 NumberPayment = operation.NumberPayment,
                 RestPayment = operation.RestPayment,
@@ -32,6 +31,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             if (operation.Shift != null) 
             {
                 result.ShiftID = operation.Shift.ID;
+            }
+            if (operation.Discount != null) 
+            {
+                result.DiscountID = operation.Discount.ID;
             }
 
             result.TypePayment = (int)operation.TypeOperation;

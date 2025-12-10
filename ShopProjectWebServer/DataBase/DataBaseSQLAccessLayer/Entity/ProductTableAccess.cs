@@ -25,11 +25,21 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Products.Load();
                     context.ProductUnits.Load();
                     context.ProductCodeUKTZED.Load();
+                    context.Discounts.Load();
                     if (context.Products != null)
                     {
-
-                        item.Unit = context.ProductUnits.Find(item.Unit.ID);
-                        item.CodeUKTZED = context.ProductCodeUKTZED.Find(item.CodeUKTZED.ID);
+                        if (item.Unit != null)
+                        {
+                            item.Unit = context.ProductUnits.Find(item.Unit.ID);
+                        }
+                        if (item.CodeUKTZED != null)
+                        {
+                            item.CodeUKTZED = context.ProductCodeUKTZED.Find(item.CodeUKTZED.ID);
+                        }
+                        if (item.Discount != null)
+                        {
+                            item.Discount = context.Discounts.Find(item.Discount.ID);
+                        }
 
                         context.Products.Add(item);
                     }
@@ -47,6 +57,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Products.Load();
                     context.ProductUnits.Load();
                     context.ProductCodeUKTZED.Load();
+                    context.Discounts.Load();
                     if (context.Products != null)
                     {
                         for (int i = 0; i < items.Count(); i++)
@@ -74,6 +85,14 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                                 else
                                 {
                                     items.ElementAt(i).CodeUKTZED = null;
+                                }
+                                if (items.ElementAt(i).Discount != null)
+                                {
+                                    items.ElementAt(i).Discount = context.Discounts.FirstOrDefault(c => c.ID == items.ElementAt(i).Discount.ID);
+                                }
+                                else
+                                {
+                                    items.ElementAt(i).Discount = null;
                                 }
 
                                 await context.Products.AddAsync(items.ElementAt(i));

@@ -19,7 +19,8 @@ namespace ShopProjectWebServer.Extensions
             services.AddScoped<IUserServise, UserServise>();
             services.AddScoped<IUserRoleServise, UserRoleServise>();
             services.AddScoped<IWorkingShiftServise, WorkingShiftServise>(); 
-            services.AddScoped<IElectronicSignatureKeyServise, ElectronicSignatureKeyServise>(); 
+            services.AddScoped<IElectronicSignatureKeyServise, ElectronicSignatureKeyServise>();
+            services.AddScoped<IDiscountServise, DiscountServise>();
         }
     }
 }
