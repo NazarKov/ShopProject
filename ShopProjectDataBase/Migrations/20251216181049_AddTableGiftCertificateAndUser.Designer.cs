@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopProjectDataBase.Context;
 
@@ -11,9 +12,11 @@ using ShopProjectDataBase.Context;
 namespace ShopProjectDataBase.Migrations
 {
     [DbContext(typeof(ContextDataBase))]
-    partial class ContextDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20251216181049_AddTableGiftCertificateAndUser")]
+    partial class AddTableGiftCertificateAndUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +138,12 @@ namespace ShopProjectDataBase.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("GiftCertificates");
                 });
@@ -681,6 +689,15 @@ namespace ShopProjectDataBase.Migrations
                         .HasForeignKey("UserID");
 
                     b.Navigation("GiftCertificates");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShopProjectDataBase.Entities.GiftCertificatesEntity", b =>
+                {
+                    b.HasOne("ShopProjectDataBase.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
 
                     b.Navigation("User");
                 });

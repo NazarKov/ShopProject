@@ -17,6 +17,7 @@ namespace ShopProject.Helpers.Navigation
         ReloadProduct,
         CountingSumaOrder,
         RemoveProduct,
+        ReloadGiftCertificates,
         ExitApp, 
     }
 }

@@ -68,7 +68,18 @@ namespace ShopProject.ViewModel.ToolsPage
                             Description += splitName[i] + " ";
                     }
                 }
+            }
+            else
+            {
+                var cert = Session.GiftCertificate;
+                if (cert != null)
+                {
+                    Code = cert.Code;
+                    NameProduct = cert.Name;
+                    Description = cert.Description;
+                }
             } 
+
         }
 
         private string _nameProduct;

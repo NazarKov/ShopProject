@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopProjectDataBase.Context;
 
@@ -11,9 +12,11 @@ using ShopProjectDataBase.Context;
 namespace ShopProjectDataBase.Migrations
 {
     [DbContext(typeof(ContextDataBase))]
-    partial class ContextDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20251212182113_UpdateGiftCertificateEntity")]
+    partial class UpdateGiftCertificateEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,35 +83,6 @@ namespace ShopProjectDataBase.Migrations
                     b.ToTable("UserSignatureKey");
                 });
 
-            modelBuilder.Entity("ShopProjectDataBase.Entities.GiftCertificateAndUser", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("EndAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("GiftCertificatesID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("IssuedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("GiftCertificatesID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("GiftCertificateAndUsers");
-                });
-
             modelBuilder.Entity("ShopProjectDataBase.Entities.GiftCertificatesEntity", b =>
                 {
                     b.Property<int>("ID")
@@ -126,6 +100,9 @@ namespace ShopProjectDataBase.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -135,7 +112,12 @@ namespace ShopProjectDataBase.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("GiftCertificates");
                 });
@@ -670,17 +652,11 @@ namespace ShopProjectDataBase.Migrations
                     b.ToTable("WorkingShift");
                 });
 
-            modelBuilder.Entity("ShopProjectDataBase.Entities.GiftCertificateAndUser", b =>
+            modelBuilder.Entity("ShopProjectDataBase.Entities.GiftCertificatesEntity", b =>
                 {
-                    b.HasOne("ShopProjectDataBase.Entities.GiftCertificatesEntity", "GiftCertificates")
-                        .WithMany()
-                        .HasForeignKey("GiftCertificatesID");
-
                     b.HasOne("ShopProjectDataBase.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserID");
-
-                    b.Navigation("GiftCertificates");
 
                     b.Navigation("User");
                 });

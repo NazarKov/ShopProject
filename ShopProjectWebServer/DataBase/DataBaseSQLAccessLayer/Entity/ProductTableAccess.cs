@@ -289,7 +289,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         } 
 
-        public IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status)
+        public IEnumerable<ProductEntity> GetByNameAndStatus(string name, TypeStatusProduct status)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
             { 

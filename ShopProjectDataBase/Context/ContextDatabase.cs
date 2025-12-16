@@ -18,7 +18,8 @@ namespace ShopProjectDataBase.Context
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<UserRoleEntity> UserRoles { get; set; }
         public DbSet<GiftCertificatesEntity> GiftCertificates { get; set; }
-        public DbSet<TokenEntity> UserTokens { get; set; }
+        public DbSet<GiftCertificateAndUser> GiftCertificateAndUsers { get; set; }
+        public DbSet<TokenEntity> UserTokens { get; set; } 
 
         public DbSet<ObjectOwnerEntity> ObjectOwners { get; set; }
         public DbSet<OperationsRecorderEntity> OperationsRecorders { get; set; }

@@ -45,7 +45,7 @@ namespace ShopProjectWebServer.Api.Services
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByNameAndStatu(name, status);
+            var products = DataBaseMainController.DataBaseAccess.ProductTable.GetByNameAndStatus(name, status);
 
             var paginator = PaginatorDto<ProductEntity>.CreationPaginator(products.Reverse(), page, countColumn);
             return new PaginatorDto<ProductDto>(paginator.Page,paginator.Pages,paginator.Data.ToProductDto());

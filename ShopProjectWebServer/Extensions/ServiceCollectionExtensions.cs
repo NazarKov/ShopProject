@@ -21,6 +21,7 @@ namespace ShopProjectWebServer.Extensions
             services.AddScoped<IWorkingShiftServise, WorkingShiftServise>(); 
             services.AddScoped<IElectronicSignatureKeyServise, ElectronicSignatureKeyServise>();
             services.AddScoped<IDiscountServise, DiscountServise>();
+            services.AddScoped<IGiftCertificatesServise, GiftCertificatesServise>();
         }
     }
 }

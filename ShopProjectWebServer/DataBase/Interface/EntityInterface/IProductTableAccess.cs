@@ -16,7 +16,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         IEnumerable<ProductEntity> GetAll(); 
         ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct);
 
-        IEnumerable<ProductEntity> GetByNameAndStatu(string name, TypeStatusProduct status);
+        IEnumerable<ProductEntity> GetByNameAndStatus(string name, TypeStatusProduct status);
 
     }
 }

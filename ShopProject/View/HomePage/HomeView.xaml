@@ -46,6 +46,8 @@
                             <MenuItem Header="Користувачі" Command="{Binding OpenUsersCommand}" />
                             <MenuItem Header="Об’єкти власності" Command="{Binding OpenObjectOwnerPageCommand}" />
                             <MenuItem Header="РРО" Command="{Binding OpenSoftwareDeviceSettlementOperationsPageCommand}" />
+                            <Separator></Separator>
+                            <MenuItem Header="Подарункові сертифікати" Command="{Binding OpenGiftCertificatesPageCommand}" />
                         </MenuItem>
 
                         <MenuItem Header="🛍️ Меню продаж" Command="{Binding OpenSaleMenuCommand}" />

@@ -49,7 +49,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                 MediaAccessControlTable = new MediaAccessControlTableAccess(optionsBuilder.Options);
                 WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
                 DiscountTable = new DiscountTableAccess(optionsBuilder.Options);
-                GiftCertificatesTable = new GiftCertificatesTableAccess();
+                GiftCertificatesTable = new GiftCertificatesTableAccess(optionsBuilder.Options);
                 SignatureKeyTable = new SignatureKeyTableAccess(optionsBuilder.Options);
             }
             else

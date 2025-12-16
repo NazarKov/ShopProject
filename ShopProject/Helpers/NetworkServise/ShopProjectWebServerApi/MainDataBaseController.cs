@@ -25,6 +25,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
         public WorkingShiftContoller WorkingShiftContoller { get; set; }
         public SignatureKeyController SignatureKeyController { get; set; }
         public DiscountController DiscountController { get; set; }
+
+        public GiftCertificatesController GiftCertificatesController { get; set; }
         public MainDataBaseController(string url)
         { 
             UserController = new UserController(url);
@@ -41,6 +43,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi
             WorkingShiftContoller = new WorkingShiftContoller(url);
             SignatureKeyController = new SignatureKeyController(url);
             DiscountController = new DiscountController(url);
+            GiftCertificatesController = new GiftCertificatesController(url);
         }
     }
 }

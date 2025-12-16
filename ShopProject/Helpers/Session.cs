@@ -1,5 +1,6 @@
 ﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;  
 using ShopProject.UIModel;
+using ShopProject.UIModel.GiftCertificatesPage;
 using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
@@ -31,7 +32,8 @@ namespace ShopProject.Helpers
         public static IEnumerable<UserRole>? Roles { get; set; }
         public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
         public static IEnumerable<ProductUnit>? ProductUnits { get; set; }    
-        public static WorkingShiftStatus? WorkingShiftStatus { get; set; }
+        public static WorkingShiftStatus? WorkingShiftStatus { get; set; } 
+        public static GiftCertificate? GiftCertificate { get; set; }
         #endregion
 
 

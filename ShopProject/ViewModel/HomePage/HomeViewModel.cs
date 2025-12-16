@@ -4,6 +4,7 @@ using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.HomePage;
 using ShopProject.View.AdminPage.WebServer;
+using ShopProject.View.GiftCertificatesPage;
 using ShopProject.View.HomePage;
 using ShopProject.View.HomePage.HomePageComponent;
 using ShopProject.View.StatisticsPage;  
@@ -44,6 +45,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand _openUnitOfMeasurePageCommand;
         private ICommand _openProductCodeUKTZEDPageCommand;
         private ICommand _openUserPageCommand;
+        private ICommand _openGiftCertificatesPageCommand;
 
         private ICommand _exitUserCommand;
          
@@ -80,7 +82,7 @@ namespace ShopProject.ViewModel.HomePage
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
             _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
             _openUserPageCommand = new DelegateCommand(() => { Page = new UserView(); });
-            
+            _openGiftCertificatesPageCommand = new DelegateCommand(() => { Page = new GiftCertificatesView(); });
             _visibilitiMenu = Visibility.Hidden;
 
             StatusMenu = new DeviceStatusView();
@@ -251,5 +253,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
         public ICommand OpenUnitOfMeasurePageCommand => _openUnitOfMeasurePageCommand;
         public ICommand OpenProductCodeUKTZEDPageCommand => _openProductCodeUKTZEDPageCommand;
+
+        public ICommand OpenGiftCertificatesPageCommand => _openGiftCertificatesPageCommand;
     }
 }
