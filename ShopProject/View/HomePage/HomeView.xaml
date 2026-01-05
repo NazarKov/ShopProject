@@ -31,8 +31,7 @@
                     <Menu Background="#F5F5F5" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16"
                       Visibility="{Binding VisibilityMenu, UpdateSourceTrigger=PropertyChanged}">
                         <MenuItem Header="Програма">
-                            <MenuItem Header="⚙️ Настройки" Command="{Binding OpenSettingCommand}" />
-                            <MenuItem Header="🌐 Налаштування веб серверу" Command="{Binding OpenWebServerPageCommand}" />
+                            <MenuItem Header="⚙️ Настройки" Command="{Binding OpenSettingCommand}" /> 
                             <Separator />
                             <MenuItem Header="🚪 Вийти" Command="{Binding ExitAppCommand}" />
                         </MenuItem>

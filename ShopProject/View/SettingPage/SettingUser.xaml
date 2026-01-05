@@ -11,62 +11,147 @@
         <local:SettingUserViewModel></local:SettingUserViewModel>
     </Page.DataContext>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="125"></ColumnDefinition>
-            <ColumnDefinition Width="150"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="120*"></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"></RowDefinition>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label x:Name="Tittle" Content="Профіль" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15" Grid.Row="0"/>
-        <Separator Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Top" Margin="80,16,0,0"></Separator>
-        
-        <TextBlock Text="Логін:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding Login}" Grid.Column="0" Grid.Row="1" Margin="35,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-       
-        <Button Content="Зніміни пароль"  Grid.Column="3" Width="120" Height="20" HorizontalAlignment="Right" Grid.Row="1"></Button>
-        <Separator Grid.Row="2" Grid.ColumnSpan="4"></Separator>
-      
-        <TextBlock Text="ПІБ:" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding FullName}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="25,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <!-- Заголовок -->
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="Профіль"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Foreground="#333"/>
 
-        <TextBlock Text="Податковий номер:" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding TIN}" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        
-        <Separator Grid.Row="5" Grid.ColumnSpan="4"></Separator>
-        
-        <TextBlock Text="Ключ ЕЦП:" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding NameKey}" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Margin="60,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <Button Content="Переглянути дані"  Grid.Column="3" Width="120" Height="20" HorizontalAlignment="Right" Grid.Row="6"></Button>
-        
-        <Separator Grid.Row="7" Grid.ColumnSpan="4"></Separator>
+            <Separator Margin="0,6,0,0"/>
+        </StackPanel>
 
+        <!-- Картка -->
+        <Border Grid.Row="1"
+            Background="White"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="20">
 
+            <StackPanel>
 
-        <TextBlock Text="Статус користувача:" Grid.Column="0" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding Status}" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" Margin="120,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                <!-- Логін -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Автоматичний вхід:" Grid.Column="0" Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <CheckBox Grid.Column="3" Grid.Row="9" HorizontalAlignment="Right" IsChecked="{Binding AutoLogin}" VerticalAlignment="Center"></CheckBox>
+                    <TextBlock Text="Логін:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding Login}"
+                           FontWeight="SemiBold"/>
 
-        <TextBlock Text="Дата створення:" Grid.Column="0" Grid.Row="10" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding Create_At}" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="2" Margin="90,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                    <Button Grid.Column="2"
+                        Content="Змінити пароль"
+                        Padding="10,3"
+                        Margin="10,0,0,0"
+                        Background="CadetBlue"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand" />
+                </Grid>
 
+                <Separator Margin="0,10"/>
+
+                <!-- ПІБ -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="ПІБ:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding FullName}"/>
+                </Grid>
+
+                <!-- ІПН -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Податковий номер:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding TIN}"/>
+                </Grid>
+
+                <Separator Margin="0,10"/>
+
+                <!-- КЕП -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Ключ ЕЦП:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding NameKey}"/>
+
+                    <Button Grid.Column="2"
+                        Content="Переглянути"
+                        Padding="10,3"
+                        Margin="10,0,0,0"
+                        Background="CadetBlue"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand" />
+                </Grid>
+
+                <Separator Margin="0,10"/>
+
+                <!-- Статус -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Статус користувача:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding Status}"
+                           FontWeight="SemiBold"/>
+                </Grid>
+
+                <!-- Автовхід -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Автоматичний вхід:" Foreground="#555"/>
+                    <CheckBox Grid.Column="1"
+                          IsChecked="{Binding AutoLogin}"
+                          VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Дата -->
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Дата створення:" Foreground="#555"/>
+                    <TextBlock Grid.Column="1"
+                           Text="{Binding Create_At}"/>
+                </Grid>
+
+            </StackPanel>
+        </Border>
 
     </Grid>
 </Page>

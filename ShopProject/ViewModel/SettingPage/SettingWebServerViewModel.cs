@@ -1,5 +1,5 @@
-﻿using ShopProject.Model.AdminPage.WebServer;
-using ShopProject.Model.Command;
+﻿using ShopProject.Model.Command;
+using ShopProject.Model.SettingPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.AdminPage.WebServer
+namespace ShopProject.ViewModel.SettingPage
 {
     internal class SettingWebServerViewModel : ViewModel<SettingWebServerViewModel>
     {
@@ -44,8 +44,8 @@ namespace ShopProject.ViewModel.AdminPage.WebServer
 
             _nameUser = string.Empty;
             _passwordUser = string.Empty;
-            _height = (double)480;
-            _width = (double)840;
+            _height = 480;
+            _width = 840;
 
             _selectTypeDataBase = 0;
             _selectConnectTypeDataBase = 0;

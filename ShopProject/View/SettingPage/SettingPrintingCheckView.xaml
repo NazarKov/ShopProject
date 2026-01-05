@@ -1,0 +1,84 @@
+﻿<Page x:Class="ShopProject.View.SettingPage.SettingPrintingCheckView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.ViewModel.SettingPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SettingPrintingCheckView">
+    <Page.DataContext>
+        <local:SettingPrintingCheckViewModel></local:SettingPrintingCheckViewModel>
+    </Page.DataContext>
+    <Grid>
+        <Border Background="White"
+        Padding="15"
+        CornerRadius="6">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок -->
+                <StackPanel>
+                    <TextBlock Text="Налаштування друку чеків"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="#333"/>
+
+                    <Separator Margin="0,10,0,15"/>
+                </StackPanel>
+
+                <!-- Контент -->
+                <Border Grid.Row="1"
+                Background="White"
+                Padding="15"
+                CornerRadius="6"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Принтер -->
+                        <TextBlock Text="Принтер для друку чеків"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Margin="0,0,15,0"/>
+
+                        <ComboBox Grid.Row="0"
+                          Grid.Column="1"
+                          ItemsSource="{Binding Printer}"
+                          SelectedItem="{Binding SelectedPrinter}"
+                          Height="30"/>
+
+                        <!-- Кнопка -->
+                        <Button Grid.Row="1"
+                        Grid.Column="1"
+                        Command="{Binding PrintTestCheck}"
+                        Margin="0,15,0,0"
+                        Height="34"
+                        Content="Друк пробної сторінки"
+                        Background="CadetBlue"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/> 
+                    </Grid> 
+                </Border> 
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

@@ -7,6 +7,7 @@ using ShopProject.View.AdminPage.WebServer;
 using ShopProject.View.GiftCertificatesPage;
 using ShopProject.View.HomePage;
 using ShopProject.View.HomePage.HomePageComponent;
+using ShopProject.View.SettingPage;
 using ShopProject.View.StatisticsPage;  
 using ShopProject.View.StoragePage;
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
@@ -40,8 +41,7 @@ namespace ShopProject.ViewModel.HomePage
         private ICommand _openUsersPageCommand;
         private ICommand _openObjectOwnerPageCommand;
         private ICommand _openSoftwareDeviceSettlementOperationsPageCommand;
-        private ICommand _openStatisticsPageCommand;
-        private ICommand _openWebServerPageCommand;
+        private ICommand _openStatisticsPageCommand; 
         private ICommand _openUnitOfMeasurePageCommand;
         private ICommand _openProductCodeUKTZEDPageCommand;
         private ICommand _openUserPageCommand;
@@ -66,7 +66,7 @@ namespace ShopProject.ViewModel.HomePage
             Height = Screen.PrimaryScreen.Bounds.Height;
 
             _exitAppCommand = new DelegateCommand(() => { ExitApp(null); });
-            _openSettingCommand = new DelegateCommand(() => { new Setting().ShowDialog(); }); 
+            _openSettingCommand = new DelegateCommand(() => { Page = new SettingView(); }); 
             _openStorageCommand = new DelegateCommand(() => { Page = new StorageView(); });
             _openExportProductCommand = new DelegateCommand(() => { new ExportExcelProductView().Show(); });
             _openImportProductCommand = new DelegateCommand(() => { new ImportProductExcelView().Show(); });
@@ -76,8 +76,7 @@ namespace ShopProject.ViewModel.HomePage
             _openUsersPageCommand = new DelegateCommand(() => { Page = new UsersView(); });
             _openObjectOwnerPageCommand = new DelegateCommand(() => { Page = new ObjectOwnerShip(); });
             _openSoftwareDeviceSettlementOperationsPageCommand = new DelegateCommand(() => { Page = new ShopProject.Views.AdminPage.OperationsRecorder(); });
-            _openStatisticsPageCommand = new DelegateCommand(() => { Page = new StatisticsView(); });
-            _openWebServerPageCommand = new DelegateCommand(()=> { Page = new SettingWebServerView(); });
+            _openStatisticsPageCommand = new DelegateCommand(() => { Page = new StatisticsView(); }); 
             _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
             _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
@@ -249,8 +248,7 @@ namespace ShopProject.ViewModel.HomePage
         public ICommand OpenObjectOwnerPageCommand => _openObjectOwnerPageCommand;
         public ICommand OpenSoftwareDeviceSettlementOperationsPageCommand => _openSoftwareDeviceSettlementOperationsPageCommand;
         public ICommand ExitUserCommand => _exitUserCommand;
-        public ICommand OpenStatisticsPageCommand => _openStatisticsPageCommand;
-        public ICommand OpenWebServerPageCommand => _openWebServerPageCommand;
+        public ICommand OpenStatisticsPageCommand => _openStatisticsPageCommand; 
         public ICommand OpenUnitOfMeasurePageCommand => _openUnitOfMeasurePageCommand;
         public ICommand OpenProductCodeUKTZEDPageCommand => _openProductCodeUKTZEDPageCommand;
 

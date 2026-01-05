@@ -10,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.Views.SettingPage
+namespace ShopProject.View.SettingPage
 {
     /// <summary>
-    /// Interaction logic for Setting.xaml
+    /// Interaction logic for SettingView.xaml
     /// </summary>
-    public partial class Setting : Window
+    public partial class SettingView : Page
     {
-        public Setting()
+        public SettingView()
         {
             InitializeComponent();
-
         }
     }
 }
