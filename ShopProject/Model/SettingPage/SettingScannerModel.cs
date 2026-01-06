@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.Model.UserPage
+namespace ShopProject.Model.SettingPage
 {
-    internal class UserModel
+    internal class SettingScannerModel
     {
     }
 }

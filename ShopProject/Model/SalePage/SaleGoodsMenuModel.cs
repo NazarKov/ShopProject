@@ -23,7 +23,7 @@ namespace ShopProject.Model.SalePage
     internal class SaleGoodsMenuModel
     {
          
-        private PrintingFiscalCheck _printingFiscalCheck;
+        //private PrintingFiscalCheck _printingFiscalCheck;
         private bool _isDrawingChek;
         private MainFiscalServerController _fiscalOperationController;
         private Operation _operation;
@@ -33,7 +33,7 @@ namespace ShopProject.Model.SalePage
          
         public SaleGoodsMenuModel()
         { 
-            _printingFiscalCheck = new PrintingFiscalCheck(); 
+            //_printingFiscalCheck = new PrintingFiscalCheck(); 
 
             _isDrawingChek = true; 
 

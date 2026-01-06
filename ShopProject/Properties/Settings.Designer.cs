@@ -94,5 +94,17 @@ namespace ShopProject.Properties {
                 this["NameCompany"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PrinterCheck {
+            get {
+                return ((string)(this["PrinterCheck"]));
+            }
+            set {
+                this["PrinterCheck"] = value;
+            }
+        }
     }
 }

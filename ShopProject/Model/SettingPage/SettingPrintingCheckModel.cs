@@ -1,67 +1,73 @@
-﻿using ShopProject.Helpers;
+﻿using GreetClient;
+using ShopProject.Helpers;
+using ShopProject.Helpers.PrintingService;
+using ShopProject.Helpers.PrintingService.PrinterSetting;
+using ShopProject.Helpers.PrintingServise;
+using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProject.UIModel.OperationRecorderPage;
+using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.StoragePage;
+using ShopProject.UIModel.UserPage;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ShopProject.Model.SettingPage
 {
     internal class SettingPrintingCheckModel
     {
-        //private PrintingFiscalCheck _ordererCheck;
-        public SettingPrintingCheckModel() 
+        private FiscalCheck _check;
+        private PrintingFiscalCheckServise _servise;
+        public SettingPrintingCheckModel()
         {
-            //_ordererCheck = new PrintingFiscalCheck();
-        }
-
-        public void Save(params string[] item)
-        {
-            //AppSettingsManager.SetParameterFile("NameShop", item[0]);
-            //AppSettingsManager.SetParameterFile("NameSeller", item[1]);
-            //AppSettingsManager.SetParameterFile("NameFop", item[2]);
-            //AppSettingsManager.SetParameterFile("Region", item[3]);
-            //AppSettingsManager.SetParameterFile("District", item[4]);
-            //AppSettingsManager.SetParameterFile("Citi", item[5]);
-            //AppSettingsManager.SetParameterFile("Streer", item[6]);
-            //AppSettingsManager.SetParameterFile("House", item[7]);
-            //AppSettingsManager.SetParameterFile("PrinterCheck", item[8]);
-        }
-        public List<string> Get()
-        {
-            return new List<string>() 
-            {
-                //AppSettingsManager.GetParameterFiles("NameShop").ToString(),
-                //AppSettingsManager.GetParameterFiles("NameSeller").ToString(),
-                //AppSettingsManager.GetParameterFiles("NameFop").ToString(),
-                //AppSettingsManager.GetParameterFiles("Region").ToString(),
-                //AppSettingsManager.GetParameterFiles("District").ToString(),
-                //AppSettingsManager.GetParameterFiles("Citi").ToString(),
-                //AppSettingsManager.GetParameterFiles("Streer").ToString(),
-                //AppSettingsManager.GetParameterFiles("House").ToString(),
-                //AppSettingsManager.GetParameterFiles("PrinterCheck").ToString(),
-            };
-        }
+            _check = new FiscalCheck();
+            _servise = new PrintingFiscalCheckServise(); 
+        } 
         public void PrintTest()
         {
-            //_ordererCheck.PrintCheck(new List<DataBase.Model.GoodsEntiti>() {
-            //    new DataBase.Model.GoodsEntiti()
-            //    {
-            //        Code = "123456789101",
-            //        NameGoods = "Товар №1",
-            //        CodeUKTZED = new DataBase.Model.CodeUKTZEDEntiti(){ Code = "8855"},
-            //        Price = 100,
-            //        Count = 5,
-            //    },
-            //    new DataBase.Model.GoodsEntiti()
-            //    {
-            //        Code = "987654321101",
-            //        NameGoods = "Товар №2",
-            //        CodeUKTZED = new DataBase.Model.CodeUKTZEDEntiti(){ Code = "8865"},
-            //        Price = 200,
-            //        Count = 5,
-            //    }
-            //},"123", new DataBase.Model.OperationEntiti());
+            try
+            {
+                var json = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString();
+                if(json == null)
+                {
+                    throw new Exception();
+                }
+
+                var setting = PrinterFiscalChekSetting.Deserialize(json);
+                if (setting != null)
+                {
+                    _check.CreateFisckalCheck(new List<Product>() {
+                new Product()
+                {
+                    Code = "123456789101",
+                    NameProduct = "Товар №1",
+                    CodeUKTZED = new  ProductCodeUKTZED(){ Code = "8855"},
+                    Price = 100,
+                    Count = 5,
+                },
+                new Product()
+                {
+                    Code = "987654321101",
+                    NameProduct = "Товар №2",
+                    CodeUKTZED = new ProductCodeUKTZED(){ Code = "8865"},
+                    Price = 200,
+                    Count = 5,
+                }
+                }, "123", new Operation(), new User(), new ObjectOwner(), new User(), new OperationRecorder());
+
+                    _servise.SetSetting(setting);
+                    _servise.PrintCheck(_check.GetCheck());
+                }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
     }
 }

@@ -79,8 +79,7 @@ namespace ShopProject.ViewModel.HomePage
             _openStatisticsPageCommand = new DelegateCommand(() => { Page = new StatisticsView(); }); 
             _openUnitOfMeasurePageCommand = new DelegateCommand(() => { Page = new UnitsOfMeasureView(); });
             _exitUserCommand = new DelegateCommand(() => { Session.RemoveSession(); Page = new AuthorizationView(); VisibilityMenu = Visibility.Hidden; });
-            _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); });
-            _openUserPageCommand = new DelegateCommand(() => { Page = new UserView(); });
+            _openProductCodeUKTZEDPageCommand = new DelegateCommand(() => { Page = new ProductCodeUKTZEDView(); }); 
             _openGiftCertificatesPageCommand = new DelegateCommand(() => { Page = new GiftCertificatesView(); });
             _visibilitiMenu = Visibility.Hidden;
 

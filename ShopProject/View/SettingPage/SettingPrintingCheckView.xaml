@@ -49,33 +49,60 @@
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/> 
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/> 
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Принтер -->
                         <TextBlock Text="Принтер для друку чеків"
-                           Grid.Row="0"
+                           Grid.Row="2"
                            Grid.Column="0"
                            VerticalAlignment="Center"
-                           Margin="0,0,15,0"/>
+                           HorizontalAlignment="Left"
+                           Margin="5,0,15,0"/>
 
-                        <ComboBox Grid.Row="0"
+                        <ComboBox Grid.Row="2"
                           Grid.Column="1"
                           ItemsSource="{Binding Printer}"
                           SelectedItem="{Binding SelectedPrinter}"
                           Height="30"/>
 
                         <!-- Кнопка -->
-                        <Button Grid.Row="1"
+                        <Button Grid.Row="4"
                         Grid.Column="1"
                         Command="{Binding PrintTestCheck}"
-                        Margin="0,15,0,0"
+                        Margin="0,15,0,15"
                         Height="34"
                         Content="Друк пробної сторінки"
                         Background="CadetBlue"
                         Foreground="White"
+                                VerticalAlignment="Top"
                         BorderThickness="0"
-                        Cursor="Hand"/> 
+                        Cursor="Hand"/>
+
+                        <Label x:Name="label" Content="Ширина друку принтера" HorizontalAlignment="Left"  Margin="0,15,0,15"  Grid.Row="0" VerticalAlignment="Top"/>
+                        <TextBox x:Name="textBox" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Grid.Row="0"   Margin="0,15,0,15"  TextWrapping="Wrap" Text="{Binding Width , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
+
+
+                        <Label x:Name="label1" Content="Маштаб чеку" HorizontalAlignment="Left" Grid.Row="1" Margin="0,15,0,15" VerticalAlignment="Top"/>
+                        <TextBox x:Name="textBox1" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="1" TextWrapping="Wrap" Text="{Binding Slcale,StringFormat={}{0:0.00}}" VerticalAlignment="Top"/>
+
+                        <Button x:Name="button"  Grid.Column="1"
+                                Grid.Row="3"
+                                Command="{Binding SaveSettingCommand}"
+                                Margin="0,15,0,15"
+                                Height="34"
+                                Content="Зберегти налаштування"
+                                Background="CadetBlue"
+                                Foreground="White"
+                                VerticalAlignment="Top"
+                                BorderThickness="0"
+                                Cursor="Hand"/>
+
+
+
                     </Grid> 
                 </Border> 
             </Grid>

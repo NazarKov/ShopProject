@@ -11,18 +11,18 @@ namespace ShopProject.ViewModel.SettingPage
     {
         private ICommand _openGeneralSettingOpenCommand;  
         private ICommand _openSettingPrintingCheckCommand;
-        private ICommand _openStickerSettingCommand;
+        private ICommand _openSettingPintingStickerCommand;
         private ICommand _openSettingUserCommand;
-        private ICommand _openSettingWebServerCommand; 
-
-
+        private ICommand _openSettingWebServerCommand;
+        private ICommand _openSettingScannerCommand;
         public SettingViewModel()
         { 
             _openGeneralSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); }); 
-            _openSettingPrintingCheckCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingCheckView(); }); 
+            _openSettingPrintingCheckCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingCheckView(); });
+            _openSettingPintingStickerCommand = new DelegateCommand(() => { PageSetting = new SettingPrintingStickerView(); });
             _openSettingUserCommand = new DelegateCommand(() => { PageSetting = new SettingUser(); });
-            _openSettingWebServerCommand = new DelegateCommand(() => { PageSetting = new SettingWebServerView(); }); 
-
+            _openSettingWebServerCommand = new DelegateCommand(() => { PageSetting = new SettingWebServerView(); });
+            _openSettingScannerCommand = new DelegateCommand(() => { PageSetting = new SettingScannerView(); });
             PageSetting = new SettingUser();
         }
 
@@ -36,8 +36,9 @@ namespace ShopProject.ViewModel.SettingPage
 
         public ICommand GeneralSettingOpenCommand => _openGeneralSettingOpenCommand;  
         public ICommand PrintingCheckCommand => _openSettingPrintingCheckCommand;
-        public ICommand StickerSettingOpenCommand => _openStickerSettingCommand;
+        public ICommand StickerSettingOpenCommand => _openSettingPintingStickerCommand;
         public ICommand OpenSettingUserCommand => _openSettingUserCommand;
         public ICommand OpenSettingWebServerCommand => _openSettingWebServerCommand; 
+        public ICommand OpenSettingScannerCommand=> _openSettingScannerCommand;
     }
 }

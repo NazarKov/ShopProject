@@ -9,6 +9,7 @@ using System.Windows;
 using System.Drawing.Drawing2D;
 using System.Windows.Controls;
 using Image = System.Windows.Controls.Image;
+using ShopProject.Helpers.PrintingService.PrinterSetting;
 
 namespace ShopProject.Helpers.PrintingServise
 {
@@ -196,7 +197,13 @@ namespace ShopProject.Helpers.PrintingServise
         {
             try
             {
-                var printer = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString(); 
+                var json = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString(); 
+                if(json == null)
+                {
+                    throw new Exception();
+                }
+
+                var printer = (PrinterStickerSetting.Deserialize(json)).Printer;
 
                 if (printer == null || printer == string.Empty || printer == " ")
                 {

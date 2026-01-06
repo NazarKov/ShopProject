@@ -13,27 +13,26 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.SettingPage
 {
-    internal class SettingPrintingCheckViewModel : ViewModel<SettingPrintingCheckViewModel>
+    internal class SettingPrintingStickerViewModel : ViewModel<SettingPrintingStickerViewModel>
     {
-        SettingPrintingCheckModel _model;
-
         private ICommand _saveSettingCommand;
         private ICommand _printTestCheckCommand;
-
-        public SettingPrintingCheckViewModel()
+        private SettingPrintingStickerModel _model;
+        public SettingPrintingStickerViewModel()
         {
+            _model = new SettingPrintingStickerModel();
+
             _saveSettingCommand = new DelegateCommand(SaveSetting);
-            _printTestCheckCommand = new DelegateCommand(() => { _model.PrintTest(); });
+            //_printTestCheckCommand = new DelegateCommand(() => { _model.PrintTest(); });
 
-            _model = new SettingPrintingCheckModel();
+            _model = new SettingPrintingStickerModel();
 
-            _printer = new List<string>();
-            _width = 302;
-            _slcale = 0.65;
+            _printer = new List<string>(); 
             _selectedPrinter = string.Empty; 
 
             SetFieldTextBox();
         }
+
         private void SetFieldTextBox()
         {
             foreach (string printer in PrinterSettings.InstalledPrinters)
@@ -41,65 +40,46 @@ namespace ShopProject.ViewModel.SettingPage
                 _printer.Add(printer);
             }
 
-            var json = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString();
-            if (json != null) 
+            var json = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString();
+            if (json != null)
             {
-                var setting = PrinterFiscalChekSetting.Deserialize(json);
-                if (setting != null) 
-                {
-                    Width = setting.Width;
-                    Slcale = setting.Slcale;
+                var setting = PrinterStickerSetting.Deserialize(json);
+                if (setting != null)
+                {  
                     SelectedPrinter = setting.Printer;
-                } 
+                }
             }
-        } 
+        }
         private List<string> _printer;
         public List<string> Printer
         {
             get { return _printer; }
-            set { _printer = value;OnPropertyChanged(nameof(Printer)); }
+            set { _printer = value; OnPropertyChanged(nameof(Printer)); }
         }
         private string _selectedPrinter;
         public string SelectedPrinter
         {
             get { return _selectedPrinter; }
             set { _selectedPrinter = value; OnPropertyChanged(nameof(SelectedPrinter)); }
-        }
-
-        private double _width;
-        public double Width
-        {
-            get { return _width; }
-            set { _width = value; OnPropertyChanged(nameof(Width)); }
-        }
-        private double _slcale;
-        public double Slcale
-        {
-            get { return _slcale; }
-            set { _slcale = value; OnPropertyChanged(nameof(Width)); }
         } 
 
         public ICommand SaveSettingCommand => _saveSettingCommand;
 
         private void SaveSetting()
         {
-            var json = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString();
+            var json = AppSettingsManager.GetParameterFiles("PrinterSticker").ToString();
             if (json != null)
             {
-                var setting = PrinterFiscalChekSetting.Deserialize(json);
+                var setting = PrinterStickerSetting.Deserialize(json);
                 if (setting != null)
-                {
-
-                    setting.Width = Width;
-                    setting.Slcale = Slcale;
+                { 
                     setting.Printer = SelectedPrinter;
 
-                    AppSettingsManager.SetParameterFile("PrinterCheck", setting.Serialize());
+                    AppSettingsManager.SetParameterFile("PrinterSticker", setting.Serialize());
                 }
             }
             MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         public ICommand PrintTestCheck => _printTestCheckCommand;
-
     }
 }

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.UserPage
+namespace ShopProject.View.SettingPage
 {
     /// <summary>
-    /// Interaction logic for UserView.xaml
+    /// Interaction logic for SettingScannerView.xaml
     /// </summary>
-    public partial class UserView : Page
+    public partial class SettingScannerView : Page
     {
-        public UserView()
+        public SettingScannerView()
         {
             InitializeComponent();
         }

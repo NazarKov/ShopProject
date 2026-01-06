@@ -74,7 +74,7 @@
  
                         <Menu Background="#F5F5F5" Visibility="{Binding VisibilityMenu}" Margin="20,0,20,0" VerticalAlignment="Center" FontSize="16" >
                             <MenuItem Header="{Binding UserName}" HorizontalAlignment="Right">
-                                <MenuItem Header="👤 Профіль" Command="{Binding OpenUserCommand}"/>
+                                <MenuItem Header="👤 Профіль" Command="{Binding OpenSettingCommand}"/>
                                 <MenuItem Header="🚪 Вийти" Command="{Binding ExitUserCommand}" />
                             </MenuItem>
                         </Menu>

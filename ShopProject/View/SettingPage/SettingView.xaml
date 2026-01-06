@@ -37,7 +37,7 @@
     <Grid Background="#F5F5F5">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -57,7 +57,9 @@
                        Foreground="#333"/>
 
                 <Separator Margin="5"/>
-
+                <Button Content="Корисувач"
+                        Style="{StaticResource MenuButtonStyle}"
+                        Command="{Binding OpenSettingUserCommand}"/>
                 <Button Content="Загальне"
                     Style="{StaticResource MenuButtonStyle}"
                     Command="{Binding GeneralSettingOpenCommand}"/>
@@ -65,10 +67,15 @@
                 <Button Content="Персоналізація"
                     Style="{StaticResource MenuButtonStyle}"/> 
 
-                <Button Content="Налаштування друку"
+                <Button Content="Налаштування друку чеків"
                     Style="{StaticResource MenuButtonStyle}"
                     Command="{Binding PrintingCheckCommand}"/>
-
+                <Button Content="Налаштування друку стікерів"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Command="{Binding StickerSettingOpenCommand}"/>
+                <Button Content="Налаштування сканера"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Command="{Binding OpenSettingScannerCommand}"/>
                 <Button Content="Час та мова"
                     Style="{StaticResource MenuButtonStyle}"/>
 
