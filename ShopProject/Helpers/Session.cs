@@ -26,8 +26,7 @@ namespace ShopProject.Helpers
         public static User? UserItem { get; set; }       
         public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }
         public static ProductUnit? ProductUnit { get; set; }
-        public static Product? Product { get; set; } 
-        public static ObjectOwner? ObjectOwner { get; set; }
+        public static Product? Product { get; set; }  
         public static List<Product>? UpdateProductRange { get; set; } 
         public static IEnumerable<UserRole>? Roles { get; set; }
         public static IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }

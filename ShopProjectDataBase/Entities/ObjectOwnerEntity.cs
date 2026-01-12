@@ -12,6 +12,10 @@ namespace ShopProjectDataBase.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
         /// <summary>
+        /// Імя власника обєку
+        /// </summary>
+        public string NameOwner { get; set; } = string.Empty;
+        /// <summary>
         /// Тип обєкта оподаткування
         /// </summary>
         public string TypeObjectName { get; set; } = string.Empty;

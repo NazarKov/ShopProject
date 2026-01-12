@@ -232,7 +232,7 @@ namespace ShopProject.ViewModel.SalePage
 
             var workingShiftStatus = Session.WorkingShiftStatus;
 
-            if (workingShiftStatus != null && workingShiftStatus.WorkingShift != null)
+            if (workingShiftStatus != null && workingShiftStatus.WorkingShift != null && workingShiftStatus.WorkingShift.ID == 0)
             {
                 Task.Run(async () =>
                 {
@@ -240,15 +240,17 @@ namespace ShopProject.ViewModel.SalePage
                 });  
             }
 
+            var objectowner = Session.WorkingShiftStatus.ObjectOwner;
+
+            if(objectowner != null)
+            {
+                EconomicUnit = objectowner.NameObject;
+            }
 
             if ((workingShiftStatus != null && workingShiftStatus.OperationRecorder != null))
             {
                 FNumber = workingShiftStatus.OperationRecorder.FiscalNumber;
 
-                if (workingShiftStatus.OperationRecorder.ObjectOwner != null)
-                {
-                    EconomicUnit = workingShiftStatus.OperationRecorder.ObjectOwner.NameObject;
-                }
                 _operationsRecorder = workingShiftStatus.OperationRecorder;
             }
             StatusShift = workingShiftStatus.StatusShift;

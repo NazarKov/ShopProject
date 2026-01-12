@@ -32,6 +32,9 @@ namespace ShopProject.Helpers.PrintingService
             check.grid.Measure(new System.Windows.Size(_printerSetting.Width, double.PositiveInfinity));
             check.grid.Arrange(new Rect(0, 0, _printerSetting.Width, check.DesiredSize.Height));
             check.grid.LayoutTransform = new ScaleTransform(_printerSetting.Slcale, _printerSetting.Slcale);
+            check.QRCOde.Width = _printerSetting.SizeQrCode;
+            check.QRCOde.Height = _printerSetting.SizeQrCode;
+            
 
             PrintDialog printDlg = new PrintDialog();
             printDlg.PrintQueue = new System.Printing.PrintQueue(new System.Printing.PrintServer(), _printerSetting.Printer);

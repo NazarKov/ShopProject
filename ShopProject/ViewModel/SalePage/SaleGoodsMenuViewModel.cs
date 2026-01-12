@@ -40,12 +40,13 @@ namespace ShopProject.ViewModel.SalePage
             _cleareSumUserCommand = new DelegateCommand(ClearSumUser);
 
             _product = new ObservableCollection<ProductForSale>();
-            _barCodeSearch = string.Empty; 
-            _typeOplatu = new List<string>(); 
+            _barCodeSearch = string.Empty;
+            _typeOplatu = new List<string>();
+            _draingCheck = true;
             IsFiscalCheck = true;
             _totalSum = decimal.Zero;
             _user = new User();
-
+            _selectTypePayment = 0;
 
             SetFieldPage();
             ClearField();
@@ -102,11 +103,11 @@ namespace ShopProject.ViewModel.SalePage
                 OnPropertyChanged(nameof(DiscountPrecent)); }
         }
 
-        private int _selectIndex;
-        public int SelectIndex
+        private int _selectTypePayment;
+        public int SelectTypePayment
         {
-            get { return _selectIndex; }
-            set { _selectIndex = value;OnPropertyChanged(nameof(SelectIndex)); }
+            get { return _selectTypePayment; }
+            set { _selectTypePayment = value;OnPropertyChanged(nameof(SelectTypePayment)); }
         } 
         private int _widght;
         public int Widght
@@ -145,7 +146,7 @@ namespace ShopProject.ViewModel.SalePage
             Product = new ObservableCollection<ProductForSale>();
             SumaUser = 0;
             SumaOrder = 0;
-            _selectIndex = 0;
+            SelectTypePayment = 0;
 
             _idChannel = Guid.NewGuid();
             MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, this.CountingSumaOrder);
@@ -158,7 +159,8 @@ namespace ShopProject.ViewModel.SalePage
             _typeOplatu.Add("безготівкові форми оплати");
             _typeOplatu.Add("Сертифікат");
 
-            //DrawingCheck = _model.IsDrawinfChek;
+            SelectTypePayment = 0;
+            DrawingCheck = _model.IsDrawinfChek;
 
             _user = Session.User;
         }
@@ -276,7 +278,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private void PrintingCheck()
         {
-            //_model.IsDrawinfChek = DrawingCheck;
+            _model.IsDrawinfChek = DrawingCheck;
 
             if (!(SumaUser >= SumaOrder))
             {
@@ -308,7 +310,7 @@ namespace ShopProject.ViewModel.SalePage
                 else
                 {
                     discount = null;
-                }
+                } 
 
                 Task t = Task.Run(async () => {
 
@@ -322,7 +324,7 @@ namespace ShopProject.ViewModel.SalePage
                         RestPayment = rest.Value,
                         TotalPayment = _totalSum,
                         BuyersAmount = SumaUser.Value,
-                        TypePayment = TypePayment.Cash,
+                        TypePayment = (TypePayment)SelectTypePayment,
                         Discount = discount,
                     };
 

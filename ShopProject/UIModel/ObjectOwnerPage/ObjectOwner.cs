@@ -1,16 +1,13 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System; 
 
 namespace ShopProject.UIModel.ObjectOwnerPage
 {
     public class ObjectOwner
     {
         public Guid ID { get; set; } 
+        public string NameOwner {  get; set; } = string.Empty;
         public string TypeObjectName { get; set; } = string.Empty; 
         public string NameObject { get; set; } = string.Empty; 
         public string CodeObject { get; set; } = string.Empty; 

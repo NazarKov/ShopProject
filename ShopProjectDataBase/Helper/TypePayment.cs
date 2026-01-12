@@ -8,7 +8,6 @@ namespace ShopProjectDataBase.Helper
 {
     public enum TypePayment
     {
-        None,
         Cash,
         Card,
         GiftCertificate

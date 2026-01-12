@@ -247,12 +247,19 @@ namespace ShopProject.ViewModel.StoragePage
         }
 
         private void SearchByNameAndByBarCode(int countColumn, int page)
-        { 
+        {
             PaginatorData<Product> result = new PaginatorData<Product>();
+
+            MatchCollection matchCollection = Regex.Matches(_itemSearch, "^\\d{13}.?$");//визначення сепаратора
+            if(matchCollection.Count > 0)
+            {
+                _itemSearch = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
+            }
+
 
             Task t = Task.Run(async () =>
             { 
-                    if (_itemSearch.Count() == 13 && Regex.Matches(_itemSearch, "[1-9]").Any()) // 13 - довжина штрихкоду
+                    if (_itemSearch.Count() == 13 && Regex.Matches(_itemSearch, "[1-9]").Any()) // 13 - довжина штрихкоду 
                     {
                         result.Data = new List<Product>() { (await _model.SearchByBarCode(_itemSearch,
                             Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)))) };

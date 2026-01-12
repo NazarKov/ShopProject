@@ -24,6 +24,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 Status = item.Status,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
+                NameOwner = item.NameOwner,
             };
 
             Enum.TryParse(item.TypeStatus.ToString(), out TypeStatusObjectOwner type);
@@ -61,6 +62,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (int)item.TypeStatus,
+                NameOwner = item.NameOwner,
             }; 
             return result;
         }

@@ -151,7 +151,7 @@
                 <Label Content="Тип оплати:" FontSize="16" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,5"/>
                 <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
                     <ComboBox ItemsSource="{Binding TypeOplatu}" 
-                       SelectedIndex="{Binding SelectIndex}" 
+                       SelectedIndex="{Binding SelectTypePayment}" 
                        FontSize="16" Width="180" Height="35"/>
                     <StackPanel Margin="10,0,0,0">
                         <CheckBox Content="Друкувати чек" 

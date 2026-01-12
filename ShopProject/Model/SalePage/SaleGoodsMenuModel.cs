@@ -5,6 +5,8 @@ using ShopProject.Helpers.FileServise.XmlServise;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.PrintingService;
+using ShopProject.Helpers.PrintingService.PrinterSetting;
 using ShopProject.Helpers.PrintingServise;
 using ShopProject.UIModel.SalePage;
 using ShopProject.UIModel.StoragePage;
@@ -22,8 +24,9 @@ namespace ShopProject.Model.SalePage
 {
     internal class SaleGoodsMenuModel
     {
-         
-        //private PrintingFiscalCheck _printingFiscalCheck;
+
+        private FiscalCheck _chek;
+        private PrintingFiscalCheckServise _printigServise;
         private bool _isDrawingChek;
         private MainFiscalServerController _fiscalOperationController;
         private Operation _operation;
@@ -32,8 +35,9 @@ namespace ShopProject.Model.SalePage
         public bool IsDrawinfChek { get { return _isDrawingChek; } set { _isDrawingChek = value; } }
          
         public SaleGoodsMenuModel()
-        { 
-            //_printingFiscalCheck = new PrintingFiscalCheck(); 
+        {
+            _chek = new FiscalCheck();
+            _printigServise = new PrintingFiscalCheckServise(); 
 
             _isDrawingChek = true; 
 
@@ -41,6 +45,17 @@ namespace ShopProject.Model.SalePage
 
             _token = Session.User.Token;
             _operation = new Operation();
+
+            var json = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString();
+            if (json != null)
+            {
+                var setting = PrinterFiscalChekSetting.Deserialize(json);
+
+                if (setting != null)
+                {
+                     _printigServise.SetSetting(setting);
+                }
+            }
         }
 
         public void AddKey(SignatureKey key) => _fiscalOperationController.AddKey(key);
@@ -65,6 +80,7 @@ namespace ShopProject.Model.SalePage
 
         public bool SendCheck(ObservableCollection<ProductForSale> products, Operation operation)
         {
+           
             var product = new List<Product>();
             foreach (var item in products) 
             {
@@ -77,7 +93,7 @@ namespace ShopProject.Model.SalePage
             {
                 return false;
             }
-             
+
 
             var id =  _fiscalOperationController.SendFiscalCheck(workingShift,operation, product);
             if (id != string.Empty)
@@ -86,7 +102,17 @@ namespace ShopProject.Model.SalePage
                     await SaveDataBase(operation, product);
                     await CreateMac();
                 });
-                //_printingFiscalCheck.PrintCheck(products, id, order);
+                Task.Run(async () => {
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (IsDrawinfChek)
+                        {
+                            _chek.CreateFisckalCheck(product, id, operation, Session.User, Session.WorkingShiftStatus.OperationRecorder , Session.WorkingShiftStatus.ObjectOwner);
+                            _printigServise.PrintCheck(_chek.GetCheck()); 
+                        }
+                    });
+                });
 
                 return true;
             }

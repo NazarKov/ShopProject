@@ -53,6 +53,9 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/> 
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Принтер -->
@@ -70,7 +73,7 @@
                           Height="30"/>
 
                         <!-- Кнопка -->
-                        <Button Grid.Row="4"
+                        <Button Grid.Row="5"
                         Grid.Column="1"
                         Command="{Binding PrintTestCheck}"
                         Margin="0,15,0,15"
@@ -89,8 +92,12 @@
                         <Label x:Name="label1" Content="Маштаб чеку" HorizontalAlignment="Left" Grid.Row="1" Margin="0,15,0,15" VerticalAlignment="Top"/>
                         <TextBox x:Name="textBox1" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="1" TextWrapping="Wrap" Text="{Binding Slcale,StringFormat={}{0:0.00}}" VerticalAlignment="Top"/>
 
+                        <Label x:Name="label2" Content="Розмір  QR-code" HorizontalAlignment="Left" Grid.Row="3" Margin="0,15,0,15" VerticalAlignment="Top"/>
+                        <TextBox x:Name="textBox2" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="3" TextWrapping="Wrap" Text="{Binding SizeQrCode,StringFormat={}{0:0.00}}" VerticalAlignment="Top"/>
+                     
+
                         <Button x:Name="button"  Grid.Column="1"
-                                Grid.Row="3"
+                                Grid.Row="4"
                                 Command="{Binding SaveSettingCommand}"
                                 Margin="0,15,0,15"
                                 Height="34"

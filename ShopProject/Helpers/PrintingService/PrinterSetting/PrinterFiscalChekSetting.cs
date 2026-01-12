@@ -13,6 +13,7 @@ namespace ShopProject.Helpers.PrintingService.PrinterSetting
         public string Printer { get; set; } = string.Empty;
         public double Width { get; set; } = 0; 
         public double Slcale { get; set; } = 0; 
+        public double SizeQrCode {  get; set; } = 0;
         public string Serialize()
         {
             return JsonSerializer.Serialize(this);

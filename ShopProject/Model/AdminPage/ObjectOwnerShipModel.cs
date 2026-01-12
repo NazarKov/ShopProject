@@ -98,11 +98,12 @@ namespace ShopProject.Model.AdminPage
 
                         ObjectOwner objectOwner = new ObjectOwner()
                         {
-                            NameObject = item.NAME, 
+                            NameOwner = nameUser,
+                            NameObject = item.NAME,
                             Address = item.ADDRESS,
                             C_DISTR = item.C_DISTR,
-                            TypeOfRights = item.TYPE_OF_RIGHTS, 
-                            KATOTTG = item.KATOTTG, 
+                            TypeOfRights = item.TYPE_OF_RIGHTS,
+                            KATOTTG = item.KATOTTG,
 
                         };
                         if (objectOwner.C_TERRIT != null)

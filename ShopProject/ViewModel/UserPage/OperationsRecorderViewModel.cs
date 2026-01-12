@@ -2,6 +2,7 @@
 using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.UserPage;
+using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProjectDataBase.Entities;
 using System;
@@ -18,8 +19,8 @@ namespace ShopProject.ViewModel.UserPage
     internal class OperationsRecorderViewModel : ViewModel<OperationsRecorderViewModel>
     {
         private OperationsRecorderOperationsModel _model;
-        private List<OperationRecorder> _operationsRecorders;
-
+        private List<OperationRecorder> _operationsRecorders; 
+        private List<ObjectOwner> _objectOwners;
 
         public OperationsRecorderViewModel() 
         {
@@ -27,8 +28,8 @@ namespace ShopProject.ViewModel.UserPage
             _model = new OperationsRecorderOperationsModel();
             _operationsRecorders = new List<OperationRecorder>();
             SetFieldPage();
+            _objectOwners = new List<ObjectOwner>();
         }
-
 
         private List<OperationRecorder> _softwareDeviceSettlementOperationsList;
         public List<OperationRecorder> SoftwareDeviceSettlementOperationsList
@@ -53,6 +54,7 @@ namespace ShopProject.ViewModel.UserPage
             Task t = Task.Run(async () => { 
                 _operationsRecorders.Clear();
                 _operationsRecorders = await _model.GetAllOperationsRecorderOperationsUser();
+                _objectOwners = await _model.GetObjectOwners();
             });
             t.ContinueWith(t => { 
                 if (_operationsRecorders != null)
@@ -92,7 +94,9 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenWorkShifMenuCommand { get => new DelegateParameterCommand(OpenWorkShiftMenu, CanRegister); }
         private void OpenWorkShiftMenu(object parameter)
         {
-            Session.WorkingShiftStatus.OperationRecorder = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter); 
+            var item = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter);
+            Session.WorkingShiftStatus.OperationRecorder = item;
+            Session.WorkingShiftStatus.ObjectOwner = _objectOwners.FirstOrDefault(o => o.ID == item.ObjectOwner.ID);
             MediatorService.ExecuteEvent(NavigationButton.RedirectToWorkShiftMenu.ToString());
         }
         private bool CanRegister(object parameter) => true;

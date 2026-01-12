@@ -7,7 +7,8 @@ using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
 using System;
 using System.Collections.Generic;
-using System.Drawing; 
+using System.Drawing;
+using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -17,7 +18,7 @@ namespace ShopProject.Helpers.PrintingService
 {
     internal class FiscalCheck
     { 
-        private TemplatePrintingCheck _check; 
+        public TemplatePrintingCheck _check; 
         public FiscalCheck()
         {
             _check = new TemplatePrintingCheck();
@@ -27,54 +28,91 @@ namespace ShopProject.Helpers.PrintingService
             return _check;
         }
 
-        public void CreateFisckalCheck(List<Product> goods, string id, Operation operation, User seller, ObjectOwner objectOwner, User Fop, OperationRecorder operationRecorder)
+        public void CreateFisckalCheck(List<Product> products, string id, Operation operation, User seller, OperationRecorder operationRecorder , ObjectOwner objectOwner = null)
         { 
             _check = new TemplatePrintingCheck();
             TemplatePrintingCheckBody body;
 
-            _check.NameFop.Text = Fop.FullName;
-            _check.NameShop.Text = objectOwner.NameObject;
-            //template.Seller.Text = "Касир " + seller.FullName;
-            //template.RegionDistrictCiti.Text = region + ", " + district + ", " + city;
-            //template.StreetHouse.Text = street + ", " + house;
-            _check.Id.Text = "ID " + id;
 
+            if (operationRecorder != null&& operationRecorder.ObjectOwner!=null && objectOwner!=null) 
+            {
+
+                _check.NameFop.Text = objectOwner.NameOwner;
+                _check.NameShop.Text = objectOwner.NameObject;
+                _check.Seller.Text = "Касир " + seller.FullName;
+
+                List<string> address = operationRecorder.ObjectOwner.Address.Split(',').ToList();
+
+                var count = address.Count / 2;
+
+                for (int i = 0; i < count; i++)
+                {
+                    _check.RegionDistrictCiti.Text += address.ElementAt(i) + " , ";
+                }
+
+                for (int i = count; i < address.Count; i++)
+                {
+                    if (i == address.Count-1)
+                    {
+                        _check.StreetHouse.Text += address.ElementAt(i);
+                    }
+                    else
+                    {
+                        _check.StreetHouse.Text += address.ElementAt(i) + " , ";
+                    }
+                }
+                _check.Id.Text = "ID " + id;
+            } 
 
             double Height = 0;
-            for (int i = 0; i < goods.Count; i++)
+            for (int i = 0; i < products.Count; i++)
             {
                 body = new TemplatePrintingCheckBody();
 
 
                 Height += 80;
                 body.Height = 80;
-                body.codeUKTZED.Text = "УКТ ЗЕД: " + goods[i].CodeUKTZED.Code.ToString();
-                body.codeGoods.Text = "Штрих-код: " + goods[i].Code.ToString();
-                body.nameGodos.Text = goods[i].NameProduct.ToString();
-                body.countGoods.Text = ((decimal)goods[i].Count).ToString("0.00") + " X " + ((decimal)goods[i].Price).ToString("0.00");
-                body.priceGoods.Text = ((decimal)goods[i].Price).ToString("0.00");
+                body.codeUKTZED.Text = "УКТ ЗЕД: " + products[i].CodeUKTZED.Code.ToString();
+                body.codeGoods.Text = "Штрих-код: " + products[i].Code.ToString();
+                body.nameGodos.Text = products[i].NameProduct.ToString();
+                body.countGoods.Text = ((decimal)products[i].Count).ToString("0.00") + " X " + ((decimal)products[i].Price).ToString("0.00");
+                body.priceGoods.Text = ((decimal)products[i].Price).ToString("0.00");
 
-                if (goods[i].NameProduct.Length > 45)
+                if (products[i].NameProduct.Length > 45)
                 {
                     body.HeightNameGoods.Height = new GridLength(32);
                     body.Height += 16;
                     Height += 16;
                 }
 
-                //if (goods[i]. == 0 || goods[i].Sales == null)
-                //{
-                //    templateBody.nameSaleGoods.Visibility = Visibility.Hidden;
-                //    templateBody.saleGoods.Visibility = Visibility.Hidden;
-                //    Height -= 16;
-                //    templateBody.Height -= 16;
-                //}
-                //else
-                //{
-                //    templateBody.saleGoods.Text = goods[i].Sales.ToString();
-                //}
+                if (products[i].Discount != null && products[i].Discount.TotalDiscount == 0)
+                {
+                    body.nameSaleGoods.Visibility = Visibility.Hidden;
+                    body.saleGoods.Visibility = Visibility.Hidden;
+                    Height -= 16;
+                    body.Height -= 16;
+                }
+                else
+                {
+                    if (products[i].Discount != null)
+                    {
+                        body.saleGoods.Text = products[i].Discount.TotalDiscount.ToString();
+                    }
+                }
                 _check.templateGoods.Children.Add(body);
             }
             _check.bodyHeight.Height = new GridLength(Height);
+
+            if (operation.Discount != null  && operation.Discount.TotalDiscount != 0)
+            {
+                _check.totalsale.Text = operation.Discount.TotalDiscount.ToString("0.00");
+            }
+            else
+            {
+                _check.totalsalelable.Visibility = Visibility.Collapsed;
+                _check.totalsale.Visibility = Visibility.Collapsed;
+            }
+
 
             if (operation.TypePayment == 0)
             {

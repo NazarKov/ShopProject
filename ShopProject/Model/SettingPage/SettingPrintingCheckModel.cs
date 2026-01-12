@@ -57,7 +57,7 @@ namespace ShopProject.Model.SettingPage
                     Price = 200,
                     Count = 5,
                 }
-                }, "123", new Operation(), new User(), new ObjectOwner(), new User(), new OperationRecorder());
+                }, "123", new Operation(), new User(),  new OperationRecorder());
 
                     _servise.SetSetting(setting);
                     _servise.PrintCheck(_check.GetCheck());

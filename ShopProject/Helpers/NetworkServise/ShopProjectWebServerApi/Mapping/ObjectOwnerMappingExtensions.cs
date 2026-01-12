@@ -29,6 +29,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 REG_NUM_OBJ = item.REG_NUM_OBJ,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
+                NameOwner = item.NameOwner,
             };
         }
         public static ObjectOwner ToObjectOwner(this ObjectOwnerDto item)
@@ -50,6 +51,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 REG_NUM_OBJ = item.REG_NUM_OBJ,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
+                NameOwner = item.NameOwner
             };
         }
         public static IEnumerable<ObjectOwner> ToObjectOwner(this IEnumerable<ObjectOwnerDto> items)

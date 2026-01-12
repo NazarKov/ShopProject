@@ -1,4 +1,5 @@
-﻿using ShopProject.UIModel.OperationRecorderPage;
+﻿using ShopProject.UIModel.ObjectOwnerPage;
+using ShopProject.UIModel.OperationRecorderPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace ShopProject.UIModel.SalePage
 {
     public class WorkingShiftStatus
     {
-        public WorkingShift? WorkingShift { get; set; }
+        public WorkingShift? WorkingShift { get; set; } 
+        public ObjectOwner? ObjectOwner { get; set; }
         public string? StatusShift { get; set; }
         public string? StatusOnline { get; set; }
         public OperationRecorder? OperationRecorder { get; set; }

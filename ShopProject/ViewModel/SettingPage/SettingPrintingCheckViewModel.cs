@@ -50,6 +50,7 @@ namespace ShopProject.ViewModel.SettingPage
                     Width = setting.Width;
                     Slcale = setting.Slcale;
                     SelectedPrinter = setting.Printer;
+                    SizeQrCode = setting.SizeQrCode;
                 } 
             }
         } 
@@ -77,7 +78,14 @@ namespace ShopProject.ViewModel.SettingPage
         {
             get { return _slcale; }
             set { _slcale = value; OnPropertyChanged(nameof(Width)); }
-        } 
+        }
+
+        private double _sizeQrCode;
+        public double SizeQrCode
+        {
+            get { return _sizeQrCode; }
+            set { _sizeQrCode = value; OnPropertyChanged(nameof(SizeQrCode)); }
+        }
 
         public ICommand SaveSettingCommand => _saveSettingCommand;
 
@@ -93,6 +101,7 @@ namespace ShopProject.ViewModel.SettingPage
                     setting.Width = Width;
                     setting.Slcale = Slcale;
                     setting.Printer = SelectedPrinter;
+                    setting.SizeQrCode = SizeQrCode;
 
                     AppSettingsManager.SetParameterFile("PrinterCheck", setting.Serialize());
                 }

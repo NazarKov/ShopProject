@@ -37,6 +37,9 @@ namespace ShopProjectWebServer.Api.DtoModels.ObjectOwner
         [JsonPropertyName("REG_NUM_OBJ")]
         public string? REG_NUM_OBJ { get; set; }
         [JsonPropertyName("KATOTTG")]
-        public string KATOTTG { get; set; } = string.Empty; 
+        public string KATOTTG { get; set; } = string.Empty;
+
+        [JsonPropertyName("NameOwner")]
+        public string NameOwner { get; set; } = string.Empty;
     }
 }
