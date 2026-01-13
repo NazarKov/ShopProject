@@ -1,11 +1,11 @@
 ﻿using GreetClient;
 using ShopProject.Helpers;
 using ShopProject.Helpers.PrintingService;
-using ShopProject.Helpers.PrintingService.PrinterSetting;
 using ShopProject.Helpers.PrintingServise;
 using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
 using System;

@@ -3,6 +3,7 @@ using FiscalServerApi.ExceptionServer;
 using ShopProject.Helpers.FileServise.XmlServise;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi.Helpers;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
 using ShopProjectDataBase.Entities;
@@ -31,7 +32,7 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
         {
             _signFileContoller = new SigningFileContoller();
             _fiscalServerController = new FiscalServerController();
-            _testMode = (bool)AppSettingsManager.GetParameterFiles("TestMode");
+            _testMode = (OperationRecorderSetting.Deserialize(AppSettingsManager.GetParameterFiles("OperationRecorder").ToString())).IsTestMode;
             _signFileContoller.Initialize(false);
             _key = new SignatureKey();
             _xmlServise = new XmlServise();

@@ -1,9 +1,9 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
 using ShopProjectDataBase.Helper;
@@ -28,6 +28,8 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _cleareSumUserCommand;
         private Guid _idChannel;
         private User _user;
+        private StorageSetting _setting;
+        private OperationRecorderSetting _settingOperationRecorder;
 
         public SaleGoodsMenuViewModel() 
         {
@@ -163,6 +165,28 @@ namespace ShopProject.ViewModel.SalePage
             DrawingCheck = _model.IsDrawinfChek;
 
             _user = Session.User;
+
+            var json = AppSettingsManager.GetParameterFiles("StorageSetting").ToString();
+            if (json != null) 
+            {
+                var setting = StorageSetting.Deserialize(json);
+                if (setting != null) 
+                {
+                    _setting = setting;
+                }
+            }
+
+            json = AppSettingsManager.GetParameterFiles("OperationRecorder").ToString();
+            if (json != null)
+            {
+                var setting = OperationRecorderSetting.Deserialize(json);
+
+                if (setting != null)
+                {
+                    _settingOperationRecorder = setting;
+                }
+            }
+
         }
 
 
@@ -170,18 +194,20 @@ namespace ShopProject.ViewModel.SalePage
 
         private async Task SearchBarCodeGoods()
         {
-            ObservableCollection<ProductForSale> temp;
-            if (BarCodeSearch.Length > 12)
+            ObservableCollection<ProductForSale> temp; 
+            
+            if (BarCodeSearch != _settingOperationRecorder.DeleteBarCode)
             {
-                if (BarCodeSearch != "2")
+                if (BarCodeSearch.Length > _setting.ProductBarCodeLength - 1)
                 {
+
                     var item = await _model.Search(BarCodeSearch);
                     if (item != null)
                     {
-                        
+
                         item.Count = 1;
                         temp = new ObservableCollection<ProductForSale>();
-                        temp = Product; 
+                        temp = Product;
 
                         if (temp.FirstOrDefault(pr => pr.Product.Code == item.Code) != null)
                         {
@@ -189,43 +215,44 @@ namespace ShopProject.ViewModel.SalePage
                         }
                         else
                         {
-                            temp.Add(new ProductForSale(item) {Cannnel = _idChannel });
+                            temp.Add(new ProductForSale(item) { Cannnel = _idChannel });
                         }
 
                         CountingSumaOrder();
 
                         Product = new ObservableCollection<ProductForSale>();
                         Product = temp;
-                    }
-                }
-                else
+                    } 
+                    BarCodeSearch = string.Empty;
+                } 
+            }
+            else
+            {
+                if (Product.Count() != 0)
                 {
-                    if (Product.Count() != 0)
+                    if (Product.ElementAt(Product.Count - 1).Count == 1)
                     {
-                        if (Product.ElementAt(Product.Count - 1).Count == 1)
-                        {
-                            temp = new ObservableCollection<ProductForSale>();
-                            temp = Product;
+                        temp = new ObservableCollection<ProductForSale>();
+                        temp = Product;
 
-                            temp.Remove(temp.ElementAt(temp.Count - 1));
-                            Product = new ObservableCollection<ProductForSale>();
-                            Product = temp;
-                            CountingSumaOrder();
-                        }
-                        else
-                        {
-                            temp = new ObservableCollection<ProductForSale>();
-                            temp = Product;
-
-
-                            temp.ElementAt(Product.Count - 1).Count -= 1;
-                            Product = new ObservableCollection<ProductForSale>();
-                            Product = temp;
-                            CountingSumaOrder();
-                        }
+                        temp.Remove(temp.ElementAt(temp.Count - 1));
+                        Product = new ObservableCollection<ProductForSale>();
+                        Product = temp;
+                        CountingSumaOrder();
                     }
-                }
-                BarCodeSearch = string.Empty;
+                    else
+                    {
+                        temp = new ObservableCollection<ProductForSale>();
+                        temp = Product;
+
+
+                        temp.ElementAt(Product.Count - 1).Count -= 1;
+                        Product = new ObservableCollection<ProductForSale>();
+                        Product = temp;
+                        CountingSumaOrder();
+                    } 
+                    BarCodeSearch = string.Empty;
+                }  
             } 
         }
 

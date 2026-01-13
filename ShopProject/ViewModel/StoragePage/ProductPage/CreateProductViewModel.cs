@@ -2,6 +2,7 @@
 using ShopProject.Helpers.Navigation;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage.ProductsPage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
@@ -22,8 +23,8 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         private readonly ICommand _saveProductCommand;
         private readonly ICommand _clearWindowCommand;
 
-        CreateProductModel _model;
-
+        private CreateProductModel _model;
+        private StorageSetting _setting;
         public CreateProductViewModel()
         {
             _model = new CreateProductModel();
@@ -53,8 +54,20 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         {
             Units = Session.ProductUnits.ToList();
             CodeUKTZED = Session.ProductCodesUKTZED.ToList();
+            SetSetting();
         }
-
+        private void SetSetting()
+        {
+            var json = AppSettingsManager.GetParameterFiles("StorageSetting").ToString();
+            if (json != null)
+            {
+                var setting = StorageSetting.Deserialize(json);
+                if (setting != null)
+                {
+                    _setting = setting;
+                }
+            }
+        }
 
         private string _code;
         public string Code
@@ -142,26 +155,34 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
         private void SaveAndCreateProductDataBase()
         {
-            Task t = Task.Run(async () =>
+            if (Code.Count() == _setting.ProductBarCodeLength)
             {
-                if (await _model.SaveItemDataBase(new Product()
+
+                Task t = Task.Run(async () =>
                 {
-                    NameProduct = _name,
-                    Code = _code,
-                    Articule = _article,
-                    Price = _price,
-                    Count = _count,
-                    Unit = _units.ElementAt(_selectUnitsIndex),
-                    CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
-                    CreatedAt = DateTime.Now,
-                    Status = TypeStatusProduct.InStock,
-                    Discount = new Discount(),
-                })) ;
-                {
-                    MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-                    MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
-                }
-            });
+                    if (await _model.SaveItemDataBase(new Product()
+                    {
+                        NameProduct = _name,
+                        Code = _code,
+                        Articule = _article,
+                        Price = _price,
+                        Count = _count,
+                        Unit = _units.ElementAt(_selectUnitsIndex),
+                        CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
+                        CreatedAt = DateTime.Now,
+                        Status = TypeStatusProduct.InStock,
+                        Discount = new Discount(),
+                    })) ;
+                    {
+                        MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
+                    }
+                });
+            }
+            else
+            {
+                MessageBox.Show("Довжина штрихкоду не " + _setting.ProductBarCodeLength + " символів");
+            }
         }
 
     }

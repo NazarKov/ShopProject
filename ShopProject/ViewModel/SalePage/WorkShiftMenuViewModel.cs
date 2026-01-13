@@ -4,6 +4,7 @@ using ShopProject.Model.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.UserPage;
 using ShopProject.Views.SalePage;
 using ShopProjectDataBase.Entities;
@@ -273,9 +274,9 @@ namespace ShopProject.ViewModel.SalePage
             else
             {
                 Seller = _user.Login;
-            } 
+            }  
 
-            if ((bool)AppSettingsManager.GetParameterFiles("TestMode"))
+            if ((OperationRecorderSetting.Deserialize(AppSettingsManager.GetParameterFiles("OperationRecorder").ToString())).IsTestMode)
             {
                 _testMode = Visibility.Visible;
             }

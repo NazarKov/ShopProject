@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Helpers.PrintingService.PrinterSetting;
 using ShopProject.Model.Command;
 using ShopProject.Model.SettingPage;
+using ShopProject.UIModel.SettingPage;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;

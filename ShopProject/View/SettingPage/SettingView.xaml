@@ -65,8 +65,10 @@
                     Command="{Binding GeneralSettingOpenCommand}"/>
 
                 <Button Content="Персоналізація"
-                    Style="{StaticResource MenuButtonStyle}"/> 
-
+                    Style="{StaticResource MenuButtonStyle}"/>
+                <Button Content="Налаштування Списків"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Command="{Binding OpenSettingStorageCommand}"/>
                 <Button Content="Налаштування друку чеків"
                     Style="{StaticResource MenuButtonStyle}"
                     Command="{Binding PrintingCheckCommand}"/>
@@ -76,6 +78,9 @@
                 <Button Content="Налаштування сканера"
                     Style="{StaticResource MenuButtonStyle}"
                     Command="{Binding OpenSettingScannerCommand}"/>
+                <Button Content="Налаштування Прро"
+                    Style="{StaticResource MenuButtonStyle}"
+                    Command="{Binding OpenSettingOpenrationRecorderCommand}"/>
                 <Button Content="Час та мова"
                     Style="{StaticResource MenuButtonStyle}"/>
 

@@ -1,4 +1,4 @@
-﻿ 
+﻿
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Windows;
 using System.Drawing.Drawing2D;
 using System.Windows.Controls;
 using Image = System.Windows.Controls.Image;
-using ShopProject.Helpers.PrintingService.PrinterSetting;
+using ShopProject.UIModel.SettingPage;
 
 namespace ShopProject.Helpers.PrintingServise
 {

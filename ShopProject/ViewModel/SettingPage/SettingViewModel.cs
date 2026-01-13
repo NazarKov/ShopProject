@@ -15,6 +15,8 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand _openSettingUserCommand;
         private ICommand _openSettingWebServerCommand;
         private ICommand _openSettingScannerCommand;
+        private ICommand _openSettingOperationRecorderCommand;
+        private ICommand _openSettingStorageCommand;
         public SettingViewModel()
         { 
             _openGeneralSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); }); 
@@ -23,6 +25,8 @@ namespace ShopProject.ViewModel.SettingPage
             _openSettingUserCommand = new DelegateCommand(() => { PageSetting = new SettingUser(); });
             _openSettingWebServerCommand = new DelegateCommand(() => { PageSetting = new SettingWebServerView(); });
             _openSettingScannerCommand = new DelegateCommand(() => { PageSetting = new SettingScannerView(); });
+            _openSettingOperationRecorderCommand = new DelegateCommand(() => { PageSetting = new SettingOperationRecorderView(); });
+            _openSettingStorageCommand = new DelegateCommand(() => { PageSetting = new SettingStorageView(); });
             PageSetting = new SettingUser();
         }
 
@@ -33,12 +37,13 @@ namespace ShopProject.ViewModel.SettingPage
             set { _pageSetting = value; OnPropertyChanged(nameof(PageSetting)); }
         }
 
-
         public ICommand GeneralSettingOpenCommand => _openGeneralSettingOpenCommand;  
         public ICommand PrintingCheckCommand => _openSettingPrintingCheckCommand;
         public ICommand StickerSettingOpenCommand => _openSettingPintingStickerCommand;
         public ICommand OpenSettingUserCommand => _openSettingUserCommand;
         public ICommand OpenSettingWebServerCommand => _openSettingWebServerCommand; 
         public ICommand OpenSettingScannerCommand=> _openSettingScannerCommand;
+        public ICommand OpenSettingOpenrationRecorderCommand => _openSettingOperationRecorderCommand;
+        public ICommand OpenSettingStorageCommand => _openSettingStorageCommand;
     }
 }

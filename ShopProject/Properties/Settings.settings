@@ -8,9 +8,6 @@
     <Setting Name="User" Type="System.String" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="TestMode" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="WorkingShiftStatus" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -21,6 +18,12 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PrinterCheck" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OperationRecorder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="StorageSetting" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

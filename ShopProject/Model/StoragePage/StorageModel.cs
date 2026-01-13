@@ -64,16 +64,22 @@ namespace ShopProject.Model.StoragePage
                 return new PaginatorData<Product>();
             }
         }
-        public async Task<Product> SearchByBarCode(string item, TypeStatusProduct statusProduct)
+        public async Task<List<Product>> SearchByBarCode(string item, TypeStatusProduct statusProduct)
         {
             try
             {
-                return (await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, item , statusProduct)).ToProduct();
+                var result = await MainWebServerController.MainDataBaseConntroller.ProductController.GetProductByBarCode(_token, item, statusProduct);
+                if(result.ID == null)
+                {
+                    return new List<Product>();
+                }
+
+                return new List<Product>() { result.ToProduct() };
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return new Product();
+                return new List<Product>();
             } 
         }
         public async Task<ProductsInfo> GetProductInfo()

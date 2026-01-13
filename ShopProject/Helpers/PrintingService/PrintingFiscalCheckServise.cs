@@ -1,6 +1,6 @@
 ﻿using GreetClient;
-using ShopProject.Helpers.PrintingService.PrinterSetting;
 using ShopProject.Resource.template;
+using ShopProject.UIModel.SettingPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -49,18 +49,6 @@ namespace ShopProject.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool TestMode {
-            get {
-                return ((bool)(this["TestMode"]));
-            }
-            set {
-                this["TestMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WorkingShiftStatus {
             get {
@@ -104,6 +92,30 @@ namespace ShopProject.Properties {
             }
             set {
                 this["PrinterCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OperationRecorder {
+            get {
+                return ((string)(this["OperationRecorder"]));
+            }
+            set {
+                this["OperationRecorder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StorageSetting {
+            get {
+                return ((string)(this["StorageSetting"]));
+            }
+            set {
+                this["StorageSetting"] = value;
             }
         }
     }

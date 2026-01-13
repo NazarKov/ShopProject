@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ShopProject.Helpers.PrintingService.PrinterSetting
+namespace ShopProject.UIModel.SettingPage
 {
     internal class PrinterFiscalChekSetting
     {

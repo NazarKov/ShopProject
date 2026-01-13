@@ -3,6 +3,7 @@ using ShopProject.Helpers.Navigation;
 using ShopProject.Helpers.Template.Paginator;
 using ShopProject.Model.Command;
 using ShopProject.Model.StoragePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
 using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage;
@@ -39,7 +40,7 @@ namespace ShopProject.ViewModel.StoragePage
         private bool _isReadyUpdateDataGriedView;
         private static Timer _timer;
         private static string _itemSearch;
-
+        private StorageSetting _setting;
         public StorageViewModel()
         {
             _model = new StorageModel();
@@ -128,11 +129,24 @@ namespace ShopProject.ViewModel.StoragePage
         }
 
         public void SetFieldPage()
-        {  
+        {
+            SetSetting();
             SetComboBox();
             SetFiledStatusBar();
             SetFielComboBoxTypeStatusProduct();
             SetFieldDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)), 1 , true);
+        }
+        private void SetSetting()
+        {
+            var json = AppSettingsManager.GetParameterFiles("StorageSetting").ToString();
+            if (json != null)
+            {
+                var setting = StorageSetting.Deserialize(json);
+                if(setting != null)
+                {
+                    _setting = setting;
+                }
+            }
         }
 
         private void SetComboBox()
@@ -250,7 +264,8 @@ namespace ShopProject.ViewModel.StoragePage
         {
             PaginatorData<Product> result = new PaginatorData<Product>();
 
-            MatchCollection matchCollection = Regex.Matches(_itemSearch, "^\\d{13}.?$");//визначення сепаратора
+            var regex = "^\\d{"+_setting.ProductBarCodeLength+"}.?$";//визначення сепаратора
+            MatchCollection matchCollection = Regex.Matches(_itemSearch, regex);
             if(matchCollection.Count > 0)
             {
                 _itemSearch = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
@@ -259,10 +274,10 @@ namespace ShopProject.ViewModel.StoragePage
 
             Task t = Task.Run(async () =>
             { 
-                    if (_itemSearch.Count() == 13 && Regex.Matches(_itemSearch, "[1-9]").Any()) // 13 - довжина штрихкоду 
+                    if (_itemSearch.Count() == _setting.ProductBarCodeLength && Regex.Matches(_itemSearch, "[1-9]").Any()) 
                     {
-                        result.Data = new List<Product>() { (await _model.SearchByBarCode(_itemSearch,
-                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)))) };
+                        result.Data = (await _model.SearchByBarCode(_itemSearch,
+                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct))));
                     }
                     else
                     {
