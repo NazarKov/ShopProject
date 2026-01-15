@@ -7,5 +7,7 @@ namespace ShopProjectWebServer.Api.Interface.Services
         public int Add(string token, CreateOperationDto item);
         public IEnumerable<OperationDto> GetAll(string token);
         public OperationDto GetLast(string token , int shiftId);
+
+        public OperaiontInfoDto GetInfo(string token , int shiftId);
     }
 }

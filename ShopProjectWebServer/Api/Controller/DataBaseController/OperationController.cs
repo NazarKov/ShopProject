@@ -19,18 +19,32 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         public OperationController(IOperationServise servise)
         {
             _servise = servise;
-        } 
+        }
         [HttpPost("AddOperation")]
-        public  IActionResult AddOperation([FromQuery] string token, CreateOperationDto operation)
+        public IActionResult AddOperation([FromQuery] string token, CreateOperationDto operation)
         {
             try
             {
-                 var id = _servise.Add(token, operation); 
+                var id = _servise.Add(token, operation);
                 return Ok(ApiResponse<int>.Ok(id, "Обєкт збережено"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+        [HttpGet("GetOperationsInfo")]
+        public async Task<IActionResult> GetOperationsInfo(string token, int shiftId)
+        {
+            try
+            {
+                var result = _servise.GetInfo(token,shiftId);
+                return Ok(ApiResponse<OperaiontInfoDto>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 

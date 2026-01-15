@@ -54,13 +54,14 @@ namespace ShopProject.ViewModel.UserPage
             Task t = Task.Run(async () => { 
                 _operationsRecorders.Clear();
                 _operationsRecorders = await _model.GetAllOperationsRecorderOperationsUser();
-                _objectOwners = await _model.GetObjectOwners();
+                _objectOwners = await _model.GetObjectOwners(); 
             });
             t.ContinueWith(t => { 
                 if (_operationsRecorders != null)
                 {
                     SoftwareDeviceSettlementOperationsList.Clear();
                     SoftwareDeviceSettlementOperationsList = _operationsRecorders;
+
                 }
             });
         }

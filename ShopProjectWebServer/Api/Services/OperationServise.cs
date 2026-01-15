@@ -27,6 +27,22 @@ namespace ShopProjectWebServer.Api.Services
             return result.ToOperationDto();
         }
 
+        public OperaiontInfoDto GetInfo(string token, int shiftId)
+        {
+            if (!AuthorizationApi.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+
+            var result = new OperaiontInfoDto()
+            {
+                AmountOfFundsIssued = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalAmountOfFundsIssuedForShift(shiftId),
+                AmountOfFundsReceived = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalSumForShift(shiftId),
+                TotalCheck = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalOperationForShift(shiftId),
+            };
+            return result;
+        }
+
         public OperationDto GetLast(string token, int shiftId)
         {
             if (!AuthorizationApi.LoginToken(token))

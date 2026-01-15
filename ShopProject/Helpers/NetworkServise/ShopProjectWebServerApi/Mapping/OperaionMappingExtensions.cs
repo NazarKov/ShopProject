@@ -41,5 +41,15 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             result.TypeOperation = (int)operation.TypeOperation; 
             return result; 
         } 
+        public static OperationInfo ToOperationInfo(this OperationInfoDto info)
+        {
+            var result = new OperationInfo()
+            {
+                AmountOfFundsIssued = info.AmountOfFundsIssued,
+                AmountOfFundsReceived = info.AmountOfFundsReceived,
+                TotalCheck = info.TotalCheck,
+            };
+            return result;
+        }
     }
 }

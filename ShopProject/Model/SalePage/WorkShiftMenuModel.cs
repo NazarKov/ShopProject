@@ -151,5 +151,18 @@ namespace ShopProject.Model.SalePage
                 return null;
             }
         }
+        public async Task<OperationInfo> GetOperationInfo(int id)
+        {
+            try
+            {
+                var result = await MainWebServerController.MainDataBaseConntroller.OperationController.GetOperationsInfo(_token, id);
+                return result.ToOperationInfo();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
     }
 }

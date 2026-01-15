@@ -92,6 +92,66 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
+        public decimal GetTotalAmountOfFundsIssuedForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+                   
+                    var operaionts = context.Operations.Where(o=>o.Shift.ID== shiftId);
+
+                    decimal result = decimal.Zero;
+                    foreach(var o in operaionts)
+                    {
+                        result += o.RestPayment;
+                    }
+                    return result;
+                } 
+                return 0;
+            }
+        }
+
+        public decimal GetTotalOperationForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+
+                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId);
+                    if (operaionts != null)
+                    {
+                        return operaionts.Count();
+                    }
+                }
+                return 0;
+            }
+        }
+
+        public decimal GetTotalSumForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+
+                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId);
+
+                    decimal result = decimal.Zero;
+                    foreach (var o in operaionts)
+                    {
+                        result += o.TotalPayment;
+                    }
+                    return result;
+                }
+                return 0;
+            }
+        }
+
         public void Update(OperationEntity item)
         {
             throw new NotImplementedException();

@@ -11,5 +11,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         IEnumerable<WorkingShiftEntity> GetAll();  
         WorkingShiftEntity GetById(int id);
 
+
     }
 }

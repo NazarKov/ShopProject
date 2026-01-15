@@ -20,8 +20,18 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
         public OperationController(string url)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url); 
+            _httpClient.BaseAddress = new Uri(url);
         }
+        public async Task<OperationInfoDto> GetOperationsInfo(string token, int shiftId)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsInfo?token={token}&shiftId={shiftId}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<OperationInfoDto>.Unpacking(responseBody);
+
+            return result.Data;
+        } 
         public async Task<string> GetLastNumberOperation(string token,int shiftId)
         {   
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetLastNumberOperation?token={token}&shiftId={shiftId}");

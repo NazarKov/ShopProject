@@ -304,7 +304,7 @@ namespace ShopProject.ViewModel.SalePage
                     DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber), 
                     FactoryNumberRRO = "v1",
                     MACCreateAt = await _model.GetMAC(_operationsRecorder.ID),
-                    CreateAt = DateTimeOffset.Now,
+                    CreateAt = DateTimeOffset.Now, 
                     
                 };
                 Session.WorkingShiftStatus.WorkingShift = workingShiftEntity;
@@ -341,14 +341,15 @@ namespace ShopProject.ViewModel.SalePage
 
             Task t = Task.Run(async () =>
             {
+                var info = await _model.GetOperationInfo(shift.ID);
                 _model.AddKey(_user.SignatureKey);
-                shift.TotalCheckForShift = 0;
+                shift.TotalCheckForShift = info.TotalCheck;
                 shift.TotalReturnCheckForShift = 0;
                 shift.UserCloseShift = _user;
                 shift.AmountOfOfficialFundsIssuedCash = 0;
-                shift.AmountOfFundsIssued = 0;
+                shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
                 shift.AmountOfOfficialFundsReceivedCash = 0;
-                shift.AmountOfFundsReceived = 0;
+                shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
                 shift.AmountOfOfficialFundsIssuedCard = 0;
                 shift.AmountOfOfficialFundsReceivedCard = 0;
                 shift.EndAt = DateTimeOffset.Now;
