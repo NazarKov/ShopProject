@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
 {
@@ -16,9 +17,9 @@ namespace ShopProjectWebServer.Api.DtoModels.WorkingShift
         public decimal TypeRRO { get; set; } = decimal.Zero;
         [JsonPropertyName("TypeShiftCrateAt")]
         public int TypeShiftCrateAt { get; set; }
-        [JsonPropertyName("MACCreateAtID")]
-        public int MACCreateAtID { get; set; }
+        [JsonPropertyName("MACCreateAt")]
+        public CreateMediaAccessControlDto? MACCreateAt { get; set; }
         [JsonPropertyName("UserOpenShiftID")]
-        public string UserOpenShiftID { get; set; }
+        public string UserOpenShiftID { get; set; } = string.Empty;
     }
 }

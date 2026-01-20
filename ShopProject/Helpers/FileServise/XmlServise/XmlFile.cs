@@ -288,9 +288,43 @@ namespace ShopProject.Helpers.FileServise.XmlServise
                 index++;
                 WriteTagE(writer, index, operation,workingShift.FiscalNumberRRO); 
                 writer.WriteEndElement();
-                WriteFooter(workingShift.DataPacketIdentifier, operation.CreatedAt, operation.MAC, writer); 
+                WriteFooter(workingShift.DataPacketIdentifier, operation.CreatedAt, operation.MAC, writer);
             }
         }
+
+        public void WriteDepositMoney(string path, WorkingShift workingShift, Operation operation)
+        {
+            using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
+            {
+                WriteHeader(workingShift, writer);
+                writer.WriteStartElement("C");
+                writer.WriteAttributeString("T", 2.ToString("D"));
+                var index = 1;
+                var serialNumberDiscount = index;
+                WriteTagI(writer, index, operation);
+                index++;
+                WriteTagE(writer, index, operation, workingShift.FiscalNumberRRO);
+                writer.WriteEndElement();
+                WriteFooter(workingShift.DataPacketIdentifier, operation.CreatedAt, operation.MAC, writer);
+            }
+        }
+        public void WriteWithdrawalMoney(string path, WorkingShift workingShift, Operation operation)
+        {
+            using (XmlTextWriter writer = new XmlTextWriter(path, System.Text.Encoding.GetEncoding("windows-1251")))
+            {
+                WriteHeader(workingShift, writer);
+                writer.WriteStartElement("C");
+                writer.WriteAttributeString("T", 2.ToString("D"));
+                var index = 1;
+                var serialNumberDiscount = index;
+                WriteTagO(writer, index, operation);
+                index++;
+                WriteTagE(writer, index, operation, workingShift.FiscalNumberRRO);
+                writer.WriteEndElement();
+                WriteFooter(workingShift.DataPacketIdentifier, operation.CreatedAt, operation.MAC, writer);
+            }
+        }
+
         public void WriteCloseShift(string path, WorkingShift workingShift)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

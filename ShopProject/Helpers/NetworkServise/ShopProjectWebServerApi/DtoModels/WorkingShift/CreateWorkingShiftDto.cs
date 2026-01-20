@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.W
         public decimal TypeRRO { get; set; } = decimal.Zero;
         [JsonPropertyName("TypeShiftCrateAt")]
         public int TypeShiftCrateAt { get; set; }
-        [JsonPropertyName("MACCreateAtID")]
-        public int MACCreateAtID { get; set; }
+        [JsonPropertyName("MACCreateAt")]
+        public CreateMediaAccessControlDto? MACCreateAt { get; set; }
         [JsonPropertyName("UserOpenShiftID")]
-        public string UserOpenShiftID { get; set; }
+        public string UserOpenShiftID { get; set; } = string.Empty;
     }
 }

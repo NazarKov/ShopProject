@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
@@ -17,30 +18,32 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             using (ContextDataBase context = new ContextDataBase(_option))
             {
                 if (context != null)
-                {
-                    context.WorkingShift.Load();
-                    context.MediaAccessControls.Load();
-                    context.Operations.Load();
-                    context.Discounts.Load();
+                { 
                     if (context.Operations != null)
                     {
                         if (item.MAC != null)
                         {
-                            item.MAC = context.MediaAccessControls.Find(item.MAC.ID);
+                            item.MAC.WorkingShifts = context.WorkingShift.Find(item.MAC.WorkingShifts.ID);
+
+                            item.MAC.SequenceNumber = context.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.MAC.WorkingShifts.ID).Count(); 
+                            item.MAC.OperationsRecorder =
+                                context.OperationsRecorders.Find(item.MAC.OperationsRecorder.ID);
+                            item.MAC.Operation = null;
+                            context.MediaAccessControls.Add(item.MAC);
                         }
                         if (item.Shift != null)
                         {
                             item.Shift = context.WorkingShift.Find(item.Shift.ID);
                         }
-                        if (item.Discount != null) 
+
+                        if (item.Discount != null)
                         {
                             item.Discount = context.Discounts.Find(item.Discount.ID);
                         }
 
-                        context.Operations.Add(item);
-                        
-                    }
-                    context.SaveChanges();
+                        context.Operations.Add(item); 
+                        context.SaveChanges();
+                    } 
                 }
                 return item.ID;
             }
@@ -72,6 +75,48 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
+        public decimal GetAmountOfOfficialFundsIssuedCashForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+
+                    var operaionts = context.Operations.Where(o => o.TypeOperation == TypeOperation.WithdrawalMoney).Where(o => o.Shift.ID == shiftId);
+
+                    decimal result = decimal.Zero;
+                    foreach (var o in operaionts)
+                    {
+                        result += o.TotalPayment;
+                    }
+                    return result;
+                }
+                return 0;
+            }
+        }
+
+        public decimal GetAmountOfOfficialFundsReceivedCashForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+
+                    var operaionts = context.Operations.Where(o => o.TypeOperation ==  TypeOperation.DepositMoney).Where(o => o.Shift.ID == shiftId);
+
+                    decimal result = decimal.Zero;
+                    foreach (var o in operaionts)
+                    {
+                        result += o.TotalPayment;
+                    }
+                    return result;
+                }
+                return 0;
+            }
+        }
+
         public OperationEntity GetLastItem(int shiftId)
         {
             using (ContextDataBase context = new ContextDataBase(_option))
@@ -100,7 +145,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Operations.Load();
                    
-                    var operaionts = context.Operations.Where(o=>o.Shift.ID== shiftId);
+                    var operaionts = context.Operations.Where(o => o.TypeOperation ==  TypeOperation.FiscalCheck).Where(o=>o.Shift.ID== shiftId);
 
                     decimal result = decimal.Zero;
                     foreach(var o in operaionts)
@@ -139,7 +184,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Operations.Load();
 
-                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId);
+                    var operaionts = context.Operations.Where(o=>o.TypeOperation== TypeOperation.FiscalCheck).Where(o => o.Shift.ID == shiftId);
 
                     decimal result = decimal.Zero;
                     foreach (var o in operaionts)

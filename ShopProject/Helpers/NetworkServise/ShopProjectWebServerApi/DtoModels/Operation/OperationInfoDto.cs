@@ -15,5 +15,10 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
         public decimal AmountOfFundsIssued { get; set; }
         [JsonPropertyName("AmountOfFundsReceived")]
         public decimal AmountOfFundsReceived { get; set; }
+        [JsonPropertyName("AmountOfOfficialFundsIssued")]
+        public decimal AmountOfOfficialFundsIssued { get; set; }
+
+        [JsonPropertyName("AmountOfOfficialFundsReceived")]
+        public decimal AmountOfOfficialFundsReceived { get; set; }
     }
 }

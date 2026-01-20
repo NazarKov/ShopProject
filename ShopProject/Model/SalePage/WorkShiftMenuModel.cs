@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ShopProject.Helpers;
 using ShopProject.Helpers.FileServise.XmlServise;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
@@ -17,12 +18,10 @@ namespace ShopProject.Model.SalePage
 {
     internal class WorkShiftMenuModel
     {  
-        private PrintingDayReport _printingController;
         private MainFiscalServerController _fiscalOperationController;
         private readonly string _token; 
         public WorkShiftMenuModel()
         {   
-            _printingController = new PrintingDayReport(); 
             _fiscalOperationController = new MainFiscalServerController();
             _token = Session.User.Token; 
         }
@@ -34,9 +33,8 @@ namespace ShopProject.Model.SalePage
                 if (_fiscalOperationController.OpenShift(shiftEntity) == "OK")
                 {
                     Session.WorkingShiftStatus.WorkingShift = shiftEntity;
-                    Session.WorkingShiftStatus.WorkingShift.ID = await SaveDataBaseOpenShift(shiftEntity);
-                    await CreateMac(shiftEntity);
-                    
+                    shiftEntity.MACCreateAt = CreateMac(shiftEntity);
+                    Session.WorkingShiftStatus.WorkingShift.ID = await SaveDataBaseOpenShift(shiftEntity);  
                     return true;
                 }
                 return false;
@@ -55,20 +53,34 @@ namespace ShopProject.Model.SalePage
             if (_fiscalOperationController.CloseShift(shiftEntity) == "OK")
             {
                 shiftEntity.ID = Session.WorkingShiftStatus.WorkingShift.ID;
-                await SaveDataBaseCloseShift(shiftEntity);
-                await CreateMac(shiftEntity);
+                shiftEntity.MACEndAt = CreateMac(shiftEntity);
+                await SaveDataBaseCloseShift(shiftEntity); 
                 return true;
             }
             return false;
         }
-        public bool OfficialDepositMoney(OperationEntity operation)
+        public async Task<bool> DepositAndWithdrawalMoney(WorkingShift shift,Operation operation)
         {
-            //if (_fiscalOperationController.DepositAndWithdrawalMoney(operation) == "OK")
-            //{
-            //    SaveDataBase(operation);
-            //    return true;
-            //}
+            if (_fiscalOperationController.DepositAndWithdrawalMoney(shift, operation) == "OK")
+            {
+                operation.Shift = Session.WorkingShiftStatus.WorkingShift;
+                operation.MAC = CreateMac(shift);
+                await SaveDataBaseOperation(operation); 
+                return true;
+            }
             return false;
+        }
+
+
+        private async Task<int> SaveDataBaseOperation(Operation operation){
+            try
+            {
+                return await MainWebServerController.MainDataBaseConntroller.OperationController.AddOperation(_token, operation);
+            }
+            catch
+            {
+                return 0;
+            }
         }
         private async Task<int> SaveDataBaseOpenShift(WorkingShift shift)
         {
@@ -93,27 +105,15 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        private async Task<bool?> CreateMac(WorkingShift workingShift )
+        private MediaAccessControl CreateMac(WorkingShift workingShift ,Operation operation = null)
         {
-            try
+            return   new MediaAccessControl()
             {
-                var mac = new MediaAccessControl()
-                {
-                    OperationsRecorder = Session.WorkingShiftStatus.OperationRecorder,
-                    Content = XmlServise.GenerationMACForXML(),
-                    WorkingShifts = workingShift,
-                };
-                Session.WorkingShiftStatus.MediaAccessControl = mac;
-                if (mac != null)
-                {
-                    return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(_token, mac);
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            } 
+                OperationsRecorder = Session.WorkingShiftStatus.OperationRecorder,
+                Content = XmlServise.GenerationMACForXML(),
+                WorkingShifts = workingShift,
+                Operation = operation
+            }; 
         }  
 
         public async Task<MediaAccessControl> GetMAC(Guid operationRecorderId)
@@ -162,6 +162,26 @@ namespace ShopProject.Model.SalePage
             {
                 MessageBox.Show(ex.Message);
                 return null;
+            }
+        }
+        public async Task<string> GetLocalNumber()
+        {
+            try
+            {
+                var item = await MainWebServerController.MainDataBaseConntroller.OperationController.GetLastNumberOperation(_token, Session.WorkingShiftStatus.WorkingShift.ID);
+
+                if (item == string.Empty)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return (Convert.ToInt32(item) + 1).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "1";
             }
         }
     }

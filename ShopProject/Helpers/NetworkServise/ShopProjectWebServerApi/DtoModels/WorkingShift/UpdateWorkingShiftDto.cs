@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,13 +40,13 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.W
         public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
         [JsonPropertyName("AmountOfFundsIssued")]
         public decimal AmountOfFundsIssued { get; set; } = decimal.Zero;
-        [JsonPropertyName("MACCreateAtID")]
-        public int MACCreateAtID { get; set; }
-        [JsonPropertyName("MACEndAtID")]
-        public int MACEndAtID { get; set; }
+        [JsonPropertyName("MACCreateAt")]
+        public CreateMediaAccessControlDto? MACCreateAt { get; set; }
+        [JsonPropertyName("MACEndAt")]
+        public CreateMediaAccessControlDto? MACEndAt { get; set; }
         [JsonPropertyName("UserOpenShiftID")]
-        public string UserOpenShiftID { get; set; }
+        public string UserOpenShiftID { get; set; } = string.Empty;
         [JsonPropertyName("UserCloseShiftID")]
-        public string UserCloseShiftID { get; set; }
+        public string UserCloseShiftID { get; set; } = string.Empty;
     }
 }

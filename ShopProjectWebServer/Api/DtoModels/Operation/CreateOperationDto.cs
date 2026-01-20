@@ -1,4 +1,5 @@
 ﻿
+using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
 using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.Operation
@@ -23,8 +24,8 @@ namespace ShopProjectWebServer.Api.DtoModels.Operation
         public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
         [JsonPropertyName("AmountOfIssuedFunds")]
         public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
-        [JsonPropertyName("MACID")]
-        public int MACID { get; set; }
+        [JsonPropertyName("MAC")]
+        public CreateMediaAccessControlDto? MAC { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]

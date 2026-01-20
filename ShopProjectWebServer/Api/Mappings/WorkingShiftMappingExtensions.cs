@@ -16,10 +16,14 @@ namespace ShopProjectWebServer.Api.Mappings
             entity.FiscalNumberRRO = workingShift.FiscalNumberRRO;
             entity.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
             entity.DataPacketIdentifier = workingShift.DataPacketIdentifier;
-            entity.FactoryNumberRRO = workingShift.FactoryNumberRRO;
-            entity.MACCreateAt = new MediaAccessControlEntity() { ID=workingShift.MACCreateAtID };
+            entity.FactoryNumberRRO = workingShift.FactoryNumberRRO; 
             entity.CreateAt = DateTime.Now;
-            
+
+            if (workingShift.MACCreateAt != null) 
+            {
+                entity.MACCreateAt = workingShift.MACCreateAt.ToMediaAccessEntity();
+            }
+
             Enum.TryParse(workingShift.TypeShiftCrateAt.ToString(), out TypeWorkingShift type);
             entity.TypeShiftCrateAt = type; 
             return entity;
@@ -43,8 +47,15 @@ namespace ShopProjectWebServer.Api.Mappings
             shift.FactoryNumberRRO = workingShift.FactoryNumberRRO;
             shift.FiscalNumberRRO = workingShift.FiscalNumberRRO;
 
-            shift.MACCreateAt = new MediaAccessControlEntity() { ID = workingShift.MACCreateAtID };
-            shift.MACEndAt = new MediaAccessControlEntity() { ID = workingShift.MACEndAtID };
+            if (workingShift.MACCreateAt != null) 
+            {
+                shift.MACCreateAt = workingShift.MACCreateAt.ToMediaAccessEntity();
+            }
+
+            if (workingShift.MACEndAt != null)
+            {
+                shift.MACEndAt = workingShift.MACEndAt.ToMediaAccessEntity();
+            } 
 
             shift.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
             shift.UserCloseShift = new UserEntity() { ID= Guid.Parse(workingShift.UserCloseShiftID) };

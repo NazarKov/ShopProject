@@ -53,7 +53,7 @@ namespace ShopProject.ViewModel.SalePage
             _openShiftCommand = new DelegateCommand(OpenShift);
             _closeShiftCommand = new DelegateCommand(CloseShift);
             _updateSizeCommand = new DelegateCommand(UpdateSizes);
-            _openNewCheckCommand = new DelegateCommand(openNewCheck);
+            _openNewCheckCommand = new DelegateCommand(OpenCheck);
             _openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
 
 
@@ -81,6 +81,7 @@ namespace ShopProject.ViewModel.SalePage
 
             VisibleFirstDialogWindow = Visibility.Hidden;
             VisibleSecondDialogWindow = Visibility.Hidden;
+            VisibilitiExitButton = Visibility.Visible;
             Cash = 0;
             SetFieldPage();
         }
@@ -167,6 +168,12 @@ namespace ShopProject.ViewModel.SalePage
             get { return _visibleSecondDialogWindow; }
             set { _visibleSecondDialogWindow = value; OnPropertyChanged(nameof(VisibleSecondDialogWindow)); }
         }
+        private Visibility _visibilitiExitButton;
+        public Visibility VisibilitiExitButton
+        {
+            get { return _visibilitiExitButton; }
+            set { _visibilitiExitButton = value; OnPropertyChanged(nameof(VisibilitiExitButton));}
+        }
 
         private decimal _cash;
         public decimal Cash
@@ -233,29 +240,27 @@ namespace ShopProject.ViewModel.SalePage
 
             var workingShiftStatus = Session.WorkingShiftStatus;
 
-            if (workingShiftStatus != null && workingShiftStatus.WorkingShift != null && workingShiftStatus.WorkingShift.ID == 0)
+            if (workingShiftStatus != null)
             {
-                Task.Run(async () =>
+                if(workingShiftStatus.WorkingShift != null && workingShiftStatus.WorkingShift.ID != 0)
                 {
-                    Session.WorkingShiftStatus.WorkingShift = await _model.GetWorkingShift(workingShiftStatus.WorkingShift.ID.ToString());
-                });  
-            }
+                    Task.Run(async () =>
+                    {
+                        Session.WorkingShiftStatus.WorkingShift = await _model.GetWorkingShift(workingShiftStatus.WorkingShift.ID.ToString());
+                    });
+                }
 
-            var objectowner = Session.WorkingShiftStatus.ObjectOwner;
+                FNumber = workingShiftStatus.WorkingShift.FiscalNumberRRO;
+                //VisibilitiExitButton = Visibility.Hidden;  
 
-            if(objectowner != null)
-            {
-                EconomicUnit = objectowner.NameObject;
-            }
-
-            if ((workingShiftStatus != null && workingShiftStatus.OperationRecorder != null))
-            {
-                FNumber = workingShiftStatus.OperationRecorder.FiscalNumber;
-
+                StatusShift = workingShiftStatus.StatusShift;
+                StatusOnline = workingShiftStatus.StatusOnline;
                 _operationsRecorder = workingShiftStatus.OperationRecorder;
-            }
-            StatusShift = workingShiftStatus.StatusShift;
-            StatusOnline = workingShiftStatus.StatusOnline;
+                if (workingShiftStatus.ObjectOwner != null)
+                {
+                    EconomicUnit = workingShiftStatus.ObjectOwner.NameObject;
+                } 
+            } 
 
             if (StatusShift == "Зміна відкрита")
             {
@@ -346,9 +351,9 @@ namespace ShopProject.ViewModel.SalePage
                 shift.TotalCheckForShift = info.TotalCheck;
                 shift.TotalReturnCheckForShift = 0;
                 shift.UserCloseShift = _user;
-                shift.AmountOfOfficialFundsIssuedCash = 0;
+                shift.AmountOfOfficialFundsIssuedCash = info.AmountOfOfficialFundsIssued;
                 shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
-                shift.AmountOfOfficialFundsReceivedCash = 0;
+                shift.AmountOfOfficialFundsReceivedCash = info.AmountOfOfficialFundsReceived;
                 shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
                 shift.AmountOfOfficialFundsIssuedCard = 0;
                 shift.AmountOfOfficialFundsReceivedCard = 0;
@@ -366,9 +371,7 @@ namespace ShopProject.ViewModel.SalePage
                     //_model.Print(operation);
  
                     Session.WorkingShiftStatus.StatusShift = StatusShift;
-                    Session.WorkingShiftStatus.StatusOnline = StatusOnline;
-                    Session.WorkingShiftStatus.OperationRecorder = null;
-
+                    Session.WorkingShiftStatus.StatusOnline = StatusOnline;  
 
                     AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
                     MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -379,7 +382,7 @@ namespace ShopProject.ViewModel.SalePage
 
         public ICommand OpenNewCheck => _openNewCheckCommand;
 
-        private void openNewCheck()
+        private void OpenCheck()
         {
             if (((Frame)Tabs.ElementAt(0).Content).Content.GetType() != typeof(SaleGoodsMenu))
             {
@@ -407,7 +410,7 @@ namespace ShopProject.ViewModel.SalePage
                     Tabs.Add(newTabItem);
 
                     Session.Tabs = Tabs;
-                    OnPropertyChanged("Tabs");
+                    OnPropertyChanged(nameof(Tabs));
 
                 }
                 if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
@@ -438,28 +441,25 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
         private void OkFirstDialogWindow()
         {
-            new Thread(new ThreadStart(() =>
-            {
-
-                //int number = int.Parse(_model.GetLocalNumber());
-                OperationEntity operation = new OperationEntity
+            var shift = Session.WorkingShiftStatus.WorkingShift;
+            Operation operation = new Operation();
+            Task t = Task.Run(async () => { 
+                _model.AddKey(_user.SignatureKey);
+                operation = new Operation
                 {
-                   // VersionDataPaket = 1,
-                   // TypeOperation = 2,
-                   // DataPacketIdentifier = 1,
-                   // TypeRRO = 0,
-                   // FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                   // TaxNumber = Session.User.TIN,
-                   // FactoryNumberRRO = "v1",
-                    //MAC = _model.GetMac(),
+                    TypeOperation = TypeOperation.DepositMoney,
+                    MAC = await _model.GetMAC(_operationsRecorder.ID),
                     CreatedAt = DateTime.Now,
-                   // NumberPayment = number.ToString(),
-                   // FormOfPayment = 0,
+                    NumberPayment = await _model.GetLocalNumber(),
+                    TypePayment = TypePayment.Cash,
                     TotalPayment = Cash,
+                    GoodsTax = 0.ToString(),
                 };
+            });
+            t.ContinueWith(async t => {
 
                 VisibleFirstDialogWindow = Visibility.Hidden;
-                if (_model.OfficialDepositMoney(operation))
+                if (await _model.DepositAndWithdrawalMoney(shift , operation))
                 {
                     MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
                     Cash = 0;
@@ -469,8 +469,7 @@ namespace ShopProject.ViewModel.SalePage
                     MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
                     Cash = 0;
                 }
-
-            })).Start();
+            }); 
         }
 
         public ICommand CancelFirstDialogWindowCommand => _cancelFirstDialogsWindowCommand;
@@ -483,28 +482,26 @@ namespace ShopProject.ViewModel.SalePage
 
         public ICommand OkSecondDialogWindowCommand => _okSecondDialogsWindowCommand;
         private void OkSeconDialogWindow()
-        {
-            new Thread(new ThreadStart(() =>
-            {
-
-               // int number = int.Parse(_model.GetLocalNumber());
-                OperationEntity operation = new OperationEntity
+        { 
+            var shift = Session.WorkingShiftStatus.WorkingShift;
+            Operation operation = new Operation();
+            Task t = Task.Run(async () => { 
+                _model.AddKey(_user.SignatureKey);
+                operation = new Operation
                 {
-                    //VersionDataPaket = 1,
-                    //TypeOperation = 2.01m,
-                    //DataPacketIdentifier = 1,
-                    //TypeRRO = 0,
-                    //FiscalNumberRRO = Session.FocusDevices.FiscalNumber,
-                    //TaxNumber = Session.User.TIN,
-                    //FactoryNumberRRO = "v1",
-                   // MAC = _model.GetMac(),
+                    TypeOperation = TypeOperation.WithdrawalMoney,
+                    MAC = await _model.GetMAC(_operationsRecorder.ID),
                     CreatedAt = DateTime.Now,
-                   // NumberPayment = number.ToString(),
-                    //FormOfPayment = 0,
+                    NumberPayment = await _model.GetLocalNumber(),
+                    TypePayment = TypePayment.Cash, 
+                    GoodsTax = 0.ToString(),
                     TotalPayment = Cash,
                 };
-                VisibleSecondDialogWindow = Visibility.Hidden;
-                if (_model.OfficialDepositMoney(operation))
+            });
+            t.ContinueWith(async t => {
+
+                VisibleFirstDialogWindow = Visibility.Hidden;
+                if (await _model.DepositAndWithdrawalMoney(shift, operation))
                 {
                     MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
                     Cash = 0;
@@ -514,9 +511,7 @@ namespace ShopProject.ViewModel.SalePage
                     MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
                     Cash = 0;
                 }
-
-            })).Start();
-
+            }); 
         }
 
         public ICommand CancelSecondDialogWindowCommand => _cancelSecondDialogsWindowCommand;

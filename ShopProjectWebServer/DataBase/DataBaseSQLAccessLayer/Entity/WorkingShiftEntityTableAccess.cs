@@ -26,13 +26,30 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     {
                         item.UserOpenShift = context.Users.FirstOrDefault(i => i.ID == item.UserOpenShift.ID);
                         
-                        if(item.MACCreateAt != null && item.MACCreateAt.ID != null)
+                        if(item.MACCreateAt != null)
                         {
-                            item.MACCreateAt = context.MediaAccessControls.Find(item.MACCreateAt.ID);
+                            var mac = context.MediaAccessControls.Find(item.MACCreateAt.ID);
+                            if (mac != null) 
+                            {
+                                item.MACCreateAt = mac;
+                            }
+                            else
+                            {
+                                item.MACCreateAt.Operation = null;
+                                item.MACCreateAt.OperationsRecorder = context.OperationsRecorders.Find(item.MACCreateAt.OperationsRecorder.ID); 
+                            }
                         }
                         context.WorkingShift.Add(item);
+                        
+                        context.SaveChanges();
 
-                        context.SaveChanges();  
+                        var mediaAccessControls = context.MediaAccessControls.Find(item.MACCreateAt.ID);
+                        if(mediaAccessControls != null)
+                        {
+                            mediaAccessControls.WorkingShifts = item; 
+                        }
+
+                        context.SaveChanges();
                     }
                 }
             }
@@ -74,19 +91,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.WorkingShift.Load();
                     context.Users.Load();
-                    context.MediaAccessControls.Load();
+                    context.MediaAccessControls.Load(); 
                     if (context.WorkingShift != null)
-                    {  
+                    {
                         var shift = context.WorkingShift.Find(item.ID);
 
-                        if(shift != null)
+                        if (shift != null)
                         {
                             shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
                             shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
 
                             shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
                             shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
-                            
+
                             shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
                             shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;
 
@@ -94,25 +111,39 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                             shift.FactoryNumberRRO = item.FactoryNumberRRO;
                             shift.FiscalNumberRRO = item.FiscalNumberRRO;
 
-                            if(item.UserOpenShift != null)
+                            if (item.UserOpenShift != null)
                             {
                                 shift.UserOpenShift = context.Users.Find(item.UserOpenShift.ID);
                             }
-                            if(item.UserCloseShift != null)
+                            if (item.UserCloseShift != null)
                             {
                                 shift.UserCloseShift = context.Users.Find(item.UserCloseShift.ID);
                             }
 
                             shift.TotalCheckForShift = item.TotalCheckForShift;
                             shift.TotalReturnCheckForShift = item.TotalReturnCheckForShift;
-                            
+
                             shift.TypeRRO = item.TypeRRO;
                             shift.TypeShiftCrateAt = item.TypeShiftCrateAt;
                             shift.TypeShiftEndAt = item.TypeShiftEndAt;
-                            shift.EndAt = item.EndAt; 
+                            shift.EndAt = item.EndAt;
+
+                            if (item.MACEndAt != null)
+                            {
+                                shift.MACEndAt = item.MACEndAt;
+                                shift.MACEndAt.WorkingShifts = shift;
+                                shift.MACEndAt.SequenceNumber = context.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.ID).Count() ;
+                                shift.MACEndAt.OperationsRecorder = context.OperationsRecorders.Find(item.MACEndAt.OperationsRecorder.ID);
+                                shift.MACEndAt.Operation = null;
+
+                                context.MediaAccessControls.Add(shift.MACEndAt);
+                                context.SaveChanges();
+
+                                
+                            }
                         }
                     }
-                    context.SaveChanges();
+                    context.SaveChanges();  
                 }
             }
         }

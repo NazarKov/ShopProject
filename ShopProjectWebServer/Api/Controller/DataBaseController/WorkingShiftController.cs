@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
+using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
 using ShopProjectWebServer.Api.DtoModels.WorkingShift;
 using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
@@ -21,7 +22,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpPost("AddWorkingShift")]
-        public async Task<IActionResult> AddWorkingShift([FromQuery] string token, CreateWorkingShiftDto item)
+        public async Task<IActionResult> AddWorkingShift([FromQuery] string token, CreateWorkingShiftDto item )
         {
             try
             {

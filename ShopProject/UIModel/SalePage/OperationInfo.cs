@@ -10,7 +10,9 @@ namespace ShopProject.UIModel.SalePage
     public class OperationInfo
     { 
         public decimal TotalCheck { get; set; } 
-        public decimal AmountOfFundsIssued { get; set; } 
-        public decimal AmountOfFundsReceived { get; set; }
+        public decimal AmountOfFundsIssued { get; set; }
+        public decimal AmountOfFundsReceived { get; set; } 
+        public decimal AmountOfOfficialFundsIssued { get; set; } 
+        public decimal AmountOfOfficialFundsReceived { get; set; }
     }
 }

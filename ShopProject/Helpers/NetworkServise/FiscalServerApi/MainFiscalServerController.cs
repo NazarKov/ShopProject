@@ -105,10 +105,10 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
             return ChoseTypeOperationRecursive(shift, Depth, MaxDepth); 
         }
 
-        public string DepositAndWithdrawalMoney(WorkingShift shift)
+        public string DepositAndWithdrawalMoney(WorkingShift shift , Operation operation)
         {
             _typeChek = TypeChek.DepositAndWithdrawalMoney;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth);
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth , operation);
 
         }
 
@@ -160,8 +160,25 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
                     }
                 case TypeChek.DepositAndWithdrawalMoney:
                     {
-                        result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+                        if(operation.TypeOperation == ShopProjectDataBase.Helper.TypeOperation.DepositMoney)
+                        {
+                            operation.TypeOperation = ShopProjectDataBase.Helper.TypeOperation.DepositMoney;
+                            _xmlServise.CreateXMLFileDepositMoney(shift, operation);
+                        }
+                        else if(operation.TypeOperation == ShopProjectDataBase.Helper.TypeOperation.WithdrawalMoney)
+                        {
+                            operation.TypeOperation = ShopProjectDataBase.Helper.TypeOperation.WithdrawalMoney;
+                            _xmlServise.CreateXMLFileWithdrawalMoney(shift, operation);
+                        } 
+                        if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
+                        { 
+                            result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
                             Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
+                            if (result != string.Empty)
+                            {
+                                result = "OK";
+                            }
+                        }
                         break;
                     }
                 case TypeChek.FiscalCheck:

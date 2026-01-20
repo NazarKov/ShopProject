@@ -95,12 +95,12 @@ namespace ShopProject.Model.SalePage
             }
 
 
-            var id =  _fiscalOperationController.SendFiscalCheck(workingShift,operation, product);
+            var id = _fiscalOperationController.SendFiscalCheck(workingShift, operation, product);
             if (id != string.Empty)
             {
                 Task.Run(async () => {
-                    await SaveDataBase(operation, product);
-                    await CreateMac();
+                    operation.MAC = CreateMac();
+                    await SaveDataBase(operation, product); 
                 });
                 Task.Run(async () => {
 
@@ -159,28 +159,15 @@ namespace ShopProject.Model.SalePage
                 MessageBox.Show(ex.Message);
             }
         }
-        private async Task<bool?> CreateMac()
-        { 
-            try
+        private MediaAccessControl CreateMac()
+        {
+            return new MediaAccessControl()
             {
-                var mac = new MediaAccessControl()
-                {
-                    Operation = _operation,
-                    OperationsRecorder = Session.WorkingShiftStatus.OperationRecorder,
-                    Content = XmlServise.GenerationMACForXML(),
-                    WorkingShifts = Session.WorkingShiftStatus.WorkingShift,
-                };
-                Session.WorkingShiftStatus.MediaAccessControl = mac;
-                if (mac != null)
-                {
-                    return await MainWebServerController.MainDataBaseConntroller.MediaAccessControlController.AddMAC(_token, mac);
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
+                Operation = _operation,
+                OperationsRecorder = Session.WorkingShiftStatus.OperationRecorder,
+                Content = XmlServise.GenerationMACForXML(),
+                WorkingShifts = Session.WorkingShiftStatus.WorkingShift,
+            };
         }
 
         public async Task<MediaAccessControl> GetMAC(Guid operationRecorderId)

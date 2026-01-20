@@ -26,7 +26,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             };
             if (operation.MAC != null) 
             {
-                result.MACID = operation.MAC.ID;
+                result.MAC = operation.MAC.ToCreatMediaAccessControlDto();
             }
             if (operation.Shift != null) 
             {
@@ -48,6 +48,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 AmountOfFundsIssued = info.AmountOfFundsIssued,
                 AmountOfFundsReceived = info.AmountOfFundsReceived,
                 TotalCheck = info.TotalCheck,
+                AmountOfOfficialFundsReceived = info.AmountOfOfficialFundsReceived,
+                AmountOfOfficialFundsIssued = info.AmountOfOfficialFundsIssued
             };
             return result;
         }

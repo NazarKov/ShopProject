@@ -22,7 +22,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 DataPacketIdentifier = workingShift.DataPacketIdentifier,
                 FactoryNumberRRO = workingShift.FactoryNumberRRO,
                 FiscalNumberRRO = workingShift.FiscalNumberRRO,
-                MACCreateAtID = workingShift.MACCreateAt.ID,
+                MACCreateAt = workingShift.MACCreateAt.ToCreatMediaAccessControlDto(),
             }; 
             return item;
         }
@@ -43,8 +43,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
             shift.FactoryNumberRRO = workingShift.FactoryNumberRRO;
             shift.FiscalNumberRRO = workingShift.FiscalNumberRRO;
 
-            shift.MACCreateAtID = workingShift.MACCreateAt.ID;
-            shift.MACEndAtID = workingShift.MACEndAt.ID;
+            shift.MACCreateAt = workingShift.MACCreateAt.ToCreatMediaAccessControlDto();
+            shift.MACEndAt = workingShift.MACEndAt.ToCreatMediaAccessControlDto() ;
 
             if (workingShift.UserOpenShift != null)
             {

@@ -13,8 +13,7 @@ namespace ShopProjectWebServer.Api.Mappings
                 AmountOfFundsReceived = operation.AmountOfFundsReceived,
                 BuyersAmount = operation.BuyersAmount,
                 AmountOfIssuedFunds = operation.AmountOfIssuedFunds,
-                CreatedAt = operation.CreatedAt,
-                MAC = new MediaAccessControlEntity() { ID = operation.MACID },
+                CreatedAt = operation.CreatedAt, 
                 Shift = new WorkingShiftEntity() { ID = operation.ShiftID },
                 Discount = new DiscountEntity() { ID = operation.DiscountID},
                 GoodsTax = operation.GoodsTax,
@@ -22,6 +21,10 @@ namespace ShopProjectWebServer.Api.Mappings
                 RestPayment = operation.RestPayment,
                 TotalPayment = operation.TotalPayment, 
             };
+            if(operation.MAC!=null) 
+            {
+                result.MAC = operation.MAC.ToMediaAccessEntity();
+            }
 
             Enum.TryParse(operation.TypeOperation.ToString(), out TypeOperation typeOperation);
             result.TypeOperation = typeOperation;

@@ -39,6 +39,8 @@ namespace ShopProjectWebServer.Api.Services
                 AmountOfFundsIssued = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalAmountOfFundsIssuedForShift(shiftId),
                 AmountOfFundsReceived = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalSumForShift(shiftId),
                 TotalCheck = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalOperationForShift(shiftId),
+                AmountOfOfficialFundsIssued = DataBaseMainController.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsIssuedCashForShift(shiftId),
+                AmountOfOfficialFundsReceived = DataBaseMainController.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsReceivedCashForShift(shiftId),
             };
             return result;
         }

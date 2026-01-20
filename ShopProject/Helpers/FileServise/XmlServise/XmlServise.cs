@@ -27,5 +27,8 @@ namespace ShopProject.Helpers.FileServise.XmlServise
         {
             return SHA.GenerateSHA256File(_pathFile);
         }
+
+        public void CreateXMLFileWithdrawalMoney(WorkingShift workingShift , Operation operation) =>_xmlFile.WriteWithdrawalMoney(_pathFile, workingShift , operation);
+        public void CreateXMLFileDepositMoney(WorkingShift workingShift, Operation operation) => _xmlFile.WriteDepositMoney(_pathFile, workingShift, operation);
     }
 }

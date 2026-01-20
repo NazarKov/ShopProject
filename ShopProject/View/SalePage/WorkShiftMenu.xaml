@@ -12,7 +12,31 @@
     <Page.DataContext>
         <local:WorkShiftMenuViewModel></local:WorkShiftMenuViewModel>
     </Page.DataContext>
+    <Page.Resources>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#111827"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
 
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                        Background="{TemplateBinding Background}" >
+                            <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
     <Grid Name="Grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"></ColumnDefinition>
@@ -81,7 +105,7 @@
                   BorderBrush="#BDBDBD"
                   BorderThickness="1"
                   Cursor="Hand"/>
-        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"
+        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Visibility="{Binding VisibilitiExitButton}" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"
                   Background="#E0E0E0"
                   Foreground="#333"
                   BorderBrush="#BDBDBD"
@@ -151,8 +175,8 @@
       
 
         </TabControl>
-        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="Hidden">
-            <!--Visibility="{Binding VisibleFirstDialogWindow , UpdateSourceTrigger=PropertyChanged}">-->
+        <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10"
+            Visibility="{Binding VisibleFirstDialogWindow , UpdateSourceTrigger=PropertyChanged}">
            
             <Grid Background="Black" Opacity="0.5"/>
             <Border
@@ -162,37 +186,111 @@
                     BorderBrush="Black" 
                     BorderThickness="0.5"
                     HorizontalAlignment="Center" 
+                    Padding="5"
                     VerticalAlignment="Center">
                 <StackPanel Margin="0,35,0,0">
-                    <TextBlock Margin="5" Text="Сумма внесених коштів:"  FontSize="18"  VerticalAlignment="Top" HorizontalAlignment="Center"/>
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox" TextAlignment="Right" Text="{Binding Cash , StringFormat='0.00'}"/>
+
+                    <TextBlock
+                        Text="Сума внесених коштів"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Center"/>
+
+                    <TextBox
+                            x:Name="InputTextBox"
+                            MinWidth="180"
+                            Height="38"
+                            Margin="0,0,0,20"
+                            Padding="8,0"
+                            TextAlignment="Right"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="{Binding Cash, StringFormat=0.00}"
+                            Background="#F3F4F6"
+                            BorderThickness="0"/>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="YesButton" Margin="5" Content="Внести кошти" Background="{x:Null}" Command="{Binding OkFirstDialogWindowCommand}"/>
-                        <Button x:Name="NoButton" Margin="5" Content="Відмінити" Background="{x:Null}"  Command="{Binding CancelFirstDialogWindowCommand}"/>
+
+                        <!-- Основна дія -->
+                        <Button
+                            Content="Внести кошти" 
+                            Command="{Binding OkFirstDialogWindowCommand}" 
+                            Style="{StaticResource PrimaryButtonStyle}" />
+
+                        <!-- Відміна -->
+                        <Button
+                            Content="Відмінити"
+                            Width="110"
+                            Height="40"
+                            Margin="5"
+                            Command="{Binding CancelFirstDialogWindowCommand}"
+                            Background="Transparent"
+                            Foreground="#6B7280"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
-        <Grid x:Name="InputBox2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="8" Visibility="Hidden" >
-            <!--Visibility="{Binding VisibleSecondDialogWindow , UpdateSourceTrigger=PropertyChanged}"-->
+        <Grid x:Name="InputBox2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" 
+            Visibility="{Binding VisibleSecondDialogWindow , UpdateSourceTrigger=PropertyChanged}">
 
             <Grid Background="Black" Opacity="0.5"/>
             <Border
-            MinHeight="150"
-            MinWidth="300"
-            Background="White" 
-            BorderBrush="Black" 
-            BorderThickness="0.5"
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center">
+                MinHeight="150"
+                MinWidth="300"
+                Background="White" 
+                BorderBrush="Black" 
+                BorderThickness="0.5"
+                HorizontalAlignment="Center" 
+                Padding="5"
+                VerticalAlignment="Center">
                 <StackPanel Margin="0,35,0,0">
-                    <TextBlock Margin="5" Text="Сумма виданих коштів:"  FontSize="18"  VerticalAlignment="Top" HorizontalAlignment="Center"/>
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox2" TextAlignment="Right" Text="{Binding Cash , StringFormat='0.00'}"/>
+
+                    <TextBlock
+                        Text="Сума виданих коштів"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Center"/>
+
+                    <TextBox
+                        MinWidth="180"
+                        Height="38"
+                        Margin="0,0,0,20"
+                        Padding="8,0"
+                        TextAlignment="Right"
+                        HorizontalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding Cash, StringFormat=0.00}"
+                        Background="#F3F4F6"
+                        BorderThickness="0"/>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="YesButton2" Margin="5" Content="Видати кошти" Background="{x:Null}" Command="{Binding OkSecondDialogWindowCommand}"/>
-                        <Button x:Name="NoButton2" Margin="5" Content="Відмінити" Background="{x:Null}"  Command="{Binding CancelSecondDialogWindowCommand}"/>
+
+                        <!-- Основна дія -->
+                        <Button
+                        Content="Видати кошти" 
+                        Command="{Binding OkSecondDialogWindowCommand}" 
+                        Style="{StaticResource PrimaryButtonStyle}"/>
+
+                        <!-- Відміна -->
+                        <Button
+                        Content="Відмінити"
+                        Width="110"
+                        Height="40"
+                        Margin="5"
+                        Command="{Binding CancelSecondDialogWindowCommand}"
+                        Background="Transparent"
+                        Foreground="#6B7280"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+
                     </StackPanel>
                 </StackPanel>
+
             </Border>
         </Grid>
         
