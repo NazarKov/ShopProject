@@ -1,6 +1,7 @@
-﻿using ShopProjectWebServer.Api.DtoModels.Operation;  
-using ShopProjectDataBase.Entities;
+﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.Operation;  
+using System.Security.Cryptography;
 
 namespace ShopProjectWebServer.Api.Mappings
 {
@@ -9,10 +10,9 @@ namespace ShopProjectWebServer.Api.Mappings
         public static OperationEntity ToOperationEntiti(this CreateOperationDto operation)
         {  
             var result = new OperationEntity()
-            {
-                AmountOfFundsReceived = operation.AmountOfFundsReceived,
-                BuyersAmount = operation.BuyersAmount,
-                AmountOfIssuedFunds = operation.AmountOfIssuedFunds,
+            { 
+                FiscalServerId = operation.FiscalServerId,
+                BuyersAmount = operation.BuyersAmount, 
                 CreatedAt = operation.CreatedAt, 
                 Shift = new WorkingShiftEntity() { ID = operation.ShiftID },
                 Discount = new DiscountEntity() { ID = operation.DiscountID},
@@ -36,12 +36,11 @@ namespace ShopProjectWebServer.Api.Mappings
         public static OperationDto ToOperationDto(this OperationEntity operation)
         {
             var item = new OperationDto()
-            {
-                AmountOfFundsReceived = operation.AmountOfFundsReceived,
+            { 
+                FiscalServerId = operation.FiscalServerId,
                 BuyersAmount = operation.BuyersAmount,
                 CreatedAt = operation.CreatedAt, 
-                GoodsTax = operation.GoodsTax,
-                MACId = operation.MACId,
+                GoodsTax = operation.GoodsTax, 
                 ID = operation.ID,
                 NumberPayment = operation.NumberPayment,
                 RestPayment = operation.RestPayment,
@@ -49,6 +48,10 @@ namespace ShopProjectWebServer.Api.Mappings
                 TypeOperation = (int)operation.TypeOperation,
                 TypePayment = (int)operation.TypePayment,
             };
+            if (operation.MAC!=null)
+            {
+                item.MAC = operation.MAC.ToMediaAccessDto();
+            }
             if (operation.Discount != null) 
             {
                 item.DiscountID = operation.Discount.ID;

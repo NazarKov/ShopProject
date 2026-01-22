@@ -9,5 +9,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(OrderEntity item);
         void Delete(OrderEntity item);
         IEnumerable<OrderEntity> GetAll();
+        IEnumerable<OrderEntity> GetForOperation(int opearationId);
     }
 }

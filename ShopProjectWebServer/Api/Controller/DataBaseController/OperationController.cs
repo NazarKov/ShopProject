@@ -39,8 +39,21 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetInfo(token,shiftId);
-                return Ok(ApiResponse<OperaiontInfoDto>.Ok(result));
+                var result = _servise.GetInfo(token, shiftId);
+                return Ok(ApiResponse<OperaiontStatisticsDto>.Ok(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [HttpGet("GetOperationsІnformation")]
+        public async Task<IActionResult> GetOperationsІnformation(string token, int shiftId)
+        {
+            try
+            {
+                var result = _servise.GetInformation(token, shiftId);
+                return Ok(ApiResponse<OperationІnformationDto>.Ok(result));
             }
             catch (Exception ex)
             {

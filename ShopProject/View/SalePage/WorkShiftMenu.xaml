@@ -12,8 +12,30 @@
     <Page.DataContext>
         <local:WorkShiftMenuViewModel></local:WorkShiftMenuViewModel>
     </Page.DataContext>
-    <Page.Resources>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+    <Page.Resources> 
+            <Style x:Key="MenuButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="38"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Padding" Value="15,0"/>
+                <Setter Property="Foreground" Value="#333"/>
+
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#E3F2FD"/>
+                    </Trigger>
+
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="#BBDEFB"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="40"/>
             <Setter Property="MinWidth" Value="120"/>
             <Setter Property="Margin" Value="5"/>
@@ -39,20 +61,12 @@
     </Page.Resources>
     <Grid Name="Grid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"></ColumnDefinition>
-            <ColumnDefinition Width="{Binding Widght , UpdateSourceTrigger=PropertyChanged}"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="55" MaxHeight="65"></RowDefinition>
-            <RowDefinition Height="55" MaxHeight="65"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
-            <RowDefinition Height="100" MaxHeight="130"></RowDefinition>
+            <RowDefinition Height="55" MaxHeight="65"></RowDefinition> 
             <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -61,56 +75,60 @@
                 <i:InvokeCommandAction Command="{Binding UpdateSizeCommand}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
+        
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Background="White"
+                Margin="5"
+                CornerRadius="6"
+                Padding="5">
 
-        <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="0" Grid.RowSpan="2" Command="{Binding OpenShiftCommand}" VerticalAlignment="Stretch"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding OpenNewCheck}"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
+            <StackPanel>
 
-        <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="3" VerticalAlignment="Stretch" Command="{Binding PrintLastCheckCommand}"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="4" Command="{Binding OpenReturnGoodsMenuCommand}" VerticalAlignment="Stretch"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="5" VerticalAlignment="Stretch" Command="{Binding OfficialDepositMoneyCommand}"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="6" VerticalAlignment="Stretch" Command="{Binding OfficialIssuanceModeyCommand}"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10" Grid.Row="7" Command="{Binding CloseShiftCommand}" VerticalAlignment="Stretch"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"/>
-        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10" Grid.Row="8" Visibility="{Binding VisibilitiExitButton}" Command="{Binding ExitWorkShiftMenuCommand}" VerticalAlignment="Stretch"
-                  Background="#E0E0E0"
-                  Foreground="#333"
-                  BorderBrush="#BDBDBD"
-                  BorderThickness="1"
-                  Cursor="Hand"></Button>
+            <TextBlock Text="Меню керування"
+               FontSize="18"
+               FontWeight="Bold"
+               Margin="10"
+               Foreground="#333"/>
+
+            <Separator Margin="5"/>
+        <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
+                Grid.RowSpan="2" Command="{Binding OpenShiftCommand}"
+                Style="{StaticResource MenuButtonStyle}"
+                VerticalAlignment="Stretch"/>
+        <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" 
+                VerticalAlignment="Stretch"
+                Style="{StaticResource MenuButtonStyle}"
+                Command="{Binding OpenNewCheck}"/>
+        <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
+                VerticalAlignment="Stretch" 
+                Style="{StaticResource MenuButtonStyle}"
+                Command="{Binding PrintLastCheckCommand}"/>
+        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" 
+                Command="{Binding OpenReturnGoodsMenuCommand}"
+                Style="{StaticResource MenuButtonStyle}"
+                VerticalAlignment="Stretch"/>
+        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
+                VerticalAlignment="Stretch" 
+                Style="{StaticResource MenuButtonStyle}"
+                Command="{Binding OfficialDepositMoneyCommand}"/>
+        <Button x:Name="button4" Content="Службове видача" HorizontalAlignment="Stretch"  Margin="10,10,10,10" 
+                VerticalAlignment="Stretch" 
+                Style="{StaticResource MenuButtonStyle}"
+                Command="{Binding OfficialIssuanceModeyCommand}"/>
+        <Button x:Name="button5" Content="Закрити змінну" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
+                Command="{Binding CloseShiftCommand}" 
+                Style="{StaticResource MenuButtonStyle}"
+                VerticalAlignment="Stretch"/>
+        <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10"
+                Visibility="{Binding VisibilitiExitButton}"
+                Style="{StaticResource MenuButtonStyle}"
+                Command="{Binding ExitWorkShiftMenuCommand}"
+                VerticalAlignment="Stretch"></Button>
+            </StackPanel>
+        </Border> 
+        
         <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="15,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"></ColumnDefinition>
@@ -143,8 +161,10 @@
             <Label x:Name="label10" Grid.Column="5" FontSize="16" Content="Режим тестування" Visibility="{Binding TestMode}" Foreground="Red"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
         </Grid>
 
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="6" BorderBrush="Gainsboro" BorderThickness="0.5" HorizontalAlignment="Left"></Border>
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gainsboro" BorderThickness="0.5" HorizontalAlignment="Left"></Border>
         <TabControl x:Name="tabControl" Grid.Column="1" Grid.Row="1" Grid.RowSpan="9" TabStripPlacement="Top" Padding="15"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     BorderBrush="Gainsboro" SelectedIndex="{Binding SelectedTabItem, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Tabs, UpdateSourceTrigger=PropertyChanged}"
                     Margin="0,25,0,0" >
             <TabControl.Resources>

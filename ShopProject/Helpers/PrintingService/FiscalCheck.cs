@@ -28,7 +28,7 @@ namespace ShopProject.Helpers.PrintingService
             return _check;
         }
 
-        public void CreateFisckalCheck(List<Product> products, string id, Operation operation, User seller, OperationRecorder operationRecorder , ObjectOwner objectOwner = null)
+        public void CreateFisckalCheck(List<Product> products, Operation operation, User seller, OperationRecorder operationRecorder , ObjectOwner objectOwner = null)
         { 
             _check = new TemplatePrintingCheck();
             TemplatePrintingCheckBody body;
@@ -61,7 +61,7 @@ namespace ShopProject.Helpers.PrintingService
                         _check.StreetHouse.Text += address.ElementAt(i) + " , ";
                     }
                 }
-                _check.Id.Text = "ID " + id;
+                _check.Id.Text = "ID " + operation.FiscalServerId;
             } 
 
             double Height = 0;
@@ -134,19 +134,19 @@ namespace ShopProject.Helpers.PrintingService
             _check.FNCheck.Text = "ФН чека: " + operation.NumberPayment;
             _check.FNRRo.Text = "ФН ПРРО: " + operationRecorder.FiscalNumber;
 
-            _check.QRCOde.Source = WriteQrCodeCheck(operation, id, operationRecorder.FiscalNumber);
+            _check.QRCOde.Source = WriteQrCodeCheck(operation ,operationRecorder.FiscalNumber);
 
             _check.date.Text = DateTime.Now.ToString();
 
             _check.grid.Margin = new Thickness(0); 
         }
-        private ImageSource WriteQrCodeCheck(Operation operation, string id, string FiscalNumberRRO)
+        private ImageSource WriteQrCodeCheck(Operation operation,string FiscalNumberRRO)
         {
 
             string text = $"https://cabinet.tax.gov.ua/cashregs/check?mac={operation.MAC}" +
                 $"&date={operation.CreatedAt.ToString("yyyyMMdd")}" +
                 $"&time={operation.CreatedAt.ToString("HHmm")}" +
-                $"&id={id}&sm={operation.TotalPayment.ToString("0")}&fn={FiscalNumberRRO}";
+                $"&id={operation.FiscalServerId}&sm={operation.TotalPayment.ToString("0")}&fn={FiscalNumberRRO}";
             Bitmap btm = GenerateQRCode(text);
 
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHBitmap(

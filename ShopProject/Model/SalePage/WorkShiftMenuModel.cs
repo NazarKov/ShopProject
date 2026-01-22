@@ -4,8 +4,10 @@ using ShopProject.Helpers.FileServise.XmlServise;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
+using ShopProject.Helpers.PrintingService;
 using ShopProject.Helpers.PrintingServise;
 using ShopProject.UIModel.SalePage;
+using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.UserPage;
 using ShopProjectDataBase.Entities;
 using System;
@@ -17,13 +19,26 @@ using System.Windows;
 namespace ShopProject.Model.SalePage
 {
     internal class WorkShiftMenuModel
-    {  
+    {
+        private PrintingFiscalCheckServise _printingServise;
         private MainFiscalServerController _fiscalOperationController;
         private readonly string _token; 
         public WorkShiftMenuModel()
         {   
             _fiscalOperationController = new MainFiscalServerController();
-            _token = Session.User.Token; 
+            _printingServise = new PrintingFiscalCheckServise();
+            _token = Session.User.Token;
+
+            var json = AppSettingsManager.GetParameterFiles("PrinterCheck").ToString();
+            if (json != null)
+            {
+                var setting = PrinterFiscalChekSetting.Deserialize(json);
+
+                if (setting != null)
+                {
+                    _printingServise.SetSetting(setting);
+                }
+            }
         }
 
         public async Task<bool> OpenShift(WorkingShift shiftEntity)
@@ -183,6 +198,21 @@ namespace ShopProject.Model.SalePage
             {
                 return "1";
             }
+        }
+
+        public async Task PrintLastCheck()
+        {
+            try
+            {
+                var item = await MainWebServerController.MainDataBaseConntroller.OperationController.GetOperationsІnformation(_token, Session.WorkingShiftStatus.WorkingShift.ID);
+                FiscalCheck fiscalCheck = new FiscalCheck();
+                fiscalCheck.CreateFisckalCheck(item.Products.ToProduct().ToList(), item.Operation.ToOperation(), Session.User, Session.WorkingShiftStatus.OperationRecorder, Session.WorkingShiftStatus.ObjectOwner);
+                _printingServise.PrintCheck(fiscalCheck.GetCheck());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            } 
         }
     }
 }

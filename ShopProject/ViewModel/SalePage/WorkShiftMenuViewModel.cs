@@ -548,7 +548,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand PrintLastCheckCommand => _printLastCheckCommand;
         private void PrintLastCheck()
         {
-
+            _model.PrintLastCheck();
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
 using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.Operation
@@ -21,11 +22,11 @@ namespace ShopProjectWebServer.Api.DtoModels.Operation
         [JsonPropertyName("NumberPayment")]
         public string NumberPayment { get; set; } = string.Empty;
         [JsonPropertyName("GoodsTax")]
-        public string GoodsTax { get; set; } = string.Empty;
-        [JsonPropertyName("AmountOfFundsReceived")]
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        [JsonPropertyName("MACId")]
-        public int? MACId { get; set; }
+        public string GoodsTax { get; set; } = string.Empty; 
+        [JsonPropertyName("FiscalServerId")]
+        public string FiscalServerId { get; set; } = string.Empty;
+        [JsonPropertyName("MAC")]
+        public MediaAccessControlDto? MAC { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]

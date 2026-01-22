@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.MediaAccessControl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
     public class OperationDto
     {
         [JsonPropertyName("ID")]
-        public int ID { get; set; }
+        public int ID { get; set; } 
+        [JsonPropertyName("FiscalServerId")]
+        public string FiscalServerId { get; set; } = string.Empty;
         [JsonPropertyName("TypePayment")]
         public int TypePayment { get; set; }
         [JsonPropertyName("TypeOperation")]
@@ -24,11 +27,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
         [JsonPropertyName("NumberPayment")]
         public string NumberPayment { get; set; } = string.Empty;
         [JsonPropertyName("GoodsTax")]
-        public string GoodsTax { get; set; } = string.Empty;
-        [JsonPropertyName("AmountOfFundsReceived")]
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        [JsonPropertyName("MACId")]
-        public int? MACId { get; set; }
+        public string GoodsTax { get; set; } = string.Empty; 
+        [JsonPropertyName("MAC")]
+        public MediaAccessControlDto? MAC { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
         [JsonPropertyName("Discount")]

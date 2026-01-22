@@ -8,7 +8,11 @@ namespace ShopProjectDataBase.Entities
     public class OperationEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }    
+        public int ID { get; set; }
+        /// <summary>
+        /// id операції з фіксального сервера
+        /// </summary>
+        public string FiscalServerId { get; set; }= string.Empty;
         /// <summary>
         /// тип оплати
         /// </summary>
@@ -36,15 +40,7 @@ namespace ShopProjectDataBase.Entities
         /// <summary>
         /// податок на товари в чеку 0 - без податку 
         /// </summary>
-        public string GoodsTax { get; set; } = string.Empty;
-        /// <summary>
-        /// сума отриманих коштів (службове внесення)
-        /// </summary>
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума отриманих коштів (службова видача)
-        /// </summary>
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
+        public string GoodsTax { get; set; } = string.Empty; 
         /// <summary>
         /// код підтвердження на сервері
         /// </summary>   

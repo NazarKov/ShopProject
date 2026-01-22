@@ -2,7 +2,7 @@
 
 namespace ShopProjectWebServer.Api.DtoModels.Operation
 {
-    public class OperaiontInfoDto
+    public class OperaiontStatisticsDto
     {
         [JsonPropertyName("TotalCheck")]
         public decimal TotalCheck { get; set; }

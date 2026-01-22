@@ -11,5 +11,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 
         MediaAccessControlEntity GetLastMAC(Guid operationRecorderId);
         IEnumerable<MediaAccessControlEntity> GetAll();
+
+        MediaAccessControlEntity GetByOperationId(int operationId);
     }
 }

@@ -15,36 +15,55 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
         {
             var result = new CreateOperationDto()
             {
-                AmountOfFundsReceived = operation.AmountOfFundsReceived,
+                FiscalServerId = operation.FiscalServerId,
                 BuyersAmount = operation.BuyersAmount,
-                AmountOfIssuedFunds = operation.AmountOfIssuedFunds,
-                CreatedAt = operation.CreatedAt, 
+                CreatedAt = operation.CreatedAt,
                 GoodsTax = operation.GoodsTax,
                 NumberPayment = operation.NumberPayment,
                 RestPayment = operation.RestPayment,
                 TotalPayment = operation.TotalPayment,
             };
-            if (operation.MAC != null) 
+            if (operation.MAC != null)
             {
                 result.MAC = operation.MAC.ToCreatMediaAccessControlDto();
             }
-            if (operation.Shift != null) 
+            if (operation.Shift != null)
             {
                 result.ShiftID = operation.Shift.ID;
             }
-            if (operation.Discount != null) 
+            if (operation.Discount != null)
             {
                 result.DiscountID = operation.Discount.ID;
             }
 
             result.TypePayment = (int)operation.TypeOperation;
-            result.TypeOperation = (int)operation.TypeOperation; 
-            return result; 
-        } 
+            result.TypeOperation = (int)operation.TypeOperation;
+            return result;
+        }
+        public static Operation ToOperation(this OperationDto operation)
+        {
+            var result = new Operation()
+            {
+                FiscalServerId = operation.FiscalServerId,
+                BuyersAmount = operation.BuyersAmount,
+                CreatedAt = operation.CreatedAt,
+                GoodsTax = operation.GoodsTax,
+                NumberPayment = operation.NumberPayment,
+                RestPayment = operation.RestPayment,
+                TotalPayment = operation.TotalPayment,
+            };
+            if (operation.MAC != null)
+            {
+                result.MAC = operation.MAC.ToUIMediaAccessControl();
+            }  
+            result.TypePayment = (TypePayment)operation.TypeOperation;
+            result.TypeOperation = (TypeOperation)operation.TypeOperation;
+            return result;
+        }
         public static OperationInfo ToOperationInfo(this OperationInfoDto info)
         {
             var result = new OperationInfo()
-            {
+            { 
                 AmountOfFundsIssued = info.AmountOfFundsIssued,
                 AmountOfFundsReceived = info.AmountOfFundsReceived,
                 TotalCheck = info.TotalCheck,

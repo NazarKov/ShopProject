@@ -6,7 +6,7 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class OperationTableAccess : IOperationTableAccess 
+    public class OperationTableAccess : IOperationTableAccess
     {
         private DbContextOptions<ContextDataBase> _option;
         public OperationTableAccess(DbContextOptions<ContextDataBase> option)
@@ -126,7 +126,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     context.Operations.Load();
                     if (context.Operations.Count() != 0)
                     {
-                        return context.Operations.OrderBy(i=>i.ID).Last(i=>i.Shift.ID==shiftId);
+                        return context.Operations.OrderBy(i=>i.ID).Where(t=>t.TypeOperation==TypeOperation.FiscalCheck).Last(i=>i.Shift.ID==shiftId);
                     }
                     else
                     {
@@ -134,6 +134,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     }
                 }
                 return null;
+            }
+        }
+
+        public OperationEntity GetLatsItem()
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<OperationEntity> query = context.Operations.AsNoTracking();
+
+                query = query.Where(o => o.TypeOperation == TypeOperation.FiscalCheck);
+
+                var result = query.ToList();
+                return result.Last();
             }
         }
 

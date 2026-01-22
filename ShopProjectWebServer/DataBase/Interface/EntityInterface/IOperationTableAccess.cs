@@ -9,6 +9,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Delete(OperationEntity item);
         IEnumerable<OperationEntity> GetAll();
         OperationEntity GetLastItem(int shiftId);
+        OperationEntity GetLatsItem();
         decimal GetTotalSumForShift(int shiftId);
         decimal GetTotalAmountOfFundsIssuedForShift(int shiftId);
         decimal GetTotalOperationForShift(int shiftId);

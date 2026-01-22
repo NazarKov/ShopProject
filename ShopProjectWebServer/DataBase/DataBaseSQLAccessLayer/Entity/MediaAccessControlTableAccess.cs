@@ -75,6 +75,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             throw new NotImplementedException();
         }
 
+        public MediaAccessControlEntity GetByOperationId(int operationId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<MediaAccessControlEntity> query = context.MediaAccessControls.Include(o=>o.Operation).AsNoTracking();
+
+                query = query.Where(o => o.Operation.ID == operationId);
+
+                var result = query.First();
+                return result;
+            }
+        }
+
         public MediaAccessControlEntity GetLastMAC(Guid operationRecorderId)
         {
             using (ContextDataBase context = new ContextDataBase(_option))

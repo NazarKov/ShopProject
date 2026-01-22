@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 namespace ShopProject.UIModel.SalePage
 {
     public class Operation
-    { 
-        public int ID { get; set; }
+    {
+        public int ID { get; set; } 
+        public string FiscalServerId { get; set; } = string.Empty;
         /// <summary>
         /// тип оплати
         /// </summary>
@@ -41,15 +42,7 @@ namespace ShopProject.UIModel.SalePage
         /// <summary>
         /// податок на товари в чеку 0 - без податку 
         /// </summary>
-        public string GoodsTax { get; set; } = string.Empty;
-        /// <summary>
-        /// сума отриманих коштів (службове внесення)
-        /// </summary>
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        /// <summary>
-        /// сума отриманих коштів (службова видача)
-        /// </summary>
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
+        public string GoodsTax { get; set; } = string.Empty; 
         /// <summary>
         /// код підтвердження на сервері
         /// </summary>

@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class OrderTableAccess : IOrderTableAccess 
+    public class OrderTableAccess : IOrderTableAccess
     {
         private DbContextOptions<ContextDataBase> _option;
         public OrderTableAccess(DbContextOptions<ContextDataBase> option)
@@ -69,6 +70,23 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     }
                 }
                 return null;
+            }
+        }
+
+        public IEnumerable<OrderEntity> GetForOperation(int opearationId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                IQueryable<OrderEntity> query = context.Orders
+                    .Include(c => c.Product)
+                    .Include(o => o.Operation).Include(c => c.Product.CodeUKTZED)
+                    .Include(u => u.Product.Unit)
+                    .AsNoTracking();
+
+                query = query.Where(o => o.Operation.ID == opearationId);
+
+                var result = query.ToList();
+                return result;
             }
         }
 

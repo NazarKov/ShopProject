@@ -139,7 +139,7 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand UpdateSize => _updateSize;
         private void UpdateSizes()
         {
-            Widght = (int)Application.Current.MainWindow.ActualWidth - 530;
+            Widght = (int)Application.Current.MainWindow.ActualWidth - 590;
             Height = (int)Application.Current.MainWindow.ActualHeight - 220;
         }
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;

@@ -5,14 +5,12 @@ using ShopProject.Helpers.FileServise.XmlServise;
 using ShopProject.Helpers.NetworkServise.FiscalServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi;
 using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping;
-using ShopProject.Helpers.PrintingService;
-using ShopProject.Helpers.PrintingServise;
+using ShopProject.Helpers.PrintingService; 
 using ShopProject.UIModel.SalePage;
 using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.UIModel.UserPage;
-using ShopProjectDataBase.Entities;
-using SigningFileLib;
+using ShopProjectDataBase.Entities; 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -99,6 +97,7 @@ namespace ShopProject.Model.SalePage
             if (id != string.Empty)
             {
                 Task.Run(async () => {
+                    operation.FiscalServerId = id;
                     operation.MAC = CreateMac();
                     await SaveDataBase(operation, product); 
                 });
@@ -108,7 +107,7 @@ namespace ShopProject.Model.SalePage
                     {
                         if (IsDrawinfChek)
                         {
-                            _chek.CreateFisckalCheck(product, id, operation, Session.User, Session.WorkingShiftStatus.OperationRecorder , Session.WorkingShiftStatus.ObjectOwner);
+                            _chek.CreateFisckalCheck(product,operation, Session.User, Session.WorkingShiftStatus.OperationRecorder , Session.WorkingShiftStatus.ObjectOwner);
                             _printigServise.PrintCheck(_chek.GetCheck()); 
                         }
                     });

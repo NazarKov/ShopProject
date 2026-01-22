@@ -22,6 +22,16 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(url);
         }
+        public async Task<OperationІnformationDto> GetOperationsІnformation(string token, int shiftId)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsІnformation?token={token}&shiftId={shiftId}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<OperationІnformationDto>.Unpacking(responseBody);
+
+            return result.Data;
+        }
         public async Task<OperationInfoDto> GetOperationsInfo(string token, int shiftId)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsInfo?token={token}&shiftId={shiftId}");

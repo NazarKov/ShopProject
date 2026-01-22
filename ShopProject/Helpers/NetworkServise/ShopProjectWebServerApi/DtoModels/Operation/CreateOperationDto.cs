@@ -23,11 +23,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
         [JsonPropertyName("NumberPayment")]
         public string NumberPayment { get; set; } = string.Empty;
         [JsonPropertyName("GoodsTax")]
-        public string GoodsTax { get; set; } = string.Empty;
-        [JsonPropertyName("AmountOfFundsReceived")]
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
-        [JsonPropertyName("AmountOfIssuedFunds")]
-        public decimal AmountOfIssuedFunds { get; set; } = decimal.Zero;
+        public string GoodsTax { get; set; } = string.Empty;  
+        [JsonPropertyName("FiscalServerId")]
+        public string FiscalServerId { get; set; } = string.Empty;
         [JsonPropertyName("MAC")]
         public CreateMediaAccessControlDto? MAC { get; set; }
         [JsonPropertyName("CreatedAt")]
