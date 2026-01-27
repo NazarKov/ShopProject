@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.UserPage;
 using ShopProject.UIModel.ObjectOwnerPage;
 using ShopProject.UIModel.OperationRecorderPage;
@@ -95,10 +95,13 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenWorkShifMenuCommand { get => new DelegateParameterCommand(OpenWorkShiftMenu, CanRegister); }
         private void OpenWorkShiftMenu(object parameter)
         {
-            var item = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter);
-            Session.WorkingShiftStatus.OperationRecorder = item;
-            Session.WorkingShiftStatus.ObjectOwner = _objectOwners.FirstOrDefault(o => o.ID == item.ObjectOwner.ID);
-            MediatorService.ExecuteEvent(NavigationButton.RedirectToWorkShiftMenu.ToString());
+            if (parameter != null)
+            {
+                var item = SoftwareDeviceSettlementOperationsList.ElementAt((int)parameter);
+                Session.WorkingShiftStatus.OperationRecorder = item;
+                Session.WorkingShiftStatus.ObjectOwner = _objectOwners.FirstOrDefault(o => o.ID == item.ObjectOwner.ID);
+                MediatorService.ExecuteEvent(NavigationButton.RedirectToWorkShiftMenu.ToString());
+            }
         }
         private bool CanRegister(object parameter) => true;
     }

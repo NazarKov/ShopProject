@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers; 
 using ShopProject.Helpers.Exceptions;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.HomePage;
 using ShopProject.View.AdminPage.WebServer;
 using ShopProject.View.GiftCertificatesPage;

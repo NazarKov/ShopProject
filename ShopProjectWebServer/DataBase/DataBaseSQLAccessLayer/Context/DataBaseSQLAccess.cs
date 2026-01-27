@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity; 
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
@@ -32,50 +33,70 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
         {
             optionsBuilder = new DbContextOptionsBuilder<ContextDataBase>();
             optionsBuilder.UseSqlServer(ConnectionString);
-
-            if (IsCreate())
+            Task.Run(async () =>
             {
-                UserTable = new UserTableAccess(optionsBuilder.Options);
-                UserRoleTable = new UserRoleTableAccess(optionsBuilder.Options);
-                TokenTable = new TokenTableAccess(optionsBuilder.Options);
-                ProductTable = new ProductTableAccess(optionsBuilder.Options);
-                ProductUnitTable = new ProductUnitTableAccess(optionsBuilder.Options);
-                ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(optionsBuilder.Options);
-                ObjectOwnerTable = new ObjectOwnerTableAccess(optionsBuilder.Options);
-                OperationRecorderTable = new OperationRecorderTableAccess(optionsBuilder.Options);
-                OperationRecorederUserTable = new OperationRecorderUserTableAccess(optionsBuilder.Options);
-                OperationTable = new OperationTableAccess(optionsBuilder.Options);
-                OrderTable = new OrderTableAccess(optionsBuilder.Options);
-                MediaAccessControlTable = new MediaAccessControlTableAccess(optionsBuilder.Options);
-                WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
-                DiscountTable = new DiscountTableAccess(optionsBuilder.Options);
-                GiftCertificatesTable = new GiftCertificatesTableAccess(optionsBuilder.Options);
-                SignatureKeyTable = new SignatureKeyTableAccess(optionsBuilder.Options);
-            }
-            else
-            {
-                throw new Exception("База даних не створена");
-            }
+                if (await IsCreate(ConnectionString))
+                {
+                    UserTable = new UserTableAccess(optionsBuilder.Options);
+                    UserRoleTable = new UserRoleTableAccess(optionsBuilder.Options);
+                    TokenTable = new TokenTableAccess(optionsBuilder.Options);
+                    ProductTable = new ProductTableAccess(optionsBuilder.Options);
+                    ProductUnitTable = new ProductUnitTableAccess(optionsBuilder.Options);
+                    ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(optionsBuilder.Options);
+                    ObjectOwnerTable = new ObjectOwnerTableAccess(optionsBuilder.Options);
+                    OperationRecorderTable = new OperationRecorderTableAccess(optionsBuilder.Options);
+                    OperationRecorederUserTable = new OperationRecorderUserTableAccess(optionsBuilder.Options);
+                    OperationTable = new OperationTableAccess(optionsBuilder.Options);
+                    OrderTable = new OrderTableAccess(optionsBuilder.Options);
+                    MediaAccessControlTable = new MediaAccessControlTableAccess(optionsBuilder.Options);
+                    WorkingShiftTable = new WorkingShiftEntityTableAccess(optionsBuilder.Options);
+                    DiscountTable = new DiscountTableAccess(optionsBuilder.Options);
+                    GiftCertificatesTable = new GiftCertificatesTableAccess(optionsBuilder.Options);
+                    SignatureKeyTable = new SignatureKeyTableAccess(optionsBuilder.Options);
+                }
+                else
+                {
+                    throw new Exception("База даних не створена");
+                }
+            }).Wait();
         }
 
-        public bool IsCreate()
+        public async Task<bool> IsCreate(string connectionString)
         {
             try
             {
                 using (ContextDataBase context = new ContextDataBase(optionsBuilder.Options))
-                {
-
-                    if (!context.Database.CanConnect())
+                { 
+                      
+                    if (!await CheckDbFastAsync(connectionString))
                     {
                         context.Database.Migrate();
                         context.Initial();
                     }
 
                     context.Database.Migrate(); 
+
                     return true;
                 }
             }
             catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> CheckDbFastAsync(string connectionString)
+        {
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+                using var conn = new SqlConnection(connectionString);
+
+
+                await conn.OpenAsync(cts.Token);
+                return true;
+            }
+            catch
             {
                 return false;
             }

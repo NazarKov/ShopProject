@@ -49,7 +49,8 @@ namespace ShopProject.Model.SalePage
                 {
                     Session.WorkingShiftStatus.WorkingShift = shiftEntity;
                     shiftEntity.MACCreateAt = CreateMac(shiftEntity);
-                    Session.WorkingShiftStatus.WorkingShift.ID = await SaveDataBaseOpenShift(shiftEntity);  
+                    Session.WorkingShiftStatus.WorkingShift.ID = await SaveDataBaseOpenShift(shiftEntity); 
+                    AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
                     return true;
                 }
                 return false;

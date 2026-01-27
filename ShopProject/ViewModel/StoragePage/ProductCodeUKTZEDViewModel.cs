@@ -1,7 +1,7 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
 using ShopProject.Helpers.Template.Paginator;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.StoragePage;
 using ShopProject.UIModel.StoragePage;
 using ShopProject.View.StoragePage.ProductCodeUKTZEDPage;

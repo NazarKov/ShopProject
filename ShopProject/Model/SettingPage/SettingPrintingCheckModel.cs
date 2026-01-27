@@ -38,30 +38,33 @@ namespace ShopProject.Model.SettingPage
                 }
 
                 var setting = PrinterFiscalChekSetting.Deserialize(json);
-                if (setting != null)
-                {
-                    _check.CreateFisckalCheck(new List<Product>() {
-                new Product()
-                {
-                    Code = "123456789101",
-                    NameProduct = "Товар №1",
-                    CodeUKTZED = new  ProductCodeUKTZED(){ Code = "8855"},
-                    Price = 100,
-                    Count = 5,
-                },
-                new Product()
-                {
-                    Code = "987654321101",
-                    NameProduct = "Товар №2",
-                    CodeUKTZED = new ProductCodeUKTZED(){ Code = "8865"},
-                    Price = 200,
-                    Count = 5,
-                }
-                }, new Operation(), new User(),  new OperationRecorder());
 
-                    _servise.SetSetting(setting);
-                    _servise.PrintCheck(_check.GetCheck());
+                if(setting == null)
+                {
+                    throw new Exception("Не встановлено налаштування для друку");
                 }
+
+                _check.CreateFisckalCheck(new List<Product>() {
+                       new Product()
+                       {
+                           Code = "123456789101",
+                           NameProduct = "Товар №1",
+                           CodeUKTZED = new  ProductCodeUKTZED(){ Code = "8855"},
+                           Price = 100,
+                           Count = 5,
+                       },
+                       new Product()
+                       {
+                           Code = "987654321101",
+                           NameProduct = "Товар №2",
+                           CodeUKTZED = new ProductCodeUKTZED(){ Code = "8865"},
+                           Price = 200,
+                           Count = 5,
+                       }
+                       }, new Operation(), new User(), new OperationRecorder());
+
+                _servise.SetSetting(setting);
+                _servise.PrintCheck(_check.GetCheck());
             }
             catch (Exception ex) 
             {

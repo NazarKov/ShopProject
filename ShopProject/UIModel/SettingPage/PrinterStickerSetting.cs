@@ -9,7 +9,7 @@ namespace ShopProject.UIModel.SettingPage
 {
     internal class PrinterStickerSetting
     {
-        public string Printer { get; set; } = string.Empty; 
+        public string Printer { get; set; } = "Microsoft Print to PDF"; 
         public string Serialize()
         {
             return JsonSerializer.Serialize(this);

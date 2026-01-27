@@ -59,6 +59,17 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
 
                 return Ok(ApiResponse<WorkingShiftDto>.Ok(result));
             }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                if (invalidOperationException.Message == "Sequence contains no elements")
+                {
+                    return Ok(ApiResponse<WorkingShiftDto>.Ok(new WorkingShiftDto()));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                }
+            }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));

@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.StatisticsPage;
 using System;
 using System.Collections.Generic;

@@ -87,7 +87,7 @@ namespace ShopProjectWebServer.DataBase
                 _settingManager.SaveJson<Settings>(setting);
             }
 
-            //_dataBaseAccess = new DataBaseSQLAccess(settingConnect.ConnectionString.ToString());
+            _dataBaseAccess = new DataBaseSQLAccess(settingConnect.ConnectionString.ToString());
         }
 
         public static SettingDataBase GetInfo()

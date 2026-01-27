@@ -16,6 +16,7 @@ namespace ShopProject.UIModel.SalePage
         public string? StatusShift { get; set; }
         public string? StatusOnline { get; set; }
         public OperationRecorder? OperationRecorder { get; set; }
+        [JsonIgnore]
         public MediaAccessControl? MediaAccessControl { get; set; }
         public string Serialize()
         {
@@ -24,7 +25,8 @@ namespace ShopProject.UIModel.SalePage
                 ReferenceHandler = ReferenceHandler.Preserve,
                 WriteIndented = true
             };
-            return JsonSerializer.Serialize(this,options);
+            string json = JsonSerializer.Serialize(this,options);
+            return json;
         }
         public static WorkingShiftStatus? Deserialize(string jason)
         {

@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ShopProject.UIModel.SalePage
@@ -72,11 +73,13 @@ namespace ShopProject.UIModel.SalePage
         public decimal AmountOfFundsIssued { get; set; } = decimal.Zero;
         /// <summary>
         /// hesh відкриття зміни
-        /// </summary> 
+        /// </summary>
+        [JsonIgnore]
         public MediaAccessControl MACCreateAt { get; set; }
         /// <summary>
         /// hesh закриття зміни
         /// </summary> 
+        [JsonIgnore]
         public MediaAccessControl MACEndAt { get; set; }
         /// <summary>
         /// час відриття зміної
@@ -89,14 +92,17 @@ namespace ShopProject.UIModel.SalePage
         /// <summary>
         /// користувач який відкрив зміну
         /// </summary>
+        [JsonIgnore]
         public User UserOpenShift { get; set; }
         /// <summary>
         /// користувач який закрив зміну
         /// </summary>
+        [JsonIgnore]
         public User UserCloseShift { get; set; }
         /// <summary>
         /// Список операцій викониних під час зміної
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<Operation>? Operations { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.StoragePage.ProductsPage;
 using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.StoragePage;
@@ -155,34 +155,47 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
         private void SaveAndCreateProductDataBase()
         {
-            if (Code.Count() == _setting.ProductBarCodeLength)
+            try
             {
-
-                Task t = Task.Run(async () =>
+                if (_setting == null)
                 {
-                    if (await _model.SaveItemDataBase(new Product()
+                    throw new Exception("Ведіть в налаштуваннях довжину штрихкоду ");
+                }
+
+                if (Code.Count() == _setting.ProductBarCodeLength)
+                {
+
+                    Task t = Task.Run(async () =>
                     {
-                        NameProduct = _name,
-                        Code = _code,
-                        Articule = _article,
-                        Price = _price,
-                        Count = _count,
-                        Unit = _units.ElementAt(_selectUnitsIndex),
-                        CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
-                        CreatedAt = DateTime.Now,
-                        Status = TypeStatusProduct.InStock,
-                        Discount = new Discount(),
-                    })) ;
-                    {
-                        MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-                        MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
-                    }
-                });
+                        if (await _model.SaveItemDataBase(new Product()
+                        {
+                            NameProduct = _name,
+                            Code = _code,
+                            Articule = _article,
+                            Price = _price,
+                            Count = _count,
+                            Unit = _units.ElementAt(_selectUnitsIndex),
+                            CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
+                            CreatedAt = DateTime.Now,
+                            Status = TypeStatusProduct.InStock,
+                            Discount = new Discount(),
+                        })) ;
+                        {
+                            MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
+                        }
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Довжина штрихкоду не " + _setting.ProductBarCodeLength + " символів");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                MessageBox.Show("Довжина штрихкоду не " + _setting.ProductBarCodeLength + " символів");
+                MessageBox.Show(ex.Message);
             }
+            
         }
 
     }

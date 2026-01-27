@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.SalePage;
 using ShopProject.UIModel.SettingPage;
@@ -36,7 +36,7 @@ namespace ShopProject.ViewModel.SalePage
             _model = new SaleGoodsMenuModel();
 
             _searchBarCodeGoodsCommand = new DelegateCommand(async () => { await SearchBarCodeGoods(); });
-            _printingCheckCommand = new DelegateCommand(PrintingCheck);
+            _printingCheckCommand = new DelegateCommandAsync(PrintingCheck);
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
             _cleareSumUserCommand = new DelegateCommand(ClearSumUser);
@@ -303,43 +303,44 @@ namespace ShopProject.ViewModel.SalePage
             SumaUser = 0;
         }
         public ICommand PrintingCheckCommand => _printingCheckCommand;
-        private void PrintingCheck()
+        private async Task PrintingCheck()
         {
-            _model.IsDrawinfChek = DrawingCheck;
-
-            if (!(SumaUser >= SumaOrder))
+            try
             {
-                MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
-            }
-            else
-            {
-                _model.AddKey(_user.SignatureKey);
+                Session.LoadSaleMenuDataFromFile();
+                _model.IsDrawinfChek = DrawingCheck;
 
-                var rest = (SumaUser - SumaOrder);
-                var discount = new Discount();
-
-                if(DiscountPrecent != 0)
+                if (!(SumaUser >= SumaOrder))
                 {
-                    discount.TotalDiscount = _totalSum * (DiscountPrecent / 100);
-                    discount.TypeDiscount = 1;
-                    discount.CreateAt = DateTime.Now;
-                    discount.InterimAmount = _totalSum;
-                    discount.Rebate = DiscountPrecent; 
-                }
-                else if(Discount != 0)
-                {
-                    discount.TotalDiscount = Discount;
-                    discount.TypeDiscount = 0;
-                    discount.CreateAt = DateTime.Now;
-                    discount.InterimAmount = _totalSum;
-                    discount.Rebate = Discount;
+                    MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
                 }
                 else
                 {
-                    discount = null;
-                } 
+                    _model.AddKey(_user.SignatureKey);
 
-                Task t = Task.Run(async () => {
+                    var rest = (SumaUser - SumaOrder);
+                    var discount = new Discount();
+
+                    if (DiscountPrecent != 0)
+                    {
+                        discount.TotalDiscount = _totalSum * (DiscountPrecent / 100);
+                        discount.TypeDiscount = 1;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = _totalSum;
+                        discount.Rebate = DiscountPrecent;
+                    }
+                    else if (Discount != 0)
+                    {
+                        discount.TotalDiscount = Discount;
+                        discount.TypeDiscount = 0;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = _totalSum;
+                        discount.Rebate = Discount;
+                    }
+                    else
+                    {
+                        discount = null;
+                    }
 
                     Operation operation = new Operation()
                     {
@@ -355,7 +356,7 @@ namespace ShopProject.ViewModel.SalePage
                         Discount = discount,
                     };
 
-                    if (_model.SendCheck(Product, operation))
+                    if (await _model.SendCheck(Product, operation))
 
                     {
                         MessageBox.Show("Решта: " + rest, "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -369,13 +370,14 @@ namespace ShopProject.ViewModel.SalePage
                         {
                             Session.Tabs.RemoveAt(Tag);
                         }
-                        AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
                     }
-                });
-            }  
+                }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
-        private bool CanRegister(object parameter) => true;
-
-
+        private bool CanRegister(object parameter) => true; 
     }
 }

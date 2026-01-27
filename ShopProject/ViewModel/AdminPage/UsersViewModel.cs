@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.AdminPage;
 using ShopProject.Views.AdminPage;
 using System;

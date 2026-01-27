@@ -10,8 +10,8 @@ namespace ShopProject.UIModel.SettingPage
 {
     public class OperationRecorderSetting
     {
-        public bool IsTestMode { get; set; }     
-        public string DeleteBarCode { get; set; } =string.Empty;
+        public bool IsTestMode { get; set; } = false; 
+        public string DeleteBarCode { get; set; } = string.Empty;
         public string Serialize()
         {
             return JsonSerializer.Serialize(this);

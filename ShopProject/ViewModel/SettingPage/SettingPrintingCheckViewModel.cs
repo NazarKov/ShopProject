@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.SettingPage;
 using ShopProject.UIModel.SettingPage;
 using System;
@@ -95,16 +95,16 @@ namespace ShopProject.ViewModel.SettingPage
             if (json != null)
             {
                 var setting = PrinterFiscalChekSetting.Deserialize(json);
-                if (setting != null)
-                {
+                if (setting == null){
 
-                    setting.Width = Width;
-                    setting.Slcale = Slcale;
-                    setting.Printer = SelectedPrinter;
-                    setting.SizeQrCode = SizeQrCode;
-
-                    AppSettingsManager.SetParameterFile("PrinterCheck", setting.Serialize());
+                    setting = new PrinterFiscalChekSetting();
                 }
+                setting.Width = Width;
+                setting.Slcale = Slcale;
+                setting.Printer = SelectedPrinter;
+                setting.SizeQrCode = SizeQrCode;
+
+                AppSettingsManager.SetParameterFile("PrinterCheck", setting.Serialize());
             }
             MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
         }

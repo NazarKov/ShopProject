@@ -1,7 +1,7 @@
 ﻿
 using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.UserPage;
 using ShopProject.UIModel.UserPage;
 using System;

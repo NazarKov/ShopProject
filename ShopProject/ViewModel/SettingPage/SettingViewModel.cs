@@ -1,4 +1,4 @@
-﻿using ShopProject.Model.Command;
+﻿using ShopProject.Helpers.Command;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ShopProject.Views.SettingPage;

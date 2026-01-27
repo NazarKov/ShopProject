@@ -1,6 +1,7 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+﻿using DocumentFormat.OpenXml.Drawing;
+using ShopProject.Helpers;
+using ShopProject.Helpers.Command;
+using ShopProject.Helpers.Navigation; 
 using ShopProject.Model.SalePage;
 using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
@@ -50,8 +51,8 @@ namespace ShopProject.ViewModel.SalePage
         {
             _model = new WorkShiftMenuModel ();
 
-            _openShiftCommand = new DelegateCommand(OpenShift);
-            _closeShiftCommand = new DelegateCommand(CloseShift);
+            _openShiftCommand = new DelegateCommandAsync(OpenShift);
+            _closeShiftCommand = new DelegateCommandAsync(CloseShift);
             _updateSizeCommand = new DelegateCommand(UpdateSizes);
             _openNewCheckCommand = new DelegateCommand(OpenCheck);
             _openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
@@ -60,11 +61,11 @@ namespace ShopProject.ViewModel.SalePage
             _officialDepositMoneyCommand = new DelegateCommand(OfficialDepositMoney);
             _officialReceivedMoneyCommand = new DelegateCommand(OfficialIssuanceModey);
 
-            _okFirstDialogsWindowCommand = new DelegateCommand(OkFirstDialogWindow);
+            _okFirstDialogsWindowCommand = new DelegateCommandAsync(OkFirstDialogWindow);
             _cancelFirstDialogsWindowCommand = new DelegateCommand(CancelFirstDialogWindow);
 
 
-            _okSecondDialogsWindowCommand = new DelegateCommand(OkSeconDialogWindow);
+            _okSecondDialogsWindowCommand = new DelegateCommandAsync(OkSeconDialogWindow);
             _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
             _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
             _printLastCheckCommand = new DelegateCommand(PrintLastCheck);
@@ -250,7 +251,14 @@ namespace ShopProject.ViewModel.SalePage
                     });
                 }
 
-                FNumber = workingShiftStatus.WorkingShift.FiscalNumberRRO;
+                if(workingShiftStatus.OperationRecorder != null && workingShiftStatus.OperationRecorder.FiscalNumber!=string.Empty)
+                {
+                    FNumber = workingShiftStatus.OperationRecorder.FiscalNumber;
+                }
+                else
+                {
+                    FNumber = workingShiftStatus.WorkingShift.FiscalNumberRRO;
+                }
                 //VisibilitiExitButton = Visibility.Hidden;  
 
                 StatusShift = workingShiftStatus.StatusShift;
@@ -293,91 +301,95 @@ namespace ShopProject.ViewModel.SalePage
 
 
         public ICommand OpenShiftCommand => _openShiftCommand;
-        private void OpenShift()
-        {
-            WorkingShift workingShiftEntity = new WorkingShift();
-
-            Task t = Task.Run(async () => {
-
-                _model.AddKey(_user.SignatureKey);
+        private async Task OpenShift()
+        { 
+            try
+            { 
+                Session.LoadSaleMenuDataFromFile(); 
+                WorkingShift workingShiftEntity = new WorkingShift(); 
+                _model.AddKey(_user.SignatureKey); 
                 workingShiftEntity = new WorkingShift()
                 {
                     TypeRRO = 0,
                     FiscalNumberRRO = _operationsRecorder.FiscalNumber,
-                    TypeShiftCrateAt =  TypeWorkingShift.OpenShift,
+                    TypeShiftCrateAt = TypeWorkingShift.OpenShift,
                     UserOpenShift = _user,
-                    DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber), 
+                    DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber),
                     FactoryNumberRRO = "v1",
                     MACCreateAt = await _model.GetMAC(_operationsRecorder.ID),
-                    CreateAt = DateTimeOffset.Now, 
-                    
-                };
-                Session.WorkingShiftStatus.WorkingShift = workingShiftEntity;
-            });
-            t.ContinueWith(async t =>
-            {
+                    CreateAt = DateTimeOffset.Now,
+
+                }; 
+                Session.WorkingShiftStatus.WorkingShift = workingShiftEntity; 
                 if (await _model.OpenShift(workingShiftEntity))
                 {
-                    StatusShift = "Зміна відкрита";
-                    StatusColor = "Green";
-
-                    OnPropertyChanged(nameof(StatusColor));
-                    StatusOnline = "з " + DateTime.Now.ToString("g");
-                    if (Session.WorkingShiftStatus != null)
-                    {
-                        Session.WorkingShiftStatus.StatusShift = StatusShift;
-                        Session.WorkingShiftStatus.StatusOnline = StatusOnline;
-                        Session.WorkingShiftStatus.OperationRecorder = _operationsRecorder; 
-
-                        AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
-                    }
-                    MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ChangeHeaderLable("Зміна відкрита", "Green", true); 
+                    SaveWorkingShiftStatus();
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ChangeHeaderLable(string status, string color, bool isOnline = false)
+        {
+            StatusShift = status;
+            StatusColor = color;
+            if (isOnline)
+            {
+                StatusOnline = "з " + DateTime.Now.ToString("g");
+                MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                StatusOnline = string.Empty; 
+                MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            OnPropertyChanged(nameof(StatusColor)); 
+        }
+
+        private void SaveWorkingShiftStatus()
+        {
+            if (Session.WorkingShiftStatus != null)
+            {
+                Session.WorkingShiftStatus.StatusShift = StatusShift;
+                Session.WorkingShiftStatus.StatusOnline = StatusOnline;
+                Session.WorkingShiftStatus.OperationRecorder = _operationsRecorder;
+
+                AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
+            }
         }
 
         public ICommand CloseShiftCommand => _closeShiftCommand;
-        private void CloseShift()
+        private async Task CloseShift()
         {
-
-            var shift = Session.WorkingShiftStatus.WorkingShift;
-
-
-
-            Task t = Task.Run(async () =>
+            Session.LoadSaleMenuDataFromFile();
+            _model.AddKey(_user.SignatureKey);
+            var shift = Session.WorkingShiftStatus.WorkingShift; 
+            var info = await _model.GetOperationInfo(shift.ID);
+            
+            shift.TotalCheckForShift = info.TotalCheck;
+            shift.TotalReturnCheckForShift = 0;
+            shift.UserCloseShift = _user;
+            shift.AmountOfOfficialFundsIssuedCash = info.AmountOfOfficialFundsIssued;
+            shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
+            shift.AmountOfOfficialFundsReceivedCash = info.AmountOfOfficialFundsReceived;
+            shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
+            shift.AmountOfOfficialFundsIssuedCard = 0;
+            shift.AmountOfOfficialFundsReceivedCard = 0;
+            shift.EndAt = DateTimeOffset.Now;
+            shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
+            shift.TypeShiftEndAt =  TypeWorkingShift.CloseShift;
+     
+            if (await _model.CloseShift(shift))
             {
-                var info = await _model.GetOperationInfo(shift.ID);
-                _model.AddKey(_user.SignatureKey);
-                shift.TotalCheckForShift = info.TotalCheck;
-                shift.TotalReturnCheckForShift = 0;
-                shift.UserCloseShift = _user;
-                shift.AmountOfOfficialFundsIssuedCash = info.AmountOfOfficialFundsIssued;
-                shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
-                shift.AmountOfOfficialFundsReceivedCash = info.AmountOfOfficialFundsReceived;
-                shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
-                shift.AmountOfOfficialFundsIssuedCard = 0;
-                shift.AmountOfOfficialFundsReceivedCard = 0;
-                shift.EndAt = DateTimeOffset.Now;
-                shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
-                shift.TypeShiftEndAt =  TypeWorkingShift.CloseShift;
-            });
-            t.ContinueWith(async t => {
-                if (await _model.CloseShift(shift))
-                {
-                    StatusShift = "Зміна закрита"; 
-                    StatusColor = "Red";
-                    OnPropertyChanged(nameof(StatusColor));
-                    StatusOnline = string.Empty; 
-                    //_model.Print(operation);
+                ChangeHeaderLable("Зміна закрита", "Red"); 
+                SaveWorkingShiftStatus();
+                //_model.Print(operation);
  
-                    Session.WorkingShiftStatus.StatusShift = StatusShift;
-                    Session.WorkingShiftStatus.StatusOnline = StatusOnline;  
-
-                    AppSettingsManager.SetParameterFile("WorkingShiftStatus", Session.WorkingShiftStatus.Serialize());
-                    MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                } 
-            });
-
+            }   
         }
 
         public ICommand OpenNewCheck => _openNewCheckCommand;
@@ -439,37 +451,34 @@ namespace ShopProject.ViewModel.SalePage
         }
 
         public ICommand OkFirstDialogWindowCommand => _okFirstDialogsWindowCommand;
-        private void OkFirstDialogWindow()
+        private async Task OkFirstDialogWindow()
         {
+            Session.LoadSaleMenuDataFromFile();
             var shift = Session.WorkingShiftStatus.WorkingShift;
             Operation operation = new Operation();
-            Task t = Task.Run(async () => { 
-                _model.AddKey(_user.SignatureKey);
-                operation = new Operation
-                {
-                    TypeOperation = TypeOperation.DepositMoney,
-                    MAC = await _model.GetMAC(_operationsRecorder.ID),
-                    CreatedAt = DateTime.Now,
-                    NumberPayment = await _model.GetLocalNumber(),
-                    TypePayment = TypePayment.Cash,
-                    TotalPayment = Cash,
-                    GoodsTax = 0.ToString(),
-                };
-            });
-            t.ContinueWith(async t => {
+            _model.AddKey(_user.SignatureKey);
+            operation = new Operation
+            {
+                TypeOperation = TypeOperation.DepositMoney,
+                MAC = await _model.GetMAC(_operationsRecorder.ID),
+                CreatedAt = DateTime.Now,
+                NumberPayment = await _model.GetLocalNumber(),
+                TypePayment = TypePayment.Cash,
+                TotalPayment = Cash,
+                GoodsTax = 0.ToString(),
+            };
 
-                VisibleFirstDialogWindow = Visibility.Hidden;
-                if (await _model.DepositAndWithdrawalMoney(shift , operation))
-                {
-                    MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Cash = 0;
-                }
-                else
-                {
-                    MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Cash = 0;
-                }
-            }); 
+            VisibleFirstDialogWindow = Visibility.Hidden;
+            if (await _model.DepositAndWithdrawalMoney(shift, operation))
+            {
+                MessageBox.Show("Сумма внесених коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                Cash = 0;
+            }
+            else
+            {
+                MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                Cash = 0;
+            }
         }
 
         public ICommand CancelFirstDialogWindowCommand => _cancelFirstDialogsWindowCommand;
@@ -481,37 +490,34 @@ namespace ShopProject.ViewModel.SalePage
 
 
         public ICommand OkSecondDialogWindowCommand => _okSecondDialogsWindowCommand;
-        private void OkSeconDialogWindow()
-        { 
+        private async Task OkSeconDialogWindow()
+        {
+            Session.LoadSaleMenuDataFromFile();
             var shift = Session.WorkingShiftStatus.WorkingShift;
             Operation operation = new Operation();
-            Task t = Task.Run(async () => { 
-                _model.AddKey(_user.SignatureKey);
-                operation = new Operation
-                {
-                    TypeOperation = TypeOperation.WithdrawalMoney,
-                    MAC = await _model.GetMAC(_operationsRecorder.ID),
-                    CreatedAt = DateTime.Now,
-                    NumberPayment = await _model.GetLocalNumber(),
-                    TypePayment = TypePayment.Cash, 
-                    GoodsTax = 0.ToString(),
-                    TotalPayment = Cash,
-                };
-            });
-            t.ContinueWith(async t => {
+            _model.AddKey(_user.SignatureKey);
+            operation = new Operation
+            {
+                TypeOperation = TypeOperation.WithdrawalMoney,
+                MAC = await _model.GetMAC(_operationsRecorder.ID),
+                CreatedAt = DateTime.Now,
+                NumberPayment = await _model.GetLocalNumber(),
+                TypePayment = TypePayment.Cash,
+                GoodsTax = 0.ToString(),
+                TotalPayment = Cash,
+            };
 
-                VisibleFirstDialogWindow = Visibility.Hidden;
-                if (await _model.DepositAndWithdrawalMoney(shift, operation))
-                {
-                    MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Cash = 0;
-                }
-                else
-                {
-                    MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Cash = 0;
-                }
-            }); 
+            VisibleFirstDialogWindow = Visibility.Hidden;
+            if (await _model.DepositAndWithdrawalMoney(shift, operation))
+            {
+                MessageBox.Show("Сумма виданих коштів:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                Cash = 0;
+            }
+            else
+            {
+                MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Error);
+                Cash = 0;
+            }
         }
 
         public ICommand CancelSecondDialogWindowCommand => _cancelSecondDialogsWindowCommand;
@@ -542,7 +548,6 @@ namespace ShopProject.ViewModel.SalePage
         private void ExitWorkShiftMenu()
         {
             MediatorService.ExecuteEvent(NavigationButton.RedirectToOperationsRecorderView.ToString());
-            Session.WorkingShiftStatus.OperationRecorder = null;
         }
 
         public ICommand PrintLastCheckCommand => _printLastCheckCommand;

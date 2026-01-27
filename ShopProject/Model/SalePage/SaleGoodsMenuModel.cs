@@ -76,7 +76,7 @@ namespace ShopProject.Model.SalePage
             }
         }
 
-        public bool SendCheck(ObservableCollection<ProductForSale> products, Operation operation)
+        public async Task<bool> SendCheck(ObservableCollection<ProductForSale> products, Operation operation)
         {
            
             var product = new List<Product>();
@@ -93,34 +93,29 @@ namespace ShopProject.Model.SalePage
             }
 
 
-            var id = _fiscalOperationController.SendFiscalCheck(workingShift, operation, product);
+            var id = _fiscalOperationController.SendFiscalCheck(workingShift, operation, product); 
             if (id != string.Empty)
             {
-                Task.Run(async () => {
-                    operation.FiscalServerId = id;
-                    operation.MAC = CreateMac();
-                    await SaveDataBase(operation, product); 
-                });
-                Task.Run(async () => {
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        if (IsDrawinfChek)
-                        {
-                            _chek.CreateFisckalCheck(product,operation, Session.User, Session.WorkingShiftStatus.OperationRecorder , Session.WorkingShiftStatus.ObjectOwner);
-                            _printigServise.PrintCheck(_chek.GetCheck()); 
-                        }
-                    });
-                });
+                operation.FiscalServerId = id;
+                operation.MAC = CreateMac();
+                await SaveDataBase(operation, product); 
+                PrintCheck(product, operation, id);
 
                 return true;
             }
             return false;
         } 
 
-        public void PrintCheck(List<ProductEntity> products, OperationEntity order, string id)
+        public void PrintCheck(List<Product> products, Operation operation, string id)
         {
-            //_printingFiscalCheck.PrintCheck(products, id, order);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (IsDrawinfChek)
+                {
+                    _chek.CreateFisckalCheck(products, operation, Session.User, Session.WorkingShiftStatus.OperationRecorder, Session.WorkingShiftStatus.ObjectOwner);
+                    _printigServise.PrintCheck(_chek.GetCheck());
+                }
+            });
         }
 
 

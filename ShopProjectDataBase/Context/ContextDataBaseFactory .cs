@@ -15,7 +15,7 @@ namespace ShopProjectDataBase.Context
         {
              
             var optionsBuilder = new DbContextOptionsBuilder<ContextDataBase>();
-            optionsBuilder.UseSqlServer("Server = localhost; Database = nazar; User Id = ShopAdmin; Password = Admin; TrustServerCertificate = True;");
+            optionsBuilder.UseSqlServer("Server = localhost; Database = nazar2; User Id = ShopAdmin; Password = Admin; TrustServerCertificate = True;");
 
             return new ContextDataBase(optionsBuilder.Options);
         }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ShopProject.Model.Command
+namespace ShopProject.Helpers.Command
 {
     internal class DelegateParameterCommand : ICommand
     {

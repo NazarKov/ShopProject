@@ -18,6 +18,7 @@ namespace ShopProject.UIModel.OperationRecorderPage
         public TypeStatusOperationRecorder TypeStatus { get; set; }
         public DateTimeOffset D_REG { get; set; }
         public string Address { get; set; } = string.Empty;
+
         public ObjectOwner? ObjectOwner { get; set; }
     }
 }

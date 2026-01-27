@@ -1,6 +1,6 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Navigation;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.GiftCertificatesPage;
 using ShopProject.UIModel.StoragePage;
 using ShopProjectDataBase.Helper;

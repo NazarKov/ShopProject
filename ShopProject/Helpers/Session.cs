@@ -100,5 +100,37 @@ namespace ShopProject.Helpers
                 WorkingShiftStatus = item;
             }
         }
+        public static void LoadSaleMenuDataFromFile()
+        { 
+            var json = AppSettingsManager.GetParameterFiles("WorkingShiftStatus").ToString(); 
+            if (json == null)
+            {
+                throw new Exception();
+            }
+            var workingshiftStatus = WorkingShiftStatus.Deserialize(json);
+            if (workingshiftStatus == null)
+            {
+                workingshiftStatus = new WorkingShiftStatus();
+            }
+            else
+            {
+                if(WorkingShiftStatus != null)
+                {
+                    if(WorkingShiftStatus.OperationRecorder == null)
+                    {
+                        WorkingShiftStatus.OperationRecorder = workingshiftStatus.OperationRecorder;
+                    }
+                    if (WorkingShiftStatus.WorkingShift == null)
+                    {
+                        WorkingShiftStatus.WorkingShift = workingshiftStatus.WorkingShift;
+                    }
+
+                    WorkingShiftStatus.StatusShift = workingshiftStatus.StatusShift;
+                    WorkingShiftStatus.StatusOnline = workingshiftStatus.StatusOnline;
+                    WorkingShiftStatus.MediaAccessControl = workingshiftStatus.MediaAccessControl;
+                    WorkingShiftStatus.ObjectOwner = workingshiftStatus.ObjectOwner;
+                } 
+            }
+        }
     }
 }

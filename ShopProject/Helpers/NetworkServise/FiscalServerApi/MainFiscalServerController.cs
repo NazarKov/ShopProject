@@ -31,11 +31,27 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
         public MainFiscalServerController()
         {
             _signFileContoller = new SigningFileContoller();
-            _fiscalServerController = new FiscalServerController();
-            _testMode = (OperationRecorderSetting.Deserialize(AppSettingsManager.GetParameterFiles("OperationRecorder").ToString())).IsTestMode;
+            _fiscalServerController = new FiscalServerController(); 
             _signFileContoller.Initialize(false);
             _key = new SignatureKey();
             _xmlServise = new XmlServise();
+            SetMode();
+        }
+
+        private void SetMode()
+        {
+            var json = AppSettingsManager.GetParameterFiles("OperationRecorder").ToString();
+            if(json == null)
+            {
+                throw new Exception();
+            }
+            var operationRecorder = OperationRecorderSetting.Deserialize(json);
+            if(operationRecorder == null)
+            {
+                throw new Exception();
+            }
+
+            _testMode = operationRecorder.IsTestMode;
         }
 
         public void AddKey(SignatureKey key)

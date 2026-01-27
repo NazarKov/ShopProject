@@ -1,5 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Model.Command;
+using ShopProject.Helpers.Command;
 using ShopProject.Model.SettingPage;
 using ShopProject.UIModel.SettingPage;
 using System;
@@ -71,12 +71,13 @@ namespace ShopProject.ViewModel.SettingPage
             if (json != null)
             {
                 var setting = PrinterStickerSetting.Deserialize(json);
-                if (setting != null)
-                { 
-                    setting.Printer = SelectedPrinter;
-
-                    AppSettingsManager.SetParameterFile("PrinterSticker", setting.Serialize());
+                if(setting == null)
+                {
+                    setting = new PrinterStickerSetting();
                 }
+                setting.Printer = SelectedPrinter;
+
+                AppSettingsManager.SetParameterFile("PrinterSticker", setting.Serialize());
             }
             MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
         }
