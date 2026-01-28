@@ -93,7 +93,7 @@ namespace ShopProject.Model.SalePage
             }
 
 
-            var id = _fiscalOperationController.SendFiscalCheck(workingShift, operation, product); 
+            var id = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, product); 
             if (id != string.Empty)
             {
                 operation.FiscalServerId = id;

@@ -81,11 +81,12 @@
                     </StackPanel>
                 </DockPanel>
             </Border>
-
-            <Frame x:Name="frame" Grid.Row="1"
-               Content="{Binding Path=Page, UpdateSourceTrigger=PropertyChanged}"
-               NavigationUIVisibility="Hidden"
-               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Border HorizontalAlignment="Left" Grid.Row="1" Margin="0">
+                <Frame x:Name="frame" Grid.Row="1"
+                   Content="{Binding Path=Page, UpdateSourceTrigger=PropertyChanged}"
+                   NavigationUIVisibility="Hidden"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/> 
+            </Border>
         </Grid> 
     </Viewbox>
 </Window>

@@ -13,6 +13,7 @@ namespace ShopProject.UIModel.SalePage
         public decimal AmountOfFundsIssued { get; set; }
         public decimal AmountOfFundsReceived { get; set; } 
         public decimal AmountOfOfficialFundsIssued { get; set; } 
-        public decimal AmountOfOfficialFundsReceived { get; set; }
+        public decimal AmountOfOfficialFundsReceived { get; set; } 
+        public decimal TotalReturnCheck { get; set; }
     }
 }

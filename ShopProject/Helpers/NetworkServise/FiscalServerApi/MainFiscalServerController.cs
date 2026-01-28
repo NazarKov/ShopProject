@@ -210,8 +210,12 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
                     }
                 case TypeChek.ReturnCheck:
                     {
-                        result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                             Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
+                        _xmlServise.CreateXMLFileFiscalCheck(shift, operation, products);
+                        if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
+                        {
+                            result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
+                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
+                        }
                         break;
                     }
             }

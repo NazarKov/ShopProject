@@ -179,7 +179,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 {
                     context.Operations.Load();
 
-                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId);
+                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId)
+                        .Where(t=>t.TypeOperation == TypeOperation.FiscalCheck);
+                    if (operaionts != null)
+                    {
+                        return operaionts.Count();
+                    }
+                }
+                return 0;
+            }
+        }
+
+        public decimal GetTotalReturnOperationForShift(int shiftId)
+        {
+            using (ContextDataBase context = new ContextDataBase(_option))
+            {
+                if (context != null)
+                {
+                    context.Operations.Load();
+
+                    var operaionts = context.Operations.Where(o => o.Shift.ID == shiftId)
+                        .Where(t => t.TypeOperation == TypeOperation.ReturnCheck);
                     if (operaionts != null)
                     {
                         return operaionts.Count();

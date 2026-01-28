@@ -20,5 +20,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
 
         [JsonPropertyName("AmountOfOfficialFundsReceived")]
         public decimal AmountOfOfficialFundsReceived { get; set; }
+        [JsonPropertyName("TotalReturnCheck")]
+        public decimal TotalReturnCheck { get; set; }
     }
 }

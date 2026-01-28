@@ -13,6 +13,8 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         decimal GetTotalSumForShift(int shiftId);
         decimal GetTotalAmountOfFundsIssuedForShift(int shiftId);
         decimal GetTotalOperationForShift(int shiftId);
+
+        decimal GetTotalReturnOperationForShift(int shiftId);
         decimal GetAmountOfOfficialFundsIssuedCashForShift(int shiftId);
         decimal GetAmountOfOfficialFundsReceivedCashForShift(int shiftId);
     }

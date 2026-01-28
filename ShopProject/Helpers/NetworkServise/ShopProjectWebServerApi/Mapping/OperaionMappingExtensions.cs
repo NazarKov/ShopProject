@@ -68,7 +68,9 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 AmountOfFundsReceived = info.AmountOfFundsReceived,
                 TotalCheck = info.TotalCheck,
                 AmountOfOfficialFundsReceived = info.AmountOfOfficialFundsReceived,
-                AmountOfOfficialFundsIssued = info.AmountOfOfficialFundsIssued
+                AmountOfOfficialFundsIssued = info.AmountOfOfficialFundsIssued,
+                TotalReturnCheck = info.TotalReturnCheck,
+                
             };
             return result;
         }

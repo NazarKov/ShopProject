@@ -59,11 +59,10 @@
             </Setter>
         </Style>
     </Page.Resources>
-    <Grid Name="Grid">
+    <Grid Name="Grid" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="55" MaxHeight="65"></RowDefinition> 
@@ -81,7 +80,7 @@
                 Grid.RowSpan="2"
                 Background="White"
                 Margin="5"
-                CornerRadius="6"
+                CornerRadius="6" 
                 Padding="5">
 
             <StackPanel>
@@ -95,6 +94,8 @@
             <Separator Margin="5"/>
         <Button x:Name="button"  Content="Відкрити зміну" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
                 Grid.RowSpan="2" Command="{Binding OpenShiftCommand}"
+                Visibility="{Binding VisibilitiOpenShift}"
+                IsEnabled="{Binding IsEnableOpenShiftButton}"
                 Style="{StaticResource MenuButtonStyle}"
                 VerticalAlignment="Stretch"/>
         <Button x:Name="button1" Content="Новий чек" HorizontalAlignment="Stretch"  Margin="10,10,10,10" 
@@ -104,11 +105,7 @@
         <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
                 VerticalAlignment="Stretch" 
                 Style="{StaticResource MenuButtonStyle}"
-                Command="{Binding PrintLastCheckCommand}"/>
-        <Button x:Name="button2" Content="Повернення товару"  HorizontalAlignment="Stretch"  Margin="10,10,10,10" 
-                Command="{Binding OpenReturnGoodsMenuCommand}"
-                Style="{StaticResource MenuButtonStyle}"
-                VerticalAlignment="Stretch"/>
+                Command="{Binding PrintLastCheckCommand}"/> 
         <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
                 VerticalAlignment="Stretch" 
                 Style="{StaticResource MenuButtonStyle}"
@@ -124,6 +121,7 @@
         <Button x:Name="button6" Content="Назад до вибору каси" HorizontalAlignment="Stretch" Margin="10,10,10,10"
                 Visibility="{Binding VisibilitiExitButton}"
                 Style="{StaticResource MenuButtonStyle}"
+                IsEnabled="{Binding IsEnableCloseShiftButton}"
                 Command="{Binding ExitWorkShiftMenuCommand}"
                 VerticalAlignment="Stretch"></Button>
             </StackPanel>

@@ -26,6 +26,7 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _clearFieldDataGrid; 
         private ICommand _updateSize;
         private ICommand _cleareSumUserCommand;
+        private ICommand _sendReturnCheckCommand;
         private Guid _idChannel;
         private User _user;
         private StorageSetting _setting;
@@ -40,6 +41,7 @@ namespace ShopProject.ViewModel.SalePage
             _updateSize = new DelegateCommand(UpdateSizes);
             _clearFieldDataGrid = new DelegateCommand(ClearField);
             _cleareSumUserCommand = new DelegateCommand(ClearSumUser);
+            _sendReturnCheckCommand = new DelegateCommandAsync(ReturnCheck);
 
             _product = new ObservableCollection<ProductForSale>();
             _barCodeSearch = string.Empty;
@@ -49,7 +51,9 @@ namespace ShopProject.ViewModel.SalePage
             _totalSum = decimal.Zero;
             _user = new User();
             _selectTypePayment = 0;
-
+            _setting = new StorageSetting();
+            _settingOperationRecorder = new OperationRecorderSetting();
+            _isEnableSendCheckButton = false;
             SetFieldPage();
             ClearField();
         }
@@ -135,12 +139,29 @@ namespace ShopProject.ViewModel.SalePage
             get { return _isFiscalCheck; }
             set { _isFiscalCheck = value; OnPropertyChanged(nameof(IsFiscalCheck)); }
         }
-        public int Tag;
+        public int Tag { get; set; } = 0;
+
+        private bool _isEnableSendCheckButton;
+        public bool IsEnableSendCheckButton
+        {
+            get { return _isEnableSendCheckButton; }
+            set { _isEnableSendCheckButton = value; OnPropertyChanged(nameof(IsEnableSendCheckButton)); }
+        } 
+
         public ICommand UpdateSize => _updateSize;
         private void UpdateSizes()
         {
-            Widght = (int)Application.Current.MainWindow.ActualWidth - 590;
-            Height = (int)Application.Current.MainWindow.ActualHeight - 220;
+
+            var widght = (int)Application.Current.MainWindow.ActualWidth; 
+            if (  widght <= 1750)
+            {
+                Widght = 10; 
+            }
+            else
+            {
+                Widght = 5; 
+            }
+            Height = 70;
         }
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
@@ -153,6 +174,7 @@ namespace ShopProject.ViewModel.SalePage
             _idChannel = Guid.NewGuid();
             MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, this.CountingSumaOrder);
             MediatorService.AddEvent(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, this.RemoveItem);
+            EnableButton();
         }
          
         private void SetFieldPage()
@@ -278,7 +300,21 @@ namespace ShopProject.ViewModel.SalePage
                 _discount = 0;
                 _discountPrecent = 0;
             }
+            EnableButton();
         }
+
+        private void EnableButton()
+        {
+            if(Product.Count <= 0)
+            {
+                IsEnableSendCheckButton = false;
+            }
+            else
+            {
+                IsEnableSendCheckButton = true;
+            }
+        }
+
         private void RemoveItem(object item)
         {
             var product = item as ProductForSale;
@@ -307,6 +343,7 @@ namespace ShopProject.ViewModel.SalePage
         {
             try
             {
+                IsEnableSendCheckButton = false;
                 Session.LoadSaleMenuDataFromFile();
                 _model.IsDrawinfChek = DrawingCheck;
 
@@ -373,7 +410,86 @@ namespace ShopProject.ViewModel.SalePage
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        public ICommand SendReturnCheckCommand => _sendReturnCheckCommand;
+        private async Task ReturnCheck()
+        {
+            try
+            {
+                IsEnableSendCheckButton = false;
+                Session.LoadSaleMenuDataFromFile();
+                _model.IsDrawinfChek = DrawingCheck;
+
+                if (!(SumaUser >= SumaOrder))
+                {
+                    MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
+                }
+                else
+                {
+                    _model.AddKey(_user.SignatureKey);
+
+                    var rest = (SumaUser - SumaOrder);
+                    var discount = new Discount();
+
+                    if (DiscountPrecent != 0)
+                    {
+                        discount.TotalDiscount = _totalSum * (DiscountPrecent / 100);
+                        discount.TypeDiscount = 1;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = _totalSum;
+                        discount.Rebate = DiscountPrecent;
+                    }
+                    else if (Discount != 0)
+                    {
+                        discount.TotalDiscount = Discount;
+                        discount.TypeDiscount = 0;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = _totalSum;
+                        discount.Rebate = Discount;
+                    }
+                    else
+                    {
+                        discount = null;
+                    }
+
+                    Operation operation = new Operation()
+                    {
+                        TypeOperation = TypeOperation.ReturnCheck,
+                        MAC = await _model.GetMAC(Session.WorkingShiftStatus.OperationRecorder.ID),
+                        CreatedAt = DateTime.Now,
+                        NumberPayment = await _model.GetLocalNumber(),
+                        GoodsTax = "0",
+                        RestPayment = rest.Value,
+                        TotalPayment = _totalSum,
+                        BuyersAmount = SumaUser.Value,
+                        TypePayment = (TypePayment)SelectTypePayment,
+                        Discount = discount,
+                    };
+
+                    if (await _model.SendCheck(Product, operation))
+
+                    {
+                        MessageBox.Show("Товар повернено","Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Product = new ObservableCollection<ProductForSale>();
+                        BarCodeSearch = string.Empty;
+                        SumaUser = new decimal();
+                        SumaUser = 0;
+                        SumaOrder = 0;
+
+                        if (Tag != 0)
+                        {
+                            Session.Tabs.RemoveAt(Tag);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }

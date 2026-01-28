@@ -29,8 +29,7 @@ namespace ShopProject.ViewModel.SalePage
         private ICommand _closeShiftCommand;
 
         private ICommand _updateSizeCommand;
-        private ICommand _openNewCheckCommand;
-        private ICommand _openReturnGoodsMenuCommand;
+        private ICommand _openNewCheckCommand; 
 
         private ICommand _officialDepositMoneyCommand;
         private ICommand _officialReceivedMoneyCommand;
@@ -54,8 +53,7 @@ namespace ShopProject.ViewModel.SalePage
             _openShiftCommand = new DelegateCommandAsync(OpenShift);
             _closeShiftCommand = new DelegateCommandAsync(CloseShift);
             _updateSizeCommand = new DelegateCommand(UpdateSizes);
-            _openNewCheckCommand = new DelegateCommand(OpenCheck);
-            _openReturnGoodsMenuCommand = new DelegateCommand(OpenReturnGoodsMenu);
+            _openNewCheckCommand = new DelegateCommand(OpenCheck); 
 
 
             _officialDepositMoneyCommand = new DelegateCommand(OfficialDepositMoney);
@@ -79,6 +77,9 @@ namespace ShopProject.ViewModel.SalePage
             _economicUnit = string.Empty;
             _seller = string.Empty;
             _statusOnline = string.Empty;
+            _isEnableCloseShiftButton = true;
+            _isEnableOpenShiftButton = true;
+            _visibilitiOpenShift = Visibility.Visible;
 
             VisibleFirstDialogWindow = Visibility.Hidden;
             VisibleSecondDialogWindow = Visibility.Hidden;
@@ -189,6 +190,24 @@ namespace ShopProject.ViewModel.SalePage
             get { return _testMode; }
             set { _testMode = value; OnPropertyChanged(nameof(TestMode)); }
         }
+        private bool _isEnableOpenShiftButton;
+        public bool IsEnableOpenShiftButton
+        {
+            get { return _isEnableOpenShiftButton; }
+            set { _isEnableOpenShiftButton = value; OnPropertyChanged(nameof(IsEnableOpenShiftButton)); }
+        }
+        private bool _isEnableCloseShiftButton;
+        public bool IsEnableCloseShiftButton
+        {
+            get { return _isEnableCloseShiftButton; }
+            set { _isEnableCloseShiftButton = value; OnPropertyChanged(nameof(IsEnableCloseShiftButton)); }
+        }
+        private Visibility _visibilitiOpenShift;
+        public Visibility VisibilitiOpenShift
+        {
+            get { return _visibilitiOpenShift; }
+            set { _visibilitiOpenShift = value;OnPropertyChanged(nameof(VisibilitiOpenShift)); }
+        }
 
         public ICommand UpdateSizeCommand => _updateSizeCommand;
 
@@ -258,9 +277,7 @@ namespace ShopProject.ViewModel.SalePage
                 else
                 {
                     FNumber = workingShiftStatus.WorkingShift.FiscalNumberRRO;
-                }
-                //VisibilitiExitButton = Visibility.Hidden;  
-
+                } 
                 StatusShift = workingShiftStatus.StatusShift;
                 StatusOnline = workingShiftStatus.StatusOnline;
                 _operationsRecorder = workingShiftStatus.OperationRecorder;
@@ -272,10 +289,14 @@ namespace ShopProject.ViewModel.SalePage
 
             if (StatusShift == "Зміна відкрита")
             {
+                VisibilitiOpenShift = Visibility.Collapsed;
+                VisibilitiExitButton = Visibility.Collapsed;  
                 StatusColor = "Green";
             }
             else
             {
+                VisibilitiOpenShift = Visibility.Visible; 
+                VisibilitiExitButton = Visibility.Visible;
                 StatusColor = "Red";
             } 
 
@@ -304,7 +325,8 @@ namespace ShopProject.ViewModel.SalePage
         private async Task OpenShift()
         { 
             try
-            { 
+            {
+                IsEnableOpenShiftButton = false;
                 Session.LoadSaleMenuDataFromFile(); 
                 WorkingShift workingShiftEntity = new WorkingShift(); 
                 _model.AddKey(_user.SignatureKey); 
@@ -324,6 +346,9 @@ namespace ShopProject.ViewModel.SalePage
                 if (await _model.OpenShift(workingShiftEntity))
                 {
                     ChangeHeaderLable("Зміна відкрита", "Green", true); 
+                    IsEnableOpenShiftButton = true;
+                    VisibilitiOpenShift = Visibility.Collapsed;
+                    VisibilitiExitButton = Visibility.Collapsed;
                     SaveWorkingShiftStatus();
                 }
             }
@@ -365,31 +390,42 @@ namespace ShopProject.ViewModel.SalePage
         public ICommand CloseShiftCommand => _closeShiftCommand;
         private async Task CloseShift()
         {
-            Session.LoadSaleMenuDataFromFile();
-            _model.AddKey(_user.SignatureKey);
-            var shift = Session.WorkingShiftStatus.WorkingShift; 
-            var info = await _model.GetOperationInfo(shift.ID);
-            
-            shift.TotalCheckForShift = info.TotalCheck;
-            shift.TotalReturnCheckForShift = 0;
-            shift.UserCloseShift = _user;
-            shift.AmountOfOfficialFundsIssuedCash = info.AmountOfOfficialFundsIssued;
-            shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
-            shift.AmountOfOfficialFundsReceivedCash = info.AmountOfOfficialFundsReceived;
-            shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
-            shift.AmountOfOfficialFundsIssuedCard = 0;
-            shift.AmountOfOfficialFundsReceivedCard = 0;
-            shift.EndAt = DateTimeOffset.Now;
-            shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
-            shift.TypeShiftEndAt =  TypeWorkingShift.CloseShift;
-     
-            if (await _model.CloseShift(shift))
+            try
             {
-                ChangeHeaderLable("Зміна закрита", "Red"); 
-                SaveWorkingShiftStatus();
-                //_model.Print(operation);
- 
-            }   
+                IsEnableCloseShiftButton = false;
+                Session.LoadSaleMenuDataFromFile();
+                _model.AddKey(_user.SignatureKey);
+                var shift = Session.WorkingShiftStatus.WorkingShift;
+                var info = await _model.GetOperationInfo(shift.ID);
+
+                shift.TotalCheckForShift = info.TotalCheck;
+                shift.TotalReturnCheckForShift = info.TotalReturnCheck;
+                shift.UserCloseShift = _user;
+                shift.AmountOfOfficialFundsIssuedCash = info.AmountOfOfficialFundsIssued;
+                shift.AmountOfFundsIssued = info.AmountOfFundsIssued;
+                shift.AmountOfOfficialFundsReceivedCash = info.AmountOfOfficialFundsReceived;
+                shift.AmountOfFundsReceived = info.AmountOfFundsReceived;
+                shift.AmountOfOfficialFundsIssuedCard = 0;
+                shift.AmountOfOfficialFundsReceivedCard = 0;
+                shift.EndAt = DateTimeOffset.Now;
+                shift.MACEndAt = await _model.GetMAC(_operationsRecorder.ID);
+                shift.TypeShiftEndAt = TypeWorkingShift.CloseShift;
+
+                if (await _model.CloseShift(shift))
+                {
+                    ChangeHeaderLable("Зміна закрита", "Red");
+                    IsEnableCloseShiftButton = true;
+                    VisibilitiOpenShift = Visibility.Visible;
+                    VisibilitiExitButton = Visibility.Visible;
+                    SaveWorkingShiftStatus();
+                    //_model.Print(operation);
+
+                } 
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public ICommand OpenNewCheck => _openNewCheckCommand;
@@ -525,24 +561,7 @@ namespace ShopProject.ViewModel.SalePage
         {
             Cash = 0;
             VisibleSecondDialogWindow = Visibility.Hidden;
-        }
-
-        public ICommand OpenReturnGoodsMenuCommand => _openReturnGoodsMenuCommand;
-        private void OpenReturnGoodsMenu()
-        {
-            if (Tabs.Count != 0)
-            {
-                Tabs.Clear();
-                Tabs.Add(new TabItem()
-                {
-                    Header = " ",
-                    Content = new Frame() { Content = new ReturnGoodsMenu() }
-                });
-                SelectedTabItem = 0;
-
-                OnPropertyChanged(nameof(Tabs));
-            }
-        }
+        } 
 
         public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
         private void ExitWorkShiftMenu()
