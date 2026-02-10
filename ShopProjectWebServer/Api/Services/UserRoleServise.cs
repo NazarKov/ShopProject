@@ -7,14 +7,22 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class UserRoleServise : IUserRoleServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public UserRoleServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public IEnumerable<UserRoleDto> GetAll(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            var result = DataBaseMainController.DataBaseAccess.UserRoleTable.GetAll();
+            var result = _controller.DataBaseAccess.UserRoleTable.GetAll();
 
             return result.ToUserRoleDto();
         }

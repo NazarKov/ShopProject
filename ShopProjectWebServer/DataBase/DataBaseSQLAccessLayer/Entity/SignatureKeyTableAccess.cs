@@ -7,30 +7,23 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class SignatureKeyTableAccess : ISignatureKeyTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public SignatureKeyTableAccess(DbContextOptions<ContextDataBase> option)
+        private readonly ContextDataBase _contextDataBase;
+        public SignatureKeyTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
         public ElectronicSignatureKey GetKeyByUser(string UserId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.ElectronicSignatureKeys.Load(); 
+            _contextDataBase.Users.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
 
-                    if (context.Users.Count() != 0)
-                    {
-                        var user = context.Users.First(u=>u.ID ==Guid.Parse(UserId));
-                        return user.SignatureKey;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+            if (_contextDataBase.Users.Count() != 0)
+            {
+                var user = _contextDataBase.Users.First(u => u.ID == Guid.Parse(UserId));
+                return user.SignatureKey;
+            }
+            else
+            {
                 return null;
             }
         }

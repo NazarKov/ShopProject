@@ -8,28 +8,22 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class TokenTableAccess : ITokenTableAccess 
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public TokenTableAccess(DbContextOptions<ContextDataBase> option)
+
+        private readonly ContextDataBase _contextDataBase;
+        public TokenTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
         public void Add(TokenEntity item)
-        {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
+        { 
+            if (_contextDataBase != null)
+            { 
+                if (item != null)
                 {
-                    context.Users.Load();
-                    context.UserRoles.Load();
-                    context.UserTokens.Load();
-
-                    if (item != null)
-                    {
-                        item.User = context.Users.Find(item.User.ID);
-                        context.UserTokens.Add(item);
-                    }
+                    item.User = _contextDataBase.Users.Find(item.User.ID);
+                    _contextDataBase.UserTokens.Add(item);
                 }
-                context.SaveChanges();
+                _contextDataBase.SaveChanges(); 
             }
         }
 
@@ -40,22 +34,15 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<TokenEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                { 
-                    context.Users.Load();
-                    context.UserTokens.Load();
+            _contextDataBase.Users.Load();
+            _contextDataBase.UserTokens.Load();
 
-                    if (context.Users.Count() != 0)
-                    { 
-                        return context.UserTokens.ToList();
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+            if (_contextDataBase.Users.Count() != 0)
+            {
+                return _contextDataBase.UserTokens.ToList();
+            }
+            else
+            {
                 return null;
             }
         }

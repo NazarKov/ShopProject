@@ -7,13 +7,11 @@ using ShopProject.UIModel.OperationRecorderPage;
 using ShopProject.UIModel.SalePage;
 using ShopProject.UIModel.SettingPage;
 using ShopProject.UIModel.UserPage;
-using ShopProject.Views.SalePage;
-using ShopProjectDataBase.Entities;
+using ShopProject.Views.SalePage; 
 using ShopProjectDataBase.Helper;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
+using System.Linq; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,6 +40,7 @@ namespace ShopProject.ViewModel.SalePage
 
         private ICommand _exitWorkShiftMenuCommand;
         private ICommand _printLastCheckCommand;
+        private ICommand _publishCertificateCommand;
 
         private User _user;
         private OperationRecorder _operationsRecorder;
@@ -67,6 +66,7 @@ namespace ShopProject.ViewModel.SalePage
             _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
             _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
             _printLastCheckCommand = new DelegateCommand(PrintLastCheck);
+            _publishCertificateCommand = new DelegateCommand(PublishCertificate);
 
             _statusShift = string.Empty;
             _statusColor = string.Empty;
@@ -575,5 +575,9 @@ namespace ShopProject.ViewModel.SalePage
             _model.PrintLastCheck();
         }
 
+        public ICommand PublishCertificateCommand => _publishCertificateCommand;
+        private void PublishCertificate() {
+        
+        }
     }
 }

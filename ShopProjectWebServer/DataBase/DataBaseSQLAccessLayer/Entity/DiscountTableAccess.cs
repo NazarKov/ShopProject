@@ -7,25 +7,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class DiscountTableAccess : IDiscountTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public DiscountTableAccess(DbContextOptions<ContextDataBase> option)
+        private readonly ContextDataBase _contextDataBase;
+        public DiscountTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
         public int Add(DiscountEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Discounts.Load();
+            if (_contextDataBase.Discounts != null)
             {
-                if (context != null)
-                { 
-                    context.Discounts.Load();
-                    if (context.Discounts != null)
-                    {  
-                        context.Discounts.Add(item);
-                    }
-                    context.SaveChanges(); 
-                }
+                _contextDataBase.Discounts.Add(item);
             }
+            _contextDataBase.SaveChanges();
             return item.ID;
         }
 

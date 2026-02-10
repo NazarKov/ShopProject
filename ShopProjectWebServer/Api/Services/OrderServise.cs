@@ -7,22 +7,30 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class OrderServise : IOrderServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public OrderServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public void AddRange(string token, IEnumerable<CreateOrderDto> orders)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.OrderTable.AddRange(orders.ToListOrderEntity());
+            _controller.DataBaseAccess.OrderTable.AddRange(orders.ToListOrderEntity());
         }
 
         public IEnumerable<OrderDto> GetAll(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            var result = DataBaseMainController.DataBaseAccess.OrderTable.GetAll();
+            var result = _controller.DataBaseAccess.OrderTable.GetAll();
 
             return result.ToOrderDto();
         }

@@ -9,182 +9,136 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OperationRecorderTableAccess : IOperationRecorderTableAccess 
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public OperationRecorderTableAccess(DbContextOptions<ContextDataBase> option)
+
+        private readonly ContextDataBase _contextDataBase;
+        public OperationRecorderTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
 
         public void Add(OperationsRecorderEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorders.Load();
 
-                    context.OperationsRecorders.Add(item);
-                }
-                context.SaveChanges();
-            }
+            _contextDataBase.OperationsRecorders.Add(item);
+            _contextDataBase.SaveChanges();
         }
 
         public void AddBinding(Guid idoperationrecoreder, Guid idobjectowner)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.ObjectOwners.Load();
+
+            var item = _contextDataBase.OperationsRecorders.Where(i => i.ID == idoperationrecoreder).FirstOrDefault();
+            if (item != null)
             {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load();
-                    context.ObjectOwners.Load();
-                    
-                    var item = context.OperationsRecorders.Where( i=> i.ID == idoperationrecoreder).FirstOrDefault();
-                    if(item != null)
-                    {
-                        item.ObjectOwner= context.ObjectOwners.Where(i=>i.ID == idobjectowner).FirstOrDefault();
-                    }
-                }
-                context.SaveChanges();
+                item.ObjectOwner = _contextDataBase.ObjectOwners.Where(i => i.ID == idobjectowner).FirstOrDefault();
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void AddRange(IEnumerable<OperationsRecorderEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorders.Load();
 
-                    context.OperationsRecorders.AddRange(items);
-                }
-                context.SaveChanges();
-            }
+            _contextDataBase.OperationsRecorders.AddRange(items);
+            _contextDataBase.SaveChanges();
         }
 
         public void Delete(OperationsRecorderEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load(); 
+            _contextDataBase.OperationsRecorders.Load();
 
-                    if (context.OperationsRecorders != null)
-                    {
-                        var operationsRecorders = context.OperationsRecorders.Find(item.ID);
-                        context.OperationsRecorders.Remove(operationsRecorders);
-                    }
-                    context.SaveChanges();
-                }
+            if (_contextDataBase.OperationsRecorders != null)
+            {
+                var operationsRecorders = _contextDataBase.OperationsRecorders.Find(item.ID);
+                _contextDataBase.OperationsRecorders.Remove(operationsRecorders);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public IEnumerable<OperationsRecorderEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorders.Load();
 
-                    if (context.OperationsRecorders.Count() != 0)
-                    {
-                        return context.OperationsRecorders.ToList();
-                    }
-                    else
-                    {
-                        return new List<OperationsRecorderEntity>();
-                    }
-                }
-                return null;
+            if (_contextDataBase.OperationsRecorders.Count() != 0)
+            {
+                return _contextDataBase.OperationsRecorders.ToList();
+            }
+            else
+            {
+                return new List<OperationsRecorderEntity>();
             }
         } 
         public IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            IQueryable<OperationsRecorderEntity> query = _contextDataBase.OperationsRecorders.AsNoTracking();
+
+            if (status != TypeStatusOperationRecorder.Unknown)
             {
-                IQueryable<OperationsRecorderEntity> query = context.OperationsRecorders.AsNoTracking();
-
-                if (status != TypeStatusOperationRecorder.Unknown)
-                {
-                    query = query.Where(o => o.TypeStatus == status);
-                }
-
-                if (!(name == string.Empty))
-                {
-                    query = query.Where(o => o.Name.Contains(name));
-                }
-
-                var result = query.ToList();
-                return result;
+                query = query.Where(o => o.TypeStatus == status);
             }
+
+            if (!(name == string.Empty))
+            {
+                query = query.Where(o => o.Name.Contains(name));
+            }
+
+            var result = query.ToList();
+            return result;
         } 
         public IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorderUsers.Load();
+
+            if (_contextDataBase.OperationsRecorders != null)
             {
-                if (context != null)
+                if (_contextDataBase.OperationsRecorderUsers != null)
                 {
-                    context.OperationsRecorders.Load();
-                    context.OperationsRecorderUsers.Load();
+                    var operationsRecorders = _contextDataBase.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.Name.Contains(item)).ToList();
 
-                    if (context.OperationsRecorders != null)
+
+                    var result = new List<OperationsRecorderEntity>();
+
+                    var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
+
+                    foreach (var operationsRecorder in operationRecorders)
                     {
-                        if (context.OperationsRecorderUsers != null)
-                        {
-                            var operationsRecorders = context.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.Name.Contains(item)).ToList();
-
-
-                            var result = new List<OperationsRecorderEntity>();
-
-                            var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
-                             
-                            foreach (var operationsRecorder in operationRecorders)
-                            {
-                                result.Add(operationsRecorder.OpertionsRecorders);
-                            }
-                            return result;
-                        }
+                        result.Add(operationsRecorder.OpertionsRecorders);
                     }
+                    return result;
                 }
-                return Enumerable.Empty<OperationsRecorderEntity>();
             }
+            return null;
         }
 
         public IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorderUsers.Load();
+
+
+            if (_contextDataBase.OperationsRecorders != null)
             {
-                if (context != null)
+                if (_contextDataBase.OperationsRecorderUsers != null)
                 {
-                    context.Users.Load();
-                    context.OperationsRecorders.Load();
-                    context.OperationsRecorderUsers.Load();
-                    
+                    var operationsRecorders = _contextDataBase.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.FiscalNumber.Contains(item)).ToList();
 
-                    if (context.OperationsRecorders != null)
+
+                    var result = new List<OperationsRecorderEntity>();
+
+                    var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
+
+                    foreach (var operationsRecorder in operationRecorders)
                     {
-                        if (context.OperationsRecorderUsers != null)
-                        {
-                            var operationsRecorders = context.OperationsRecorderUsers.Where(i => i.OpertionsRecorders.FiscalNumber.Contains(item)).ToList();
-                            
-                            
-                            var result = new List<OperationsRecorderEntity>();
-                            
-                            var operationRecorders = operationsRecorders.Where(u => u.Users.ID == userId).ToList();
-
-                            foreach (var operationsRecorder in operationRecorders)
-                            {
-                                result.Add(operationsRecorder.OpertionsRecorders);
-                            }
-                            return result;
-                        }  
+                        result.Add(operationsRecorder.OpertionsRecorders);
                     }
+                    return result;
                 }
-
-                return Enumerable.Empty<OperationsRecorderEntity>();
             }
+            return null;
         }
 
         public void Update(OperationsRecorderEntity item)

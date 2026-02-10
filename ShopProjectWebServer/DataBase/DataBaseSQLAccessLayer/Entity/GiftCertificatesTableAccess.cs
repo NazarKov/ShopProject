@@ -6,30 +6,24 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class GiftCertificatesTableAccess : IGiftCertificatesTableAccess 
+    public class GiftCertificatesTableAccess : IGiftCertificatesTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public GiftCertificatesTableAccess(DbContextOptions<ContextDataBase> option)
+        private readonly ContextDataBase _contextDataBase;
+        public GiftCertificatesTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
         public void Add(GiftCertificatesEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.GiftCertificates.Load();
+            _contextDataBase.Users.Load();
+            _contextDataBase.GiftCertificates.Load();
 
-                    if (item != null)
-                    { 
-                        context.GiftCertificates.Add(item);
-                        
-                    }
-                    context.SaveChanges();
-                }
+            if (item != null)
+            {
+                _contextDataBase.GiftCertificates.Add(item);
+
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void Delete(GiftCertificatesEntity item)
@@ -44,115 +38,92 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public GiftCertificatesEntity GetByBarCode(string barCode, TypeStatusGiftCertificate status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.GiftCertificates.Load();
+
+            if (_contextDataBase.GiftCertificates != null && _contextDataBase.GiftCertificates.Count() != 0)
             {
-                if (context != null)
+                GiftCertificatesEntity result = new GiftCertificatesEntity();
+                if (status == TypeStatusGiftCertificate.Unknown)
                 {
-                    context.GiftCertificates.Load(); 
-
-                    if (context.GiftCertificates != null && context.GiftCertificates.Count() != 0)
-                    {
-                        GiftCertificatesEntity result = new GiftCertificatesEntity();
-                        if (status == TypeStatusGiftCertificate.Unknown)
-                        {
-                            result = context.GiftCertificates.First(i => i.Code == barCode);
-                        }
-                        else
-                        {
-                            result = context.GiftCertificates.Where(t => t.Status == status).First(i => i.Code == barCode);
-                        }
-                        return result;
-                    }
-                    else
-                    {
-                        throw new Exception("Неможливий пошук оскільки немає товарів");
-                    }
-
+                    result = _contextDataBase.GiftCertificates.First(i => i.Code == barCode);
                 }
-                return new GiftCertificatesEntity();
+                else
+                {
+                    result = _contextDataBase.GiftCertificates.Where(t => t.Status == status).First(i => i.Code == barCode);
+                }
+                return result;
+            }
+            else
+            {
+                throw new Exception("Неможливий пошук оскільки немає товарів");
             }
         }
 
         public IEnumerable<GiftCertificatesEntity> GetByNameAndStatus(string name, TypeStatusGiftCertificate status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            IQueryable<GiftCertificatesEntity> query = _contextDataBase.GiftCertificates.AsNoTracking();
+
+            if (status != TypeStatusGiftCertificate.Unknown)
             {
-                IQueryable<GiftCertificatesEntity> query = context.GiftCertificates.AsNoTracking();
-
-                if (status != TypeStatusGiftCertificate.Unknown)
-                {
-                    query = query.Where(o => o.Status == status);
-                }
-
-                if (!(name == string.Empty))
-                {
-                    query = query.Where(o => o.Name.Contains(name));
-                }
-
-                var result = query.ToList();
-                return result;
+                query = query.Where(o => o.Status == status);
             }
+
+            if (!(name == string.Empty))
+            {
+                query = query.Where(o => o.Name.Contains(name));
+            }
+
+            var result = query.ToList();
+            return result;
         }
 
         public void Update(GiftCertificatesEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.GiftCertificates.Load();
+
+            if (item != null)
             {
-                if (context != null)
+                var giftCertificate = _contextDataBase.GiftCertificates.Find(item.ID);
+                if (giftCertificate != null)
                 {
-                    context.Users.Load();
-                    context.GiftCertificates.Load();
-
-                    if (item != null)
-                    {
-                        var giftCertificate = context.GiftCertificates.Find(item.ID);
-                        if (giftCertificate != null)
-                        {
-                            giftCertificate.Price = item.Price;
-                            giftCertificate.Status = item.Status; 
-                            giftCertificate.Description = item.Description;
-                            giftCertificate.Code = item.Code;
-                        }
-
-                    }
-                    context.SaveChanges();
+                    giftCertificate.Price = item.Price;
+                    giftCertificate.Status = item.Status;
+                    giftCertificate.Description = item.Description;
+                    giftCertificate.Code = item.Code;
                 }
+
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void UpdateParameter(GiftCertificatesEntity item, string parameter, object value)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Products.Load();
+
+            if (_contextDataBase.Products.Count() != 0)
             {
-                if (context != null)
+                GiftCertificatesEntity giftCertificates;
+                if (item.Code != null && item.Code != string.Empty)
                 {
-                    context.Products.Load();
-
-                    if (context.Products.Count() != 0)
-                    {
-                        GiftCertificatesEntity giftCertificates;
-                        if (item.Code != null && item.Code != string.Empty)
-                        {
-                            giftCertificates = context.GiftCertificates.Where(i => i.Code == item.Code).First();
-                        }
-                        else
-                        {
-                            giftCertificates = context.GiftCertificates.Find(item.ID);
-                        }
-
-                        switch (parameter)
-                        { 
-                            case nameof(giftCertificates.Status):
-                                {
-                                    var status = Enum.Parse<TypeStatusGiftCertificate>(value.ToString());
-                                    giftCertificates.Status = status; 
-                                    break;
-                                }
-                        }
-                    }
+                    giftCertificates = _contextDataBase.GiftCertificates.Where(i => i.Code == item.Code).First();
                 }
-                context.SaveChanges();
+                else
+                {
+                    giftCertificates = _contextDataBase.GiftCertificates.Find(item.ID);
+                }
+
+                switch (parameter)
+                {
+                    case nameof(giftCertificates.Status):
+                        {
+                            var status = Enum.Parse<TypeStatusGiftCertificate>(value.ToString());
+                            giftCertificates.Status = status;
+                            break;
+                        }
+                }
+                _contextDataBase.SaveChanges();
             }
         }
-       }
+    }
 }

@@ -83,7 +83,9 @@
                     Command="{Binding OpenSettingOpenrationRecorderCommand}"/>
                 <Button Content="Час та мова"
                     Style="{StaticResource MenuButtonStyle}"/>
-
+                <Button Content="Розширення"
+                    Command="{Binding OpenSettingExpansionComman}"
+                    Style="{StaticResource MenuButtonStyle}"/>
                 <Button Content="Налашування веб-сервера"
                     Command="{Binding OpenSettingWebServerCommand}"
                     Style="{StaticResource MenuButtonStyle}"/>

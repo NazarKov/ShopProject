@@ -1,5 +1,6 @@
 ﻿using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Services;
+using ShopProjectWebServer.DataBase;
 
 namespace ShopProjectWebServer.Extensions
 {
@@ -22,6 +23,11 @@ namespace ShopProjectWebServer.Extensions
             services.AddScoped<IElectronicSignatureKeyServise, ElectronicSignatureKeyServise>();
             services.AddScoped<IDiscountServise, DiscountServise>();
             services.AddScoped<IGiftCertificatesServise, GiftCertificatesServise>();
+        }
+        public static void AddDataBaseServices(this IServiceCollection services)
+        {
+            services.AddScoped<DataBaseMainController>();
+            services.AddScoped<AuthorizationServise>();
         }
     }
 }

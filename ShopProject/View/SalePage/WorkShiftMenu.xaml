@@ -105,8 +105,12 @@
         <Button x:Name="button7" Content="Друк останього чеку" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
                 VerticalAlignment="Stretch" 
                 Style="{StaticResource MenuButtonStyle}"
-                Command="{Binding PrintLastCheckCommand}"/> 
-        <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
+                Command="{Binding PrintLastCheckCommand}"/>
+                <Button x:Name="button8" Content="Видати сертифікат" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
+                        VerticalAlignment="Stretch" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Command="{Binding PublishCertificateCommand}"/>
+                <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
                 VerticalAlignment="Stretch" 
                 Style="{StaticResource MenuButtonStyle}"
                 Command="{Binding OfficialDepositMoneyCommand}"/>

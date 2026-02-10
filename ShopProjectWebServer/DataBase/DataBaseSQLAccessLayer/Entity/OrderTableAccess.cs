@@ -9,10 +9,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OrderTableAccess : IOrderTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public OrderTableAccess(DbContextOptions<ContextDataBase> option)
+        private readonly ContextDataBase _contextDataBase;
+        public OrderTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
 
         public void Add(OrderEntity item)
@@ -22,26 +22,20 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void AddRange(IEnumerable<OrderEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Operations.Load();
+            _contextDataBase.Products.Load();
+            _contextDataBase.Discounts.Load();
+            _contextDataBase.Orders.Load();
+            if (_contextDataBase.Products != null)
             {
-                if (context != null)
+                for (int i = 0; i < items.Count(); i++)
                 {
-                    context.Operations.Load();
-                    context.Products.Load();
-                    context.Discounts.Load();
-                    context.Orders.Load();
-                    if (context.Products != null)
-                    {
-                        for (int i = 0; i < items.Count(); i++)
-                        {
-                            items.ElementAt(i).Product = context.Products.Find(items.ElementAt(i).Product.ID);
-                            items.ElementAt(i).Operation = context.Operations.Find(items.ElementAt(i).Operation.ID);
-                        }
-                        context.Orders.AddRange(items);
-                    }
-                    context.SaveChanges();
+                    items.ElementAt(i).Product = _contextDataBase.Products.Find(items.ElementAt(i).Product.ID);
+                    items.ElementAt(i).Operation = _contextDataBase.Operations.Find(items.ElementAt(i).Operation.ID);
                 }
+                _contextDataBase.Orders.AddRange(items);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void Delete(OrderEntity item)
@@ -51,43 +45,33 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OrderEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.Operations.Load();
-                    context.Products.Load();
-                    context.Discounts.Load();
-                    context.Orders.Load();
+            _contextDataBase.Operations.Load();
+            _contextDataBase.Products.Load();
+            _contextDataBase.Discounts.Load();
+            _contextDataBase.Orders.Load();
 
-                    if (context.Operations.Count() != 0)
-                    {
-                        return context.Orders.ToList();
-                    }
-                    else
-                    {
-                        return new List<OrderEntity>();
-                    }
-                }
-                return null;
+            if (_contextDataBase.Operations.Count() != 0)
+            {
+                return _contextDataBase.Orders.ToList();
+            }
+            else
+            {
+                return new List<OrderEntity>();
             }
         }
 
         public IEnumerable<OrderEntity> GetForOperation(int opearationId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                IQueryable<OrderEntity> query = context.Orders
-                    .Include(c => c.Product)
-                    .Include(o => o.Operation).Include(c => c.Product.CodeUKTZED)
-                    .Include(u => u.Product.Unit)
-                    .AsNoTracking();
+            IQueryable<OrderEntity> query = _contextDataBase.Orders
+                   .Include(c => c.Product)
+                   .Include(o => o.Operation).Include(c => c.Product.CodeUKTZED)
+                   .Include(u => u.Product.Unit)
+                   .AsNoTracking();
 
-                query = query.Where(o => o.Operation.ID == opearationId);
+            query = query.Where(o => o.Operation.ID == opearationId);
 
-                var result = query.ToList();
-                return result;
-            }
+            var result = query.ToList();
+            return result;
         }
 
         public void Update(OrderEntity item)

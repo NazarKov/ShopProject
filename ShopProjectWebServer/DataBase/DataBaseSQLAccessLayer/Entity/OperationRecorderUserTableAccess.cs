@@ -7,50 +7,39 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class OperationRecorderUserTableAccess : IOperationRecorederUserTableAccess 
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public OperationRecorderUserTableAccess(DbContextOptions<ContextDataBase> option)
+
+        private readonly ContextDataBase _contextDataBase;
+        public OperationRecorderUserTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
 
         public void Add(OperationsRecorderUserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorderUsers.Load();
+            _contextDataBase.OperationsRecorderUsers.Load();
 
-                    context.OperationsRecorderUsers.Add(item);
-                }
-                context.SaveChanges();
-            }
+            _contextDataBase.OperationsRecorderUsers.Add(item);
+            _contextDataBase.SaveChanges(); 
         }
 
         public void AddRange(Guid userId, IEnumerable<OperationsRecorderEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.OperationsRecorders.Load();
-                    context.Users.Load();
-                    context.OperationsRecorderUsers.Load();
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.Users.Load();
+            _contextDataBase.OperationsRecorderUsers.Load();
 
-                    if (context.OperationsRecorderUsers != null)
+            if (_contextDataBase.OperationsRecorderUsers != null)
+            {
+                foreach (var item in items)
+                {
+                    _contextDataBase.OperationsRecorderUsers.Add(new OperationsRecorderUserEntity()
                     {
-                        foreach (var item in items)
-                        {
-                            context.OperationsRecorderUsers.Add(new OperationsRecorderUserEntity()
-                            {
-                                Users = context.Users.Find(userId),
-                                OpertionsRecorders = context.OperationsRecorders.Find(item.ID),
-                            });
-                        }
-                    }
-                    context.SaveChanges();
+                        Users = _contextDataBase.Users.Find(userId),
+                        OpertionsRecorders = _contextDataBase.OperationsRecorders.Find(item.ID),
+                    });
                 }
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void Delete(OperationsRecorderUserEntity item)
@@ -60,25 +49,18 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderUserEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.ObjectOwners.Load();
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.OperationsRecorderUsers.Load();
+            _contextDataBase.UserTokens.Load();
+            if (_contextDataBase.OperationsRecorderUsers.Count() != 0)
             {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.ObjectOwners.Load();
-                    context.OperationsRecorders.Load();
-                    context.OperationsRecorderUsers.Load();
-                    context.UserTokens.Load();
-                    if (context.OperationsRecorderUsers.Count() != 0)
-                    {
-                        return context.OperationsRecorderUsers.ToList();
-                    }
-                    else
-                    {
-                        return new List<OperationsRecorderUserEntity>();
-                    }
-                }
-                return null;
+                return _contextDataBase.OperationsRecorderUsers.ToList();
+            }
+            else
+            {
+                return new List<OperationsRecorderUserEntity>();
             }
         }
 

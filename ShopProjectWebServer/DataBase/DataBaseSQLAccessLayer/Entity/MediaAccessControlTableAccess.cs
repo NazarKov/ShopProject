@@ -8,56 +8,50 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class MediaAccessControlTableAccess : IMediaAccessControlTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public MediaAccessControlTableAccess(DbContextOptions<ContextDataBase> option) 
+        private readonly ContextDataBase _contextDataBase;
+        public MediaAccessControlTableAccess(ContextDataBase contextDataBase) 
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         } 
 
         public void Add(MediaAccessControlEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.WorkingShift.Load();
+            _contextDataBase.MediaAccessControls.Load();
+            _contextDataBase.Operations.Load();
+            if (_contextDataBase.MediaAccessControls != null && _contextDataBase.OperationsRecorders != null && _contextDataBase.Operations != null && _contextDataBase.WorkingShift != null)
             {
-                if (context != null)
+                if (item.OperationsRecorder != null)
                 {
-                    context.OperationsRecorders.Load();
-                    context.WorkingShift.Load();
-                    context.MediaAccessControls.Load();
-                    context.Operations.Load();
-                    if (context.MediaAccessControls != null && context.OperationsRecorders != null && context.Operations != null && context.WorkingShift != null)
-                    {
-                        if (item.OperationsRecorder != null)
-                        {
-                            item.OperationsRecorder = context.OperationsRecorders.FirstOrDefault(i => i.ID == item.OperationsRecorder.ID);
-                        }
-                        if (item.Operation != null)
-                        {
-                            var operation = context.Operations.FirstOrDefault(i => i.ID == item.Operation.ID);
-                            item.Operation = operation;
-                        }
-
-                        if (item.WorkingShifts != null)
-                        {
-                            var shift = context.WorkingShift.FirstOrDefault(i => i.ID == item.WorkingShifts.ID);
-                            item.WorkingShifts = shift;
-
-                            if (shift.MACCreateAt == null)
-                            {
-                                shift.MACCreateAt = item;
-                            }
-                            else
-                            {
-                                shift.MACEndAt = item;
-                            }
-                        }
-
-                        item.SequenceNumber = context.MediaAccessControls.Where(i => i.OperationsRecorder.ID == item.OperationsRecorder.ID).Count();
-
-                        context.MediaAccessControls.Add(item);
-                    }
-                    context.SaveChanges();
+                    item.OperationsRecorder = _contextDataBase.OperationsRecorders.FirstOrDefault(i => i.ID == item.OperationsRecorder.ID);
                 }
+                if (item.Operation != null)
+                {
+                    var operation = _contextDataBase.Operations.FirstOrDefault(i => i.ID == item.Operation.ID);
+                    item.Operation = operation;
+                }
+
+                if (item.WorkingShifts != null)
+                {
+                    var shift = _contextDataBase.WorkingShift.FirstOrDefault(i => i.ID == item.WorkingShifts.ID);
+                    item.WorkingShifts = shift;
+
+                    if (shift.MACCreateAt == null)
+                    {
+                        shift.MACCreateAt = item;
+                    }
+                    else
+                    {
+                        shift.MACEndAt = item;
+                    }
+                }
+
+                item.SequenceNumber = _contextDataBase.MediaAccessControls.Where(i => i.OperationsRecorder.ID == item.OperationsRecorder.ID).Count();
+
+                _contextDataBase.MediaAccessControls.Add(item);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void AddRange(Guid userID, IEnumerable<MediaAccessControlEntity> items)
@@ -77,36 +71,27 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public MediaAccessControlEntity GetByOperationId(int operationId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                IQueryable<MediaAccessControlEntity> query = context.MediaAccessControls.Include(o=>o.Operation).AsNoTracking();
+            IQueryable<MediaAccessControlEntity> query = _contextDataBase.MediaAccessControls.Include(o => o.Operation).AsNoTracking();
 
-                query = query.Where(o => o.Operation.ID == operationId);
+            query = query.Where(o => o.Operation.ID == operationId);
 
-                var result = query.First();
-                return result;
-            }
+            var result = query.First();
+            return result;
         }
 
         public MediaAccessControlEntity GetLastMAC(Guid operationRecorderId)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.OperationsRecorders.Load();
+            _contextDataBase.MediaAccessControls.Load();
+            if (_contextDataBase.MediaAccessControls != null)
             {
-                if (context != null)
+                var item = _contextDataBase.MediaAccessControls.Where(i => i.OperationsRecorder.ID == operationRecorderId).ToList().Last();
+                if (item != null)
                 {
-                    context.OperationsRecorders.Load();
-                    context.MediaAccessControls.Load();
-                    if (context.MediaAccessControls != null)
-                    {
-                        var item = context.MediaAccessControls.Where(i => i.OperationsRecorder.ID == operationRecorderId).ToList().Last();
-                        if(item != null)
-                        {
-                            return item;
-                        } 
-                    }
+                    return item;
                 }
-                throw new Exception();
             }
+            return null;
         }
 
         public void Update(MediaAccessControlEntity item)

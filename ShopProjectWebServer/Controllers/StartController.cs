@@ -4,13 +4,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.Models;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.Controllers
 {
     public class StartController : Controller
     {
-        private static StartViewModel _model; 
-
+        private static StartViewModel _model;
+        private DataBaseMainController _controller;
+        public StartController(DataBaseMainController controller)
+        {
+            _controller = controller;
+        }
         [HttpGet]
         public IActionResult Index()
         {
@@ -18,13 +23,18 @@ namespace ShopProjectWebServer.Controllers
             {
                 SetFieldPage();
             }
-              
-            if (DataBaseMainController.DataBaseAccess == null)
+
+            if (_controller.DataBaseAccess == null)
             {
                 return View(_model);
             }
 
-            var count = DataBaseMainController.DataBaseAccess.UserTable.GetAll().ToList().Count();
+            if(_controller.DataBaseAccess!=null && _controller.DataBaseAccess.UserTable == null)
+            {
+                return View(_model);
+            }
+
+            var count = _controller.DataBaseAccess.UserTable.GetAll().ToList().Count();
             if (count > 0)
             {
                 return RedirectToAction("Index", "Authorization");
@@ -41,7 +51,9 @@ namespace ShopProjectWebServer.Controllers
 
             _model.TypeDataBase = new List<SelectListItem>();
             _model.TypeConnectDataBase = new List<SelectListItem>();
-
+            _model.TypeAuthorizationDataBase = new List<SelectListItem>();
+            _model.VisibilitiCreateDataBaseform = 0;
+            _model.VisibilitiAutorizationDataBaseform = 0;
             Array arrayDataBaseType = Enum.GetValues(typeof(TypeDataBase));
             for (int i = 0; i < arrayDataBaseType.Length; i++)
             {
@@ -53,6 +65,13 @@ namespace ShopProjectWebServer.Controllers
             {
                 _model.TypeConnectDataBase.Add(new SelectListItem { Text = arrayDataBaseConnectionType.GetValue(i).ToString(), Value = i.ToString() });
             }
+
+            Array arrayDataBaseAuthorizationType = Enum.GetValues(typeof(TypeAuthorizationDataBase));
+            for (int i = 0; i < arrayDataBaseAuthorizationType.Length; i++)
+            {
+                _model.TypeAuthorizationDataBase.Add(new SelectListItem { Text = arrayDataBaseAuthorizationType.GetValue(i).ToString(), Value = i.ToString() });
+            }
+
         }
 
         [HttpPost]
@@ -61,17 +80,29 @@ namespace ShopProjectWebServer.Controllers
             return RedirectToAction("Index", "Start");
         }
 
-        [HttpPost]
-        public IActionResult CreateDataBase(StartViewModel model)
+        public async Task<IActionResult> LoginDataBase(StartViewModel model)
         {
-
             try
             {
-
-                if (model.NameDataBase == null)
+                if (model.TypeAuthorizationDataBaseSelectItems == null)
                 {
-                    throw new Exception("Не заповнене поле назва бази даних");
+                    throw new Exception("Невибраний спосіб авторизації");
                 }
+
+                TypeAuthorizationDataBase typeAuthorization = Enum.Parse<TypeAuthorizationDataBase>(model.TypeAuthorizationDataBaseSelectItems);
+
+                if(typeAuthorization == TypeAuthorizationDataBase.SQLAuthorization)
+                {
+                    if (model.Login == null)
+                    {
+                        throw new Exception("Не заповнене поле Login");
+                    }
+
+                    if (model.Password == "0")
+                    {
+                        throw new Exception("Не заповнене поле Password");
+                    }
+                } 
 
                 if (model.TypeDataBaseSelectItems == "0")
                 {
@@ -84,16 +115,94 @@ namespace ShopProjectWebServer.Controllers
                         throw new Exception("Невибраний тип підключення");
                     }
                 }
-                if (model.PasswordDataBase == null)
+
+                bool isConnect = false;
+
+                switch (typeAuthorization)
+                {
+                    case TypeAuthorizationDataBase.WindowsAuthorization:
+                        {
+                            isConnect = await _controller.CreateConnectionSql(Enum.Parse<TypeDataBase>(model.TypeDataBaseSelectItems), ConnectionString.CreateConnectionString(
+                                string.Empty,
+                                string.Empty,
+                                Enum.Parse<TypeConnectDataBase>(model.TypeConnectDataBaseSelectItems),
+                                "master"
+                                ));
+                            break;
+                        }
+                    case TypeAuthorizationDataBase.SQLAuthorization:
+                        {
+                            isConnect = await _controller.CreateConnectionSql(Enum.Parse<TypeDataBase>(model.TypeDataBaseSelectItems), ConnectionString.CreateConnectionString(
+                                model.Login,
+                                model.Password,
+                                Enum.Parse<TypeConnectDataBase>(model.TypeConnectDataBaseSelectItems),
+                                "master"
+                                ));
+                            break;
+                        }
+                }  
+                if (isConnect)
+                { 
+                    model.TypeDataBase = _model.TypeDataBase;
+                    model.TypeConnectDataBase = _model.TypeConnectDataBase;
+                    model.TypeAuthorizationDataBase = _model.TypeAuthorizationDataBase;
+                    _model = model;
+                    _model.VisibilitiCreateDataBaseform = 1;
+                    _model.VisibilitiAutorizationDataBaseform = 1;
+                    throw new Exception("Авторизація успішна");
+                }
+                else
+                {
+                    throw new Exception("Невдалося авторизуватися, невірний логін чи пароль");
+                }
+            }
+            catch (Exception ex)
+            {
+                model.Messege = ex.Message;
+                return RedirectToAction("Index", "Start");
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDataBase(StartViewModel model)
+        {
+
+            try
+            {
+
+                if (model.NameDataBase == null)
+                {
+                    throw new Exception("Не заповнене поле назва бази даних");
+                }
+
+                if (_model.TypeDataBaseSelectItems == "0")
+                {
+                    throw new Exception("Невибраний тип бази даних");
+                }
+                if (_model.TypeDataBaseSelectItems == "0")
+                {
+                    if (_model.TypeConnectDataBaseSelectItems == "0")
+                    {
+                        throw new Exception("Невибраний тип підключення");
+                    }
+                }
+                if (model.PasswordUser == null)
                 {
                     throw new Exception("Ведіть пароль");
                 }
-                DataBaseMainController.Create(model.NameDataBase, model.PasswordDataBase, model.TypeDataBaseSelectItems, model.TypeConnectDataBaseSelectItems);
+
+                await _controller.Create(_model.TypeDataBaseSelectItems, model.NameDataBase, model.LoginUser, model.PasswordUser, ConnectionString.CreateConnectionString(
+                                _model.Login,
+                                _model.Password,
+                                Enum.Parse<TypeConnectDataBase>(_model.TypeConnectDataBaseSelectItems),
+                                "master"
+                                ));
                 _model.MessegeCreateDataBase = "База даних створена";
                 _model.TypeDataBaseSelectItems = model.TypeDataBaseSelectItems;
                 _model.TypeConnectDataBaseSelectItems = model.TypeConnectDataBaseSelectItems;
                 _model.NameDataBase = model.NameDataBase;
-                _model.PasswordDataBase = model.PasswordDataBase;
+                _model.PasswordUser = model.PasswordUser;
             }
             catch (Exception ex)
             {

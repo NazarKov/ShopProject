@@ -4,15 +4,19 @@ const paragraphCreateDataBase = document.getElementById("messege-create-datadase
 
 
 const typeDataBase = document.getElementById("TypeDataBase");
-const typeConnectDataBase = document.getElementById("TypeConnectDataBase");
+const typeConnectDataBase = document.getElementById("TypeConnectDataBase"); 
 const textTypeConnectDataBase = document.getElementById("text-TypeConnectDataBase");
 
+const TypeAuthorizationDiv = document.getElementById("TypeAuthorizationDiv");
+const TypeAuthorizationDataBase = document.getElementById("TypeAuthorizationDataBase");
+const AuthorizationDiv = document.getElementById("AuthorizationDiv");
 
 SetColorTextError();
 SetColorText();
 
 SetComboBoxStyle();
 ChekedChangeValueTypeDataBase();
+ChekedChangeValueTypeAuthorizationDataBase();
 
 function SetColorTextError() {
     if (paragraphErrorCreateDataBase.textContent != null) {
@@ -38,13 +42,31 @@ typeDataBase.addEventListener("change", () => {
 function ChekedChangeValueTypeDataBase() {
     if (typeDataBase.value == 1) {
         typeConnectDataBase.style.display = 'inline-block';
-        textTypeConnectDataBase.style.display = 'inline-block';
+        textTypeConnectDataBase.style.display = 'inline-block'; 
+        TypeAuthorizationDiv.style.display = 'inline-block'; 
+
     }
     else {
         typeConnectDataBase.style.display = 'none';
-        textTypeConnectDataBase.style.display = 'none';
+        textTypeConnectDataBase.style.display = 'none'; 
+        TypeAuthorizationDiv.style.display = 'none'; 
     }
 }
+
+TypeAuthorizationDataBase.addEventListener("change", () => {
+    ChekedChangeValueTypeAuthorizationDataBase();
+});
+
+function ChekedChangeValueTypeAuthorizationDataBase() {
+    if (TypeAuthorizationDataBase.value == 2) {
+        AuthorizationDiv.style.display = 'inline-block'; 
+
+    }
+    else {
+        AuthorizationDiv.style.display = 'none'; 
+    }
+}
+
 
 function SetComboBoxStyle()
 {

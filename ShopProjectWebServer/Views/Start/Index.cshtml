@@ -5,33 +5,53 @@
 
 <div class="container-main-StartView">
     <div class="StartSetting box-shadow">
-        <h1>
-            Налаштування веб серверу
-        </h1>    
-        <div class="createDB box-shadow">
-            <h3 style="margin: 10px;">Налаштування бази даних</h3>
+        <h1> Налаштування веб серверу  </h1>  
+        <div class="Authorization box-shadow">
             <p id="error-create-datadase" class="error-dataBase">@Model.MessegeErrorCreateDataBase</p>
             <p id="messege-create-datadase" class="messege-dataBase">@Model.MessegeCreateDataBase</p>
-
-            <form asp-controller="Start" asp-action="CreateDataBase" method="post">
-                
-                <p>Назва бази даних</p>
-                <input name="NameDataBase" asp-for="NameDataBase" class="createDB-nameDB" placeholder="Назва">
-                <br />
-
-                <p>Пароль бази даних</p>
-                <input name="PasswordDataBase" asp-for="PasswordDataBase" class="createDB-nameDB" placeholder="Пароль">
-                <br />
-                <div class="text-createDataBase">
-                    <p>Тип бази даних</p>
-                    <p id="text-TypeConnectDataBase" class="createDB-typeConnectDB">Тип підключення даних</p>
-                </div>
-                <br />
+            <form asp-controller="Start" asp-action="LoginDataBase">
+                <h4> Тип бази даних  </h4>   
                 <select id="TypeDataBase" class="createDB-typeDB" asp-items="Model.TypeDataBase" asp-for="TypeDataBaseSelectItems"></select>
+                
+                <h6 id="text-TypeConnectDataBase">Тип підключення SQl</h6>
                 <select id="TypeConnectDataBase" class="createDB-typeDB" asp-items="Model.TypeConnectDataBase" asp-for="TypeConnectDataBaseSelectItems"></select>
-                <br>
-                <button id="create-database-btn" class="createDB-Button">Створити базу даних</button>
-            </form>
+                
+                <div id="TypeAuthorizationDiv">
+                   <h6>Тип авторизації SQl</h6>
+                   <select id="TypeAuthorizationDataBase" class="createDB-typeDB" asp-items="Model.TypeAuthorizationDataBase" asp-for="TypeAuthorizationDataBaseSelectItems"></select>
+                </div>
+                <br><br>
+                @if(Model.VisibilitiAutorizationDataBaseform == 0){
+                <div id="AuthorizationDiv">
+                   <h6>Логін Адміна</h6>
+                   <input class="AuthorizationView-input" asp-for="Login" type="text" placeholder="Логін" />
+                   <h6>Пароль Адміна</h6>
+                   <input class="AuthorizationView-input" asp-for="Password" type="password" placeholder="Пароль" />
+                </div>
+                <button class="btn button button-size" type="submit">Авторизуватися</button>
+                }
+            </form> 
+        </div> 
+        <br>
+        <div>  
+            @if(Model.VisibilitiCreateDataBaseform==1){
+            <div class="Authorization box-shadow">
+                <h3 style="margin: 10px;">Налаштування бази даних</h3>  
+                <form asp-controller="Start" asp-action="CreateDataBase" method="post">
+                    
+                    <p>Назва бази даних</p>
+                    <input name="NameDataBase" asp-for="NameDataBase" class="createDB-nameDB" placeholder="Назва">
+                    <br />
+                    <p>Логін</p>
+                    <input name="LoginUser" asp-for="LoginUser" class="createDB-nameDB" placeholder="Логін">
+                    <br>
+                    <p>Пароль</p>
+                    <input name="PasswordUser" asp-for="PasswordUser" class="createDB-nameDB" placeholder="Пароль">
+                     <br>
+                    <button id="create-database-btn" class="createDB-Button">Створити базу даних</button>
+                </form>
+            </div>
+            <p>Notes:Basic Login: Admin , Password : Admin</p>
+            } 
         </div>
-        <p>Notes:Basic Login: Admin , Password : Admin</p>
-</div>
+    </div>

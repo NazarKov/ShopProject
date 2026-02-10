@@ -9,8 +9,12 @@ namespace ShopProjectWebServer.Controllers
 {
     public class ProfileController : Controller
     {
-        private static ProfileViewModel _model { get; set; } 
-
+        private static ProfileViewModel _model { get; set; }
+        private DataBaseMainController _controller;
+        public ProfileController(DataBaseMainController controller)
+        {
+            _controller = controller;
+        }
 
         [LayoutInjecter("_AdminLayout")]
         public IActionResult Index()
@@ -25,7 +29,7 @@ namespace ShopProjectWebServer.Controllers
                 return RedirectToAction("Index", "Authorization");
             }
 
-            var item = DataBaseMainController.DataBaseAccess.UserTable.GetAll().Where(U => U.ID == user.ID).First();
+            var item = _controller.DataBaseAccess.UserTable.GetAll().Where(U => U.ID == user.ID).First();
 
             _model.Login = item.Login;
             _model.Password = item.Password;
@@ -53,10 +57,10 @@ namespace ShopProjectWebServer.Controllers
                 {
                     return RedirectToAction("Index", "Authorization");
                 }
-                var item = DataBaseMainController.DataBaseAccess.UserTable.GetAll().Where(U => U.ID == user.ID).First();
+                var item = _controller.DataBaseAccess.UserTable.GetAll().Where(U => U.ID == user.ID).First();
                 if (item.Password == model.OldPassword)
                 {
-                    DataBaseMainController.DataBaseAccess.UserTable.UpdateParameter(item.ID,nameof(item.Password),model.Password);
+                    _controller.DataBaseAccess.UserTable.UpdateParameter(item.ID,nameof(item.Password),model.Password);
                 }
                 else
                 {
@@ -95,18 +99,18 @@ namespace ShopProjectWebServer.Controllers
                     return RedirectToAction("Index", "Authorization");
                 }
 
-                var item = DataBaseMainController.DataBaseAccess.UserTable.GetAll().Where(U => U.Login == user.Login).First();
+                var item = _controller.DataBaseAccess.UserTable.GetAll().Where(U => U.Login == user.Login).First();
 
                 if (item != null)
                 {
                     if (model.Login != string.Empty)
                     {
-                        DataBaseMainController.DataBaseAccess.UserTable.UpdateParameter(item.ID, nameof(item.Login), model.Login);
+                        _controller.DataBaseAccess.UserTable.UpdateParameter(item.ID, nameof(item.Login), model.Login);
                     }
 
                     if (model.Email != string.Empty)
                     {
-                        DataBaseMainController.DataBaseAccess.UserTable.UpdateParameter(item.ID, nameof(item.Email), model.Email);
+                        _controller.DataBaseAccess.UserTable.UpdateParameter(item.ID, nameof(item.Email), model.Email);
                     }
                 }
                 _model.Error = "Дані зміненно";

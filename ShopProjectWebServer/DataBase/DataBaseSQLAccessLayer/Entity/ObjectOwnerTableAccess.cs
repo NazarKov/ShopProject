@@ -10,98 +10,70 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
     public class ObjectOwnerTableAccess : IObjectOwnerTableAccess 
     {
 
-        private DbContextOptions<ContextDataBase> _option;
-        public ObjectOwnerTableAccess(DbContextOptions<ContextDataBase> option)
-        { 
-            _option = option;
+        private readonly ContextDataBase _contextDataBase;
+        public ObjectOwnerTableAccess(ContextDataBase contextDataBase)
+        {
+            _contextDataBase = contextDataBase;
         } 
 
         public void Add(ObjectOwnerEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ObjectOwners.Load();
+            _contextDataBase.ObjectOwners.Load();
 
-                    context.ObjectOwners.Add(item);
-                    
-                    context.SaveChanges();
-                }
-            }
+            _contextDataBase.ObjectOwners.Add(item);
+
+            _contextDataBase.SaveChanges();
         }
 
         public void AddRange(IEnumerable<ObjectOwnerEntity> items)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ObjectOwners.Load();
-                    context.ObjectOwners.AddRange(items);
-                    context.SaveChanges();
-                }
-            }
+            _contextDataBase.ObjectOwners.Load();
+            _contextDataBase.ObjectOwners.AddRange(items);
+            _contextDataBase.SaveChanges();
         }
 
 
         public void Delete(ObjectOwnerEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.ObjectOwners.Load();
+            _contextDataBase.ObjectOwners.Load();
 
-                    if (context.ObjectOwners != null)
-                    {
-                        var operationsRecorders = context.ObjectOwners.Find(item.ID);
-                        context.ObjectOwners.Remove(operationsRecorders);
-                    }
-                    context.SaveChanges();
-                }
+            if (_contextDataBase.ObjectOwners != null)
+            {
+                var operationsRecorders = _contextDataBase.ObjectOwners.Find(item.ID);
+                _contextDataBase.ObjectOwners.Remove(operationsRecorders);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public IEnumerable<ObjectOwnerEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.ObjectOwners.Load();
+
+            if (_contextDataBase.ObjectOwners.Count() != 0)
             {
-                if (context != null)
-                {
-                    context.ObjectOwners.Load();
-                  
-                    if (context.ObjectOwners.Count() != 0)
-                    {
-                        return context.ObjectOwners.ToList();
-                    }
-                    else
-                    {
-                        return new List<ObjectOwnerEntity>();
-                    }
-                }
-                return null;
+                return _contextDataBase.ObjectOwners.ToList();
+            }
+            else
+            {
+                return new List<ObjectOwnerEntity>();
             }
         } 
         public IEnumerable<ObjectOwnerEntity> GetByNameAndStatus(string name, TypeStatusObjectOwner status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            IQueryable<ObjectOwnerEntity> query = _contextDataBase.ObjectOwners.AsNoTracking();
+
+            if (status != TypeStatusObjectOwner.Unknown)
             {
-                IQueryable<ObjectOwnerEntity> query = context.ObjectOwners.AsNoTracking();
-
-                if (status != TypeStatusObjectOwner.Unknown)
-                {
-                    query = query.Where(o => o.TypeStatus == status);
-                }
-
-                if (!(name == string.Empty))
-                {
-                    query = query.Where(o => o.NameObject.Contains(name));
-                }
-
-                var result = query.ToList();
-                return result; 
+                query = query.Where(o => o.TypeStatus == status);
             }
+
+            if (!(name == string.Empty))
+            {
+                query = query.Where(o => o.NameObject.Contains(name));
+            }
+
+            var result = query.ToList();
+            return result;
         } 
       
         public void Update(ObjectOwnerEntity item)

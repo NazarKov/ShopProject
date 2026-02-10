@@ -2,13 +2,16 @@
 
 namespace ShopProjectWebServer.Api.Services
 {
-    public class AuthorizationApi
+    public class AuthorizationServise
     {
         private static List<string> _lastTokens = new List<string>();
+        private DataBaseMainController _controller;
+        public AuthorizationServise(DataBaseMainController controller) 
+        {
+            _controller = controller;
+        }
 
-        public AuthorizationApi() { }
-
-        public static bool LoginToken(string token)
+        public bool LoginToken(string token)
         {
 
             if (_lastTokens.Count > 0)
@@ -18,10 +21,9 @@ namespace ShopProjectWebServer.Api.Services
                 {
                     return true;
                 }
-            }
+            } 
 
-
-            var tokens = DataBaseMainController.DataBaseAccess.TokenTable.GetAll();
+            var tokens =  _controller.DataBaseAccess.TokenTable.GetAll();
 
             if (tokens != null)
             {

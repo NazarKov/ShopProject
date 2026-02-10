@@ -17,6 +17,7 @@ namespace ShopProject.ViewModel.SettingPage
         private ICommand _openSettingScannerCommand;
         private ICommand _openSettingOperationRecorderCommand;
         private ICommand _openSettingStorageCommand;
+        private ICommand _openSettingExpansionCommand;
         public SettingViewModel()
         { 
             _openGeneralSettingOpenCommand = new DelegateCommand(() => { PageSetting = new SettingGeneral(); }); 
@@ -27,6 +28,7 @@ namespace ShopProject.ViewModel.SettingPage
             _openSettingScannerCommand = new DelegateCommand(() => { PageSetting = new SettingScannerView(); });
             _openSettingOperationRecorderCommand = new DelegateCommand(() => { PageSetting = new SettingOperationRecorderView(); });
             _openSettingStorageCommand = new DelegateCommand(() => { PageSetting = new SettingStorageView(); });
+            _openSettingExpansionCommand = new DelegateCommand(() => { PageSetting = new SettingExpansionView(); });
             PageSetting = new SettingUser();
         }
 
@@ -44,6 +46,7 @@ namespace ShopProject.ViewModel.SettingPage
         public ICommand OpenSettingWebServerCommand => _openSettingWebServerCommand; 
         public ICommand OpenSettingScannerCommand=> _openSettingScannerCommand;
         public ICommand OpenSettingOpenrationRecorderCommand => _openSettingOperationRecorderCommand;
-        public ICommand OpenSettingStorageCommand => _openSettingStorageCommand;
+        public ICommand OpenSettingStorageCommand => _openSettingStorageCommand; 
+        public ICommand OpenSettingExpansionComman => _openSettingExpansionCommand;
     }
 }

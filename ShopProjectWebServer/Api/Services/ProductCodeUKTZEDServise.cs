@@ -11,42 +11,50 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class ProductCodeUKTZEDServise : IProductCodeUKTZEDServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public ProductCodeUKTZEDServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public bool Add(string token, CreateProductUKTZEDDto codeUKTZED)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Add(codeUKTZED.ToProductCodeUKTZEDEntity());
+            _controller.DataBaseAccess.ProductCodeUKTZEDTable.Add(codeUKTZED.ToProductCodeUKTZEDEntity());
             return true;
         }
 
         public bool DeleteCodeUKTZEDE(string token, int id)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Delete(new ShopProjectDataBase.Entities.ProductCodeUKTZEDEntity() { ID = id});
+            _controller.DataBaseAccess.ProductCodeUKTZEDTable.Delete(new ShopProjectDataBase.Entities.ProductCodeUKTZEDEntity() { ID = id});
             return true;
         }
 
         public IEnumerable<ProductCodeUKTZEDDto> GetAll(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            return DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.GetAll().ToProductCodeUKTZEDDto();
+            return _controller.DataBaseAccess.ProductCodeUKTZEDTable.GetAll().ToProductCodeUKTZEDDto();
         }
 
         public PaginatorDto<ProductCodeUKTZEDDto> GetCodeUKTZEDByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusCodeUKTZED status)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            var productCodeUKTZEDs = DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.GetByNameAndStatus(name, status);
+            var productCodeUKTZEDs = _controller.DataBaseAccess.ProductCodeUKTZEDTable.GetByNameAndStatus(name, status);
 
             var paginator = PaginatorDto<ProductCodeUKTZEDEntity>.CreationPaginator(productCodeUKTZEDs, page, countColumn);
             return new PaginatorDto<ProductCodeUKTZEDDto>(paginator.Page, paginator.Pages, productCodeUKTZEDs.ToProductCodeUKTZEDDto());
@@ -54,11 +62,11 @@ namespace ShopProjectWebServer.Api.Services
 
         public ProductCodeUKTZEDDto GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.GetCodeUKTZEDByCode(int.Parse(code),status).ToProductCodeUKTZEDDto();
+            return _controller.DataBaseAccess.ProductCodeUKTZEDTable.GetCodeUKTZEDByCode(int.Parse(code),status).ToProductCodeUKTZEDDto();
         }
 
         public PaginatorDto<ProductCodeUKTZEDDto> GetCodeUKTZEDPageColumn(string token, int page, int countColumn, TypeStatusCodeUKTZED status)
@@ -66,21 +74,21 @@ namespace ShopProjectWebServer.Api.Services
 
         public bool Update(string token, UpdateProductCodeUKTZEDDto codeUKTZED)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.Update(codeUKTZED.ToProductCodeUKTZEDEntity());
+            _controller.DataBaseAccess.ProductCodeUKTZEDTable.Update(codeUKTZED.ToProductCodeUKTZEDEntity());
             return true;
         }
 
         public bool UpdateParameter(string token, string parameter, string value, UpdateProductCodeUKTZEDDto codeUKTZEDE)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ProductCodeUKTZEDTable.UpdateParameter(codeUKTZEDE.ToProductCodeUKTZEDEntity(), parameter , value);
+            _controller.DataBaseAccess.ProductCodeUKTZEDTable.UpdateParameter(codeUKTZEDE.ToProductCodeUKTZEDEntity(), parameter , value);
             return true;
         }
     }

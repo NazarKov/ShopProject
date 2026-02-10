@@ -9,26 +9,34 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class OperationRecordersAndUserServise : IOperationRecordersAndUserServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public OperationRecordersAndUserServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public void Add(string token, Guid userID, IEnumerable<BindingUserToOperationRecorderDto> operationRecorders)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.AddRange(userID, operationRecorders.ToOperationRecordersEntity());
+            _controller.DataBaseAccess.OperationRecorederUserTable.AddRange(userID, operationRecorders.ToOperationRecordersEntity());
         }
          
         public OperationRecorderUserDto GetOperationRecorderForUser(string token) 
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
              
-            var items = DataBaseMainController.DataBaseAccess.OperationRecorederUserTable.GetAll();
+            var items = _controller.DataBaseAccess.OperationRecorederUserTable.GetAll();
 
-            var user = DataBaseMainController.DataBaseAccess.UserTable.GetUser(token);
+            var user = _controller.DataBaseAccess.UserTable.GetUser(token);
             var operationRecoreder = new List<OperationsRecorderEntity>();
 
             foreach (var item in items)

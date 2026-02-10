@@ -7,33 +7,41 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class WorkingShiftServise : IWorkingShiftServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public WorkingShiftServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public int Add(string token, CreateWorkingShiftDto item)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            return DataBaseMainController.DataBaseAccess.WorkingShiftTable.Add(item.ToWorkingShiftEntity());
+            return _controller.DataBaseAccess.WorkingShiftTable.Add(item.ToWorkingShiftEntity());
         }
 
         public WorkingShiftDto GetById(string token, string id)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            return DataBaseMainController.DataBaseAccess.WorkingShiftTable.GetById(int.Parse(id)).ToWorkingShiftDto();
+            return _controller.DataBaseAccess.WorkingShiftTable.GetById(int.Parse(id)).ToWorkingShiftDto();
         }
 
         public void Update(string token, UpdateWorkingShiftDto item)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.WorkingShiftTable.Update(item.ToWorkingShiftEntity());
+            _controller.DataBaseAccess.WorkingShiftTable.Update(item.ToWorkingShiftEntity());
         }
     }
 }

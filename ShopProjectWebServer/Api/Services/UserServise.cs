@@ -12,19 +12,27 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class UserServise : IUserServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public UserServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public bool AddUser(string token, CreateUserDto user)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.UserTable.Add(user.ToUserEntity());
+            _controller.DataBaseAccess.UserTable.Add(user.ToUserEntity());
             return true;
         }
          
         public AuthorizationUserDto Authorization(string login, string password, string devise) 
         {
-            var user = DataBaseMainController.DataBaseAccess.UserTable.Authorization(login, password);
+            var user = _controller.DataBaseAccess.UserTable.Authorization(login, password);
 
             if (user!= null)
             {
@@ -37,8 +45,8 @@ namespace ShopProjectWebServer.Api.Services
                     User = user,
                     CreateAt = DateTime.Now,
                 };
-                DataBaseMainController.DataBaseAccess.TokenTable.Add(token);
-                AuthorizationApi.AddToken(tokenbody);
+                _controller.DataBaseAccess.TokenTable.Add(token);
+                AuthorizationServise.AddToken(tokenbody);
                  
                 var result = new AuthorizationUserDto()
                 {
@@ -58,50 +66,50 @@ namespace ShopProjectWebServer.Api.Services
 
         public bool DeleteUser(string token, string id)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.UserTable.Delete(new UserEntity() { ID = Guid.Parse(id)});
+            _controller.DataBaseAccess.UserTable.Delete(new UserEntity() { ID = Guid.Parse(id)});
             return true;
         }
 
         public UserDto GetUser(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return DataBaseMainController.DataBaseAccess.UserTable.GetUser(token).ToUserDto(); 
+            return _controller.DataBaseAccess.UserTable.GetUser(token).ToUserDto(); 
         }
 
         public UserDto GetUserById(string token, string id)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return DataBaseMainController.DataBaseAccess.UserTable.GetById(Guid.Parse(id)).ToUserDto();
+            return _controller.DataBaseAccess.UserTable.GetById(Guid.Parse(id)).ToUserDto();
         }
 
         public PaginatorDto<UserDto> GetUserByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUser status)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            var users = DataBaseMainController.DataBaseAccess.UserTable.GetByNameAndStatus(name, status);
+            var users = _controller.DataBaseAccess.UserTable.GetByNameAndStatus(name, status);
             var paginator = PaginatorDto<UserEntity>.CreationPaginator(users,page, countColumn);
             return new PaginatorDto<UserDto>(paginator.Page, paginator.Pages, paginator.Data.ToUserDto());
         }
 
         public IEnumerable<UserDto> GetUsers(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return DataBaseMainController.DataBaseAccess.UserTable.GetAll().ToUserDto();
+            return _controller.DataBaseAccess.UserTable.GetAll().ToUserDto();
         }
 
         public PaginatorDto<UserDto> GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser status)
@@ -109,11 +117,11 @@ namespace ShopProjectWebServer.Api.Services
 
         public bool UpdateUser(string token, UpdateUserDto user)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.UserTable.Update(user.ToUserEntity());
+            _controller.DataBaseAccess.UserTable.Update(user.ToUserEntity());
             return true;
         }
     }

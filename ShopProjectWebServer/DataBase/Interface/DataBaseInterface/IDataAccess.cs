@@ -7,14 +7,11 @@ namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
         IOrderTableAccess OrderTable { get; set; }
         IOperationTableAccess OperationTable { get; set; }
         IOperationRecorderTableAccess OperationRecorderTable { get; set; }
-        IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; }
-
-
+        IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; } 
         IProductTableAccess ProductTable { get; set; }
         IProductUnitTableAccess ProductUnitTable { get; set; }
         IProductCodeUKTZEDTableAccess ProductCodeUKTZEDTable { get; set; }
-        IDiscountTableAccess DiscountTable { get; set; }
-
+        IDiscountTableAccess DiscountTable { get; set; } 
         IUserTableAccess UserTable  { get; set; }
         IUserRoleTableAccess UserRoleTable { get; set; }
         IObjectOwnerTableAccess ObjectOwnerTable { get; set; }
@@ -22,10 +19,6 @@ namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
         ITokenTableAccess TokenTable { get; set; }
         IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
         IWorkingShiftTableAccess WorkingShiftTable { get; set; }
-        ISignatureKeyTableAccess SignatureKeyTable { get; set; }
-        public Task<bool> IsCreate(string connectionString);
-        public string Сonnection(string connectionString);
-        public void Clear();
-        public void Delete();
+        ISignatureKeyTableAccess SignatureKeyTable { get; set; } 
     }
 }

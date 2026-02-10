@@ -10,25 +10,33 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class ObjectOwnerServise : IObjectOwnerServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public ObjectOwnerServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public bool Delete(string token, string id)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Delete(new ObjectOwnerEntity() { ID = Guid.Parse(id) });
+            _controller.DataBaseAccess.ObjectOwnerTable.Delete(new ObjectOwnerEntity() { ID = Guid.Parse(id) });
 
             return true;
         }
 
         public PaginatorDto<ObjectOwnerListDto> GetPageColumnByName(string token, string name, int page, int column, TypeStatusObjectOwner typeStatus)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            var ObjectOwners = DataBaseMainController.DataBaseAccess.ObjectOwnerTable.GetByNameAndStatus(name, typeStatus);
+            var ObjectOwners = _controller.DataBaseAccess.ObjectOwnerTable.GetByNameAndStatus(name, typeStatus);
  
             var paginator = PaginatorDto<ObjectOwnerEntity>.CreationPaginator(ObjectOwners, page, column);
             var result = new PaginatorDto<ObjectOwnerListDto>(paginator.Page, paginator.Pages, paginator.Data.ToObjectOwnerListDto().ToList());
@@ -40,33 +48,33 @@ namespace ShopProjectWebServer.Api.Services
 
         public IEnumerable<ObjectOwnerListDto> GetAll(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            return DataBaseMainController.DataBaseAccess.ObjectOwnerTable.GetAll().ToObjectOwnerListDto();
+            return _controller.DataBaseAccess.ObjectOwnerTable.GetAll().ToObjectOwnerListDto();
         }
 
         public bool Add(string token, CreateObjectOwnerDto ObjectOwner)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
-            DataBaseMainController.DataBaseAccess.ObjectOwnerTable.Add(ObjectOwner.ToObjectOwnerEntity());
+            _controller.DataBaseAccess.ObjectOwnerTable.Add(ObjectOwner.ToObjectOwnerEntity());
 
             return true;
         }
 
         public bool AddRange(string token, IEnumerable<CreateObjectOwnerDto> ObjectOwners)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
-            } 
-            DataBaseMainController.DataBaseAccess.ObjectOwnerTable.AddRange(ObjectOwners.ToObjectOwnerEntity());
+            }
+            _controller.DataBaseAccess.ObjectOwnerTable.AddRange(ObjectOwners.ToObjectOwnerEntity());
 
             return true;
         }

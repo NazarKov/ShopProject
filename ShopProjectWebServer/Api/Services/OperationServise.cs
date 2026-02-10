@@ -8,48 +8,56 @@ namespace ShopProjectWebServer.Api.Services
 {
     public class OperationServise : IOperationServise
     {
+        private DataBaseMainController _controller;
+        private AuthorizationServise _authorizationServise;
+
+        public OperationServise(DataBaseMainController controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationServise(controller);
+        }
         public int Add(string token, CreateOperationDto item)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            return DataBaseMainController.DataBaseAccess.OperationTable.Add(item.ToOperationEntiti());
+            return _controller.DataBaseAccess.OperationTable.Add(item.ToOperationEntiti());
         }
 
         public IEnumerable<OperationDto> GetAll(string token)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            var result = DataBaseMainController.DataBaseAccess.OperationTable.GetAll();
+            var result = _controller.DataBaseAccess.OperationTable.GetAll();
 
             return result.ToOperationDto();
         }
 
         public OperaiontStatisticsDto GetInfo(string token, int shiftId)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
 
             var result = new OperaiontStatisticsDto()
             {
-                AmountOfFundsIssued = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalAmountOfFundsIssuedForShift(shiftId),
-                AmountOfFundsReceived = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalSumForShift(shiftId),
-                TotalCheck = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalOperationForShift(shiftId),
-                AmountOfOfficialFundsIssued = DataBaseMainController.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsIssuedCashForShift(shiftId),
-                AmountOfOfficialFundsReceived = DataBaseMainController.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsReceivedCashForShift(shiftId),
-                TotalReturnCheck = DataBaseMainController.DataBaseAccess.OperationTable.GetTotalReturnOperationForShift(shiftId),
+                AmountOfFundsIssued = _controller.DataBaseAccess.OperationTable.GetTotalAmountOfFundsIssuedForShift(shiftId),
+                AmountOfFundsReceived = _controller.DataBaseAccess.OperationTable.GetTotalSumForShift(shiftId),
+                TotalCheck = _controller.DataBaseAccess.OperationTable.GetTotalOperationForShift(shiftId),
+                AmountOfOfficialFundsIssued = _controller.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsIssuedCashForShift(shiftId),
+                AmountOfOfficialFundsReceived = _controller.DataBaseAccess.OperationTable.GetAmountOfOfficialFundsReceivedCashForShift(shiftId),
+                TotalReturnCheck = _controller.DataBaseAccess.OperationTable.GetTotalReturnOperationForShift(shiftId),
             };
             return result;
         }
 
         public OperationІnformationDto GetInformation(string token, int shiftId)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
@@ -57,19 +65,19 @@ namespace ShopProjectWebServer.Api.Services
             var operation = new OperationEntity();
             if(shiftId == 0)
             {
-                operation = DataBaseMainController.DataBaseAccess.OperationTable.GetLatsItem();
+                operation = _controller.DataBaseAccess.OperationTable.GetLatsItem();
             }
             else
             {
                 try
                 {
-                    operation = DataBaseMainController.DataBaseAccess.OperationTable.GetLastItem(shiftId);
+                    operation = _controller.DataBaseAccess.OperationTable.GetLastItem(shiftId);
                 }
                 catch (InvalidOperationException invalidOperationException) 
                 {
                     if(invalidOperationException.Message == "Sequence contains no elements")
                     {
-                        operation = DataBaseMainController.DataBaseAccess.OperationTable.GetLatsItem();
+                        operation = _controller.DataBaseAccess.OperationTable.GetLatsItem();
                     }
                     else
                     {
@@ -77,7 +85,7 @@ namespace ShopProjectWebServer.Api.Services
                     }
                 }
             } 
-            var orders = DataBaseMainController.DataBaseAccess.OrderTable.GetForOperation(operation.ID);
+            var orders = _controller.DataBaseAccess.OrderTable.GetForOperation(operation.ID);
 
             var products = new List<ProductEntity>();
             foreach(var order in orders)
@@ -89,7 +97,7 @@ namespace ShopProjectWebServer.Api.Services
                 }
             }
 
-            operation.MAC = DataBaseMainController.DataBaseAccess.MediaAccessControlTable.GetByOperationId(operation.ID);
+            operation.MAC = _controller.DataBaseAccess.MediaAccessControlTable.GetByOperationId(operation.ID);
 
             var result = new OperationІnformationDto()
             {
@@ -101,11 +109,11 @@ namespace ShopProjectWebServer.Api.Services
 
         public OperationDto GetLast(string token, int shiftId)
         {
-            if (!AuthorizationApi.LoginToken(token))
+            if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            var result = DataBaseMainController.DataBaseAccess.OperationTable.GetLastItem(shiftId);
+            var result = _controller.DataBaseAccess.OperationTable.GetLastItem(shiftId);
 
             return result.ToOperationDto();
         }

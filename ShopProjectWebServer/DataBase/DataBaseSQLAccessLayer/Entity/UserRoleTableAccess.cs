@@ -7,10 +7,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class UserRoleTableAccess : IUserRoleTableAccess 
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public UserRoleTableAccess(DbContextOptions<ContextDataBase> option)
+
+        private readonly ContextDataBase _contextDataBase;
+
+        public UserRoleTableAccess(ContextDataBase  contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
 
         public void Add(UserRoleEntity item)
@@ -25,20 +27,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<UserRoleEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.UserRoles.Load();
+            if (_contextDataBase.Users.Count() != 0)
             {
-                if (context != null)
-                {
-                    context.UserRoles.Load();
-                    if (context.Users.Count() != 0)
-                    {
-                        return context.UserRoles.ToList();
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+                return _contextDataBase.UserRoles.ToList();
+            }
+            else
+            {
                 return null;
             }
         }

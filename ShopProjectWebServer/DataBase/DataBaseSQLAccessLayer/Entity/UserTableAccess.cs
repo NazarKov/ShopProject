@@ -9,263 +9,208 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class UserTableAccess : IUserTableAccess
     {
-        private DbContextOptions<ContextDataBase> _option;
-        public UserTableAccess(DbContextOptions<ContextDataBase> option)
+        private readonly ContextDataBase _contextDataBase;
+        public UserTableAccess(ContextDataBase contextDataBase)
         {
-            _option = option;
+            _contextDataBase = contextDataBase;
         }
         public void Add(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.UserRoles.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
+            if (item != null)
             {
-                if (context != null)
+
+                var user = _contextDataBase.Users.FirstOrDefault(i => i.Login == item.Login);
+
+                if (user != null)
                 {
-                    context.Users.Load();
-                    context.UserRoles.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    if (item != null)
-                    {
-
-                        var user = context.Users.FirstOrDefault(i=>i.Login == item.Login);
-
-                        if (user != null)
-                        {
-                            throw new Exception("Користувач існує");
-                        }
-
-                        item.UserRole = context.UserRoles.Find(item.UserRole.ID);
-                        if (item.SignatureKey != null)
-                        {
-                            context.ElectronicSignatureKeys.Add(item.SignatureKey);
-                        }
-                        context.Users.Add(item);
-                    }
+                    throw new Exception("Користувач існує");
                 }
-                context.SaveChanges();
+
+                item.UserRole = _contextDataBase.UserRoles.Find(item.UserRole.ID);
+                if (item.SignatureKey != null)
+                {
+                    _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
+                }
+                _contextDataBase.Users.Add(item);
             }
+            _contextDataBase.SaveChanges(); 
         }
 
         public UserEntity Authorization(string login, string password)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            IQueryable<UserEntity> query = _contextDataBase.Users.Include(u => u.UserRole).Include(s => s.SignatureKey).AsNoTracking();
+
+            var user = query.FirstOrDefault(item => item.Login == login);
+
+            if (user != null)
             {
-                if (context != null)
-                { 
-                    IQueryable<UserEntity> query = context.Users.Include(u => u.UserRole).Include(s => s.SignatureKey).AsNoTracking();
-
-                    var user = query.FirstOrDefault(item => item.Login == login);
-
-                    if(user != null)
-                    {
-                        return user;
-                    }
-                    else
-                    { 
-                        throw new Exception("Користувача не занайдено");
-                    }   
-                }
-                return null;
+                return user;
+            }
+            else
+            {
+                throw new Exception("Користувача не занайдено");
             }
         }
 
         public void Delete(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.UserTokens.Load();
-                    context.UserRoles.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    context.Users.Load();
+            _contextDataBase.UserTokens.Load();
+            _contextDataBase.UserRoles.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
+            _contextDataBase.Users.Load();
 
-                    if(context.Users != null)
-                    {
-                        var user = context.Users.Find(item.ID);
-                        context.Users.Remove(user);
-                    }
-                    context.SaveChanges();
-                }
+            if (_contextDataBase.Users != null)
+            {
+                var user = _contextDataBase.Users.Find(item.ID);
+                _contextDataBase.Users.Remove(user);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public IEnumerable<UserEntity> GetAll()
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.UserRoles.Load();
-                    context.UserTokens.Load();
-                    context.ObjectOwners.Load();
-                    context.OperationsRecorders.Load();
+            _contextDataBase.Users.Load();
+            _contextDataBase.UserRoles.Load();
+            _contextDataBase.UserTokens.Load();
+            _contextDataBase.ObjectOwners.Load();
+            _contextDataBase.OperationsRecorders.Load();
 
-                    if (context.Users.Count() != 0)
-                    { 
-                        return context.Users.ToList();
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+            if (_contextDataBase.Users.Count() != 0)
+            {
+                return _contextDataBase.Users.ToList();
+            }
+            else
+            {
                 return null;
             }
         }
 
         public UserEntity GetById(Guid id)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
-            {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    context.UserRoles.Load(); 
+            _contextDataBase.Users.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
+            _contextDataBase.UserRoles.Load();
 
-                    if (context.Users != null && context.Users.Count() > 0)
-                    {
-                        var user = context.Users.FirstOrDefault(t => t.ID == id);
-                        return user;
-                    }
-                }
-                return new UserEntity();
+            if (_contextDataBase.Users != null && _contextDataBase.Users.Count() > 0)
+            {
+                var user = _contextDataBase.Users.FirstOrDefault(t => t.ID == id);
+                return user;
             }
+            return null;
         }
 
         public IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status)
         {
-            using (ContextDataBase context = new ContextDataBase(_option)) 
-            { 
-                IQueryable<UserEntity> query = context.Users.Include(u=>u.UserRole).Include(s=>s.SignatureKey).AsNoTracking(); 
+            IQueryable<UserEntity> query = _contextDataBase.Users.Include(u => u.UserRole).Include(s => s.SignatureKey).AsNoTracking();
 
-                if (status != TypeStatusUser.Unknown)
-                {
-                    query = query.Where(o => o.Status == status);
-                }
-
-                if (!(name == string.Empty))
-                {
-                    query = query.Where(o => o.FullName.Contains(name));
-                }
-
-                var result = query.ToList();
-                return result;
+            if (status != TypeStatusUser.Unknown)
+            {
+                query = query.Where(o => o.Status == status);
             }
+
+            if (!(name == string.Empty))
+            {
+                query = query.Where(o => o.FullName.Contains(name));
+            }
+
+            var result = query.ToList();
+            return result;
         }
 
         public UserEntity GetUser(string token)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
+            _contextDataBase.UserRoles.Load();
+            _contextDataBase.UserTokens.Load();
+            _contextDataBase.ObjectOwners.Load();
+            _contextDataBase.OperationsRecorders.Load();
+
+
+            if (_contextDataBase.Users != null && _contextDataBase.Users.Count() > 0)
             {
-                if (context != null)
+                var userToken = _contextDataBase.UserTokens.FirstOrDefault(t => t.Token == token);
+
+                if (userToken != null)
                 {
-                    context.Users.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    context.UserRoles.Load();
-                    context.UserTokens.Load();
-                    context.ObjectOwners.Load();
-                    context.OperationsRecorders.Load();
-
-
-                    if(context.Users!=null && context.Users.Count() > 0)
-                    {
-                        var userToken = context.UserTokens.FirstOrDefault(t => t.Token == token);
-
-                        if (userToken != null)
-                        {
-                            return context.Users.FirstOrDefault(u => u.ID == userToken.User.ID); 
-                        }
-                    } 
+                    return _contextDataBase.Users.FirstOrDefault(u => u.ID == userToken.User.ID);
                 }
-                return new UserEntity();
             }
+            return null;
         } 
         public void Update(UserEntity item)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.UserTokens.Load();
+            _contextDataBase.UserRoles.Load();
+            _contextDataBase.ElectronicSignatureKeys.Load();
+            _contextDataBase.Users.Load();
+            UserEntity user;
+            if (_contextDataBase.Users != null)
             {
-                if (context != null)
+                user = _contextDataBase.Users.Find(item.ID);
+
+                if (user != null)
                 {
-                    context.UserTokens.Load();
-                    context.UserRoles.Load();
-                    context.ElectronicSignatureKeys.Load();
-                    context.Users.Load();
-                    UserEntity user;
-                    if (context.Users!=null)
+                    user.Login = item.Login;
+                    user.Password = item.Password;
+                    user.Email = item.Email;
+                    user.FullName = item.FullName;
+                    user.TIN = item.TIN;
+                    user.Status = item.Status;
+
+
+                    if (item.SignatureKey != null)
                     {
-                        user = context.Users.Find(item.ID);
-
-                        if (user != null)
-                        {
-                            user.Login = item.Login;
-                            user.Password = item.Password;
-                            user.Email = item.Email;
-                            user.FullName = item.FullName;
-                            user.TIN = item.TIN;
-                            user.Status = item.Status;
-                            
-
-                            if(item.SignatureKey != null)
-                            {
-                                context.ElectronicSignatureKeys.Add(item.SignatureKey);
-                                user.SignatureKey = item.SignatureKey;
-                            }
-
-                            if (context.UserRoles != null)
-                            {
-                                var role = context.UserRoles.FirstOrDefault(r => r.NameRole == item.UserRole.NameRole);
-                                if(role != null)
-                                {
-                                    user.UserRole = role;
-                                }
-                            }
-                            
-                        }
-                        else
-                        {
-                            throw new Exception("Користувача не знайдено");
-                        }
-
+                        _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
+                        user.SignatureKey = item.SignatureKey;
                     }
-                    context.SaveChanges();
+
+                    if (_contextDataBase.UserRoles != null)
+                    {
+                        var role = _contextDataBase.UserRoles.FirstOrDefault(r => r.NameRole == item.UserRole.NameRole);
+                        if (role != null)
+                        {
+                            user.UserRole = role;
+                        }
+                    }
 
                 }
+                else
+                {
+                    throw new Exception("Користувача не знайдено");
+                }
+
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {
-            using (ContextDataBase context = new ContextDataBase(_option))
+            _contextDataBase.Users.Load();
+            _contextDataBase.OperationsRecorders.Load();
+            var user = _contextDataBase.Users.Find(id);
+            switch (nameParameter)
             {
-                if (context != null)
-                {
-                    context.Users.Load();
-                    context.OperationsRecorders.Load();
-                    var user = context.Users.Find(id);
-                    switch (nameParameter)
+                case nameof(user.Password):
                     {
-                        case nameof(user.Password):
-                            {
-                                user.Password = valueParameter.ToString();
-                                break;
-                            }
-                        case nameof(user.Login):
-                            {
-                                user.Login = valueParameter.ToString();
-                                break;
-                            }
-                        case nameof(user.Email):
-                            {
-                                user.Email = valueParameter.ToString();
-                                break;
-                            }
+                        user.Password = valueParameter.ToString();
+                        break;
                     }
-
-                }
-                context.SaveChanges();
+                case nameof(user.Login):
+                    {
+                        user.Login = valueParameter.ToString();
+                        break;
+                    }
+                case nameof(user.Email):
+                    {
+                        user.Email = valueParameter.ToString();
+                        break;
+                    }
             }
+            _contextDataBase.SaveChanges(); 
         }
     }
 }

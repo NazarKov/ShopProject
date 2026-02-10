@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Entities;
+using ShopProjectWebServer.Api.Services;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Helpers;
 using ShopProjectWebServer.Models;
@@ -9,8 +10,13 @@ namespace ShopProjectWebServer.Controllers
 {
     public class AuthorizationController : Controller
     {
-        public static AuthorizationViewModel _model { get; set; } 
+        public static AuthorizationViewModel _model { get; set; }
+        private DataBaseMainController _controller; 
 
+        public AuthorizationController(DataBaseMainController controller)
+        {
+            _controller = controller; 
+        }
         public IActionResult Index()
         {
             if (_model == null)
@@ -24,7 +30,7 @@ namespace ShopProjectWebServer.Controllers
         {
             try
             {
-                var users = DataBaseMainController.DataBaseAccess.UserTable.GetAll();
+                var users = _controller.DataBaseAccess.UserTable.GetAll();
                 if (users != null)
                 {
                     var user = users.Where(item => item.Login == autorizanionViewMode.Login).FirstOrDefault();
@@ -53,7 +59,6 @@ namespace ShopProjectWebServer.Controllers
                 return RedirectToAction("Index", "Authorization");
             }
         }
-
         public IActionResult ResetPassword()
         {
             return View();
