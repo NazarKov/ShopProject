@@ -7,10 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class DatabaseSQLSecurityService : IDataBaseSecurityService
+    public class SqlSecurityService : ISqlSecurityService
     { 
         private string _connectionString; 
-        public DatabaseSQLSecurityService(string connectionString)
+        public SqlSecurityService(string connectionString)
         {
             _connectionString = connectionString; 
         }

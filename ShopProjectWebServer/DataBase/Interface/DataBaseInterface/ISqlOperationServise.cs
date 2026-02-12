@@ -1,6 +1,6 @@
 ﻿namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
 {
-    public interface IDataBaseOperation
+    public interface ISqlOperationServise
     {
         public Task<bool> Сonnection(string connectionString);
     }

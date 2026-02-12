@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ShopProjectDataBase.Context;
+using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using System.Diagnostics;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class DatabaseSqlInitializer : IDatabaseInitializer
+    public class DatabaseSqlInitializer : IDataBaseInitializer
     {
         private ContextDataBase _contextDataBase;
         public DatabaseSqlInitializer(ContextDataBase contextDataBase)
@@ -19,7 +20,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             _contextDataBase = new ContextDataBase();
         }
 
-        public async Task<bool> Create(string connectionString)
+        private async Task<bool> Create(string connectionString)
         {
             try
             {
@@ -37,11 +38,26 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             }
         }
 
+        public async Task<bool> CreateDataBase(ISqlOperationServise dataBaseOperation, ISqlSecurityService dataBaseSecurityService,
+          string login, string password, string nameDataBase, ConnectionString connectionString)
+        {
+            connectionString.DataBaseName = nameDataBase;
+            if (await Create(connectionString.ToString()))
+            {
+                if (await dataBaseSecurityService.CreateLogin(login, password, nameDataBase))
+                {
+                    connectionString.UserName = login;
+                    connectionString.Password = password;
+                    return await Connection();
+                }
+            }
+            return false;
+        }
+
         public async Task<bool> IsCreate()
         {
             try
             {
-                
                 using (ContextDataBase context = _contextDataBase)
                 {
 

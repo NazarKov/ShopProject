@@ -126,7 +126,7 @@ namespace ShopProjectWebServer.Controllers
                                 string.Empty,
                                 string.Empty,
                                 Enum.Parse<TypeConnectDataBase>(model.TypeConnectDataBaseSelectItems),
-                                "master"
+                                string.Empty
                                 ));
                             break;
                         }
@@ -145,7 +145,7 @@ namespace ShopProjectWebServer.Controllers
                 { 
                     model.TypeDataBase = _model.TypeDataBase;
                     model.TypeConnectDataBase = _model.TypeConnectDataBase;
-                    model.TypeAuthorizationDataBase = _model.TypeAuthorizationDataBase;
+                    model.TypeAuthorizationDataBase = _model.TypeAuthorizationDataBase; 
                     _model = model;
                     _model.VisibilitiCreateDataBaseform = 1;
                     _model.VisibilitiAutorizationDataBaseform = 1;
@@ -192,12 +192,33 @@ namespace ShopProjectWebServer.Controllers
                     throw new Exception("Ведіть пароль");
                 }
 
-                await _controller.Create(_model.TypeDataBaseSelectItems, model.NameDataBase, model.LoginUser, model.PasswordUser, ConnectionString.CreateConnectionString(
-                                _model.Login,
-                                _model.Password,
+                TypeAuthorizationDataBase typeAuthorization = Enum.Parse<TypeAuthorizationDataBase>(_model.TypeAuthorizationDataBaseSelectItems);
+                ConnectionString connectionString = new ConnectionString();
+
+                switch (typeAuthorization)
+                {
+                    case TypeAuthorizationDataBase.WindowsAuthorization:
+                        {
+                            connectionString =  ConnectionString.CreateConnectionString(
+                                string.Empty,
+                                string.Empty,
+                                Enum.Parse<TypeConnectDataBase>(_model.TypeConnectDataBaseSelectItems),
+                                string.Empty
+                                );
+                            break;
+                        }
+                    case TypeAuthorizationDataBase.SQLAuthorization:
+                        {
+                            connectionString =  ConnectionString.CreateConnectionString(
+                                model.Login,
+                                model.Password,
                                 Enum.Parse<TypeConnectDataBase>(_model.TypeConnectDataBaseSelectItems),
                                 "master"
-                                ));
+                                );
+                            break;
+                        }
+                } 
+                await _controller.Create(_model.TypeDataBaseSelectItems, model.NameDataBase, model.LoginUser, model.PasswordUser, connectionString); 
                 _model.MessegeCreateDataBase = "База даних створена";
                 _model.TypeDataBaseSelectItems = model.TypeDataBaseSelectItems;
                 _model.TypeConnectDataBaseSelectItems = model.TypeConnectDataBaseSelectItems;

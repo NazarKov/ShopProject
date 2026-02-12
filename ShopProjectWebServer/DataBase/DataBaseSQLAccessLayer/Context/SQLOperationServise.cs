@@ -3,7 +3,7 @@ using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class DataBaseSqlOperation :IDataBaseOperation
+    public class SqlOperationServise :ISqlOperationServise
     {
         public async Task<bool> Сonnection(string connectionString)
         {

@@ -1,8 +1,11 @@
-﻿namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
+﻿using ShopProjectWebServer.DataBase.Helpers;
+
+namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
 {
-    public interface IDatabaseInitializer
+    public interface IDataBaseInitializer
     {
-        public Task<bool> Create(string connectionString);
+        public Task<bool> CreateDataBase(ISqlOperationServise dataBaseOperation, ISqlSecurityService dataBaseSecurityService,
+            string login, string password, string nameDataBase, ConnectionString connectionString); 
         public Task<bool> IsCreate();  
         public void Clear();
 

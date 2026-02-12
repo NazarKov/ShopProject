@@ -16,10 +16,9 @@ namespace ShopProjectWebServer.DataBase
         private FileSettingManager _settingManager; 
 
         private IDataAccess? _dataBaseAccess;
-        private IDatabaseInitializer? _databaseInitializer;
-        private IDataBaseSecurityService? _securityService;
-        private ICreateDataBaseServise? _createDataBaseServise;
-        private IDataBaseOperation? _dataBaseOperation; 
+        private IDataBaseInitializer? _databaseInitializer;
+        private ISqlSecurityService? _securityService; 
+        private ISqlOperationServise? _dataBaseOperation; 
 
         public IDataAccess?  DataBaseAccess
         {
@@ -56,9 +55,8 @@ namespace ShopProjectWebServer.DataBase
                             ContextDataBase contextDataBase = new ContextDataBase(optionsBuilder.Options);
                             
                             _dataBaseAccess = new DataBaseSQLAccess(contextDataBase);
-                            _databaseInitializer = new DatabaseSqlInitializer(contextDataBase);
-                            _createDataBaseServise = new DataBaseCreateSqlServise();
-                            _dataBaseOperation = new DataBaseSqlOperation();
+                            _databaseInitializer = new DatabaseSqlInitializer(contextDataBase); 
+                            _dataBaseOperation = new SqlOperationServise();
                             break;
                         }
                     case TypeDataBase.File:
@@ -81,7 +79,7 @@ namespace ShopProjectWebServer.DataBase
                     }
                 case TypeDataBase.SQL:
                     { 
-                        _dataBaseOperation = new DataBaseSqlOperation(); 
+                        _dataBaseOperation = new SqlOperationServise(); 
                         return await _dataBaseOperation.Сonnection(connectionString.ToString()); 
                     } 
                 case TypeDataBase.File:
@@ -105,12 +103,11 @@ namespace ShopProjectWebServer.DataBase
                         break;
                     }
                 case TypeDataBase.SQL:
-                    {
-                        _createDataBaseServise = new DataBaseCreateSqlServise();
+                    { 
                         _databaseInitializer = new DatabaseSqlInitializer();
-                        _dataBaseOperation = new DataBaseSqlOperation();
-                        _securityService = new DatabaseSQLSecurityService(connectionString.ToString());
-                        isCreate = await _createDataBaseServise.CreateDataBase(_databaseInitializer, _dataBaseOperation, _securityService, login, password, nameDataBase, connectionString);  
+                        _dataBaseOperation = new SqlOperationServise();
+                        _securityService = new SqlSecurityService(connectionString.ToString());
+                        isCreate = await _databaseInitializer.CreateDataBase(_dataBaseOperation, _securityService, login, password, nameDataBase, connectionString);  
                         break;
                     }
                 case TypeDataBase.File:

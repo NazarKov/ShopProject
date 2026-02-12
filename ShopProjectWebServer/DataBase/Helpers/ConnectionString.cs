@@ -29,7 +29,6 @@
 
         public override string ToString()
         {
-            Server = "localhost";
             switch (TypeConnectDB) 
             {
                 case TypeConnectDataBase.None:
@@ -38,17 +37,40 @@
                     }
                 case TypeConnectDataBase.SQLEXPRESS:
                     { 
-                        return $"Server = {Server}\\SQLEXPRESS; Database = {DataBaseName}; User Id = {UserName}; Password = {Password}; TrustServerCertificate = {TrustServerCertificate};";
+                        if (UserName == string.Empty && Password == string.Empty)
+                        {
+                            if(DataBaseName != string.Empty)
+                            {
+                                return $"Data Source={Server}\\SQLEXPRESS;Database = {DataBaseName};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False";
+                            }
+                            else
+                            {
+                                return $"Data Source={Server}\\SQLEXPRESS;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False";
+                            }
+                        }
+                        else
+                        {
+                            return $"Data Source={Server}\\SQLEXPRESS;Database = {DataBaseName}; User Id = {UserName}; Password = {Password};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False";
+
+                        }
                     }
                 case TypeConnectDataBase.DEVELEPER:
                     {
                         if (UserName == string.Empty && Password == string.Empty) 
                         {
-                            return $"Server = {Server}; Database = {DataBaseName};TrustServerCertificate = {TrustServerCertificate};";
+                            if (DataBaseName != string.Empty) 
+                            {
+                                return $"Data Source={Server};Database = {DataBaseName};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False;";
+                            }
+                            else
+                            {
+                                return $"Data Source={Server};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False;";
+                            } 
                         }
                         else
-                        {
-                            return $"Server = {Server}; Database = {DataBaseName}; User Id = {UserName}; Password = {Password}; TrustServerCertificate = {TrustServerCertificate};"; 
+                        { 
+                            return $"Data Source={Server};Database = {DataBaseName};User Id = {UserName}; Password = {Password};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False;";
+                   
                         }
                     }
             }

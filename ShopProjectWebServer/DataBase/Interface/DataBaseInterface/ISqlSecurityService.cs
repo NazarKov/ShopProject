@@ -1,6 +1,6 @@
 ﻿namespace ShopProjectWebServer.DataBase.Interface.DataBaseInterface
 {
-    public interface IDataBaseSecurityService
+    public interface ISqlSecurityService
     {
         public Task<bool> CreateLogin(string login, string password, string nameDataBase);
     }
