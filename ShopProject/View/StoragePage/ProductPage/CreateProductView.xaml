@@ -5,57 +5,220 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage.ProductPage"
         mc:Ignorable="d"
-        Title="Створення товару" Height="435" Width="415" ResizeMode="NoResize"
-        Name="window">
-    <Window.Resources>
-        <local:CreateProductViewModel x:Key="VM"></local:CreateProductViewModel>
-    </Window.Resources>
+        Title="Створення товару" Height="525" Width="455" ResizeMode="NoResize"
+        Name="window"> 
     <Window.DataContext>
-        <Binding Source="{StaticResource VM}"></Binding>
+        <local:CreateProductViewModel ></local:CreateProductViewModel>
     </Window.DataContext>
-    <Grid>
+    <Grid Margin="25">
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"></ColumnDefinition>
-            <ColumnDefinition Width="200"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="80"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,20">
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch"
+                       Visibility="{Binding ErrorTextBlockVisibiliti}"
+                       Grid.RowSpan="2"
+                       TextWrapping="Wrap" 
+                       Text="{Binding Error}" 
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"
+                       Height="35"
+                       Padding="8"
+                       Background=" #33A94442" Foreground="#8B3A3A"/>
+            <TextBlock x:Name="textBlock1" HorizontalAlignment="Stretch"
+                       Visibility="{Binding SuccessTextBlockVisibiliti}"
+                       Grid.RowSpan="2"
+                       TextWrapping="Wrap" 
+                       Text="{Binding Success}" 
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"
+                       Height="35"
+                       Padding="8"
+                       Background="#263C8D63"
+                       Foreground="#1F4D36"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,20,20">
+            <TextBlock Text="Назва товару"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                 Height="35"
+                 Padding="8"
+                 Background="#F3F4F6" 
+                 BorderThickness="0"/>
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,20,20">
+            <TextBlock Text="Штрихкод товару"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <Border Padding="6,2"
+                    Margin="0,0,0,5"
+                    HorizontalAlignment="Stretch"
+                    
+                    Background="#1F6B7280">
 
-        <Label x:Name="Namelabel" Content="Назва товару" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Margin="15,15,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="NameProduct" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+                <TextBlock Text="{Binding BarcodeLength, StringFormat=Кількість цифр: {0}}"
+                           Foreground="#4B5563"
+                           FontSize="12"
+                           FontWeight="Medium"/>
+            </Border>
+            <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
+                 Height="35"
+                 Padding="8"
+                 Background="#F3F4F6"
+                 BorderThickness="0"/>
+            
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,20,20">
+            <TextBlock Text="Ціна товару"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}"
+                 Height="35"
+                 Padding="8"
+                 TextAlignment="Right"
+                 Background="#F3F4F6"
+                 BorderThickness="0"/>
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="1" Grid.Row="2" Margin="0,0,20,20">
+            <TextBlock Text="Кількість товару"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}"
+                 Height="35"
+                 Padding="8"
+                 TextAlignment="Right"
+                 Background="#F3F4F6"
+                 BorderThickness="0"/>
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="0" Grid.Row="3" Margin="0,0,20,20">
+            <TextBlock Text="Артикул"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Article, UpdateSourceTrigger=PropertyChanged}"
+                 Height="35"
+                 Padding="8"
+                 Background="#F3F4F6"
+                 BorderThickness="0"/>
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="1" Grid.Row="3" Margin="0,0,20,20">
+            <TextBlock Text="Одиниці товару"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <ComboBox ItemsSource="{Binding Units}"
+                      SelectedIndex="{Binding SelectUnitIndex}"
+                      Width="180"
+                      Height="35"
+                      Background="#F3F4F6"
+                      BorderThickness="0"
+                      VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Left"
+                      IsEditable="False">
 
-        <Label x:Name="Codelabel" Content="Штрихкод товару" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Margin="15,15,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="Code" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Code,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="170"/>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding NameUnit}" 
+                                   TextWrapping="Wrap" 
+                                   Padding="5"
+                                   MaxWidth="170"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
 
-        <Label x:Name="Pricelabel" Content="Ціна товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="0" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="Price"  HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Price,UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="170"/>
+                <ComboBox.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap"/>
+                    </Style>
+                </ComboBox.Resources>
+            </ComboBox>
+        </StackPanel>
+ 
+        <StackPanel Grid.Column="1" Grid.Row="4" Margin="0,0,20,20">
+            <TextBlock Text="Код УКТЗЕД"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+            <ComboBox ItemsSource="{Binding CodeUKTZED}"
+                      SelectedIndex="{Binding SelectCodeUKTZEDIndex}"
+                      Width="180"
+                      Height="35"
+                      Background="#F3F4F6"
+                      BorderThickness="0"
+                      VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Left"
+                      IsEditable="False">
+ 
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding NameCode}" 
+                            TextWrapping="Wrap" 
+                            Padding="5"
+                            MaxWidth="170"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+ 
+                <ComboBox.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap"/>
+                    </Style>
+                </ComboBox.Resources>
+            </ComboBox>
+        </StackPanel>
 
-        <Label x:Name="countlabel" Content="Кількість товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="count" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="15,40,0,0" Text="{Binding Count , UpdateSourceTrigger=PropertyChanged,StringFormat='0.00'}" VerticalAlignment="Top" Width="170"/>
+        <StackPanel Grid.Column="0"
+                Grid.Row="5"
+                Grid.ColumnSpan="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Left"
+                Margin="0,10,0,0">
 
-        <Label x:Name="unitlabel" Content="Одиниці товару" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="2" VerticalAlignment="Top" SelectedIndex="{Binding SelectUnitIndex}" DisplayMemberPath="NameUnit"  ItemsSource="{Binding Units}"  Width="170"/>
+            <Button Content="Зберегти"
+                     Margin="10,0"
+                     Width="120"
+                     Height="40"
+                     Background="#E5E7EB"
+                     Foreground="#6B7280"
+                     BorderThickness="0"
+                     Cursor="Hand" 
+                     IsEnabled="{Binding IsEnableSaveButton}"
+                     Command="{Binding SaveProductCommand}"/>
 
-        <Label x:Name="articulLabel" Content="Артикуль" Grid.Column="0" Grid.Row="2" Margin="15,15,0,0" VerticalAlignment="Top"></Label>
-        <TextBox x:Name="textBoxArticule" Text="{Binding Article,UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="2" Width="170" VerticalAlignment="Top" Margin="15,40,0,0" HorizontalAlignment="Left"></TextBox>
-  
-        
-        <Label x:Name="codeUKTZEDLabel" Grid.Column="1" Content="код УКТЗЕД" HorizontalAlignment="Left" Margin="15,15,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1" Grid.Column="1" HorizontalAlignment="Left" Margin="15,40,0,0" Grid.Row="3"  VerticalAlignment="Top" Width="170" SelectedIndex="{Binding SelectCodeUKTZEDIndex}" DisplayMemberPath="NameCode" ItemsSource="{Binding CodeUKTZED}"/>
-        
-        
-        <Button x:Name="buttonSave" Content="Добавити" Grid.Column="0" Grid.Row="4" Command="{Binding SaveProductCommand}" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" Width="100"/>
-        <Button x:Name="buttonClear" Content="Очистити" Grid.Column="0" Grid.Row="4" Command="{Binding ClearWindowCommand}" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="15,40,15,0" VerticalAlignment="Top" Width="100"/>
-        <Button x:Name="buttonCansel"  Content="Вийти" Grid.Column="1" Grid.Row="4" Command="{Binding ExitWindowCommand}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" HorizontalAlignment="Right" Margin="0,40,15,0" VerticalAlignment="Top" Width="100"/>
+            <Button Content="Очистити"
+                Margin="10,0"
+                Width="110"
+                Height="40"
+                Background="#E5E7EB"
+                Foreground="#6B7280"
+                BorderThickness="0"
+                Cursor="Hand"
+                Command="{Binding ClearWindowCommand}"/>
 
-
+            <Button Content="Вийти"
+                Margin="10,0"
+                Width="110"
+                Height="40"
+                Background="#E5E7EB"
+                Foreground="#6B7280"
+                BorderThickness="0"
+                Cursor="Hand"
+                Command="{Binding ExitWindowCommand}"/>
+        </StackPanel>
 
     </Grid>
 </Window>

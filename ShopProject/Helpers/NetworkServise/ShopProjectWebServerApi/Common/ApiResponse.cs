@@ -22,7 +22,13 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Common
 
         public static ApiResponse<T> Unpacking(string json)
         { 
-            return JsonSerializer.Deserialize<ApiResponse<T>>(json);
+            var result = JsonSerializer.Deserialize<ApiResponse<T>>(json);
+
+            if(result.Status == ResponseStatus.Error)
+            {
+                throw new Exception(result.Errors.FirstOrDefault());
+            } 
+            return result;
         } 
     }
 }

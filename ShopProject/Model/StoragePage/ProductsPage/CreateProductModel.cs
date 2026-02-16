@@ -18,15 +18,7 @@ namespace ShopProject.Model.StoragePage.ProductsPage
 
         public async Task<bool> SaveItemDataBase(Product product)
         {
-            try
-            {  
-                return await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.User.Token, product.ToCreateProductDto());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK,MessageBoxImage.Error);
-                return false;
-            }
+            return await MainWebServerController.MainDataBaseConntroller.ProductController.AddProduct(Session.User.Token, product.ToCreateProductDto());
         }  
     }
 }

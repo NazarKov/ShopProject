@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper; 
+using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.DataBase.DataBaseException;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 using System.Linq;
@@ -20,6 +21,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Add(ProductEntity item)
         {
+            var product = _contextDataBase.Products.FirstOrDefault(i => i.Code == item.Code);
+
+            if(product != null)
+            {
+                throw new ExceptionObjectExists("Товар вже існує");
+            }
+
             if (item.Unit != null)
             {
                 item.Unit = _contextDataBase.ProductUnits.Find(item.Unit.ID);

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Product;
-using ShopProjectWebServer.Api.Interface.Services; 
+using ShopProjectWebServer.Api.Interface.Services;
+using ShopProjectWebServer.DataBase.DataBaseException;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -104,6 +105,10 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 var result = _servise.Add(token,product); 
                 return Ok(ApiResponse<bool>.Ok(result));
+            }
+            catch (ExceptionObjectExists exeption)
+            {
+                return Ok(ApiResponse<bool>.Fail(exeption.Message));
             }
             catch (Exception ex)
             {

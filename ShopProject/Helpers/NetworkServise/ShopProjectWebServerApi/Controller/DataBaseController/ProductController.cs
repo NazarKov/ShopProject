@@ -108,6 +108,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Controller.
 
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/AddProduct?token={token}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<bool>.Unpacking(responseBody);

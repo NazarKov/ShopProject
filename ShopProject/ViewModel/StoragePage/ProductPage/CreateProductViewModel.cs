@@ -34,9 +34,10 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
 
 
-            _saveProductCommand = new DelegateCommand(SaveAndCreateProductDataBase);
+            _saveProductCommand = new DelegateCommandAsync(SaveAndCreateProductDataBase);
             _clearWindowCommand = new DelegateCommand(ClearTextWindow);
 
+            _setting = new StorageSetting();
             _code = string.Empty;
             _name = string.Empty;
             _article = string.Empty;
@@ -45,10 +46,13 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
             _selectCodeUKTZEDIndex = 0;
             _price = 0m;
             _count = 0m;
+            _error = string.Empty; 
+            _success = string.Empty;
+            _isEnableSaveButton = true;
+            _errorTextBlockVisibiliti = Visibility.Collapsed;
+            _successTextBlockVisibiliti = Visibility.Collapsed;
             SetFiledWindow();
-
-
-           
+              
         }
         private void SetFiledWindow()
         {
@@ -73,8 +77,9 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
         public string Code
         {
             get { return _code; }
-            set { _code = value; OnPropertyChanged(nameof(Code)); }
+            set { _code = value; OnPropertyChanged(nameof(Code)); OnPropertyChanged(nameof(BarcodeLength)); }
         }
+        public int BarcodeLength => Code?.Length ?? 0;
 
         private string _name;
         public string Name
@@ -131,6 +136,40 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
             set { _selectCodeUKTZEDIndex = value; }
         }
 
+        private string _error;
+        public string Error
+        {
+            get { return _error; }
+            set { _error = value; OnPropertyChanged(nameof(Error));}
+        }
+
+        private string _success;
+        public string Success
+        {
+            get { return _success; }
+            set { _success = value; OnPropertyChanged(nameof(Success));}
+        }
+
+        private Visibility _successTextBlockVisibiliti;
+        public Visibility SuccessTextBlockVisibiliti
+        {
+            get { return _successTextBlockVisibiliti; }
+            set { _successTextBlockVisibiliti = value; OnPropertyChanged(nameof(SuccessTextBlockVisibiliti)); }
+        }
+
+        private Visibility _errorTextBlockVisibiliti;
+        public Visibility ErrorTextBlockVisibiliti
+        {
+            get { return _errorTextBlockVisibiliti; }
+            set { _errorTextBlockVisibiliti = value; OnPropertyChanged(nameof(ErrorTextBlockVisibiliti)); }
+        }
+
+        private bool _isEnableSaveButton;
+        public bool IsEnableSaveButton
+        {
+            get { return _isEnableSaveButton; }
+            set { _isEnableSaveButton = value; OnPropertyChanged(nameof(IsEnableSaveButton)); }
+        }
 
         public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose,CanRegister); }
         private void WindowClose(object parameter)
@@ -153,10 +192,37 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
         public ICommand SaveProductCommand => _saveProductCommand;
 
-        private void SaveAndCreateProductDataBase()
+        private async Task SaveAndCreateProductDataBase()
         {
             try
             {
+                IsEnableSaveButton = false;
+                if(Name == string.Empty)
+                {
+                    throw new Exception("Ведіть назву товару");
+                }
+
+                if (Code == string.Empty)
+                {
+                    throw new Exception("Ведіть штрихкод товару");
+                }
+
+                if (Price == 0)
+                {
+                    throw new Exception("Ведіть ціну товару");
+                }
+
+                if (Count == 0)
+                {
+                    throw new Exception("Ведіть кількість товару");
+                }
+
+                if (Article == string.Empty)
+                {
+                    throw new Exception("Ведіть артикуль товару");
+                }
+
+
                 if (_setting == null)
                 {
                     throw new Exception("Ведіть в налаштуваннях довжину штрихкоду ");
@@ -164,36 +230,39 @@ namespace ShopProject.ViewModel.StoragePage.ProductPage
 
                 if (Code.Count() == _setting.ProductBarCodeLength)
                 {
-
-                    Task t = Task.Run(async () =>
+                    
+                    if (await _model.SaveItemDataBase(new Product()
                     {
-                        if (await _model.SaveItemDataBase(new Product()
-                        {
-                            NameProduct = _name,
-                            Code = _code,
-                            Articule = _article,
-                            Price = _price,
-                            Count = _count,
-                            Unit = _units.ElementAt(_selectUnitsIndex),
-                            CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
-                            CreatedAt = DateTime.Now,
-                            Status = TypeStatusProduct.InStock,
-                            Discount = new Discount(),
-                        })) ;
-                        {
-                            MessageBox.Show("Товар добавлений", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
-                            MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
-                        }
-                    });
+                        NameProduct = _name,
+                        Code = _code,
+                        Articule = _article,
+                        Price = _price,
+                        Count = _count,
+                        Unit = _units.ElementAt(_selectUnitsIndex),
+                        CodeUKTZED = _codeUKTZED.ElementAt(_selectCodeUKTZEDIndex),
+                        CreatedAt = DateTime.Now,
+                        Status = TypeStatusProduct.InStock,
+                        Discount = new Discount(),
+                    }))
+                    {
+                        Success = "Товар добавлений";
+                        ErrorTextBlockVisibiliti = Visibility.Collapsed;
+                        SuccessTextBlockVisibiliti = Visibility.Visible;
+                        IsEnableSaveButton = true;
+                        MediatorService.ExecuteEvent(NavigationButton.ReloadProduct.ToString());
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Довжина штрихкоду не " + _setting.ProductBarCodeLength + " символів");
+                    throw new Exception("Довжина штрихкоду не " + _setting.ProductBarCodeLength + " символів"); 
                 }
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IsEnableSaveButton = true;
+                SuccessTextBlockVisibiliti = Visibility.Collapsed; 
+                Error = ex.Message;
+                ErrorTextBlockVisibiliti = Visibility.Visible;
             }
             
         }
