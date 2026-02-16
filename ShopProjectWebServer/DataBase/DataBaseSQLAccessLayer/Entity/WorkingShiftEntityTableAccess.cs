@@ -16,37 +16,32 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public int Add(WorkingShiftEntity item)
         {
-            _contextDataBase.WorkingShift.Load();
-            _contextDataBase.Users.Load();
-            if (_contextDataBase.WorkingShift != null)
+            item.UserOpenShift = _contextDataBase.Users.FirstOrDefault(i => i.ID == item.UserOpenShift.ID);
+
+            if (item.MACCreateAt != null)
             {
-                item.UserOpenShift = _contextDataBase.Users.FirstOrDefault(i => i.ID == item.UserOpenShift.ID);
-
-                if (item.MACCreateAt != null)
+                var mac = _contextDataBase.MediaAccessControls.Find(item.MACCreateAt.ID);
+                if (mac != null)
                 {
-                    var mac = _contextDataBase.MediaAccessControls.Find(item.MACCreateAt.ID);
-                    if (mac != null)
-                    {
-                        item.MACCreateAt = mac;
-                    }
-                    else
-                    {
-                        item.MACCreateAt.Operation = null;
-                        item.MACCreateAt.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MACCreateAt.OperationsRecorder.ID);
-                    }
+                    item.MACCreateAt = mac;
                 }
-                _contextDataBase.WorkingShift.Add(item);
-
-                _contextDataBase.SaveChanges();
-
-                var mediaAccessControls = _contextDataBase.MediaAccessControls.Find(item.MACCreateAt.ID);
-                if (mediaAccessControls != null)
+                else
                 {
-                    mediaAccessControls.WorkingShifts = item;
+                    item.MACCreateAt.Operation = null;
+                    item.MACCreateAt.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MACCreateAt.OperationsRecorder.ID);
                 }
-
-                _contextDataBase.SaveChanges();
             }
+            _contextDataBase.WorkingShift.Add(item);
+
+            _contextDataBase.SaveChanges();
+
+            var mediaAccessControls = _contextDataBase.MediaAccessControls.Find(item.MACCreateAt.ID);
+            if (mediaAccessControls != null)
+            {
+                mediaAccessControls.WorkingShifts = item;
+            }
+
+            _contextDataBase.SaveChanges();
             return item.ID;
         }
 
@@ -61,69 +56,58 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
 
         public WorkingShiftEntity GetById(int id)
-        {
-            _contextDataBase.WorkingShift.Load();
-            _contextDataBase.Users.Load();
-            _contextDataBase.MediaAccessControls.Load();
-
-            var result = _contextDataBase.WorkingShift.Where(w => w.ID == id).First();
-            return result;
+        { 
+            return _contextDataBase.WorkingShift.Where(w => w.ID == id).FirstOrDefault();
         }
 
         public void Update(WorkingShiftEntity item)
         {
-            _contextDataBase.WorkingShift.Load();
-            _contextDataBase.Users.Load();
-            _contextDataBase.MediaAccessControls.Load();
-            if (_contextDataBase.WorkingShift != null)
+            var shift = _contextDataBase.WorkingShift.Find(item.ID);
+
+            if (shift != null)
             {
-                var shift = _contextDataBase.WorkingShift.Find(item.ID);
+                shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
+                shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
 
-                if (shift != null)
+                shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
+                shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
+
+                shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
+                shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;
+
+                shift.DataPacketIdentifier = item.DataPacketIdentifier;
+                shift.FactoryNumberRRO = item.FactoryNumberRRO;
+                shift.FiscalNumberRRO = item.FiscalNumberRRO;
+
+                if (item.UserOpenShift != null)
                 {
-                    shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
-                    shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
+                    shift.UserOpenShift = _contextDataBase.Users.Find(item.UserOpenShift.ID);
+                }
+                if (item.UserCloseShift != null)
+                {
+                    shift.UserCloseShift = _contextDataBase.Users.Find(item.UserCloseShift.ID);
+                }
 
-                    shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
-                    shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
+                shift.TotalCheckForShift = item.TotalCheckForShift;
+                shift.TotalReturnCheckForShift = item.TotalReturnCheckForShift;
 
-                    shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
-                    shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;
+                shift.TypeRRO = item.TypeRRO;
+                shift.TypeShiftCrateAt = item.TypeShiftCrateAt;
+                shift.TypeShiftEndAt = item.TypeShiftEndAt;
+                shift.EndAt = item.EndAt;
 
-                    shift.DataPacketIdentifier = item.DataPacketIdentifier;
-                    shift.FactoryNumberRRO = item.FactoryNumberRRO;
-                    shift.FiscalNumberRRO = item.FiscalNumberRRO;
+                if (item.MACEndAt != null)
+                {
+                    shift.MACEndAt = item.MACEndAt;
+                    shift.MACEndAt.WorkingShifts = shift;
+                    shift.MACEndAt.SequenceNumber = _contextDataBase.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.ID).Count();
+                    shift.MACEndAt.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MACEndAt.OperationsRecorder.ID);
+                    shift.MACEndAt.Operation = null;
 
-                    if (item.UserOpenShift != null)
-                    {
-                        shift.UserOpenShift = _contextDataBase.Users.Find(item.UserOpenShift.ID);
-                    }
-                    if (item.UserCloseShift != null)
-                    {
-                        shift.UserCloseShift = _contextDataBase.Users.Find(item.UserCloseShift.ID);
-                    }
-
-                    shift.TotalCheckForShift = item.TotalCheckForShift;
-                    shift.TotalReturnCheckForShift = item.TotalReturnCheckForShift;
-
-                    shift.TypeRRO = item.TypeRRO;
-                    shift.TypeShiftCrateAt = item.TypeShiftCrateAt;
-                    shift.TypeShiftEndAt = item.TypeShiftEndAt;
-                    shift.EndAt = item.EndAt;
-
-                    if (item.MACEndAt != null)
-                    {
-                        shift.MACEndAt = item.MACEndAt;
-                        shift.MACEndAt.WorkingShifts = shift;
-                        shift.MACEndAt.SequenceNumber = _contextDataBase.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.ID).Count();
-                        shift.MACEndAt.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MACEndAt.OperationsRecorder.ID);
-                        shift.MACEndAt.Operation = null;
-
-                        _contextDataBase.MediaAccessControls.Add(shift.MACEndAt);
-                        _contextDataBase.SaveChanges();
+                    _contextDataBase.MediaAccessControls.Add(shift.MACEndAt);
+                    _contextDataBase.SaveChanges();
 
 
-                    }
                 }
             }
             _contextDataBase.SaveChanges();

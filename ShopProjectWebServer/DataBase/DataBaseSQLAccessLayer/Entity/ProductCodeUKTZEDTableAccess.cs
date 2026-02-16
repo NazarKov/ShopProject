@@ -16,11 +16,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
 
         public void Add(ProductCodeUKTZEDEntity item)
-        {
-            _contextDataBase.ProductCodeUKTZED.Load();
-
-            var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.NameCode == item.NameCode);
-
+        { 
+            var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.NameCode == item.NameCode); 
             if (unit == null)
             {
                 unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.Code == item.Code);
@@ -35,43 +32,24 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<ProductCodeUKTZEDEntity> GetAll()
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-
-            if (_contextDataBase.ProductCodeUKTZED != null && _contextDataBase.ProductCodeUKTZED.Count() != 0)
-            {
-                return _contextDataBase.ProductCodeUKTZED.ToList();
-            }
-            return new List<ProductCodeUKTZEDEntity>(); 
+            return _contextDataBase.ProductCodeUKTZED.AsNoTracking().ToList();
         } 
         public ProductCodeUKTZEDEntity GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-
-            if (_contextDataBase.ProductCodeUKTZED != null && _contextDataBase.ProductCodeUKTZED.Count() != 0)
+            ProductCodeUKTZEDEntity result = new ProductCodeUKTZEDEntity();
+            if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
             {
-                ProductCodeUKTZEDEntity result = new ProductCodeUKTZEDEntity();
-                if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
-                {
-                    result = _contextDataBase.ProductCodeUKTZED.First(i => i.Code == number.ToString());
-                }
-                else
-                {
-                    result = _contextDataBase.ProductCodeUKTZED.Where(t => t.Status == statusCodeUKTZED).First(i => i.Code == number.ToString());
-                }
-                return result;
+                result = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.Code == number.ToString());
             }
             else
             {
-                throw new Exception("Неможливий пошук оскільки немає товарів");
+                result = _contextDataBase.ProductCodeUKTZED.Where(t => t.Status == statusCodeUKTZED).FirstOrDefault(i => i.Code == number.ToString());
             }
+            return result;
         } 
         public void Update(ProductCodeUKTZEDEntity item)
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-            if (_contextDataBase.ProductCodeUKTZED != null)
-            {
-                UpdateFieldCodeUKTZED(_contextDataBase.ProductCodeUKTZED.Find(item.ID), item);
-            }
+            UpdateFieldCodeUKTZED(_contextDataBase.ProductCodeUKTZED.Find(item.ID), item);
             _contextDataBase.SaveChanges();
         }
 
@@ -81,67 +59,58 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             codeUKTZEDUpdate.Code = codeUKTZED.Code;
             codeUKTZEDUpdate.Status = codeUKTZED.Status; 
         }
-
-
-
+         
         public void Delete(ProductCodeUKTZEDEntity item)
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-            if (_contextDataBase.ProductCodeUKTZED != null)
-            {
-                var codeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.ID);
-                _contextDataBase.ProductCodeUKTZED.Remove(codeUKTZED);
-            }
+            var codeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.ID);
+            if (codeUKTZED == null) return;
+
+            _contextDataBase.ProductCodeUKTZED.Remove(codeUKTZED);
             _contextDataBase.SaveChanges();
         }
 
         public void UpdateParameter(ProductCodeUKTZEDEntity item, string parameter, object value)
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-
-            if (_contextDataBase.ProductCodeUKTZED != null && _contextDataBase.ProductCodeUKTZED.Count() != 0)
+            var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.ID == item.ID);
+            if (unit != null)
             {
-                var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.ID == item.ID);
-                if (unit != null)
-                {
 
-                    switch (parameter)
-                    {
-                        case nameof(item.NameCode):
+                switch (parameter)
+                {
+                    case nameof(item.NameCode):
+                        {
+                            unit.NameCode = item.NameCode;
+                            break;
+                        }
+                    case nameof(item.Code):
+                        {
+                            unit.Code = item.Code;
+                            break;
+                        }
+                    case nameof(item.Status):
+                        {
+                            var status = Enum.Parse<TypeStatusCodeUKTZED>(value.ToString());
+                            item.Status = status;
+                            switch (status)
                             {
-                                unit.NameCode = item.NameCode;
-                                break;
+                                case TypeStatusCodeUKTZED.Favorite:
+                                    {
+                                        unit.Status = TypeStatusCodeUKTZED.Favorite;
+                                        break;
+                                    }
+                                case TypeStatusCodeUKTZED.UnFavorite:
+                                    {
+                                        unit.Status = TypeStatusCodeUKTZED.UnFavorite;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        unit.Status = TypeStatusCodeUKTZED.UnFavorite;
+                                        break;
+                                    }
                             }
-                        case nameof(item.Code):
-                            {
-                                unit.Code = item.Code;
-                                break;
-                            }
-                        case nameof(item.Status):
-                            {
-                                var status = Enum.Parse<TypeStatusCodeUKTZED>(value.ToString());
-                                item.Status = status;
-                                switch (status)
-                                {
-                                    case TypeStatusCodeUKTZED.Favorite:
-                                        {
-                                            unit.Status = TypeStatusCodeUKTZED.Favorite;
-                                            break;
-                                        }
-                                    case TypeStatusCodeUKTZED.UnFavorite:
-                                        {
-                                            unit.Status = TypeStatusCodeUKTZED.UnFavorite;
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            unit.Status = TypeStatusCodeUKTZED.UnFavorite;
-                                            break;
-                                        }
-                                }
-                                break;
-                            }
-                    }
+                            break;
+                        }
                 }
             }
             _contextDataBase.SaveChanges();
@@ -159,10 +128,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             if (!(name == string.Empty))
             {
                 query = query.Where(o => o.NameCode.Contains(name));
-            }
-
-            var result = query.ToList();
-            return result;
+            } 
+            return query.ToList();
         }
     }
 }

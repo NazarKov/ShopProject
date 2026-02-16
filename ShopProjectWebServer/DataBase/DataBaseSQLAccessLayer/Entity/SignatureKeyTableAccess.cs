@@ -14,18 +14,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
         public ElectronicSignatureKey GetKeyByUser(string UserId)
         {
-            _contextDataBase.Users.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-
-            if (_contextDataBase.Users.Count() != 0)
-            {
-                var user = _contextDataBase.Users.First(u => u.ID == Guid.Parse(UserId));
-                return user.SignatureKey;
-            }
-            else
-            {
-                return null;
-            }
+            return _contextDataBase.Users.Include(k => k.SignatureKey).FirstOrDefault(u => u.ID == Guid.Parse(UserId)).SignatureKey;
         }
     }
 }

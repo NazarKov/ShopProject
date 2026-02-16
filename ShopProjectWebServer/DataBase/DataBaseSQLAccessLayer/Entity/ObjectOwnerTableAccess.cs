@@ -18,16 +18,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Add(ObjectOwnerEntity item)
         {
-            _contextDataBase.ObjectOwners.Load();
-
-            _contextDataBase.ObjectOwners.Add(item);
-
+            _contextDataBase.ObjectOwners.Add(item); 
             _contextDataBase.SaveChanges();
         }
 
         public void AddRange(IEnumerable<ObjectOwnerEntity> items)
-        {
-            _contextDataBase.ObjectOwners.Load();
+        { 
             _contextDataBase.ObjectOwners.AddRange(items);
             _contextDataBase.SaveChanges();
         }
@@ -35,28 +31,18 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(ObjectOwnerEntity item)
         {
-            _contextDataBase.ObjectOwners.Load();
+            var entity = _contextDataBase.ObjectOwners.Find(item.ID);
 
-            if (_contextDataBase.ObjectOwners != null)
-            {
-                var operationsRecorders = _contextDataBase.ObjectOwners.Find(item.ID);
-                _contextDataBase.ObjectOwners.Remove(operationsRecorders);
-            }
+            if (entity == null)
+                return;
+
+            _contextDataBase.ObjectOwners.Remove(entity);
             _contextDataBase.SaveChanges();
         }
 
         public IEnumerable<ObjectOwnerEntity> GetAll()
         {
-            _contextDataBase.ObjectOwners.Load();
-
-            if (_contextDataBase.ObjectOwners.Count() != 0)
-            {
-                return _contextDataBase.ObjectOwners.ToList();
-            }
-            else
-            {
-                return new List<ObjectOwnerEntity>();
-            }
+            return _contextDataBase.ObjectOwners.AsNoTracking().ToList();
         } 
         public IEnumerable<ObjectOwnerEntity> GetByNameAndStatus(string name, TypeStatusObjectOwner status)
         {

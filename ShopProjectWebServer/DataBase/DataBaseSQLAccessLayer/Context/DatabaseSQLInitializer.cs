@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using System.Diagnostics;
@@ -20,7 +21,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             _contextDataBase = new ContextDataBase();
         }
 
-        private async Task<bool> Create(string connectionString)
+        private async Task<bool> Create(string connectionString , string login , string password)
         {
             try
             {
@@ -29,7 +30,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                 _contextDataBase = new ContextDataBase(optionsBuilder.Options);
 
                 await _contextDataBase.Database.MigrateAsync();
-                _contextDataBase.Initial();
+                _contextDataBase.Initial(new UserEntity() { 
+                    Login = login,
+                    Password = password,  
+                });
                 return true;
             }
             catch
@@ -42,7 +46,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
           string login, string password, string nameDataBase, ConnectionString connectionString)
         {
             connectionString.DataBaseName = nameDataBase;
-            if (await Create(connectionString.ToString()))
+            if (await Create(connectionString.ToString(), login , password))
             {
                 if (await dataBaseSecurityService.CreateLogin(login, password, nameDataBase))
                 {
@@ -63,8 +67,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 
                     if (!await CheckDbFastAsync())
                     {
-                        context.Database.Migrate();
-                        context.Initial();
+                        return false;
                     }
 
                     context.Database.Migrate();

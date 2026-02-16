@@ -22,19 +22,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void AddRange(IEnumerable<OrderEntity> items)
         {
-            _contextDataBase.Operations.Load();
-            _contextDataBase.Products.Load();
-            _contextDataBase.Discounts.Load();
-            _contextDataBase.Orders.Load();
-            if (_contextDataBase.Products != null)
+
+            foreach (var item in items)
             {
-                for (int i = 0; i < items.Count(); i++)
-                {
-                    items.ElementAt(i).Product = _contextDataBase.Products.Find(items.ElementAt(i).Product.ID);
-                    items.ElementAt(i).Operation = _contextDataBase.Operations.Find(items.ElementAt(i).Operation.ID);
-                }
-                _contextDataBase.Orders.AddRange(items);
+                item.Product = _contextDataBase.Products.Find(item.Product.ID);
+                item.Operation = _contextDataBase.Operations.Find(item.Operation.ID);
             }
+            _contextDataBase.Orders.AddRange(items);
             _contextDataBase.SaveChanges();
         }
 
@@ -45,19 +39,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OrderEntity> GetAll()
         {
-            _contextDataBase.Operations.Load();
-            _contextDataBase.Products.Load();
-            _contextDataBase.Discounts.Load();
-            _contextDataBase.Orders.Load();
-
-            if (_contextDataBase.Operations.Count() != 0)
-            {
-                return _contextDataBase.Orders.ToList();
-            }
-            else
-            {
-                return new List<OrderEntity>();
-            }
+            return _contextDataBase.Orders.Include(o => o.Operation).Include(p => p.Product).AsNoTracking().ToList();
         }
 
         public IEnumerable<OrderEntity> GetForOperation(int opearationId)
@@ -66,12 +48,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                    .Include(c => c.Product)
                    .Include(o => o.Operation).Include(c => c.Product.CodeUKTZED)
                    .Include(u => u.Product.Unit)
-                   .AsNoTracking();
-
-            query = query.Where(o => o.Operation.ID == opearationId);
-
-            var result = query.ToList();
-            return result;
+                   .AsNoTracking(); 
+            return query.Where(o => o.Operation.ID == opearationId);
         }
 
         public void Update(OrderEntity item)

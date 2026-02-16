@@ -32,7 +32,15 @@ namespace ShopProjectWebServer.Api.Services
                 throw new Exception("Невірний токен авторизації");
             }
 
-            return _controller.DataBaseAccess.WorkingShiftTable.GetById(int.Parse(id)).ToWorkingShiftDto();
+            var result = _controller.DataBaseAccess.WorkingShiftTable.GetById(int.Parse(id));
+
+            if (result == null) 
+            {
+                throw new Exception("Невдалося завантажити зміну");
+            }
+
+            return result.ToWorkingShiftDto(); 
+
         }
 
         public void Update(string token, UpdateWorkingShiftDto item)

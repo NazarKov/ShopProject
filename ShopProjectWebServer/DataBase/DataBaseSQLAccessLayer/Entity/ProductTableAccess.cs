@@ -20,78 +20,62 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Add(ProductEntity item)
         {
-            _contextDataBase.Products.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.ProductCodeUKTZED.Load();
-            _contextDataBase.Discounts.Load();
-            if (_contextDataBase.Products != null)
+            if (item.Unit != null)
             {
-                if (item.Unit != null)
-                {
-                    item.Unit = _contextDataBase.ProductUnits.Find(item.Unit.ID);
-                }
-                if (item.CodeUKTZED != null)
-                {
-                    item.CodeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.CodeUKTZED.ID);
-                }
-                if (item.Discount != null)
-                {
-                    item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
-                }
-
-                _contextDataBase.Products.Add(item);
+                item.Unit = _contextDataBase.ProductUnits.Find(item.Unit.ID);
             }
+            if (item.CodeUKTZED != null)
+            {
+                item.CodeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.CodeUKTZED.ID);
+            }
+            if (item.Discount != null)
+            {
+                item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
+            } 
+            _contextDataBase.Products.Add(item);
             _contextDataBase.SaveChanges();
         }
 
         public async Task AddRangeAsync(IEnumerable<ProductEntity> items)
-        {
-            _contextDataBase.Products.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.ProductCodeUKTZED.Load();
-            _contextDataBase.Discounts.Load();
-            if (_contextDataBase.Products != null)
+        { 
+            foreach (var item in items)
             {
-                for (int i = 0; i < items.Count(); i++)
-                {
-                    var item = _contextDataBase.Products.FirstOrDefault(c => c.Code == items.ElementAt(i).Code);
+                var entity = _contextDataBase.Products.FirstOrDefault(c => c.Code == item.Code);
 
-                    if (item != null)
+                if (entity != null)
+                {
+                    entity.Count += item.Count;
+                }
+                else
+                {
+                    if (item.Unit != null)
                     {
-                        item.Count += items.ElementAt(i).Count;
+                        item.Unit = _contextDataBase.ProductUnits.FirstOrDefault(u => u.ID ==   item.Unit.ID);
                     }
                     else
                     {
-                        if (items.ElementAt(i).Unit != null)
-                        {
-                            items.ElementAt(i).Unit = _contextDataBase.ProductUnits.FirstOrDefault(u => u.ID == items.ElementAt(i).Unit.ID);
-                        }
-                        else
-                        {
-                            items.ElementAt(i).Unit = null;
-                        }
-                        if (items.ElementAt(i).CodeUKTZED != null)
-                        {
-                            items.ElementAt(i).CodeUKTZED = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(c => c.ID == items.ElementAt(i).CodeUKTZED.ID);
-                        }
-                        else
-                        {
-                            items.ElementAt(i).CodeUKTZED = null;
-                        }
-                        if (items.ElementAt(i).Discount != null)
-                        {
-                            items.ElementAt(i).Discount = _contextDataBase.Discounts.FirstOrDefault(c => c.ID == items.ElementAt(i).Discount.ID);
-                        }
-                        else
-                        {
-                            items.ElementAt(i).Discount = null;
-                        }
-
-                        await _contextDataBase.Products.AddAsync(items.ElementAt(i));
+                        item.Unit = null;
                     }
+                    if (item.CodeUKTZED != null)
+                    {
+                        item.CodeUKTZED = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(c => c.ID == item.CodeUKTZED.ID);
+                    }
+                    else
+                    {
+                        item.CodeUKTZED = null;
+                    }
+                    if (item.Discount != null)
+                    {
+                        item.Discount = _contextDataBase.Discounts.FirstOrDefault(c => c.ID == item.Discount.ID);
+                    }
+                    else
+                    {
+                        item.Discount = null;
+                    } 
                 }
+                await _contextDataBase.Products.AddRangeAsync(items);
+                await _contextDataBase.SaveChangesAsync();
             }
-            await _contextDataBase.SaveChangesAsync();
         }
 
 
@@ -102,37 +86,25 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Update(ProductEntity product)
         {
-            _contextDataBase.Products.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.ProductCodeUKTZED.Load();
-            if (_contextDataBase.Products != null)
-            {
-                UpdateFieldProducts(_contextDataBase.Products.Find(product.ID), product,
+            UpdateFieldProducts(_contextDataBase.Products.Find(product.ID), product,
                             _contextDataBase.ProductUnits.Find(product.Unit.ID),
                             _contextDataBase.ProductCodeUKTZED.Find(product.CodeUKTZED.ID));
-            }
             _contextDataBase.SaveChanges();
         }
         public void UpdateRange(IEnumerable<ProductEntity> items)
-        {
-            _contextDataBase.Products.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.ProductCodeUKTZED.Load();
-            if (_contextDataBase.Products != null)
+        { 
+            if (items != null)
             {
-                if (items != null)
+                foreach (var item in items)
                 {
-                    foreach (var item in items)
-                    {
-                        UpdateFieldProducts(_contextDataBase.Products.Find(item.ID), item,
-                            _contextDataBase.ProductUnits.Find(item.Unit.ID),
-                            _contextDataBase.ProductCodeUKTZED.Find(item.CodeUKTZED.ID));
-                    }
+                    UpdateFieldProducts(_contextDataBase.Products.Find(item.ID), item,
+                        _contextDataBase.ProductUnits.Find(item.Unit.ID),
+                        _contextDataBase.ProductCodeUKTZED.Find(item.CodeUKTZED.ID));
                 }
-                else
-                {
-                    throw new Exception("Товар не заповнено");
-                }
+            }
+            else
+            {
+                throw new Exception("Товар не заповнено");
             }
             _contextDataBase.SaveChanges();
         }
@@ -152,100 +124,70 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void UpdateParameter(ProductEntity product, string nameParameter, object valueParameter)
         {
-            _contextDataBase.Products.Load();
-
-            if (_contextDataBase.Products.Count() != 0)
+            ProductEntity item;
+            if (product.Code != null && product.Code != string.Empty)
             {
-                ProductEntity item;
-                if (product.Code != null && product.Code != string.Empty)
-                {
-                    item = _contextDataBase.Products.Where(i => i.Code == product.Code).First();
-                }
-                else
-                {
-                    item = _contextDataBase.Products.Find(product.ID);
-                }
-
-                switch (nameParameter)
-                {
-                    case nameof(item.Count):
-                        {
-                            item.Count += decimal.Parse(valueParameter.ToString());
-                            break;
-                        }
-                    case nameof(item.Status):
-                        {
-                            var status = Enum.Parse<TypeStatusProduct>(valueParameter.ToString());
-                            item.Status = status;
-                            switch (status)
-                            {
-                                case TypeStatusProduct.OutStock:
-                                    {
-                                        item.OutStockAt = new DateTimeOffset();
-                                        break;
-                                    }
-                                case TypeStatusProduct.Archived:
-                                    {
-                                        item.ArhivedAt = new DateTimeOffset();
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        item.OutStockAt = null;
-                                        item.ArhivedAt = null;
-                                        break;
-                                    }
-                                    ;
-
-                            }
-                            break;
-                        }
-                }
+                item = _contextDataBase.Products.FirstOrDefault(i => i.Code == product.Code);
+            }
+            else
+            {
+                item = _contextDataBase.Products.FirstOrDefault(p=>p.ID == product.ID);
             }
 
+            switch (nameParameter)
+            {
+                case nameof(item.Count):
+                    {
+                        item.Count += decimal.Parse(valueParameter.ToString());
+                        break;
+                    }
+                case nameof(item.Status):
+                    {
+                        var status = Enum.Parse<TypeStatusProduct>(valueParameter.ToString());
+                        item.Status = status;
+                        switch (status)
+                        {
+                            case TypeStatusProduct.OutStock:
+                                {
+                                    item.OutStockAt = new DateTimeOffset();
+                                    break;
+                                }
+                            case TypeStatusProduct.Archived:
+                                {
+                                    item.ArhivedAt = new DateTimeOffset();
+                                    break;
+                                }
+                            default:
+                                {
+                                    item.OutStockAt = null;
+                                    item.ArhivedAt = null;
+                                    break;
+                                }
+                                ;
+
+                        }
+                        break;
+                    }
+            }
             _contextDataBase.SaveChanges();
         } 
 
 
         public IEnumerable<ProductEntity> GetAll()
         {
-            _contextDataBase.ProductCodeUKTZED.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.Products.Load();
-
-            if (_contextDataBase.Products.Count() != 0)
-            {
-                return _contextDataBase.Products.ToList();
-            }
-            else
-            {
-                return new List<ProductEntity>();
-            }
+            return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).AsNoTracking();
         } 
 
         public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
-        {
-            _contextDataBase.ProductCodeUKTZED.Load();
-            _contextDataBase.ProductUnits.Load();
-            _contextDataBase.Products.Load();
-
-            if (_contextDataBase.Products != null && _contextDataBase.Products.Count() != 0)
+        { 
+            if (statusProduct == TypeStatusProduct.Unknown)
             {
-                ProductEntity result = new ProductEntity();
-                if (statusProduct == TypeStatusProduct.Unknown)
-                {
-                    result = _contextDataBase.Products.First(i => i.Code == barCode);
-                }
-                else
-                {
-                    result = _contextDataBase.Products.Where(t => t.Status == statusProduct).First(i => i.Code == barCode);
-                }
-                return result;
+                return _contextDataBase.Products.FirstOrDefault(i => i.Code == barCode);
             }
             else
             {
-                throw new Exception("Неможливий пошук оскільки немає товарів");
-            }
+                return _contextDataBase.Products.Where(t => t.Status == statusProduct).FirstOrDefault(i => i.Code == barCode);
+            } 
         } 
 
         public IEnumerable<ProductEntity> GetByNameAndStatus(string name, TypeStatusProduct status)

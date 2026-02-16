@@ -15,16 +15,13 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
         public void Add(TokenEntity item)
-        { 
-            if (_contextDataBase != null)
-            { 
-                if (item != null)
-                {
-                    item.User = _contextDataBase.Users.Find(item.User.ID);
-                    _contextDataBase.UserTokens.Add(item);
-                }
-                _contextDataBase.SaveChanges(); 
+        {
+            if (item != null)
+            {
+                item.User = _contextDataBase.Users.Find(item.User.ID);
+                _contextDataBase.UserTokens.Add(item);
             }
+            _contextDataBase.SaveChanges();
         }
 
         public void Delete(TokenEntity item)
@@ -34,17 +31,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<TokenEntity> GetAll()
         {
-            _contextDataBase.Users.Load();
-            _contextDataBase.UserTokens.Load();
-
-            if (_contextDataBase.Users.Count() != 0)
-            {
-                return _contextDataBase.UserTokens.ToList();
-            }
-            else
-            {
-                return null;
-            }
+            return _contextDataBase.UserTokens.ToList();
         }
 
         public void Update(TokenEntity item)

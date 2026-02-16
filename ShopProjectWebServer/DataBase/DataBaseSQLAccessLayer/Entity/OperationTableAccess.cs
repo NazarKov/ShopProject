@@ -15,31 +15,26 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
         public int Add(OperationEntity item)
         {
-            if (_contextDataBase.Operations != null)
+            if (item.MAC != null)
             {
-                if (item.MAC != null)
-                {
-                    item.MAC.WorkingShifts = _contextDataBase.WorkingShift.Find(item.MAC.WorkingShifts.ID);
-
-                    item.MAC.SequenceNumber = _contextDataBase.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.MAC.WorkingShifts.ID).Count();
-                    item.MAC.OperationsRecorder =
-                        _contextDataBase.OperationsRecorders.Find(item.MAC.OperationsRecorder.ID);
-                    item.MAC.Operation = null;
-                    _contextDataBase.MediaAccessControls.Add(item.MAC);
-                }
-                if (item.Shift != null)
-                {
-                    item.Shift = _contextDataBase.WorkingShift.Find(item.Shift.ID);
-                }
-
-                if (item.Discount != null)
-                {
-                    item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
-                }
-
-                _contextDataBase.Operations.Add(item);
-                _contextDataBase.SaveChanges();
+                item.MAC.WorkingShifts = _contextDataBase.WorkingShift.Find(item.MAC.WorkingShifts.ID); 
+                item.MAC.SequenceNumber = _contextDataBase.MediaAccessControls.Where(m => m.WorkingShifts.ID == item.MAC.WorkingShifts.ID).Count();
+                item.MAC.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MAC.OperationsRecorder.ID);
+                item.MAC.Operation = null;
+                _contextDataBase.MediaAccessControls.Add(item.MAC);
             }
+            if (item.Shift != null)
+            {
+                item.Shift = _contextDataBase.WorkingShift.Find(item.Shift.ID);
+            }
+
+            if (item.Discount != null)
+            {
+                item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
+            }
+
+            _contextDataBase.Operations.Add(item);
+            _contextDataBase.SaveChanges();
             return item.ID; 
         }
 
@@ -50,88 +45,46 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationEntity> GetAll()
         {
-            _contextDataBase.Operations.Load();
-
-            if (_contextDataBase.Operations.Count() != 0)
-            {
-                return _contextDataBase.Operations.ToList();
-            }
-            else
-            {
-                return new List<OperationEntity>();
-            }
+            return _contextDataBase.Operations.AsNoTracking().ToList();
         }
 
         public decimal GetAmountOfOfficialFundsIssuedCashForShift(int shiftId)
         {
-
-            _contextDataBase.Operations.Load();
-
-            var operaionts = _contextDataBase.Operations.Where(o => o.TypeOperation == TypeOperation.WithdrawalMoney).Where(o => o.Shift.ID == shiftId);
-
-            decimal result = decimal.Zero;
-            foreach (var o in operaionts)
-            {
-                result += o.TotalPayment;
-            }
-            return result;
+            var result = _contextDataBase.Operations
+                           .Where(o => o.TypeOperation == TypeOperation.WithdrawalMoney && o.Shift.ID == shiftId)
+                           .Sum(o => o.TotalPayment);
+            return result; 
         }
 
         public decimal GetAmountOfOfficialFundsReceivedCashForShift(int shiftId)
         {
-            _contextDataBase.Operations.Load();
-
-            var operaionts = _contextDataBase.Operations.Where(o => o.TypeOperation == TypeOperation.DepositMoney).Where(o => o.Shift.ID == shiftId);
-
-            decimal result = decimal.Zero;
-            foreach (var o in operaionts)
-            {
-                result += o.TotalPayment;
-            }
-            return result;  
+            var result = _contextDataBase.Operations
+                           .Where(o => o.TypeOperation == TypeOperation.DepositMoney && o.Shift.ID == shiftId)
+                           .Sum(o => o.TotalPayment);
+            return result; 
         }
 
         public OperationEntity GetLastItem(int shiftId)
         {
-            _contextDataBase.Operations.Load();
-            if (_contextDataBase.Operations.Count() != 0)
-            {
-                return _contextDataBase.Operations.OrderBy(i => i.ID).Where(t => t.TypeOperation == TypeOperation.FiscalCheck).Last(i => i.Shift.ID == shiftId);
-            }
-            else
-            {
-                return new OperationEntity();
-            }
+            return _contextDataBase.Operations.OrderBy(i => i.ID).Where(t => t.TypeOperation == TypeOperation.FiscalCheck).Last(i => i.Shift.ID == shiftId);
         }
 
         public OperationEntity GetLatsItem()
         {
-            IQueryable<OperationEntity> query = _contextDataBase.Operations.AsNoTracking();
-
-            query = query.Where(o => o.TypeOperation == TypeOperation.FiscalCheck);
-
-            var result = query.ToList();
-            return result.Last();
+            IQueryable<OperationEntity> query = _contextDataBase.Operations.AsNoTracking(); 
+            return query.Where(o => o.TypeOperation == TypeOperation.FiscalCheck).Last();
         }
 
         public decimal GetTotalAmountOfFundsIssuedForShift(int shiftId)
-        {
-            _contextDataBase.Operations.Load();
-
-            var operaionts = _contextDataBase.Operations.Where(o => o.TypeOperation == TypeOperation.FiscalCheck).Where(o => o.Shift.ID == shiftId);
-
-            decimal result = decimal.Zero;
-            foreach (var o in operaionts)
-            {
-                result += o.RestPayment;
-            }
-            return result;
+        { 
+            var result = _contextDataBase.Operations
+                            .Where(o => o.TypeOperation == TypeOperation.FiscalCheck && o.Shift.ID == shiftId)
+                            .Sum(o => o.RestPayment);
+            return result; 
         }
 
         public decimal GetTotalOperationForShift(int shiftId)
-        {
-            _contextDataBase.Operations.Load();
-
+        { 
             var operaionts = _contextDataBase.Operations.Where(o => o.Shift.ID == shiftId)
                 .Where(t => t.TypeOperation == TypeOperation.FiscalCheck);
             if (operaionts != null)
@@ -143,10 +96,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public decimal GetTotalReturnOperationForShift(int shiftId)
         {
-            _contextDataBase.Operations.Load();
-
-            var operaionts = _contextDataBase.Operations.Where(o => o.Shift.ID == shiftId)
-                .Where(t => t.TypeOperation == TypeOperation.ReturnCheck);
+            var operaionts = _contextDataBase.Operations.Where(o => o.Shift.ID == shiftId).Where(t => t.TypeOperation == TypeOperation.ReturnCheck);
             if (operaionts != null)
             {
                 return operaionts.Count();
@@ -156,15 +106,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public decimal GetTotalSumForShift(int shiftId)
         {
-            _contextDataBase.Operations.Load();
-
-            var operaionts = _contextDataBase.Operations.Where(o => o.TypeOperation == TypeOperation.FiscalCheck).Where(o => o.Shift.ID == shiftId);
-
-            decimal result = decimal.Zero;
-            foreach (var o in operaionts)
-            {
-                result += o.TotalPayment;
-            }
+            var result = _contextDataBase.Operations
+                            .Where(o => o.TypeOperation == TypeOperation.FiscalCheck && o.Shift.ID == shiftId)
+                            .Sum(o => o.TotalPayment); 
             return result;
         }
 

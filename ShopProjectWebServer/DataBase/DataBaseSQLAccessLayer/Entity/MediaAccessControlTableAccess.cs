@@ -16,41 +16,35 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Add(MediaAccessControlEntity item)
         {
-            _contextDataBase.OperationsRecorders.Load();
-            _contextDataBase.WorkingShift.Load();
-            _contextDataBase.MediaAccessControls.Load();
-            _contextDataBase.Operations.Load();
-            if (_contextDataBase.MediaAccessControls != null && _contextDataBase.OperationsRecorders != null && _contextDataBase.Operations != null && _contextDataBase.WorkingShift != null)
+            if (item.OperationsRecorder != null)
             {
-                if (item.OperationsRecorder != null)
-                {
-                    item.OperationsRecorder = _contextDataBase.OperationsRecorders.FirstOrDefault(i => i.ID == item.OperationsRecorder.ID);
-                }
-                if (item.Operation != null)
-                {
-                    var operation = _contextDataBase.Operations.FirstOrDefault(i => i.ID == item.Operation.ID);
-                    item.Operation = operation;
-                }
-
-                if (item.WorkingShifts != null)
-                {
-                    var shift = _contextDataBase.WorkingShift.FirstOrDefault(i => i.ID == item.WorkingShifts.ID);
-                    item.WorkingShifts = shift;
-
-                    if (shift.MACCreateAt == null)
-                    {
-                        shift.MACCreateAt = item;
-                    }
-                    else
-                    {
-                        shift.MACEndAt = item;
-                    }
-                }
-
-                item.SequenceNumber = _contextDataBase.MediaAccessControls.Where(i => i.OperationsRecorder.ID == item.OperationsRecorder.ID).Count();
-
-                _contextDataBase.MediaAccessControls.Add(item);
+                item.OperationsRecorder = _contextDataBase.OperationsRecorders
+                    .Find(item.OperationsRecorder.ID);
             }
+
+            if (item.Operation != null)
+            {
+                item.Operation = _contextDataBase.Operations
+                    .Find(item.Operation.ID);
+            }
+
+            if (item.WorkingShifts != null)
+            {
+                var shift = _contextDataBase.WorkingShift
+                    .Find(item.WorkingShifts.ID);
+
+                item.WorkingShifts = shift;
+
+                if (shift.MACCreateAt == null)
+                    shift.MACCreateAt = item;
+                else
+                    shift.MACEndAt = item;
+            }
+
+            item.SequenceNumber = _contextDataBase.MediaAccessControls.Count(i => i.OperationsRecorder.ID == item.OperationsRecorder.ID);
+
+            _contextDataBase.MediaAccessControls.Add(item);
+
             _contextDataBase.SaveChanges();
         }
 
@@ -81,17 +75,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public MediaAccessControlEntity GetLastMAC(Guid operationRecorderId)
         {
-            _contextDataBase.OperationsRecorders.Load();
-            _contextDataBase.MediaAccessControls.Load();
-            if (_contextDataBase.MediaAccessControls != null)
-            {
-                var item = _contextDataBase.MediaAccessControls.Where(i => i.OperationsRecorder.ID == operationRecorderId).ToList().Last();
-                if (item != null)
-                {
-                    return item;
-                }
-            }
-            return null;
+            return _contextDataBase.MediaAccessControls
+                .Where(i => i.OperationsRecorder.ID == operationRecorderId)
+                .OrderByDescending(i => i.ID)
+                .FirstOrDefault();    
         }
 
         public void Update(MediaAccessControlEntity item)

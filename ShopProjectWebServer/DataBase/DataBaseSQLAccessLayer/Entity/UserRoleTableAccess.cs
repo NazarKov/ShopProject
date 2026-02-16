@@ -27,15 +27,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<UserRoleEntity> GetAll()
         {
-            _contextDataBase.UserRoles.Load();
-            if (_contextDataBase.Users.Count() != 0)
-            {
-                return _contextDataBase.UserRoles.ToList();
-            }
-            else
-            {
-                return null;
-            }
+            return _contextDataBase.UserRoles.AsNoTracking();
         }
 
         public void Update(UserRoleEntity item)

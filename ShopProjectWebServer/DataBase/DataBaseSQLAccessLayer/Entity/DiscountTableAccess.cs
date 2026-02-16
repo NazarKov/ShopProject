@@ -13,12 +13,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
         public int Add(DiscountEntity item)
-        {
-            _contextDataBase.Discounts.Load();
-            if (_contextDataBase.Discounts != null)
-            {
-                _contextDataBase.Discounts.Add(item);
-            }
+        { 
+            _contextDataBase.Discounts.Add(item);
             _contextDataBase.SaveChanges();
             return item.ID;
         }

@@ -16,26 +16,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
         public void Add(UserEntity item)
         {
-            _contextDataBase.Users.Load();
-            _contextDataBase.UserRoles.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-            if (item != null)
+            var user = _contextDataBase.Users.FirstOrDefault(i => i.Login == item.Login);
+
+            if (user != null)
             {
+                throw new Exception("Користувач існує");
+            } 
 
-                var user = _contextDataBase.Users.FirstOrDefault(i => i.Login == item.Login);
-
-                if (user != null)
-                {
-                    throw new Exception("Користувач існує");
-                }
-
-                item.UserRole = _contextDataBase.UserRoles.Find(item.UserRole.ID);
-                if (item.SignatureKey != null)
-                {
-                    _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
-                }
-                _contextDataBase.Users.Add(item);
+            item.UserRole = _contextDataBase.UserRoles.Find(item.UserRole.ID);
+            if (item.SignatureKey != null)
+            {
+                _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
             }
+            _contextDataBase.Users.Add(item);
             _contextDataBase.SaveChanges(); 
         }
 
@@ -57,49 +50,21 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public void Delete(UserEntity item)
         {
-            _contextDataBase.UserTokens.Load();
-            _contextDataBase.UserRoles.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-            _contextDataBase.Users.Load();
+            var user = _contextDataBase.Users.Find(item.ID);
 
-            if (_contextDataBase.Users != null)
-            {
-                var user = _contextDataBase.Users.Find(item.ID);
-                _contextDataBase.Users.Remove(user);
-            }
+            if (user == null) return; 
+            _contextDataBase.Users.Remove(user);
             _contextDataBase.SaveChanges();
         }
 
         public IEnumerable<UserEntity> GetAll()
-        {
-            _contextDataBase.Users.Load();
-            _contextDataBase.UserRoles.Load();
-            _contextDataBase.UserTokens.Load();
-            _contextDataBase.ObjectOwners.Load();
-            _contextDataBase.OperationsRecorders.Load();
-
-            if (_contextDataBase.Users.Count() != 0)
-            {
-                return _contextDataBase.Users.ToList();
-            }
-            else
-            {
-                return null;
-            }
+        { 
+            return _contextDataBase.Users.Include(r=>r.UserRole).Include(t=>t.Tokens).AsNoTracking();
         }
 
         public UserEntity GetById(Guid id)
         {
-            _contextDataBase.Users.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-            _contextDataBase.UserRoles.Load();
-
-            if (_contextDataBase.Users != null && _contextDataBase.Users.Count() > 0)
-            {
-                var user = _contextDataBase.Users.FirstOrDefault(t => t.ID == id);
-                return user;
-            }
-            return null;
+            return _contextDataBase.Users.FirstOrDefault(t => t.ID == id);
         }
 
         public IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status)
@@ -122,75 +87,53 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public UserEntity GetUser(string token)
         {
-            _contextDataBase.Users.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-            _contextDataBase.UserRoles.Load();
-            _contextDataBase.UserTokens.Load();
-            _contextDataBase.ObjectOwners.Load();
-            _contextDataBase.OperationsRecorders.Load();
+            var userToken = _contextDataBase.UserTokens.Include(u=>u.User).Include(r=>r.User.UserRole).FirstOrDefault(t => t.Token == token);
 
-
-            if (_contextDataBase.Users != null && _contextDataBase.Users.Count() > 0)
+            if (userToken != null)
             {
-                var userToken = _contextDataBase.UserTokens.FirstOrDefault(t => t.Token == token);
-
-                if (userToken != null)
-                {
-                    return _contextDataBase.Users.FirstOrDefault(u => u.ID == userToken.User.ID);
-                }
+                return _contextDataBase.Users.FirstOrDefault(u => u.ID == userToken.User.ID);
             }
             return null;
         } 
         public void Update(UserEntity item)
-        {
-            _contextDataBase.UserTokens.Load();
-            _contextDataBase.UserRoles.Load();
-            _contextDataBase.ElectronicSignatureKeys.Load();
-            _contextDataBase.Users.Load();
+        { 
             UserEntity user;
-            if (_contextDataBase.Users != null)
+            user = _contextDataBase.Users.Find(item.ID);
+
+            if (user != null)
             {
-                user = _contextDataBase.Users.Find(item.ID);
+                user.Login = item.Login;
+                user.Password = item.Password;
+                user.Email = item.Email;
+                user.FullName = item.FullName;
+                user.TIN = item.TIN;
+                user.Status = item.Status;
 
-                if (user != null)
+
+                if (item.SignatureKey != null)
                 {
-                    user.Login = item.Login;
-                    user.Password = item.Password;
-                    user.Email = item.Email;
-                    user.FullName = item.FullName;
-                    user.TIN = item.TIN;
-                    user.Status = item.Status;
-
-
-                    if (item.SignatureKey != null)
-                    {
-                        _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
-                        user.SignatureKey = item.SignatureKey;
-                    }
-
-                    if (_contextDataBase.UserRoles != null)
-                    {
-                        var role = _contextDataBase.UserRoles.FirstOrDefault(r => r.NameRole == item.UserRole.NameRole);
-                        if (role != null)
-                        {
-                            user.UserRole = role;
-                        }
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Користувача не знайдено");
+                    _contextDataBase.ElectronicSignatureKeys.Add(item.SignatureKey);
+                    user.SignatureKey = item.SignatureKey;
                 }
 
+                if (_contextDataBase.UserRoles != null)
+                {
+                    var role = _contextDataBase.UserRoles.FirstOrDefault(r => r.NameRole == item.UserRole.NameRole);
+                    if (role != null)
+                    {
+                        user.UserRole = role;
+                    }
+                }
+                _contextDataBase.SaveChanges();
             }
-            _contextDataBase.SaveChanges();
+            else
+            {
+                throw new Exception("Користувача не знайдено");
+            } 
         }
 
         public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
-        {
-            _contextDataBase.Users.Load();
-            _contextDataBase.OperationsRecorders.Load();
+        { 
             var user = _contextDataBase.Users.Find(id);
             switch (nameParameter)
             {

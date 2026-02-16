@@ -16,9 +16,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         }
 
         public void Add(ProductUnitEntity item)
-        {
-            _contextDataBase.ProductUnits.Load();
-
+        { 
             var unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.NameUnit == item.NameUnit);
 
             if (unit == null)
@@ -41,48 +39,23 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<ProductUnitEntity> GetAll()
         {
-            _contextDataBase.ProductUnits.Load();
-
-            if (_contextDataBase.ProductUnits.Count() != 0)
-            {
-                return _contextDataBase.ProductUnits.ToList();
-            }
-            else
-            {
-                return new List<ProductUnitEntity>();
-            }
+            return _contextDataBase.ProductUnits.ToList();
         } 
 
         public ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit statusUnit)
-        {
-            _contextDataBase.ProductUnits.Load();
-
-            if (_contextDataBase.ProductUnits != null && _contextDataBase.ProductUnits.Count() != 0)
+        { 
+            if (statusUnit == TypeStatusUnit.Unknown)
             {
-                ProductUnitEntity result = new ProductUnitEntity();
-                if (statusUnit == TypeStatusUnit.Unknown)
-                {
-                    result = _contextDataBase.ProductUnits.First(i => i.Number == number);
-                }
-                else
-                {
-                    result = _contextDataBase.ProductUnits.Where(t => t.Status == statusUnit).First(i => i.Number == number);
-                }
-                return result;
+                return _contextDataBase.ProductUnits.FirstOrDefault(i => i.Number == number);
             }
             else
             {
-                throw new Exception("Неможливий пошук оскільки немає товарів");
-            }
-        } 
-
+                return _contextDataBase.ProductUnits.Where(t => t.Status == statusUnit).FirstOrDefault(i => i.Number == number);
+            } 
+        }  
         public void Update(ProductUnitEntity item)
         {
-            _contextDataBase.ProductUnits.Load();
-            if (_contextDataBase.ProductUnits != null)
-            {
-                UpdateFieldUnit(_contextDataBase.ProductUnits.Find(item.ID), item);
-            }
+            UpdateFieldUnit(_contextDataBase.ProductUnits.Find(item.ID), item);
             _contextDataBase.SaveChanges();
         }
 
@@ -92,76 +65,66 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             UnitUpdate.ShortNameUnit = unit.ShortNameUnit;
             UnitUpdate.Number = unit.Number;
             UnitUpdate.Status = unit.Status;
-        }
-
-
-
+        } 
         public void Delete(ProductUnitEntity item)
         {
-            _contextDataBase.ProductUnits.Load();
-            if (_contextDataBase.ProductUnits != null)
-            {
-                var unit = _contextDataBase.ProductUnits.Find(item.ID);
-                _contextDataBase.ProductUnits.Remove(unit);
-            }
+            var unit = _contextDataBase.ProductUnits.Find(item.ID);
+
+            if (unit == null) return; 
+            _contextDataBase.ProductUnits.Remove(unit);
             _contextDataBase.SaveChanges();
         }
 
         public void UpdateParameter(ProductUnitEntity item, string parameter, object value)
         {
-            _contextDataBase.ProductUnits.Load();
-
-            if (_contextDataBase.ProductUnits != null && _contextDataBase.ProductUnits.Count() != 0)
+            var unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.ID == item.ID);
+            if (unit != null)
             {
-                var unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.ID == item.ID);
-                if (unit != null)
-                {
 
-                    switch (parameter)
-                    {
-                        case nameof(item.NameUnit):
+                switch (parameter)
+                {
+                    case nameof(item.NameUnit):
+                        {
+                            unit.NameUnit = item.NameUnit;
+                            break;
+                        }
+                    case nameof(item.ShortNameUnit):
+                        {
+                            unit.ShortNameUnit = item.ShortNameUnit;
+                            break;
+                        }
+                    case nameof(item.Number):
+                        {
+                            unit.Number = item.Number;
+                            break;
+                        }
+                    case nameof(item.Status):
+                        {
+                            var status = Enum.Parse<TypeStatusUnit>(value.ToString());
+                            item.Status = status;
+                            switch (status)
                             {
-                                unit.NameUnit = item.NameUnit;
-                                break;
+                                case TypeStatusUnit.Favorite:
+                                    {
+                                        unit.Status = TypeStatusUnit.Favorite;
+                                        break;
+                                    }
+                                case TypeStatusUnit.UnFavorite:
+                                    {
+                                        unit.Status = TypeStatusUnit.UnFavorite;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        unit.Status = TypeStatusUnit.UnFavorite;
+                                        break;
+                                    }
                             }
-                        case nameof(item.ShortNameUnit):
-                            {
-                                unit.ShortNameUnit = item.ShortNameUnit;
-                                break;
-                            }
-                        case nameof(item.Number):
-                            {
-                                unit.Number = item.Number;
-                                break;
-                            }
-                        case nameof(item.Status):
-                            {
-                                var status = Enum.Parse<TypeStatusUnit>(value.ToString());
-                                item.Status = status;
-                                switch (status)
-                                {
-                                    case TypeStatusUnit.Favorite:
-                                        {
-                                            unit.Status = TypeStatusUnit.Favorite;
-                                            break;
-                                        }
-                                    case TypeStatusUnit.UnFavorite:
-                                        {
-                                            unit.Status = TypeStatusUnit.UnFavorite;
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            unit.Status = TypeStatusUnit.UnFavorite;
-                                            break;
-                                        }
-                                }
-                                break;
-                            }
-                    }
-                }
-            }
-            _contextDataBase.SaveChanges();
+                            break;
+                        }
+                } 
+                _contextDataBase.SaveChanges();
+            } 
         }
 
         public IEnumerable<ProductUnitEntity> GetByNameAndStatus(string name, TypeStatusUnit status)
