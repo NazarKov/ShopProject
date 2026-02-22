@@ -160,7 +160,10 @@ namespace ShopProject.ViewModel.HomePage
                         }
                         else
                         {
-                            Page = new StartView();
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                Page = new StartView();
+                            });
                         }
                     });
 

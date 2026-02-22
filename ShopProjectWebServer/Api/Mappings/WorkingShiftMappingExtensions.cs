@@ -55,9 +55,11 @@ namespace ShopProjectWebServer.Api.Mappings
             if (workingShift.MACEndAt != null)
             {
                 shift.MACEndAt = workingShift.MACEndAt.ToMediaAccessEntity();
-            } 
-
-            shift.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
+            }
+            if (!string.IsNullOrEmpty(workingShift.UserOpenShiftID))
+            {
+                shift.UserOpenShift = new UserEntity() { ID = Guid.Parse(workingShift.UserOpenShiftID) };
+            }
             shift.UserCloseShift = new UserEntity() { ID= Guid.Parse(workingShift.UserCloseShiftID) };
 
             shift.TotalCheckForShift = workingShift.TotalCheckForShift;

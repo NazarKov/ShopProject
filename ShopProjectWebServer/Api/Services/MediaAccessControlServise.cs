@@ -33,7 +33,12 @@ namespace ShopProjectWebServer.Api.Services
             {
                 throw new Exception("Невірний токен авторизації");
             } 
-            return _controller.DataBaseAccess.MediaAccessControlTable.GetLastMAC(id).ToMediaAccessDto();
+            var result = _controller.DataBaseAccess.MediaAccessControlTable.GetLastMAC(id);
+            if (result == null)
+            {
+                throw new Exception("Невдалося отримати MAC");
+            }
+            return result.ToMediaAccessDto();
         }
     }
 }

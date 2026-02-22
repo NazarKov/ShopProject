@@ -28,8 +28,8 @@ namespace ShopProjectWebServer.Api.Mappings
 
             Enum.TryParse(operation.TypeOperation.ToString(), out TypeOperation typeOperation);
             result.TypeOperation = typeOperation;
-            Enum.TryParse(operation.TypePayment.ToString(), out TypeOperation TypePayment);
-            result.TypeOperation = TypePayment; 
+            Enum.TryParse(operation.TypePayment.ToString(), out TypePayment TypePayment);
+            result.TypePayment = TypePayment; 
             return result;
         }
 

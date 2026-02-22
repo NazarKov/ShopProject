@@ -78,7 +78,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             var result = _contextDataBase.OperationsRecorderUsers
                             .Where(u => u.Users.ID == userId
-                                        && u.OpertionsRecorders.Name.Contains(item))
+                                        && u.OpertionsRecorders.Name.Contains(item)).Include(o=>o.OpertionsRecorders.ObjectOwner)
                             .Select(u => u.OpertionsRecorders)
                             .Distinct()
                             .ToList();

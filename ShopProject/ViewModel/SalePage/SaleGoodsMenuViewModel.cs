@@ -349,11 +349,12 @@ namespace ShopProject.ViewModel.SalePage
 
                 if (!(SumaUser >= SumaOrder))
                 {
-                    MessageBox.Show("Сума внеску не може бути менша ніж сума чеку");
+                    throw new Exception("Сума внеску не може бути менша ніж сума чеку");
                 }
                 else
                 {
                     _model.AddKey(_user.SignatureKey);
+                    
 
                     var rest = (SumaUser - SumaOrder);
                     var discount = new Discount();
@@ -378,6 +379,7 @@ namespace ShopProject.ViewModel.SalePage
                     {
                         discount = null;
                     }
+                    
 
                     Operation operation = new Operation()
                     {
@@ -413,6 +415,7 @@ namespace ShopProject.ViewModel.SalePage
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                IsEnableSendCheckButton = true;
             }
         }
 

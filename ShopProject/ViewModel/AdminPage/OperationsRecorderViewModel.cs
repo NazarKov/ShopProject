@@ -181,7 +181,7 @@ namespace ShopProject.ViewModel.AdminPage
 
             });
             t.ContinueWith(t => { 
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
                 _model.ClearListObjectOwner();
             });
 
@@ -203,7 +203,7 @@ namespace ShopProject.ViewModel.AdminPage
                     }
                 });
                 t.ContinueWith(t => {
-                    UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                    UpdateDataGridView();
                 });
             }
         }
@@ -255,7 +255,7 @@ namespace ShopProject.ViewModel.AdminPage
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
 
@@ -273,7 +273,7 @@ namespace ShopProject.ViewModel.AdminPage
             set
             {
                 _selectedStatusOperationRecorder = value; OnPropertyChanged(nameof(SelectedStatusOperationRecorder));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
         private int _heigth;
@@ -349,7 +349,7 @@ namespace ShopProject.ViewModel.AdminPage
             });
         }
 
-        private void UpdateDataGridView(int countCoulmn, int page = 1)
+        private void UpdateDataGridView(int page = 1)
         {
             if (_isReadyUpdateDataGriedView)
             {
@@ -361,11 +361,11 @@ namespace ShopProject.ViewModel.AdminPage
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_nameSearch == string.Empty && _nameSearch == "")
                 {
-                    SetFieldDataGridView(countCoulmn, page, false);
+                    SetFieldDataGridView(countColumn, page, false);
                 }
                 else
                 {
-                    SearchByNameAndByBarCode(countCoulmn, page);
+                    SearchByNameAndByBarCode(countColumn, page);
                 }
             }
         }
@@ -382,7 +382,7 @@ namespace ShopProject.ViewModel.AdminPage
 
         private void OnInputStopped(object state)
         {
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -400,8 +400,7 @@ namespace ShopProject.ViewModel.AdminPage
                 if (!(Paginator.CountButton == result.Pages))
                 {
                     Paginator.CountButton = result.Pages;
-                }
-                Paginator.CountColumn = countColumn;
+                } 
                 ObjectList = result.Data.ToList();
             });
         }

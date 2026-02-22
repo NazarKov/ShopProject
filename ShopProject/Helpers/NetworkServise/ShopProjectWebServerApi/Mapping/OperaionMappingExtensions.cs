@@ -36,7 +36,7 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 result.DiscountID = operation.Discount.ID;
             }
 
-            result.TypePayment = (int)operation.TypeOperation;
+            result.TypePayment = (int)operation.TypePayment;
             result.TypeOperation = (int)operation.TypeOperation;
             return result;
         }

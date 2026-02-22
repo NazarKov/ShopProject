@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
 using ShopProject.Helpers.Command;
 using ShopProject.Helpers.Navigation; 
 using ShopProject.Model.SalePage;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FiscalServerApi.ExceptionServer;
 
 namespace ShopProject.ViewModel.SalePage
 {
@@ -65,7 +65,7 @@ namespace ShopProject.ViewModel.SalePage
             _okSecondDialogsWindowCommand = new DelegateCommandAsync(OkSeconDialogWindow);
             _cancelSecondDialogsWindowCommand = new DelegateCommand(CancelSecondDialogWindow);
             _exitWorkShiftMenuCommand = new DelegateCommand(ExitWorkShiftMenu);
-            _printLastCheckCommand = new DelegateCommand(PrintLastCheck);
+            _printLastCheckCommand = new DelegateCommandAsync(PrintLastCheck);
             _publishCertificateCommand = new DelegateCommand(PublishCertificate);
 
             _statusShift = string.Empty;
@@ -345,13 +345,15 @@ namespace ShopProject.ViewModel.SalePage
                 Session.WorkingShiftStatus.WorkingShift = workingShiftEntity; 
                 if (await _model.OpenShift(workingShiftEntity))
                 {
+
+                    MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     ChangeHeaderLable("Зміна відкрита", "Green", true); 
                     IsEnableOpenShiftButton = true;
                     VisibilitiOpenShift = Visibility.Collapsed;
                     VisibilitiExitButton = Visibility.Collapsed;
                     SaveWorkingShiftStatus();
                 }
-            }
+            } 
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -364,13 +366,11 @@ namespace ShopProject.ViewModel.SalePage
             StatusColor = color;
             if (isOnline)
             {
-                StatusOnline = "з " + DateTime.Now.ToString("g");
-                MessageBox.Show("Змінна відкрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                StatusOnline = "з " + DateTime.Now.ToString("g"); 
             }
             else
             {
-                StatusOnline = string.Empty; 
-                MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                StatusOnline = string.Empty;  
             }
             OnPropertyChanged(nameof(StatusColor)); 
         }
@@ -413,6 +413,7 @@ namespace ShopProject.ViewModel.SalePage
 
                 if (await _model.CloseShift(shift))
                 {
+                    MessageBox.Show("Змінна закрита", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     ChangeHeaderLable("Зміна закрита", "Red");
                     IsEnableCloseShiftButton = true;
                     VisibilitiOpenShift = Visibility.Visible;
@@ -421,6 +422,15 @@ namespace ShopProject.ViewModel.SalePage
                     //_model.Print(operation);
 
                 } 
+            }
+            catch (ExceptionCheckShiftIsNotOpen e)
+            {
+                MessageBox.Show(e.Message);
+                ChangeHeaderLable("Зміна закрита", "Red");
+                IsEnableCloseShiftButton = true;
+                VisibilitiOpenShift = Visibility.Visible;
+                VisibilitiExitButton = Visibility.Visible;
+                SaveWorkingShiftStatus();
             }
             catch (Exception ex) 
             {
@@ -570,9 +580,9 @@ namespace ShopProject.ViewModel.SalePage
         }
 
         public ICommand PrintLastCheckCommand => _printLastCheckCommand;
-        private void PrintLastCheck()
+        private async Task PrintLastCheck()
         {
-            _model.PrintLastCheck();
+            await _model.PrintLastCheck();
         }
 
         public ICommand PublishCertificateCommand => _publishCertificateCommand;

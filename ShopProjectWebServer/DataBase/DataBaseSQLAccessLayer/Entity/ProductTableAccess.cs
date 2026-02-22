@@ -81,9 +81,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         item.Discount = null;
                     } 
                 }
-                await _contextDataBase.Products.AddRangeAsync(items);
-                await _contextDataBase.SaveChangesAsync();
+                
             }
+            await _contextDataBase.Products.AddRangeAsync(items);
+            await _contextDataBase.SaveChangesAsync();
         }
 
 
@@ -190,11 +191,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         { 
             if (statusProduct == TypeStatusProduct.Unknown)
             {
-                return _contextDataBase.Products.FirstOrDefault(i => i.Code == barCode);
+                return _contextDataBase.Products.Include(u=>u.Unit).Include(c=>c.CodeUKTZED).FirstOrDefault(i => i.Code == barCode);
             }
             else
             {
-                return _contextDataBase.Products.Where(t => t.Status == statusProduct).FirstOrDefault(i => i.Code == barCode);
+                return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).Where(t => t.Status == statusProduct).FirstOrDefault(i => i.Code == barCode);
             } 
         } 
 

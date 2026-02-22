@@ -85,7 +85,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
             set
             {
                 _selectedStatusGiftCertificate = value; OnPropertyChanged(nameof(SelectedStatusGiftCertificate));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
 
@@ -110,7 +110,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         } 
 
@@ -170,7 +170,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
             });
         }
 
-        private void UpdateDataGridView(int countCoulmn, int page = 1)
+        private void UpdateDataGridView(int page = 1)
         {
             if (_isReadyUpdateDataGriedView)
             {
@@ -192,7 +192,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
                 }
                 else
                 {
-                    SearchByNameAndByBarCode(countCoulmn, page);
+                    SearchByNameAndByBarCode(countColumn, page);
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
 
         private void OnInputStopped(object state)
         {
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -260,7 +260,7 @@ namespace ShopProject.ViewModel.GiftCertificatesPage
                 Session.GiftCertificate = _giftCertificates[0];
                 new UpdateGiftCertificateView().ShowDialog();
             } 
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
         }
         public ICommand AddGiftCertificateArhiveCommand { get => new DelegateParameterCommand(AddGiftCertificateArhive, CanRegister); }
         private void AddGiftCertificateArhive(object parameter)

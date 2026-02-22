@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product;
+﻿using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Discount;
+using ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.DtoModels.O
     {
         [JsonPropertyName("Operation")]
         public OperationDto? Operation { get; set; }
+        [JsonPropertyName("Discount")]
+        public DiscountDto? Discount { get; set; }
         [JsonPropertyName("Products")]
         public IEnumerable<ProductDto>? Products { get; set; }
     }

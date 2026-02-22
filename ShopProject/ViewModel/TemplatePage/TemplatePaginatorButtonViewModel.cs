@@ -42,12 +42,7 @@ namespace ShopProject.ViewModel.TemplatePage
             _paginatorButtonFifth = new PaginatorButton();
             _paginatorButtonSixth = new PaginatorButton();  
         } 
-        private int _countColumn;
-        public int CountColumn
-        {
-            get { return _countColumn; }
-            set { _countColumn = value; }
-        }
+ 
 
         private int _countButton;
         public int CountButton
@@ -56,8 +51,8 @@ namespace ShopProject.ViewModel.TemplatePage
             set { _countButton = value; SetPagginatorButton(_countButton); }
         }
 
-        private Action<int, int> _callback;
-        public Action<int, int> Callback 
+        private Action<int> _callback;
+        public Action<int> Callback 
         {
             get { return _callback; }
             set { _callback = value; }
@@ -175,9 +170,24 @@ namespace ShopProject.ViewModel.TemplatePage
                 {
                     _paginatorButtons.Add(new PaginatorButton() { Name = i.ToString(), Content = i.ToString(), Background = clearBrush });
                 }
-                _paginatorButtons[0].Background = selectdedBrush;
-                _selectLastButton = _paginatorButtons[0];
-                SetButton(_indexButton);
+
+                if (_selectLastButton.Name!=null) 
+                {
+                    _paginatorButtons.First(n => n.Name == _selectLastButton.Name.ToString()).Background = selectdedBrush;
+                    var index = int.Parse(_selectLastButton.Name);
+                    if(index > 2)
+                    {
+                        if (_indexButton < _paginatorButtons.Count - 7)
+                        {
+                            _indexButton = index;
+                        }
+                    } 
+                }
+                else
+                {
+                    _paginatorButtons[0].Background = selectdedBrush;
+                } 
+                SetButton(_indexButton); 
             }
             SetVisibilitiButonAndSeparator();
         }
@@ -365,7 +375,7 @@ namespace ShopProject.ViewModel.TemplatePage
             }
             SetButton(_indexButton);
             AddSeparator();
-            Callback(CountColumn, int.Parse(name));
+            Callback(int.Parse(name));
         }
 
         public ICommand ClickNavigateButtonCommand => _clickNavigateButtonCommand;
@@ -380,7 +390,7 @@ namespace ShopProject.ViewModel.TemplatePage
                         _indexButton = 0;
                         _paginatorButtons[0].Background = selectdedBrush;
                         _selectLastButton = _paginatorButtons[0];
-                        Callback(CountColumn, 1);
+                        Callback(1);
                         break;
                     }
                 case SelectButton.buttonNext:
@@ -399,12 +409,12 @@ namespace ShopProject.ViewModel.TemplatePage
                                         {
                                             _selectLastButton = _paginatorButtons[i];
                                             _paginatorButtons[i].Background = selectdedBrush;
-                                            Callback(CountColumn, i);
+                                            Callback(i);
                                             break;
                                         }
                                         _selectLastButton = _paginatorButtons[i+1];
                                         _paginatorButtons[i + 1].Background = selectdedBrush;
-                                        Callback(CountColumn, i + 2);
+                                        Callback(i + 2);
                                         if (i > 2)
                                         {
                                             if (_indexButton < _paginatorButtons.Count - 7)
@@ -433,12 +443,12 @@ namespace ShopProject.ViewModel.TemplatePage
                                     {
                                         _selectLastButton = _paginatorButtons[i];
                                         _paginatorButtons[i].Background = selectdedBrush;
-                                        Callback(CountColumn, i);
+                                        Callback(i);
                                         break;
                                     }
                                     _selectLastButton = _paginatorButtons[i-1];
                                     _paginatorButtons[i - 1].Background = selectdedBrush;
-                                    Callback(CountColumn, i);
+                                    Callback(i);
                                     if (i < _paginatorButtons.Count-3)
                                     {
                                         if (_indexButton > 0)
@@ -458,7 +468,7 @@ namespace ShopProject.ViewModel.TemplatePage
                         _indexButton = _paginatorButtons.Count - 7;
                         _paginatorButtons[_paginatorButtons.Count - 1].Background = selectdedBrush;
                         _selectLastButton = _paginatorButtons[_paginatorButtons.Count - 1];
-                        Callback(CountColumn, _paginatorButtons.Count);
+                        Callback(_paginatorButtons.Count);
 
                         if (_paginatorButtons.Count < 7)
                         {

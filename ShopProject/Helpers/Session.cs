@@ -124,6 +124,16 @@ namespace ShopProject.Helpers
                     {
                         WorkingShiftStatus.WorkingShift = workingshiftStatus.WorkingShift;
                     }
+                    else
+                    {
+                        if(WorkingShiftStatus.WorkingShift.UserOpenShift == null)
+                        {
+                            if (workingshiftStatus.WorkingShift!=null && workingshiftStatus.WorkingShift.UserOpenShift != null)
+                            {
+                                WorkingShiftStatus.WorkingShift.UserOpenShift = workingshiftStatus.WorkingShift.UserOpenShift;
+                            }
+                        }
+                    }
 
                     WorkingShiftStatus.StatusShift = workingshiftStatus.StatusShift;
                     WorkingShiftStatus.StatusOnline = workingshiftStatus.StatusOnline;

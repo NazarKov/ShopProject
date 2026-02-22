@@ -66,12 +66,12 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public OperationEntity GetLastItem(int shiftId)
         {
-            return _contextDataBase.Operations.OrderBy(i => i.ID).Where(t => t.TypeOperation == TypeOperation.FiscalCheck).Last(i => i.Shift.ID == shiftId);
+            return _contextDataBase.Operations.Include(d=>d.Discount).OrderBy(i => i.ID).Where(t => t.TypeOperation == TypeOperation.FiscalCheck).Last(i => i.Shift.ID == shiftId);
         }
 
         public OperationEntity GetLatsItem()
         {
-            IQueryable<OperationEntity> query = _contextDataBase.Operations.AsNoTracking(); 
+            IQueryable<OperationEntity> query = _contextDataBase.Operations.Include(d => d.Discount).AsNoTracking(); 
             return query.Where(o => o.TypeOperation == TypeOperation.FiscalCheck).Last();
         }
 

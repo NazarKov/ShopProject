@@ -91,13 +91,11 @@ namespace ShopProject.UIModel.SalePage
         public DateTimeOffset EndAt { get; set; }
         /// <summary>
         /// користувач який відкрив зміну
-        /// </summary>
-        [JsonIgnore]
+        /// </summary> 
         public User UserOpenShift { get; set; }
         /// <summary>
         /// користувач який закрив зміну
-        /// </summary>
-        [JsonIgnore]
+        /// </summary> 
         public User UserCloseShift { get; set; }
         /// <summary>
         /// Список операцій викониних під час зміної

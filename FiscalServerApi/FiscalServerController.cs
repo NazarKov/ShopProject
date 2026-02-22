@@ -182,9 +182,9 @@ namespace FiscalServerApi
                         {
                             switch (response.ErrorMessage)
                             {
-                                case ExceptionCheck.ShiftIsAlreadyOpen:
+                                case ExceptionCheckShiftIsArlreadyOpen.ShiftIsAlreadyOpen:
                                     {
-                                        throw new ExceptionCheck("Зміна вже відкрита");
+                                        throw new ExceptionCheckShiftIsArlreadyOpen("Зміна вже відкрита");
                                     }
                                 case ExceptionCheck.ThereCanBeOnlyOneSignatoryWithinAShift:
                                     {
@@ -260,7 +260,7 @@ namespace FiscalServerApi
                         }
                     case CheckResponse.Types.Status.ErrorNotOpenShift:
                         {
-                            throw new Exception("Не відкрита зміна");
+                            throw new ExceptionCheckShiftIsNotOpen("Не відкрита зміна");
                         }
                     case CheckResponse.Types.Status.ErrorOfflineId:
                         {

@@ -57,7 +57,7 @@ namespace ShopProject.ViewModel.StoragePage
             _timer = new Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
             SetFieldPage();
 
-            MediatorService.AddEvent("ReloadCodeUKTEDGriedView", (object obj) => { UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList))); });
+            MediatorService.AddEvent("ReloadCodeUKTEDGriedView", (object obj) => { UpdateDataGridView(); });
         }
 
         private List<ProductCodeUKTZED> _codeUKTZED;
@@ -84,7 +84,7 @@ namespace ShopProject.ViewModel.StoragePage
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
 
@@ -102,7 +102,7 @@ namespace ShopProject.ViewModel.StoragePage
             set
             {
                 _selectedStatusCodeUKTZED = value; OnPropertyChanged(nameof(SelectedStatusCodeUKTZED));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
 
@@ -178,7 +178,7 @@ namespace ShopProject.ViewModel.StoragePage
             });
         }
 
-        private void UpdateDataGridView(int countCoulmn, int page = 1)
+        private void UpdateDataGridView(int page = 1)
         {
             if (_isReadyUpdateDataGriedView)
             {
@@ -190,11 +190,11 @@ namespace ShopProject.ViewModel.StoragePage
                 int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
                 if (_itemSearch == string.Empty && _itemSearch == "")
                 {
-                    SetFieldDataGridView(countCoulmn, page, true);
+                    SetFieldDataGridView(countColumn, page, true);
                 }
                 else
                 {
-                    SearchByNameAndByBarCode(countCoulmn, page);
+                    SearchByNameAndByBarCode(countColumn, page);
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void OnInputStopped(object state)
         {
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -287,7 +287,7 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         MessageBox.Show("Одиницю видалено");
                     }
-                    UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                    UpdateDataGridView();
                 });
             }
             else
@@ -316,7 +316,7 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         MessageBox.Show("Одиницю оновлено");
                     }
-                    UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                    UpdateDataGridView();
                 });
             }
             else
@@ -346,7 +346,7 @@ namespace ShopProject.ViewModel.StoragePage
                     {
                         MessageBox.Show("Одиницю оновлено");
                     }
-                    UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                    UpdateDataGridView();
                 });
             }
             else

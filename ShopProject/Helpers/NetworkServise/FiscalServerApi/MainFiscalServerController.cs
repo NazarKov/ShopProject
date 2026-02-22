@@ -104,6 +104,10 @@ namespace ShopProject.Helpers.NetworkServise.FiscalServerApi
                 MessageBox.Show(exSave.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return string.Empty;
             }
+            catch (ExceptionCheckShiftIsNotOpen)
+            {
+                throw;
+            }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Information);

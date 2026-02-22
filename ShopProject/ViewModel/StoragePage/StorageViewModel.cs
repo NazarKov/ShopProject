@@ -88,7 +88,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             get { return _selectIndexCountShowList;}
             set { _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
 
@@ -111,7 +111,7 @@ namespace ShopProject.ViewModel.StoragePage
         {
             get { return _selectedStatusProduct; }
             set { _selectedStatusProduct = value; OnPropertyChanged(nameof(SelectedStatusProduct)); 
-                UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+                UpdateDataGridView();
             }
         }
         private int _heigth;
@@ -217,30 +217,37 @@ namespace ShopProject.ViewModel.StoragePage
             }); 
         }  
 
-        private void UpdateDataGridView(int countCoulmn, int page = 1)
+        private void UpdateDataGridView(int page = 1)
         {
-            if(_isReadyUpdateDataGriedView)
+            try
             {
-                if (ProductList!=null && ProductList.Count > 0)
+                if (_isReadyUpdateDataGriedView)
                 {
-                    ProductList.Clear();
-                }  
-                int countColumn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
-                if (_itemSearch == string.Empty && _itemSearch == "")
-                {
-                    if(page == 1)
+                    if (ProductList != null && ProductList.Count > 0)
                     {
-                        SetFieldDataGridView(countColumn, page );
+                        ProductList.Clear();
+                    }
+                    int countCoulmn = int.Parse(CountShowList.ElementAt(SelectIndexCountShowList));
+                    if (_itemSearch == string.Empty && _itemSearch == "")
+                    {
+                        if (page == 1)
+                        {
+                            SetFieldDataGridView(countCoulmn, page);
+                        }
+                        else
+                        {
+                            SetFieldDataGridView(countCoulmn, page, false);
+                        }
                     }
                     else
                     {
-                        SetFieldDataGridView(countColumn, page, false);
+                        Task.Run(async () => { await SearchByNameAndByBarCode(countCoulmn, page); });
                     }
                 }
-                else
-                {
-                    SearchByNameAndByBarCode(countCoulmn, page);
-                } 
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Невдалося відобразити товар");
             }
         }
 
@@ -256,11 +263,11 @@ namespace ShopProject.ViewModel.StoragePage
 
         private void OnInputStopped(object state)
         {
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        private void SearchByNameAndByBarCode(int countColumn, int page)
+        private async Task SearchByNameAndByBarCode(int countColumn, int page)
         {
             PaginatorData<Product> result = new PaginatorData<Product>();
 
@@ -272,33 +279,26 @@ namespace ShopProject.ViewModel.StoragePage
             }
 
 
-            Task t = Task.Run(async () =>
-            { 
-                    if (_itemSearch.Count() == _setting.ProductBarCodeLength && Regex.Matches(_itemSearch, "[1-9]").Any()) 
-                    {
-                        result.Data = (await _model.SearchByBarCode(_itemSearch,
-                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct))));
-                    }
-                    else
-                    {
-                        result = await _model.SearchByName(_itemSearch, page, countColumn, 
-                            Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
-                    }
-
-            });
-            t.ContinueWith(t =>
+            if (_itemSearch.Count() == _setting.ProductBarCodeLength && Regex.Matches(_itemSearch, "[1-9]").Any())
             {
-                if (result.Data.Count() > 0 & result.Pages == 0)
-                {
-                    Paginator.CountButton = 1;
-                }
-                else
-                {
+                result.Data = (await _model.SearchByBarCode(_itemSearch,
+                    Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct))));
+            }
+            else
+            {
+                result = await _model.SearchByName(_itemSearch, page, countColumn,
+                    Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
+            }
 
-                    Paginator.CountButton = result.Pages;
-                }
-                ProductList = result.Data.ToList(); 
-            });
+            if (result.Data.Count() > 0 & result.Pages == 0)
+            {
+                Paginator.CountButton = 1;
+            }
+            else
+            { 
+                Paginator.CountButton = result.Pages;
+            }
+            ProductList = result.Data.ToList();
         }
         
 
@@ -319,7 +319,7 @@ namespace ShopProject.ViewModel.StoragePage
                 Session.UpdateProductRange = _products;
                 new UpdateProductRangeView().ShowDialog();
             }
-            UpdateDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)));
+            UpdateDataGridView();
         }
 
         public ICommand AddProductArhiveCommand { get => new DelegateParameterCommand(AddProductArhive, CanRegister); }

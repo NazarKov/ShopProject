@@ -40,7 +40,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public IEnumerable<OperationsRecorderUserEntity> GetAll()
         {
-            return _contextDataBase.OperationsRecorderUsers.Include(u => u.Users).Include(o => o.OpertionsRecorders).AsNoTracking().ToList();
+            return _contextDataBase.OperationsRecorderUsers.Include(u => u.Users).Include(o => o.OpertionsRecorders).Include(o=>o.OpertionsRecorders.ObjectOwner).AsNoTracking().ToList();
         }
 
         public void Update(OperationsRecorderUserEntity item)

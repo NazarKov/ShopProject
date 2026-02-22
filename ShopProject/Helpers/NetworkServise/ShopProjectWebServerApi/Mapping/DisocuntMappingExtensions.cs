@@ -23,5 +23,18 @@ namespace ShopProject.Helpers.NetworkServise.ShopProjectWebServerApi.Mapping
                 InterimAmount = item.InterimAmount,
             };
         }
+        public static Discount ToDicount(this DiscountDto item)
+        {
+            return new Discount()
+            {
+                CreateAt = item.CreateAt,
+                Rebate = item.Discount,
+                TotalDiscount = item.TotalDiscount,
+                NameDiscount = item.NameDiscount,
+                TypeDiscount = item.TypeDiscount,
+                FinishedAt = item.FinishedAt,
+                InterimAmount = item.InterimAmount,
+            };
+        }
     }
 }

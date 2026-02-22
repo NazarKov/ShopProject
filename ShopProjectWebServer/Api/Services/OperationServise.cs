@@ -98,12 +98,18 @@ namespace ShopProjectWebServer.Api.Services
             }
 
             operation.MAC = _controller.DataBaseAccess.MediaAccessControlTable.GetByOperationId(operation.ID);
+           
 
             var result = new OperationІnformationDto()
             {
                 Operation = operation.ToOperationDto(),
                 Products = products.ToProductDto()
             };
+            if (operation.Discount != null)
+            {
+                result.Discount = operation.Discount.ToDiscount();
+            }
+
             return result;
         }
 

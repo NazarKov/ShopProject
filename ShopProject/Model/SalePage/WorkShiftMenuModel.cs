@@ -70,10 +70,12 @@ namespace ShopProject.Model.SalePage
             {
                 shiftEntity.ID = Session.WorkingShiftStatus.WorkingShift.ID;
                 shiftEntity.MACEndAt = CreateMac(shiftEntity);
-                await SaveDataBaseCloseShift(shiftEntity); 
-                return true;
+                return await SaveDataBaseCloseShift(shiftEntity);  
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
         public async Task<bool> DepositAndWithdrawalMoney(WorkingShift shift,Operation operation)
         {
@@ -205,9 +207,15 @@ namespace ShopProject.Model.SalePage
         {
             try
             {
-                var item = await MainWebServerController.MainDataBaseConntroller.OperationController.GetOperationsІnformation(_token, Session.WorkingShiftStatus.WorkingShift.ID);
+                var items = await MainWebServerController.MainDataBaseConntroller.OperationController.GetOperationsІnformation(_token, Session.WorkingShiftStatus.WorkingShift.ID);
                 FiscalCheck fiscalCheck = new FiscalCheck();
-                fiscalCheck.CreateFisckalCheck(item.Products.ToProduct().ToList(), item.Operation.ToOperation(), Session.User, Session.WorkingShiftStatus.OperationRecorder, Session.WorkingShiftStatus.ObjectOwner);
+
+                var operation = items.Operation.ToOperation();
+                if (items.Discount != null)
+                {
+                    operation.Discount = items.Discount.ToDicount();
+                }
+                fiscalCheck.CreateFisckalCheck(items.Products.ToProduct().ToList(), operation, Session.User, Session.WorkingShiftStatus.OperationRecorder, Session.WorkingShiftStatus.ObjectOwner);
                 _printingServise.PrintCheck(fiscalCheck.GetCheck());
             }
             catch (Exception ex)

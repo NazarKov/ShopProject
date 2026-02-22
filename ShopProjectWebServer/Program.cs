@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Hosting;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Extensions;
 
@@ -5,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddApplicationServices();
 builder.Services.AddDataBaseServices();
@@ -15,7 +15,7 @@ builder.Services.AddSession(option =>
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
 });
-
+builder.Host.UseWindowsService();
 
 var app = builder.Build();
 

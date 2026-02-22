@@ -22,6 +22,7 @@ namespace ShopProject.UIModel.UserPage
         public bool AutomaticLogin { get; set; }
         [JsonIgnore]
         public TypeStatusUser Status { get; set; }
+        [JsonIgnore]
         public UserRole? Role { get; set; }
         [JsonIgnore]
         public SignatureKey? SignatureKey { get; set; }
