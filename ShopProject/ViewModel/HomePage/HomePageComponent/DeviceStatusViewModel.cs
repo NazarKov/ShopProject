@@ -1,4 +1,4 @@
-﻿using ShopProject.Model.HomePage.HomePageComponent;
+﻿using ShopProject.Core.Mvvm; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +9,8 @@ using System.Windows.Media;
 namespace ShopProject.ViewModel.HomePage.HomePageComponent
 {
     internal class DeviceStatusViewModel :ViewModel<DeviceStatusViewModel>
-    {
-        private DeviceStatusModel _model;
-        public DeviceStatusViewModel()
-        {
-            _model = new DeviceStatusModel();
-        }
+    { 
+        public DeviceStatusViewModel() {  }
 
         public Brush PrinterStatusColor { get; set; } = Brushes.LightGreen;
         public Brush ScannerStatusColor { get; set; } = Brushes.LightGreen;

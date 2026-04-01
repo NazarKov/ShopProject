@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Windows;
 using System;
-using ShopProject.Helpers.PrintingServise;
+using ShopProject.Services.Integration.PrintingService;
 
 namespace ShopProject.Model.ToolsPage
 {
@@ -17,7 +17,7 @@ namespace ShopProject.Model.ToolsPage
 
         public CreateStickerModel()
         {
-            _printingSticker = new PrintingSticker();
+           // _printingSticker = new PrintingSticker();
         }
 
         public void SetShowTextInImage(bool isShowNameCompany, bool isShowProductBarCode, bool isShowProductName, bool isShowProductDescription)

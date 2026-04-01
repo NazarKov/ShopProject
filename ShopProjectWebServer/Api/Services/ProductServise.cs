@@ -68,14 +68,19 @@ namespace ShopProjectWebServer.Api.Services
             return _controller.DataBaseAccess.ProductTable.GetAll().ToProductDto();
         }
 
-        public ProductDto GetProductsByBarCode(string token, string barCode , TypeStatusProduct status)
+        public ProductDto GetProductByBarCode(string token, string barCode, TypeStatusProduct status)
         {
             if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return _controller.DataBaseAccess.ProductTable.GetByBarCode(barCode , status).ToProductDto();
-        }
+            var result = _controller.DataBaseAccess.ProductTable.GetByBarCode(barCode, status);
+            if (result != null)
+            {
+                return result.ToProductDto();
+            }
+            return null;
+        } 
 
         public PaginatorDto<ProductDto> GetProductsPageColumn(string token, int page, int countColumn, TypeStatusProduct status)
             => GetProductByNamePageColumn(token , string.Empty , page , countColumn ,status);
@@ -108,6 +113,17 @@ namespace ShopProjectWebServer.Api.Services
             }
             _controller.DataBaseAccess.ProductTable.UpdateRange(product.ToProductEntity());
             return true;
+        }
+
+        public PaginatorDto<ProductDto> GetProductsByBarCode(string token,int page , int countColumn, string barCode, TypeStatusProduct status)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            var result = _controller.DataBaseAccess.ProductTable.GetAllByBarCode(barCode, status); 
+
+            return PaginatorDto<ProductDto>.CreationPaginator(result.Reverse().ToProductDto(), page, countColumn); 
         }
     }
 }

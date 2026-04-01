@@ -24,9 +24,11 @@ namespace ShopProjectWebServer.Api.Common
             int countStart = (int)(countEnd - column); 
             var data = values.Skip(countStart).Take((int)column); 
 
-            pages = values.Count() / column;
+            pages = (double)values.Count() / (double)column;
             int pagesCount = 0;
-            if ((pages % 2 == 0))
+            var surplus = pages - (int)pages;
+
+            if (surplus > 0)
             {
                 pagesCount = (int)pages;
                 pagesCount++;

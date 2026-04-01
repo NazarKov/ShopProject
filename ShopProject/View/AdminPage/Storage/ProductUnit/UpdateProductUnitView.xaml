@@ -1,0 +1,113 @@
+﻿<Window x:Class="ShopProject.View.AdminPage.Storage.ProductUnit.UpdateProductUnitView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.ProductUnit"
+        mc:Ignorable="d"
+        Title="UdateProductUnitView" Height="338" Width="400"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="25" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,20">
+            <TextBlock x:Name="textBlock"
+                       Visibility="{Binding ErrorTextBlockVisibiliti}"
+                       Style="{StaticResource ErrorTextBlock}"
+                       Grid.RowSpan="2" 
+                       Text="{Binding Error}"  
+                       Height="35"
+                       Padding="8" />
+            <TextBlock x:Name="textBlock1"
+                       Visibility="{Binding SuccessTextBlockVisibiliti}"
+                       Style="{StaticResource SuccessTextBlock}"
+                       Grid.RowSpan="2" 
+                       Text="{Binding Success}"  
+                       Height="35"
+                       Padding="8" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,20">
+            <TextBlock Text="Повна назва одиниці" Style="{StaticResource GeneralTextBlock}" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Unit.NameUnit, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}" Height="35" Padding="8" Style="{StaticResource GeneralTextBox}" TextAlignment="Right" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5,0,0,20">
+            <TextBlock Text="Скорочена назва одиниці" Style="{StaticResource GeneralTextBlock}" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Unit.ShortNameUnit, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}" Height="35" Padding="8" Style="{StaticResource GeneralTextBox}" TextAlignment="Right" />
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,5,20">
+            <TextBlock Text="Номер одиниці" Style="{StaticResource GeneralTextBlock}" Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Unit.Number, UpdateSourceTrigger=PropertyChanged, StringFormat=0}" Height="35" Padding="8" Style="{StaticResource GeneralTextBox}" TextAlignment="Right" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="2" Margin="5,0,0,20">
+            <TextBlock Text="Статус"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,5"/>
+            <ComboBox ItemsSource="{Binding StatusUnit}"
+                       SelectedIndex="{Binding SelectStatusUnit}"
+                       Style="{StaticResource GeneralComboBox}"
+                       Width="180"
+                       Height="35" 
+                       VerticalContentAlignment="Center"
+                       HorizontalContentAlignment="Left" >
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding }" 
+                         TextWrapping="Wrap" 
+                         Padding="5"
+                         MaxWidth="170"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+                <ComboBox.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap"/>
+                    </Style>
+                </ComboBox.Resources>
+            </ComboBox>
+        </StackPanel>
+
+
+
+        <Button Content="Зберегти"
+              Grid.Column="0" Grid.Row="3"
+              Panel.ZIndex="1"
+              HorizontalAlignment="Left"
+              Width="120" 
+              Height="40"
+              Style="{StaticResource SuccessButton}"
+              IsEnabled="{Binding IsEnableSaveButton}"
+              Command="{Binding UpdateProductUnitCommand}"/>
+        <Button Content="Вийти"
+              Grid.Column="1" Grid.Row="3"
+              Panel.ZIndex="1"
+              HorizontalAlignment="Right"
+              Width="110"
+              Height="40" 
+              Style="{StaticResource ExitButton}" 
+              Command="{Binding ExitWindowCommand}"/>
+
+    </Grid>
+</Window>

@@ -1,0 +1,57 @@
+﻿using ShopProject.Model.Domain.Order;
+using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Common;
+using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping;
+using ShopProjectDataBase.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Controller.DataBaseController
+{
+    public class OrderController
+    {
+        private string _url;
+        public OrderController(string url)
+        {
+            _url = url;
+        }
+        public async Task<bool> AddOrderRange(string token, List<Order> orders)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_url);
+
+                var content = JsonSerializer.Serialize(orders.ToListCreatOrderDto());
+                HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponse = await client.PostAsync($"/api/Order/AddOrderRange?token={token}", httpContent);
+                string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                var result = ApiResponse<bool>.Unpacking(responseBody);
+                httpResponse.EnsureSuccessStatusCode();
+
+                return result.Data;
+            }
+        }
+
+        public async Task<IEnumerable<OrderEntity>> GetOrders(string token)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_url);
+
+                HttpResponseMessage httpResponse = await client.GetAsync($"/api/Order/GetOrders?token={token}");
+                string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                var result = ApiResponse<IEnumerable<OrderEntity>>.Unpacking(responseBody);
+                httpResponse.EnsureSuccessStatusCode();
+
+                return result.Data;
+            }
+        }
+    }
+}

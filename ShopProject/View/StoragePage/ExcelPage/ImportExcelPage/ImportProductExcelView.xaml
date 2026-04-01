@@ -6,13 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage.ExcelPage.ImportExcelPage"
         mc:Ignorable="d"
-        Title="Імпорт з Exel" Width="800" x:Name="window" MinHeight="600" >
-    <Window.Resources>
-        <local:ImportProductExelViewModel x:Key="VM"></local:ImportProductExelViewModel>
-    </Window.Resources>
-    <Window.DataContext>
-        <Binding Source="{StaticResource VM}"></Binding>
-    </Window.DataContext>
+        Title="Імпорт з Exel" Width="800" x:Name="window" MinHeight="600" >  
     <Grid>
         <Grid Margin="20">
 

@@ -73,12 +73,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpGet("GetUnitByCode")]
-        public IActionResult GetUnitByCode(string token, string code, TypeStatusUnit status)
+        public IActionResult GetUnitByCode(string token, string code, int page, int countColumn, TypeStatusUnit status)
         {
             try
             {
-                var result = _servise.GetUnitByCode(token, code,status); 
-                return Ok(ApiResponse<ProductUnitDto>.Ok(result));
+                var result = _servise.GetUnitsByCode(token, code,page,countColumn,status); 
+                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
             }
             catch (Exception ex)
             {

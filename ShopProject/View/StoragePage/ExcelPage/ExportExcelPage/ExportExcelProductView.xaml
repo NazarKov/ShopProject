@@ -6,10 +6,7 @@
         xmlns:local="clr-namespace:ShopProject.ViewModel.StoragePage.ExcelPage.ExportExcelPage"
            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="ExportExcelProductView" Height="450" Width="800">
-    <Window.DataContext>
-        <local:ExportProductExelViewModel></local:ExportProductExelViewModel>
-    </Window.DataContext>
+        Title="ExportExcelProductView" Height="450" Width="800"> 
     <Grid x:Name="MainGrid" Background="#F5F5F5">
  
         <Grid.RowDefinitions>

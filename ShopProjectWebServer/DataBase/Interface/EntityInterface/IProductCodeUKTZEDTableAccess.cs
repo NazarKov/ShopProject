@@ -11,8 +11,8 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void UpdateParameter(ProductCodeUKTZEDEntity item, string parameter, object value);
 
         void Delete(ProductCodeUKTZEDEntity item);
-        IEnumerable<ProductCodeUKTZEDEntity> GetAll(); 
-        ProductCodeUKTZEDEntity GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED);
+        IEnumerable<ProductCodeUKTZEDEntity> GetAll();
+        public IEnumerable<ProductCodeUKTZEDEntity> GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED);
 
         IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status);
     } 

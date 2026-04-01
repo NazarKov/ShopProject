@@ -42,15 +42,15 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             return _contextDataBase.ProductUnits.ToList();
         } 
 
-        public ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit statusUnit)
+        public IEnumerable<ProductUnitEntity> GetUnitsByCode(int number, TypeStatusUnit statusUnit)
         { 
             if (statusUnit == TypeStatusUnit.Unknown)
             {
-                return _contextDataBase.ProductUnits.FirstOrDefault(i => i.Number == number);
+                return _contextDataBase.ProductUnits.Where(i => i.Number.ToString().Contains(number.ToString()));
             }
             else
             {
-                return _contextDataBase.ProductUnits.Where(t => t.Status == statusUnit).FirstOrDefault(i => i.Number == number);
+                return _contextDataBase.ProductUnits.Where(t => t.Status == statusUnit).Where(i => i.Number.ToString().Contains(number.ToString()));
             } 
         }  
         public void Update(ProductUnitEntity item)

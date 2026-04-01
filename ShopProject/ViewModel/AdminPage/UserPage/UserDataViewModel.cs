@@ -1,5 +1,5 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Model.AdminPage.UserPage;
+﻿using ShopProject.Core.Mvvm;
+using ShopProject.Helpers; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +10,10 @@ using System.Threading.Tasks;
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
     internal class UserDataViewModel : ViewModel<UserDataViewModel>
-    {
-        private UserDataModel _model;
+    { 
 
         public UserDataViewModel()
-        {
-            _model = new UserDataModel();
+        { 
             
             _name = string.Empty;
             _login = string.Empty;
@@ -80,27 +78,27 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
 
         private async Task SetFieldWidnow()
         {
-            if (Session.UserItem != null)
-            {
-                var user = await _model.GetUser();
+            //if (Session.UserItem != null)
+            //{
+                //var user = await _model.GetUser();
 
-                Name = user.FullName;
-                Login = user.Login;
-                Tin = user.TIN;
-                Role = user.Role.NameRole;
+                //Name = user.FullName;
+                //Login = user.Login;
+                //Tin = user.TIN;
+                //Role = user.Role.NameRole;
 
-                if (user.Status == 0)
-                {
-                    Status = "Користувач без ключа ЕЦП";
-                }
-                else
-                {
-                    Status = "Користувач з ключем ЕЦП";
-                }
+                //if (user.Status == 0)
+                //{
+                //    Status = "Користувач без ключа ЕЦП";
+                //}
+                //else
+                //{
+                //    Status = "Користувач з ключем ЕЦП";
+                //}
 
-                AutomaticLogin = user.AutomaticLogin;
-                DateCreate = DateTime.Parse(user.CreatedAt.ToString());
-            }
+                //AutomaticLogin = user.AutomaticLogin;
+                //DateCreate = DateTime.Parse(user.CreatedAt.ToString());
+            //}
         }
 
     }

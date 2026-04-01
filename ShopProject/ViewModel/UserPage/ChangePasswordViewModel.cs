@@ -1,20 +1,18 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.Navigation;
-using ShopProject.Helpers.Command;
-using ShopProject.Model.UserPage;
+﻿using ShopProject.Helpers;  
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Input; 
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
 
 namespace ShopProject.ViewModel.UserPage
 {
     internal class ChangePasswordViewModel : ViewModel<ChangePasswordViewModel>
-    {
-        private ChangePasswordModel _model;
+    { 
 
         private ICommand _sendMessageEmailCommand;
         private ICommand _confirmCodeCommand;
@@ -22,8 +20,7 @@ namespace ShopProject.ViewModel.UserPage
         private ICommand _openPageAuthorizationCommand;
 
         public ChangePasswordViewModel()
-        {
-            _model = new ChangePasswordModel();
+        { 
             
             _email = string.Empty;
             _code = string.Empty;
@@ -109,7 +106,7 @@ namespace ShopProject.ViewModel.UserPage
         public ICommand OpenPageAuthorizationCommand => _openPageAuthorizationCommand;
         private void OpenPageAuthorization()
         {
-            MediatorService.ExecuteEvent(NavigationButton.RedirectToAuthorizationView.ToString()); 
+            //MediatorService.ExecuteEvent(NavigationButton.RedirectToAuthorizationView.ToString()); 
         }
     }
 }

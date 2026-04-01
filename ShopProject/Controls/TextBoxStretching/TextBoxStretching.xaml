@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="ShopProject.Controls.TextBoxStretching"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ShopProject.ViewModel.Controls" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" x:Name="root"> 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ShopProject;component/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/ShopProject;component/Resource/Theme/LightTheme/TextBlockstyle.xaml"/> 
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Panel.ZIndex="{Binding ViewModel.ResizableGridZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="0"  Height="{Binding ViewModel.HeightGriwRowTextBlock, RelativeSource={RelativeSource AncestorType=UserControl}}"  MaxHeight="21"></RowDefinition>
+            <RowDefinition MinHeight="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Rectangle Grid.Row="0" Grid.RowSpan="2" x:Name="ShadowRect1" Visibility="{Binding ViewModel.ShadowVisibility, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                   Fill="Black" Panel.ZIndex="{Binding ViewModel.ResizableGridZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                   Opacity="0.5">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDown">
+                    <i:InvokeCommandAction Command="{Binding ViewModel.LostFocusCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Rectangle>
+        <TextBlock x:Name="TextBlock" Grid.Row="0" Margin="0" Visibility="{Binding ViewModel.TextBlockVisibility, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" Style="{StaticResource GeneralTextBlock}" VerticalAlignment="Top" />
+        <Grid x:Name="ResizableGrid" Grid.Row="1" 
+              Width="{Binding ViewModel.Width, RelativeSource={RelativeSource AncestorType=UserControl} , Mode=TwoWay}" 
+              Height="{Binding ViewModel.Height, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}"
+              MinWidth="{Binding ViewModel.MinWidth,RelativeSource={RelativeSource AncestorType=UserControl},Mode=TwoWay}" 
+              MinHeight="{Binding ViewModel.MinHeight, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}"
+              MaxWidth="{Binding ViewModel.MaxWidth,RelativeSource={RelativeSource AncestorType=UserControl},Mode=TwoWay}"
+              MaxHeight="{Binding ViewModel.MaxHeight, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" 
+              HorizontalAlignment="Left"
+              Panel.ZIndex="{Binding ViewModel.ResizableTextBoxZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              VerticalAlignment="Top"> 
+            <TextBox x:Name="ResizableTextBox"   
+                     MinWidth="{Binding ViewModel.MinWidth,RelativeSource={RelativeSource AncestorType=UserControl},Mode=TwoWay}" 
+                     MinHeight="{Binding ViewModel.MinHeight, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" 
+                     GotFocus="ResizableTextBox_GotFocus" 
+                     Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Panel.ZIndex="{Binding ViewModel.ResizableTextBoxZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"   
+                     Style="{StaticResource GeneralTextBox}"
+                     Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Grid}}" 
+                     MaxLength="500">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction 
+                         Command="{Binding ViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="PreviewMouseDown">
+                        <i:InvokeCommandAction 
+                          Command="{Binding ViewModel.FocusCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+
+            <Thumb Name="Tumn" Width="15" Height="15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Cursor="SizeNWSE"
+                    Panel.ZIndex="{Binding ViewModel.ResizableTextBoxZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Visibility="{Binding ViewModel.ShadowVisibility, RelativeSource={RelativeSource AncestorType=UserControl}}" >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="DragDelta">
+                        <i:InvokeCommandAction  
+                                Command="{Binding ViewModel.ResizeTextBoxCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Thumb.Template>
+                    <ControlTemplate>
+                        <Canvas>
+                            <Line X1="4" Y1="14" X2="14" Y2="4" Stroke="Gray" StrokeThickness="1"/>
+                            <Line X1="8" Y1="14" X2="14" Y2="8" Stroke="Gray" StrokeThickness="1"/>
+                            <Line X1="12" Y1="14" X2="14" Y2="12" Stroke="Gray" StrokeThickness="1"/>
+                        </Canvas>
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+        </Grid>
+
+    </Grid>
+</UserControl>

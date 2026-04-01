@@ -28,31 +28,57 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
-        } 
+        }
 
         [HttpGet("GetProductsByBarCode")]
         public IActionResult GetProductsByBarCode(string token, string barCode, TypeStatusProduct statusProduct = TypeStatusProduct.Unknown)
         {
             try
             {
-                var result = _servise.GetProductsByBarCode(token,barCode , statusProduct); 
+                var result = _servise.GetProductByBarCode(token, barCode, statusProduct);
                 return Ok(ApiResponse<ProductDto>.Ok(result));
             }
-            catch(InvalidOperationException invalidOperationException)
+            catch (InvalidOperationException invalidOperationException)
             {
-                 if(invalidOperationException.Message == "Sequence contains no elements"){
-                     return Ok(ApiResponse<ProductDto>.Ok(new ProductDto()));
-                 }
-                 else
-                 {
-                     return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
-                 }
+                if (invalidOperationException.Message == "Sequence contains no elements")
+                {
+                    return Ok(ApiResponse<ProductDto>.Ok(new ProductDto()));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+        [HttpGet("GetAllProductsByBarCode")]
+        public IActionResult GetAllProductsByBarCode(string token, int page, int countColumn, string barCode, TypeStatusProduct status = TypeStatusProduct.Unknown)
+        {
+            try
+            {
+                var result = _servise.GetProductsByBarCode(token,page,countColumn ,barCode, status);
+                return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                if (invalidOperationException.Message == "Sequence contains no elements")
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(new PaginatorDto<ProductDto>(0,0,new List<ProductDto>())));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
 
@@ -62,7 +88,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetProductByNamePageColumn(token, name,page,countColumn,status); 
-                return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
+               return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
             }
             catch (Exception ex)
             {

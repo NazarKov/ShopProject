@@ -5,10 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
         mc:Ignorable="d"
-        Title="Створення наліпок" Height="370" Width="800"  Name="window" ResizeMode="NoResize">
-    <Window.DataContext>
-        <local:CreateStickerViewModel x:Name="VM"></local:CreateStickerViewModel>
-    </Window.DataContext>
+        Title="Створення наліпок" Height="370" Width="800"  Name="window" ResizeMode="NoResize"> 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"></ColumnDefinition>

@@ -1,0 +1,169 @@
+﻿<UserControl x:Class="ShopProject.View.HomePage.HomePageComponent.NotificationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ShopProject.ViewModel.HomePage.HomePageComponent"
+             mc:Ignorable="d" 
+             Height="Auto" Width="Auto">
+    <Grid Background="{Binding Background}" Height="Auto" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" BorderBrush="Gray" 
+                Background="{Binding BackgroundNotification}"
+                BorderThickness="0.3"
+                Panel.ZIndex="1"
+                Padding="5"
+                Visibility="{Binding NotificationVisibility}" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Grid.Row="0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="Gray"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Notification.Type}" Value="Info">
+                                    <Setter Property="Background" Value="#3B82F6"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Notification.Type}" Value="Warning">
+                                    <Setter Property="Background" Value="#F59E0B"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Notification.Type}" Value="Error">
+                                    <Setter Property="Background" Value="#EF4444"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Notification.Type}" Value="Success">
+                                    <Setter Property="Background" Value="#10B981"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <!-- Контент -->
+                <StackPanel Grid.Column="2">
+
+                    <TextBlock Text="{Binding Notification.Title}"
+                FontWeight="SemiBold"
+                FontSize="14"/>
+
+                    <TextBlock Text="{Binding Notification.Content}"
+                Foreground="Gray"
+                TextWrapping="Wrap"
+                Margin="0,4,0,0"/>
+
+                    <TextBlock Text="{Binding Notification.DateTime, StringFormat=dd.MM.yyyy HH:mm}"
+                FontSize="11"
+                Foreground="#9CA3AF"
+                HorizontalAlignment="Right"
+                Margin="0,6,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <ListView ItemsSource="{Binding Notifications}"
+            Visibility="{Binding NotificationsVisibility}"
+            Background="Transparent"
+            Grid.Row="1"
+            BorderThickness="0"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,5"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style> 
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="8"
+                    Background="White"
+                    Padding="12"
+                    Margin="5"
+                    SnapsToDevicePixels="True">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+ 
+                            <Border Grid.Column="0">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Gray"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Type}" Value="Info">
+                                                <Setter Property="Background" Value="#3B82F6"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Warning">
+                                                <Setter Property="Background" Value="#F59E0B"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Error">
+                                                <Setter Property="Background" Value="#EF4444"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Success">
+                                                <Setter Property="Background" Value="#10B981"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+
+                            <!-- Контент -->
+                            <StackPanel Grid.Column="2">
+
+                                <TextBlock Text="{Binding Title}"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"/>
+
+                                <TextBlock Text="{Binding Content}"
+                                   Foreground="Gray"
+                                   TextWrapping="Wrap"
+                                   Margin="0,4,0,0"/>
+
+                                <TextBlock Text="{Binding DateTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                   FontSize="11"
+                                   Foreground="#9CA3AF"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,6,0,0"/>
+                                
+                                
+                            </StackPanel>
+                            <Button Grid.Column="3"
+                                    Content="✕"
+                                    Width="24"
+                                    Height="24"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding DataContext.RemoveNotificationCommnad, 
+                                                      RelativeSource={RelativeSource AncestorType=ListView}}"
+                                    CommandParameter="{Binding}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontWeight="Bold"
+                                    Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

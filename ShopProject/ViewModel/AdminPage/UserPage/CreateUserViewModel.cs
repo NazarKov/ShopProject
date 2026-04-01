@@ -1,15 +1,15 @@
-﻿using ShopProject.Model.AdminPage.UserPage;
-using ShopProject.Helpers.Command;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows;   
-using ShopProject.UIModel.UserPage;
+using System.Windows; 
 using ShopProject.Helpers;
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
+using ShopProject.Model.Domain.UserRole;
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
@@ -23,8 +23,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
         private ICommand _openFileKeyCommand;
         private ICommand _clearWindowCommand;
         private ICommand _exitWindowCommand;
-
-        private CreateUserModel _model;
+         
         private bool _isUserHaveKey;
         private string _nameFile;
 
@@ -40,8 +39,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             _userRoles = new List<UserRole>();
             _backgroundButtonWihtKey = Brushes.LightGray;
             _backgroundButtonWithoutKey = Brushes.LightGray;
-
-            _model = new CreateUserModel();
+             
 
             _createUserCommand = new DelegateCommand(CreateUser);
             _openPanelWithKeyCommand = new DelegateCommand(OpenPanelWithKey);
@@ -164,10 +162,10 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
 
         private void SetFielComboBoxRole()
         {
-            if (Session.Roles != null)
-            {
-                UserRoles = Session.Roles.ToList();
-            }
+            //if (Session.Roles != null)
+            //{
+            //    UserRoles = Session.Roles.ToList();
+            //}
         }
 
         public ICommand CreateUserCommand => _createUserCommand;
@@ -177,17 +175,17 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             Task t = Task.Run(async () => {
                 if (_isUserHaveKey)
                 {
-                    if (await _model.CreateUserKey(PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
-                    {
-                        MessageBox.Show("Корисувача створено");
-                    }
+                    //if (await _model.CreateUserKey(PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
+                    //{
+                    //    MessageBox.Show("Корисувача створено");
+                    //}
                 }
                 else
                 {
-                    if (await _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
-                    {
-                        MessageBox.Show("Корисувача створено");
-                    }
+                    //if (await _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
+                    //{
+                    //    MessageBox.Show("Корисувача створено");
+                    //}
                 }  
             });
 

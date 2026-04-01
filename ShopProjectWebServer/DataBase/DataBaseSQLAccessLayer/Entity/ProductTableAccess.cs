@@ -185,19 +185,30 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         public IEnumerable<ProductEntity> GetAll()
         {
             return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).AsNoTracking();
-        } 
+        }
 
         public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
-        { 
+        {
             if (statusProduct == TypeStatusProduct.Unknown)
             {
-                return _contextDataBase.Products.Include(u=>u.Unit).Include(c=>c.CodeUKTZED).FirstOrDefault(i => i.Code == barCode);
+                return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).FirstOrDefault(i => i.Code == barCode);
             }
             else
             {
                 return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).Where(t => t.Status == statusProduct).FirstOrDefault(i => i.Code == barCode);
-            } 
-        } 
+            }
+        }
+        public IEnumerable<ProductEntity> GetAllByBarCode(string barCode, TypeStatusProduct statusProduct)
+        {
+            if (statusProduct == TypeStatusProduct.Unknown)
+            {
+                return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).Where(i => i.Code.Contains(barCode));
+            }
+            else
+            {
+                return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).Where(t => t.Status == statusProduct).Where(i => i.Code.Contains(barCode));
+            }
+        }
 
         public IEnumerable<ProductEntity> GetByNameAndStatus(string name, TypeStatusProduct status)
         {

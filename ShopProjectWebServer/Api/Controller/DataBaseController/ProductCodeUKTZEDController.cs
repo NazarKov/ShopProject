@@ -77,12 +77,12 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [HttpGet("GetCodeUKTZEDEByCode")]
-        public IActionResult GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status)
+        public IActionResult GetCodeUKTZEDEByCode(string token, string code ,int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             try
             {
-                var result = _servise.GetCodeUKTZEDEByCode(token, code, status); 
-                return Ok(ApiResponse<ProductCodeUKTZEDDto>.Ok(result));
+                var result = _servise.GetCodesUKTZEDEByCode(token, code,page,countColumn, status); 
+                return Ok(ApiResponse<PaginatorDto<ProductCodeUKTZEDDto>>.Ok(result));
             }
             catch (Exception ex)
             {

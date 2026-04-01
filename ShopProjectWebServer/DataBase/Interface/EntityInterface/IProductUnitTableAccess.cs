@@ -12,7 +12,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 
         void Delete(ProductUnitEntity item);
         IEnumerable<ProductUnitEntity> GetAll();
-        ProductUnitEntity GetUnitByCode(int number, TypeStatusUnit status);
+        public IEnumerable<ProductUnitEntity> GetUnitsByCode(int number, TypeStatusUnit statusUnit);
 
         IEnumerable<ProductUnitEntity> GetByNameAndStatus(string name, TypeStatusUnit status);
     }

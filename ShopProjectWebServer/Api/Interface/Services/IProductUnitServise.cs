@@ -14,7 +14,7 @@ namespace ShopProjectWebServer.Api.Interface.Services
 
         public bool DeleteUnit(string token, int id);
 
-        public ProductUnitDto GetUnitByCode(string token, string code, TypeStatusUnit status);
+        public PaginatorDto<ProductUnitDto> GetUnitsByCode(string token, string code, int page, int countColumn, TypeStatusUnit status);
 
         public PaginatorDto<ProductUnitDto> GetUnitsByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUnit status);
 

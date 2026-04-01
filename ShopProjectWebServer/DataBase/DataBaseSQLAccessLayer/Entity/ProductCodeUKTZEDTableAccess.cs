@@ -34,18 +34,16 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         {
             return _contextDataBase.ProductCodeUKTZED.AsNoTracking().ToList();
         } 
-        public ProductCodeUKTZEDEntity GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
-        {
-            ProductCodeUKTZEDEntity result = new ProductCodeUKTZEDEntity();
+        public IEnumerable<ProductCodeUKTZEDEntity> GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
+        { 
             if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
             {
-                result = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.Code == number.ToString());
+                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(i => i.Code.Contains(number.ToString()));
             }
             else
             {
-                result = _contextDataBase.ProductCodeUKTZED.Where(t => t.Status == statusCodeUKTZED).FirstOrDefault(i => i.Code == number.ToString());
-            }
-            return result;
+                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(t => t.Status == statusCodeUKTZED).Where(i => i.Code.Contains(number.ToString()));
+            } 
         } 
         public void Update(ProductCodeUKTZEDEntity item)
         {

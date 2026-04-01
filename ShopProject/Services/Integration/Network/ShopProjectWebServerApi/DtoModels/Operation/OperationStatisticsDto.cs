@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Operation
+{
+    public class OperationInfoDto
+    {
+        [JsonPropertyName("TotalCheck")]
+        public decimal TotalCheck { get; set; }
+        [JsonPropertyName("AmountOfFundsIssued")]
+        public decimal AmountOfFundsIssued { get; set; }
+        [JsonPropertyName("AmountOfFundsReceived")]
+        public decimal AmountOfFundsReceived { get; set; }
+        [JsonPropertyName("AmountOfOfficialFundsIssued")]
+        public decimal AmountOfOfficialFundsIssued { get; set; }
+
+        [JsonPropertyName("AmountOfOfficialFundsReceived")]
+        public decimal AmountOfOfficialFundsReceived { get; set; }
+        [JsonPropertyName("TotalReturnCheck")]
+        public decimal TotalReturnCheck { get; set; }
+    }
+}

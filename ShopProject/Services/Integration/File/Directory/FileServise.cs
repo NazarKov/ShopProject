@@ -1,0 +1,23 @@
+﻿using ShopProject.Services.Integration.File.Directory.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ShopProject.Services.Integration.File.Directory
+{
+    internal class FileServise : IFileServise
+    {
+        public string? Read(string path)
+        {
+            return System.IO.File.Exists(path) ? System.IO.File.ReadAllText(path) : null;
+        }
+
+        public void Write(string path, string content)
+        {
+            System.IO.File.WriteAllText(path, content);
+        }
+    }
+}

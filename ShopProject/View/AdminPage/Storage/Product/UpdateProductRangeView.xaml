@@ -1,0 +1,244 @@
+﻿<Window x:Class="ShopProject.View.AdminPage.Storage.Product.UpdateProductRangeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.Product"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:control="clr-namespace:ShopProject.Controls"
+        mc:Ignorable="d"
+        Title="UpdateProductAll" Height="500" Width="1000"  Name="window" MinWidth="1000" MaxWidth="1000">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <CollectionViewSource x:Key="ProductUnits" Source="{Binding ProductUnits}"></CollectionViewSource>
+            <CollectionViewSource x:Key="ProductCodeUKTZED" Source="{Binding ProductCodeUKTZED}"></CollectionViewSource>
+            <CollectionViewSource x:Key="StatusProducts" Source="{Binding StatusProducts}"></CollectionViewSource>
+            <CollectionViewSource x:Key="ShadowVisibility" Source="{Binding ShadowVisibilitys}"></CollectionViewSource>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="15">
+            <TextBlock x:Name="textBlock"
+           Visibility="{Binding ErrorTextBlockVisibiliti}"
+           Style="{StaticResource ErrorTextBlock}"
+           Grid.RowSpan="2" 
+           Text="{Binding Error}"  
+           Height="35"
+           Padding="8" />
+            <TextBlock x:Name="textBlock1"
+           Visibility="{Binding SuccessTextBlockVisibiliti}"
+           Style="{StaticResource SuccessTextBlock}"
+           Grid.RowSpan="2" 
+           Text="{Binding Success}"  
+           Height="35"
+           Padding="8" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl  ItemsSource="{Binding Product ,UpdateSourceTrigger=PropertyChanged}" Margin="15">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="5"   
+                            BorderBrush="#DDDDDD" 
+                            BorderThickness="1" CornerRadius="2" Padding="10">
+                            <Grid>
+                                <Rectangle x:Name="ShadowRect1" Visibility="{Binding ShadowVisibility}" Fill="Black" Panel.ZIndex="0" Opacity="0.5" Grid.Column="0" Grid.Row="0"  Margin="-10,-10,-10,-10">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Rectangle>
+                                <Grid Background="White">
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <control:TextBoxStretching   
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    Panel.ZIndex="1"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.RowSpan="2"
+                                    Grid.ColumnSpan="5"  
+                                    MinHeightTextBox="60"
+                                    MinWidthTextBox="150"
+                                    Margin="0,0,-5,0"
+                                    HeightTextBox="60"
+                                    WidthTextBox="150" 
+                                    MaxHeightTextBox="120"
+                                    MaxWidthTextBox="400"
+                                    LostFocusHeightTextBox="60"
+                                    LostFocusWidthTextBox="150"
+                                    TextBlockText="Назва товару" 
+                                    ExternalShadowVisibility="{Binding ShadowVisibility,Mode=TwoWay}"
+                                    ExternalLostFocusCommand="{Binding LostFocusCommand,Mode=TwoWay}"
+                                    Text="{Binding NameProduct, Mode=TwoWay}"/>
+
+
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,20,10">
+                                        <TextBlock Text="Штрихкод товару"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <Border Padding="6,2"
+                                        Margin="0,0,0,5"
+                                        Background="#1F6B7280">
+                                            <TextBlock Text="{Binding BarcodeLength, StringFormat=Кількість цифр: {0}}"
+                                               Style="{StaticResource BarCountTextBlock}" />
+                                        </Border>
+                                        <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="35"
+                                         Padding="8"
+                                         Style="{StaticResource GeneralTextBox}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,20,10">
+                                        <TextBlock Text="Ціна товару"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}"
+                                         Height="35"
+                                         Padding="8"
+                                         TextAlignment="Right"
+                                         Style="{StaticResource GeneralTextBox}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,20,10">
+                                        <TextBlock Text="Кількість товару"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}"
+                                         Height="35"
+                                         Padding="8"
+                                         TextAlignment="Right"
+                                         Style="{StaticResource GeneralTextBox}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="4" 
+                                        VerticalAlignment="Stretch"
+                                        Orientation="Vertical" >
+                                        <TextBlock Text="{Binding ID}" Visibility="Collapsed"></TextBlock>
+                                        <Button Content="Зберегти" 
+                                        Width="120"
+                                        VerticalAlignment="Top"
+                                        Height="40"
+                                        Margin="0,20,0,20"
+                                        Style="{StaticResource SuccessButton}"
+                                        IsEnabled="{Binding DataContext.IsEnableSaveButton, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding }"
+                                        Command="{Binding DataContext.UpdateProductCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                        <Button Content="Очистити"
+                                        VerticalAlignment="Bottom"
+                                        Margin="0,38,0,0"
+                                        Width="120"
+                                        Height="40"
+                                        Style="{StaticResource ExitButton}"
+                                        CommandParameter="{Binding }"
+                                        Command="{Binding DataContext.ClearItem, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+                                        <TextBlock Text="Артикул"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding Articule}"
+                                         Height="35"
+                                         Padding="8"
+                                         Style="{StaticResource GeneralTextBox}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,20,0">
+                                        <TextBlock Text="Одиниці товару"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding DataContext.ProductUnits, RelativeSource={RelativeSource AncestorType=ItemsControl}}"  
+                                          SelectedValue="{Binding UnitId, Mode=TwoWay}"
+                                          SelectedValuePath="ID"
+                                          DisplayMemberPath="ShortNameUnit"
+                                          Style="{StaticResource GeneralComboBox}"
+                                          Height="35"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,20,0">
+                                        <TextBlock Text="Код УКТЗЕД"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding DataContext.ProductCodeUKTZED, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                          SelectedValue="{Binding CodeUKTZEDId, Mode=TwoWay}"
+                                          SelectedValuePath="ID" 
+                                          DisplayMemberPath="NameCode"
+                                          Style="{StaticResource GeneralComboBox}"
+                                          Height="35"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="3" Margin="0,0,20,0">
+                                        <TextBlock Text="Статус"
+                                           Style="{StaticResource GeneralTextBlock}"
+                                           Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding DataContext.StatusProducts,  RelativeSource={RelativeSource AncestorType=ItemsControl}}"  
+                                          SelectedValue="{Binding StatusString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Style="{StaticResource GeneralComboBox}"
+                                          Height="35"/>
+                                    </StackPanel>
+
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+
+        <Border Margin="0,15,0,0" 
+            Grid.Row="2" 
+            Background="White" 
+            Padding="10"
+            BorderBrush="#DDDDDD"
+            BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,20,0">
+                    <TextBlock Text="Ціна для кожного товару" Style="{StaticResource GeneralTextBlock}" Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}" Height="35" Padding="8" Style="{StaticResource GeneralTextBox}" TextAlignment="Right" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Grid.Row="2" Margin="0,0,20,0">
+                    <TextBlock Text="Кількість для кожного товару" Style="{StaticResource GeneralTextBlock}" Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, StringFormat=0.00}" Height="35" Padding="8"  Style="{StaticResource GeneralTextBox}" TextAlignment="Right" />
+                </StackPanel>
+
+                <Button x:Name="button1" Content="Зберегти" Width="120" HorizontalAlignment="Right" Margin="0,20,20,0" 
+                    Height="35"
+                    Style="{StaticResource SuccessButton }"
+                    Cursor="Hand" Grid.Row="1" VerticalAlignment="Top" Command="{Binding UpdateProductRangeCommand}"/>
+                <Button x:Name="button2" Content="Вийти" Width="120" HorizontalAlignment="Right" Margin="0,20,20,0" 
+                    Style="{StaticResource ExitButton }"
+                    Height="35"
+                    Cursor="Hand" Grid.Row="1" VerticalAlignment="Top" CommandParameter="{Binding ElementName=window}" Command="{Binding ExitWindowCommand}"/>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

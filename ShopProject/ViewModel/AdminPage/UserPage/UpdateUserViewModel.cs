@@ -1,23 +1,19 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.Navigation;
-using ShopProject.Model.AdminPage.UserPage;
-using ShopProject.Helpers.Command;
-using ShopProjectDataBase.Entities; 
+﻿using ShopProject.Helpers; 
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Input; 
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
     internal class UpdateUserViewModel : ViewModel<UpdateUserViewModel>
-    {
-        private UpdateUserModel _model;
-
-
+    {  
         private ICommand _updateUserCommand;
         private ICommand _openPanelWithKeyCommand; 
 
@@ -30,9 +26,7 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
         private Guid _id;
 
         public UpdateUserViewModel()
-        {
-            _model = new UpdateUserModel();
-            
+        { 
             _login = string.Empty;
             _nameFile = string.Empty;
             _fullName = string.Empty;
@@ -158,28 +152,28 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             _visibilityFielKey = Visibility.Hidden;
             _sizeWindow = 400;
 
-            var user = Session.UserEntity;
+            //var user = Session.UserEntity;
 
-            if (user != null)
-            {
-                _login = user.Login;
-                _fullName = user.FullName;
-                _email = user.Email;
-                _password = user.Password;
-                _id = user.ID;
-                if (user.SignatureKey != null)
-                {
-                    MessageByKey = "";
-                    ContentUpdateKeyButton = "Оновити ключ";
-                    _isUserHaveKey = true;
-                }
-                else
-                {
-                    MessageByKey = "Ключ вісутній";
-                    ContentUpdateKeyButton = "Добавити ключ";
-                    _isUserHaveKey= false;
-                }
-            }
+            //if (user != null)
+            //{
+            //    _login = user.Login;
+            //    _fullName = user.FullName;
+            //    _email = user.Email;
+            //    _password = user.Password;
+            //    _id = user.ID;
+            //    if (user.SignatureKey != null)
+            //    {
+            //        MessageByKey = "";
+            //        ContentUpdateKeyButton = "Оновити ключ";
+            //        _isUserHaveKey = true;
+            //    }
+            //    else
+            //    {
+            //        MessageByKey = "Ключ вісутній";
+            //        ContentUpdateKeyButton = "Добавити ключ";
+            //        _isUserHaveKey= false;
+            //    }
+            //}
         }
 
         private void SetButton()
@@ -189,42 +183,42 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
 
         private void SetFielComboBoxRole()
         {
-            var item = new List<UserRoleEntity>();
-            Task t = Task.Run(async () =>
-            {
-                item = await _model.GetUserRoles();
-            });
-            t.ContinueWith(t =>
-            {
-                if (item.Count > 0)
-                {
-                    UserRoles = item;
-                }
-            });
+            //var item = new List<UserRoleEntity>();
+            //Task t = Task.Run(async () =>
+            //{
+            //    item = await _model.GetUserRoles();
+            //});
+            //t.ContinueWith(t =>
+            //{
+            //    if (item.Count > 0)
+            //    {
+            //        UserRoles = item;
+            //    }
+            //});
         }
 
         public ICommand UpdateUserCommand => _updateUserCommand;
 
         public void UpdateUser()
         {
-            Task t = Task.Run(async () => {
-                if (_isUserHaveKey)
-                {
-                    if (await _model.UpdateUserKey(_id,PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
-                    {
-                        MessageBox.Show("Корисувача створено");
-                        MediatorService.ExecuteEvent("ReloadUser");
-                    }
-                }
-                else
-                {
-                    if (await _model.UpdateUser(_id,FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
-                    {
-                        MessageBox.Show("Корисувача створено");
-                        MediatorService.ExecuteEvent("ReloadUser");
-                    }
-                }
-            });
+            //Task t = Task.Run(async () => {
+            //    if (_isUserHaveKey)
+            //    {
+            //        if (await _model.UpdateUserKey(_id,PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
+            //        {
+            //            MessageBox.Show("Корисувача створено");
+            //            //MediatorService.ExecuteNavigation("ReloadUser");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (await _model.UpdateUser(_id,FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
+            //        {
+            //            MessageBox.Show("Корисувача створено");
+            //            //MediatorService.ExecuteEvent("ReloadUser");
+            //        }
+            //    }
+            //});
 
         }
 

@@ -13,7 +13,7 @@ namespace ShopProjectWebServer.Api.Interface.Services
 
         public bool DeleteCodeUKTZEDE(string token, int id);
 
-        public ProductCodeUKTZEDDto GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status);
+        public PaginatorDto<ProductCodeUKTZEDDto> GetCodesUKTZEDEByCode(string token, string code, int page, int countColumn, TypeStatusCodeUKTZED status);
         public PaginatorDto<ProductCodeUKTZEDDto> GetCodeUKTZEDByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusCodeUKTZED status);
         public PaginatorDto<ProductCodeUKTZEDDto> GetCodeUKTZEDPageColumn(string token, int page, int countColumn, TypeStatusCodeUKTZED status);
 

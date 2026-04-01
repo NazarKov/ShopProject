@@ -60,13 +60,19 @@ namespace ShopProjectWebServer.Api.Services
             return new PaginatorDto<ProductCodeUKTZEDDto>(paginator.Page, paginator.Pages, productCodeUKTZEDs.ToProductCodeUKTZEDDto());
         }
 
-        public ProductCodeUKTZEDDto GetCodeUKTZEDEByCode(string token, string code, TypeStatusCodeUKTZED status)
+        public PaginatorDto<ProductCodeUKTZEDDto> GetCodesUKTZEDEByCode(string token, string code, int page, int countColumn, TypeStatusCodeUKTZED status)
         {
             if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return _controller.DataBaseAccess.ProductCodeUKTZEDTable.GetCodeUKTZEDByCode(int.Parse(code),status).ToProductCodeUKTZEDDto();
+            var result = _controller.DataBaseAccess.ProductCodeUKTZEDTable.GetCodeUKTZEDByCode(int.Parse(code), status);
+
+            if(result != null)
+            {
+                return PaginatorDto<ProductCodeUKTZEDDto>.CreationPaginator(result.Reverse().ToProductCodeUKTZEDDto(),page, countColumn);
+            }
+            return null;
         }
 
         public PaginatorDto<ProductCodeUKTZEDDto> GetCodeUKTZEDPageColumn(string token, int page, int countColumn, TypeStatusCodeUKTZED status)

@@ -1,0 +1,96 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="DataGrid" TargetType="DataGrid">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="Transparent"></Setter>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="AutoGenerateColumns" Value="False"></Setter>
+        <Setter Property="HeadersVisibility" Value="Column"></Setter>
+        <Setter Property="CanUserAddRows" Value="False"></Setter>
+        <Setter Property="CanUserDeleteRows" Value="False"></Setter>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"></Setter>
+        <Setter Property="GridLinesVisibility" Value="None"></Setter> 
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter> 
+
+    </Style>
+    <Style x:Key="DataGridColumnHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="CadetBlue"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderBrush" Value="Transparent"></Setter>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="10"/> 
+    </Style>
+    <Style  x:Key="DataGridRow" TargetType="DataGridRow">
+
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Padding" Value="10"></Setter>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+
+                <ControlTemplate TargetType="DataGridRow">
+
+                    <Border x:Name="RowBorder"
+                        Background="{TemplateBinding Background}" 
+                        CornerRadius="2"
+                        BorderBrush="#E5E5E5"  
+                        BorderThickness="1">
+
+                        <SelectiveScrollingGrid  >
+
+                            <SelectiveScrollingGrid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </SelectiveScrollingGrid.ColumnDefinitions>
+
+                            <SelectiveScrollingGrid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </SelectiveScrollingGrid.RowDefinitions>
+
+                            <DataGridCellsPresenter Background="Transparent" VerticalAlignment="Stretch"  Grid.Column="1" x:Name="text"> 
+                            </DataGridCellsPresenter>
+
+                        </SelectiveScrollingGrid>
+
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="RowBorder"
+                                Property="Background"
+                                Value="#F5F7FA"/>
+                        </Trigger>
+
+                        <!-- Selected -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="RowBorder"
+                                Property="BorderBrush"
+                                Value="CadetBlue"/>
+                            <Setter TargetName="RowBorder"
+                                Property="BorderThickness"
+                                Value="2"/>
+                            <Setter TargetName="text" Property="Foreground" Value="DimGray"></Setter>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="RectangleCellStyle" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"></Setter> 
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"></Setter> 
+    </Style> 
+</ResourceDictionary>

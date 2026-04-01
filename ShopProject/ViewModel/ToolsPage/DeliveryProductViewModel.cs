@@ -1,4 +1,5 @@
-﻿using ShopProject.Helpers.Command;
+﻿using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
 using ShopProject.Model.ToolsPage;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,11 @@ using System.Windows.Input;
 namespace ShopProject.ViewModel.ToolsPage
 {
     internal class DeliveryProductViewModel : ViewModel<DeliveryProductViewModel>
-    {
-        private DeliveryProductModel _model;
+    { 
         private ICommand _saveParametersCommand;
 
         public DeliveryProductViewModel() 
-        {
-            _model = new DeliveryProductModel();
+        { 
 
             _saveParametersCommand = new DelegateCommand(Save);
             _barCode = string.Empty;
@@ -39,15 +38,15 @@ namespace ShopProject.ViewModel.ToolsPage
         public ICommand SaveParametersCommand => _saveParametersCommand;
         private void Save()
         {
-            if (_model != null)
-            {
-                if (_model.SetCount(BarCode, count))
-                {
-                    BarCode = string.Empty;
-                }
-            }
+            //if (_model != null)
+            //{
+            //    if (_model.SetCount(BarCode, count))
+            //    {
+            //        BarCode = string.Empty;
+            //    }
+            //}
         }
-        public ICommand ExitWindowCommand { get => new DelegateParameterCommand(WindowClose, CanRegister); }
+        public ICommand ExitWindowCommand { get => CreateCommandParameter<object>(WindowClose); }
         private void WindowClose(object parameter)
         {
             Window? window = parameter as Window;

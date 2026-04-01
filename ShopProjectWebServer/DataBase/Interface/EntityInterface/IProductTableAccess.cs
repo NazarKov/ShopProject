@@ -15,7 +15,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Delete(ProductEntity item); 
         IEnumerable<ProductEntity> GetAll(); 
         ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct);
-
+        public IEnumerable<ProductEntity> GetAllByBarCode(string barCode, TypeStatusProduct statusProduct);
         IEnumerable<ProductEntity> GetByNameAndStatus(string name, TypeStatusProduct status);
 
     }

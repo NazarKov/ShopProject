@@ -5,7 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using ShopProject.Views.HomePage;
+using ShopProject.Core.Mvvm.CompositionRoot;
+using ShopProject.Extensions.FactoryExtensions;
+using ShopProject.Services.Modules.Resourse.Interface;
+using ShopProject.View.Common.Main;
+using ShopProject.ViewModel.Common.Home;
 
 namespace ShopProject
 {
@@ -14,10 +18,17 @@ namespace ShopProject
     /// </summary>
     public partial class App : Application
     {
+        public static AppCompositionRoot Container { get; private set; } = new AppCompositionRoot();
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // Create the startup window
-            HomeView wnd = new HomeView();
+            Container.ServiceProvider.AddApplicationService(); 
+            Container.ServiceProvider.Get<IResourseService>().IsInitSystemFolders();
+
+            Container.FactoryView.AddApplicationView();
+            Container.ServiceProvider.AddApplicationViewModel();
+
+
+            MainView wnd = Container.GetViewWithViewModel<MainView, MainViewModel>();
             wnd.Show();
         }
     }

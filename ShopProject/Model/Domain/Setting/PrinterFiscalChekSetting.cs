@@ -1,0 +1,18 @@
+﻿using ShopProject.Resource.template;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace ShopProject.Model.Domain.Setting
+{
+    internal class PrinterFiscalChekSetting
+    {
+        public string Printer { get; set; } = "Microsoft Print to PDF";
+        public double Width { get; set; } = 0; 
+        public double Slcale { get; set; } = 0; 
+        public double SizeQrCode {  get; set; } = 0; 
+    }
+}

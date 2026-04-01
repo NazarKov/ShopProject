@@ -1,6 +1,7 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Common;
+using ShopProjectWebServer.Api.DtoModels.Product;
 using ShopProjectWebServer.Api.DtoModels.ProductUnit;
 using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.Api.Mappings;
@@ -39,13 +40,15 @@ namespace ShopProjectWebServer.Api.Services
             return true;
         }
 
-        public ProductUnitDto GetUnitByCode(string token, string code, TypeStatusUnit status)
+        public PaginatorDto<ProductUnitDto> GetUnitsByCode(string token, string code, int page, int countColumn, TypeStatusUnit status)
         {
             if (!_authorizationServise.LoginToken(token))
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return _controller.DataBaseAccess.ProductUnitTable.GetUnitByCode(int.Parse(code),status).ToProductUnitDto(); 
+
+            var result = _controller.DataBaseAccess.ProductUnitTable.GetUnitsByCode(int.Parse(code), status); 
+            return PaginatorDto<ProductUnitDto>.CreationPaginator(result.Reverse().ToProductUnitDto(), page, countColumn); 
         }
 
         public IEnumerable<ProductUnitDto> GetUnits(string token)

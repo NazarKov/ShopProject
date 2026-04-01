@@ -1,17 +1,18 @@
-﻿using ShopProject.Model;
-using ShopProject.Helpers.Command;
+﻿using ShopProject.Model; 
 using ShopProject.Model.StoragePage;
 using ShopProject.Model.ToolsPage;
-using ShopProjectDataBase.Entities; 
+using ShopProjectDataBase.Entities;
 using System;
 using System.Collections;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
 
 namespace ShopProject.ViewModel.ToolsPage
 {
@@ -19,13 +20,11 @@ namespace ShopProject.ViewModel.ToolsPage
     {
         private ICommand _addProductDataBaseCommand;
         private ICommand _searchBarCodeProductCommand;
-
-        private FormationProductModel _model;
+         
         private List<ProductEntity> _productsSelectGridView;
 
         public FormationProductViewModel() 
-        {
-            _model = new FormationProductModel();
+        { 
 
             _name = string.Empty;
             _code = string.Empty;
@@ -47,8 +46,8 @@ namespace ShopProject.ViewModel.ToolsPage
         }
         private void SetFieldComboBox()
         {
-            Units = _model.GetUnits();
-            CodeUKTZED = _model.GetCodeUKTZED();
+            //Units = _model.GetUnits();
+            //CodeUKTZED = _model.GetCodeUKTZED();
 
             SelectUnits = 0;
             SelectCodeUKTZED = 0;
@@ -139,26 +138,26 @@ namespace ShopProject.ViewModel.ToolsPage
             {
                 if (SearchCode != "0000000000000")//винести в настройки
                 {
-                    var item = _model.Search(SearchCode);
-                    if (item != null)
-                    {
-                        item.Count = 1;
-                        temp = new List<ProductEntity>();
-                        temp = ProductList;
+                    //var item = _model.Search(SearchCode);
+                    //if (item != null)
+                    //{
+                    //    item.Count = 1;
+                    //    temp = new List<ProductEntity>();
+                    //    temp = ProductList;
 
-                        if (temp.Find(pr => pr.Code == item.Code) != null)
-                        {
-                            temp.Find(pr => pr.Code == item.Code).Count += 1;
-                        }
-                        else
-                        {
-                            temp.Add(item);
-                        }
+                    //    if (temp.Find(pr => pr.Code == item.Code) != null)
+                    //    {
+                    //        temp.Find(pr => pr.Code == item.Code).Count += 1;
+                    //    }
+                    //    else
+                    //    {
+                    //        temp.Add(item);
+                    //    }
 
-                        ProductList = new List<ProductEntity>();
-                        ProductList = temp;
-                        SearchCode = string.Empty;
-                    }
+                    //    ProductList = new List<ProductEntity>();
+                    //    ProductList = temp;
+                    //    SearchCode = string.Empty;
+                    //}
                 }
                 else
                 {
@@ -189,25 +188,25 @@ namespace ShopProject.ViewModel.ToolsPage
             }
         }
 
-        public ICommand UpdateProductsInFormedProductCommand { get => new DelegateParameterCommand(UpdateProductsInFormedProduct, CanRegister); }
+        public ICommand UpdateProductsInFormedProductCommand { get => CreateCommandParameter<object>(UpdateProductsInFormedProduct); }
 
         private void UpdateProductsInFormedProduct(object parameter)
         {
-            _productsSelectGridView = new List<ProductEntity>();
-            if (_model != null)
-            {
-                _model.ContertToListProduct((IList)parameter, _productsSelectGridView);
+            //_productsSelectGridView = new List<ProductEntity>();
+            //if (_model != null)
+            //{
+            //    _model.ContertToListProduct((IList)parameter, _productsSelectGridView);
 
-                var list = _model.UpdateList(_ProductList, _productsSelectGridView);
+            //    var list = _model.UpdateList(_ProductList, _productsSelectGridView);
 
-                if (list != null)
-                {
-                    ProductList = list;
-                }
-            }
+            //    if (list != null)
+            //    {
+            //        ProductList = list;
+            //    }
+            //}
         }
 
-        public ICommand ExitWindow { get => new DelegateParameterCommand(WindowClose, CanRegister); }
+        public ICommand ExitWindow { get => CreateCommandParameter<object>(WindowClose); }
         private void WindowClose(object parameter)
         {
             Window? window = parameter as Window;
@@ -220,18 +219,18 @@ namespace ShopProject.ViewModel.ToolsPage
 
         private void AddProductDataBase()
         {
-            if (_model.AddProduct(new ProductEntity() {
-                NameProduct = Name,
-                Code = Code,
-                Articule = Articule,
-                Price = (decimal)Price,
-                Count = Count,
-                Unit = Units.ElementAt(SelectUnits),
-                CodeUKTZED = CodeUKTZED.ElementAt(SelectCodeUKTZED) },
-                ProductList))
-            {
-                MessageBox.Show("Товар добавлено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            //if (_model.AddProduct(new ProductEntity() {
+            //    NameProduct = Name,
+            //    Code = Code,
+            //    Articule = Articule,
+            //    Price = (decimal)Price,
+            //    Count = Count,
+            //    Unit = Units.ElementAt(SelectUnits),
+            //    CodeUKTZED = CodeUKTZED.ElementAt(SelectCodeUKTZED) },
+            //    ProductList))
+            //{
+            //    MessageBox.Show("Товар добавлено", "Informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            //}
         }
 
     }

@@ -1,6 +1,5 @@
-﻿using ShopProject.Helpers;
-using ShopProject.Helpers.Command;
-using ShopProject.Model.StatisticsPage;
+﻿using ShopProject.Core.Mvvm;
+using ShopProject.Helpers;  
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +10,12 @@ using System.Windows.Input;
 namespace ShopProject.ViewModel.StatisticsPage
 {
     internal class StatisticsViewModel : ViewModel<StatisticsViewModel>
-    {
-        private StatisticsModel _model;
+    { 
 
         private ICommand _searchOperationsCommand;
 
         public StatisticsViewModel()
-        {
-            _model = new StatisticsModel();
+        { 
 
             //_users = new List<UserEntiti>();
             //_operationsRecorders = new List<OperationsRecorderEntiti>();

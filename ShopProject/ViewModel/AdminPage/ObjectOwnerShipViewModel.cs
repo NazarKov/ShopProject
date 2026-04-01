@@ -1,25 +1,25 @@
-﻿using ShopProject.Helpers.Command;
-using ShopProject.Model.AdminPage;
+﻿using ShopProject.Controls.Paginator;
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
+using ShopProject.Core.Mvvm.CompositionRoot.Interface; 
+using ShopProject.Model.Domain.Paginator;
+using ShopProject.Model.Enum;
+using ShopProject.Model.UI.ObjectOwner;
+using ShopProject.Services.Modules.MappingServise;
+using ShopProject.Services.Modules.ModelService.ObjectOwner.Interface;
+using ShopProject.Views.AdminPage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading; 
-using System.Windows.Input;
-using ShopProject.Views.AdminPage; 
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers; 
-using ShopProject.ViewModel.TemplatePage; 
-using ShopProject.Helpers.Template.Paginator;
-using System;
-using System.Windows; 
-using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProject.UIModel.ObjectOwnerPage;
+using System.Windows;
+using System.Windows.Input;
 
 namespace ShopProject.ViewModel.AdminPage
 {
-    internal class ObjectOwnerShipViewModel : ViewModel<ObjectOwnerShipViewModel>
+    internal class ObjectOwnerShipViewModel : ViewModel<ObjectOwnerShipViewModel> , IViewModelLoadResourse
     {
-        private ObjectOwnerShipModel _model;
         private System.Windows.Forms.OpenFileDialog _openFileDialog;
 
         private static System.Threading.Timer _timer;
@@ -35,48 +35,54 @@ namespace ShopProject.ViewModel.AdminPage
         private ICommand _updateItemDataGridView;
         private ICommand _updateSizeGridCommand;
 
-        public ObjectOwnerShipViewModel()
+        private IObjectOwnerService _objectOwnerService;
+
+        public ObjectOwnerShipViewModel(IObjectOwnerService objectOwnerService)
         {
-            _model = new ObjectOwnerShipModel();
+            _objectOwnerService = objectOwnerService;
             _password = string.Empty;
-            _paginator = new TemplatePaginatorButtonViewModel();
+            _paginator = new  PaginatorViewModel();
             _countShowList = new List<string>();
             _nameSearch = string.Empty;
             _statusObjectOwner = new List<string>();
-            _objectList = new List<ObjectOwner>();
+            _objectList = new List<ObjectOwnerModel>();
             _visibilitiDialogWindow = Visibility.Hidden;
             _openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            _objectListDialogWindow = new List<ObjectOwnerDialogWindow>();
+            _objectListDialogWindow = new List<ObjectOwnerDialogWindowModel>();
 
             _updateSizeGridCommand = new DelegateCommand(UpdateSizes);
             _openDialogWindowCommand = new DelegateCommand(OpenDialogWindow);
             _closeDialogWindowCommand = new DelegateCommand(CloseDialogWindow);
             _openKeyCommand = new DelegateCommand(OpenKey);
             _saveObjectOwnerCommand = new DelegateCommand(SaveObjectOwner);
-            _deleteObjectCommand = new DelegateCommand(DeleteObject);
+            _deleteObjectCommand = CreateCommandAsync(DeleteObject);
             _openWindowDataObjectCommand = new DelegateCommand(OpenWindowObjectData);
-            _updateItemDataGridView = new DelegateCommand(() => { SetFieldPage(); });
+            _updateItemDataGridView = CreateCommandAsync(SetFieldPage);
 
 
 
-            _timer = new System.Threading.Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite);
-
-            SetFieldPage();
+            _timer = new System.Threading.Timer(OnInputStopped, null, Timeout.Infinite, Timeout.Infinite); 
         }
+
+        public async Task LoadResourse()
+        {
+            await SafeExecuteAsync(SetFieldPage);
+        }
+
         private string _password;
         public string Password
         {
             get { return _password; }
             set { _password = value; OnPropertyChanged(nameof(Password)); }
         }
-        private List<ObjectOwner> _objectList;
-        public List<ObjectOwner> ObjectList
+        private List<ObjectOwnerModel> _objectList;
+        public List<ObjectOwnerModel> ObjectList
         {
             get { return _objectList; }
             set { _objectList = value; OnPropertyChanged(nameof(ObjectList)); }
         }
-        private List<ObjectOwnerDialogWindow> _objectListDialogWindow;
-        public List<ObjectOwnerDialogWindow> ObjectListDialogWindow
+        private List<ObjectOwnerDialogWindowModel> _objectListDialogWindow;
+        public List<ObjectOwnerDialogWindowModel> ObjectListDialogWindow
         {
             get { return _objectListDialogWindow; }
             set { _objectListDialogWindow = value; OnPropertyChanged(nameof(ObjectListDialogWindow)); }
@@ -101,7 +107,7 @@ namespace ShopProject.ViewModel.AdminPage
             set { _selectedItem = value; OnPropertyChanged(nameof(SelectedItem)); }
         }
 
-        public ICommand UpdateItemDataGridView => _updateItemDataGridView; 
+        public ICommand UpdateItemDataGridView => _updateItemDataGridView;
         public ICommand OpenDialogWindowCommand => _openDialogWindowCommand;
         private void OpenDialogWindow()
         {
@@ -124,24 +130,24 @@ namespace ShopProject.ViewModel.AdminPage
             _openFileDialog.ShowDialog();
 
 
-            List<ObjectOwnerDialogWindow> temp = new List<ObjectOwnerDialogWindow>();
-            if (await _model.GetServerObjectOwner(_openFileDialog.FileName, Password))
+            List<ObjectOwnerDialogWindowModel> temp = new List<ObjectOwnerDialogWindowModel>();
+            if (await _objectOwnerService.GetServerObjectOwner(_openFileDialog.FileName, Password))
             {
                 VisibilitiFieldDialogWindow = Visibility.Visible;
 
-                foreach (var item in _model.GetListObjectOwner())
+                foreach (var item in _objectOwnerService.GetListObjectOwner())
                 {
-                    temp.Add(new ObjectOwnerDialogWindow(item));
+                    temp.Add(new ObjectOwnerDialogWindowModel(item));
                 }
 
-                ObjectListDialogWindow = new List<ObjectOwnerDialogWindow>(temp);
+                ObjectListDialogWindow = new List<ObjectOwnerDialogWindowModel>(temp);
 
-            } 
+            }
         }
         public ICommand SaveObjectOwnerCommand => _saveObjectOwnerCommand;
         private void SaveObjectOwner()
         {
-            if (_model.SaveDataBaseItem(ObjectListDialogWindow))
+            if (_objectOwnerService.SaveDataBaseItem(ObjectListDialogWindow))
             {
                 MessageBox.Show("Обєкти добавлені");
                 ObjectListDialogWindow.Clear();
@@ -152,24 +158,20 @@ namespace ShopProject.ViewModel.AdminPage
             UpdateDataGridView();
         }
         public ICommand DeleteObjectCommand => _deleteObjectCommand;
-        private void DeleteObject()
+        private async Task DeleteObject()
         {
             var item = ObjectList.ElementAt(SelectedItem);
             if (item != null)
             {
-                Task t = Task.Run(async () => {
-                    if (await _model.DeleteItem(item))
-                    {
-                        MessageBox.Show("Обєкт видалено");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Обєкт не вдалося видалити");
-                    }
-                });
-                t.ContinueWith(t => {
-                    UpdateDataGridView();
-                });
+                if (await _objectOwnerService.DeleteItem(item.ToObjectOwner()))
+                {
+                    MessageBox.Show("Обєкт видалено");
+                }
+                else
+                {
+                    MessageBox.Show("Обєкт не вдалося видалити");
+                }
+                UpdateDataGridView();
             }
         }
         public ICommand OpenWindowDataObjectCommand => _openWindowDataObjectCommand;
@@ -179,8 +181,8 @@ namespace ShopProject.ViewModel.AdminPage
         }
 
 
-        private TemplatePaginatorButtonViewModel _paginator;
-        public TemplatePaginatorButtonViewModel Paginator
+        private PaginatorViewModel _paginator;
+        public PaginatorViewModel Paginator
         {
             get { return _paginator; }
             set { _paginator = value; OnPropertyChanged(nameof(Paginator)); }
@@ -228,12 +230,12 @@ namespace ShopProject.ViewModel.AdminPage
             set { _heigth = value; OnPropertyChanged(nameof(Heigth)); }
         }
 
-        public void SetFieldPage()
+        public async Task SetFieldPage()
         {
             SetFiledDialogWindow();
             SetComboBox();
             SetFielComboBoxTypeStatusProduct();
-            SetFieldDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)), 1, true);
+            await SetFieldDataGridView(int.Parse(CountShowList.ElementAt(SelectIndexCountShowList)), 1, true);
         }
 
         private void SetFiledDialogWindow()
@@ -270,28 +272,22 @@ namespace ShopProject.ViewModel.AdminPage
         }
 
 
-        private void SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
+        private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            PaginatorData<ObjectOwner> result = new PaginatorData<ObjectOwner>();
-            Task t = Task.Run(async () => {
-
-                result = await _model.GetObjectOwnerPageColumn(page, countCoulmn, Enum.Parse<TypeStatusObjectOwner>(StatusObjectOwner.ElementAt(SelectedStatusObjectOwner)));
-            });
-            t.ContinueWith(t => {
-                if (reloadbutton)
+            var result = await _objectOwnerService.GetObjectOwnerPageColumn(page, countCoulmn, Enum.Parse<TypeStatusObjectOwner>(StatusObjectOwner.ElementAt(SelectedStatusObjectOwner)));
+            if (reloadbutton)
+            {
+                if (result.Pages == 0)
                 {
-                    if (result.Pages == 0)
-                    {
-                        Paginator.CountButton = 1;
-                    }
-                    else
-                    {
-                        Paginator.CountButton = result.Pages;
-                    }
+                    Paginator.CountButton = 1;
                 }
-                ObjectList = result.Data.ToList();
-                _isReadyUpdateDataGriedView = true;
-            });
+                else
+                {
+                    Paginator.CountButton = result.Pages;
+                }
+            }
+            ObjectList = result.Data.ToObjectOwnerModel().ToList();
+            _isReadyUpdateDataGriedView = true;
         }
 
         private void UpdateDataGridView(int page = 1)
@@ -315,7 +311,7 @@ namespace ShopProject.ViewModel.AdminPage
             }
         }
 
-        public ICommand SearchCommand { get => new DelegateParameterCommand(SearchOperationRecorder, CanRegister); }
+        public ICommand SearchCommand { get => CreateCommandParameter<object>(SearchOperationRecorder); }
 
         private void SearchOperationRecorder(object parameter)
         {
@@ -331,23 +327,14 @@ namespace ShopProject.ViewModel.AdminPage
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        private void SearchByNameAndByBarCode(int countColumn, int page)
+        private async Task SearchByNameAndByBarCode(int countColumn, int page)
         {
-            PaginatorData<ObjectOwner> result = new PaginatorData<ObjectOwner>();
-
-            Task t = Task.Run(async () =>
+            var result = (await _objectOwnerService.SearchByName(_nameSearch, page, countColumn, Enum.Parse<TypeStatusObjectOwner>(StatusObjectOwner.ElementAt(SelectedStatusObjectOwner))));
+            if (!(Paginator.CountButton == result.Pages))
             {
-                result = await _model.SearchByName(_nameSearch, page, countColumn, Enum.Parse<TypeStatusObjectOwner>(StatusObjectOwner.ElementAt(SelectedStatusObjectOwner)));
-
-            });
-            t.ContinueWith(t =>
-            {
-                if (!(Paginator.CountButton == result.Pages))
-                {
-                    Paginator.CountButton = result.Pages;
-                } 
-                ObjectList = result.Data.ToList();
-            });
+                Paginator.CountButton = result.Pages;
+            }
+            ObjectList = result.Data.ToObjectOwnerModel().ToList();
         }
         public ICommand UpdateSizeCommand => _updateSizeGridCommand;
 
@@ -356,7 +343,6 @@ namespace ShopProject.ViewModel.AdminPage
             Heigth = (int)System.Windows.Application.Current.MainWindow.ActualHeight - 340;
         }
 
-        public ICommand UpdateUserDataGridView => _updateItemDataGridView;
-        private bool CanRegister(object parameter) => true;
+        public ICommand UpdateUserDataGridView => _updateItemDataGridView; 
     }
 }
