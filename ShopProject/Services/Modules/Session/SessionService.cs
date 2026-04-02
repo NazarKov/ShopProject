@@ -86,6 +86,13 @@ namespace ShopProject.Services.Modules.Session
         }
         public bool CheckingWorkingShiftStatus()
         {
+            var setting = _settingService.GetSetting<WorkingShiftStatus>();
+
+            if (setting != null && setting != new WorkingShiftStatus()) 
+            {
+                WorkingShiftStatus = setting;
+            }
+
             if (WorkingShiftStatus!=null&& WorkingShiftStatus.OperationRecorder != null)
             {
                 return true;

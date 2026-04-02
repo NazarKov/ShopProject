@@ -1,11 +1,11 @@
-﻿<Window x:Class="ShopProject.View.ToolsPage.CreateStickerView"
+﻿<Window x:Class="ShopProject.View.Integration.Printing.StickerPrintView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShopProject.ViewModel.ToolsPage"
+        xmlns:local="clr-namespace:ShopProject.View.Integration.Printing"
         mc:Ignorable="d"
-        Title="Створення наліпок" Height="370" Width="800"  Name="window" ResizeMode="NoResize"> 
+        Title="Створення наліпок"  Height="370" Width="800"  Name="window" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"></ColumnDefinition>
@@ -50,7 +50,5 @@
         <Button x:Name="button3" Grid.Column="3" Content="Очистити" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="80" Command="{Binding ClearStikerCommand}" />
 
         <Image x:Name="image" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="0" Grid.RowSpan="4" HorizontalAlignment="Stretch" Source="{Binding BarCode}"  VerticalAlignment="Stretch"/>
-
-
     </Grid>
 </Window>

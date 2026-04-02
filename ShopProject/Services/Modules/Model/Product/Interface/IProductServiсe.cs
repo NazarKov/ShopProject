@@ -33,5 +33,6 @@ namespace ShopProject.Services.Modules.ModelService.Product.Interface
         public ShopProject.Model.Domain.Product.Product GetProductOnSession();
         public void SetProductsOnSession(List<ShopProject.Model.Domain.Product.Product> items);
         public IEnumerable<ShopProject.Model.Domain.Product.Product> GetProductsOnSession();
+        public Task<ShopProject.Model.Domain.Product.Product> SearchByBarCode(string item, TypeStatusProduct statusProduct);
     }
 }

@@ -10,9 +10,11 @@ using ShopProject.Model.UI.Product;
 using ShopProject.Services.Modules.MappingServise;
 using ShopProject.Services.Modules.ModelService.Product.Interface;
 using ShopProject.View.AdminPage.Storage.Product;
+using ShopProject.View.Integration.Printing;
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
-using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage; 
+using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage;
 using ShopProject.View.ToolsPage;
+using ShopProject.ViewModel.Integration.Printing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -387,7 +389,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             if (products.Count == 1)
             {
                 _productService.SetProductOnSession(products[0].ToProduct());
-                new CreateStickerView().Show();
+                App.Container.GetNewViewWithViewModel<StickerPrintView,StickerPrintViewModel>().Show();
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿using FiscalServerApi.ExceptionServer;
 using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
 using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using ShopProject.Core.Mvvm.Service;
 using ShopProject.Model.Domain.Operation;
@@ -9,15 +8,11 @@ using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.User;
-using ShopProject.Model.UI.WorkingShift;
 using ShopProject.Services.Modules.Mapping;
-using ShopProject.Services.Modules.Model.WorkingShift;
 using ShopProject.Services.Modules.Model.WorkingShift.Interface;
-using ShopProject.Services.Modules.ModelService.OperationRecorder;
 using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface;
 using ShopProject.Services.Modules.ModelService.User.Interface;
 using ShopProject.View.UserPage.SaleMenu;
-using ShopProject.ViewModel.UserPage.SaleMenu;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,7 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.SalePage
+namespace ShopProject.ViewModel.UserPage.SaleMenu
 {
     internal class WorkShiftMenuViewModel : ViewModel<WorkShiftMenuViewModel> , IViewModelLoadResourse
     {
@@ -101,11 +96,9 @@ namespace ShopProject.ViewModel.SalePage
             VisibilitiExitButton = Visibility.Visible;
             Cash = 0; 
         }
-        public Task LoadResourse()
+        public async Task LoadResourse()
         {
-            SetFieldPage();
-
-            return Task.CompletedTask;
+            await SafeExecuteAsync(SetFieldPage); 
         }
 
         private string _statusShift;
@@ -238,16 +231,15 @@ namespace ShopProject.ViewModel.SalePage
         }
 
 
-        private void SetFieldPage()
+        private async Task SetFieldPage()
         {
             _user = _userServise.GetUserFromSession().ToUserModel();
             SetTabsField();
-            SetHeaderLabelField();
+            await SetHeaderLabelField();
         }
         private void SetTabsField()
         {
-            var tabs = _workingShiftService.GetTabsFromSession();
-            if (tabs.Count == 0)
+            if(Tabs.Count == 0)
             {
                 Tabs.Add(new TabItem()
                 {
@@ -255,19 +247,7 @@ namespace ShopProject.ViewModel.SalePage
                     Content = new Frame() { Content = App.Container.GetViewWithViewModel<SaleProductMenuView, SaleProductMenuViewModel>() }
                 });
                 SelectedTabItem = 0;
-            }
-            else
-            {
-                Tabs = new ObservableCollection<TabItem>();
-                for (int i = 0; i < tabs.Count; i++)
-                {
-                    Tabs.Add(tabs[i]);
-                }
-
-                SelectedTabItem = tabs.Where(item => item.IsSelected == true).FirstOrDefault().TabIndex;
-
-                OnPropertyChanged(nameof(Tabs));
-            }
+            } 
         }
 
 
@@ -461,46 +441,32 @@ namespace ShopProject.ViewModel.SalePage
 
         private void OpenCheck()
         {
-            if (((Frame)Tabs.ElementAt(0).Content).Content.GetType() != typeof(SaleProductMenuView))
+            int maxCount = 15;
+            TabItem newTabItem = new TabItem();
+            int count = Tabs.Count;
+
+            if (count <= maxCount)
             {
-                Tabs.Clear();
-                Tabs.Add(new TabItem()
-                {
-                    Header = " ",
-                    Content = new Frame() { Content = App.Container.GetViewWithViewModel<SaleProductMenuView, SaleProductMenuViewModel>() }
-                });
-                SelectedTabItem = 0;
+
+                newTabItem.Header = "Новий чек №" + count;
+                newTabItem.TabIndex = count;
+                newTabItem.Content = new Frame() { Content = App.Container.GetNewViewWithViewModel<SaleProductMenuView, SaleProductMenuViewModel>() };
+
+                Tabs.Add(newTabItem);
+
+                //_workingShiftService.SetTabsOnSession(Tabs);
+                OnPropertyChanged(nameof(Tabs));
+
+            }
+            if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
+            {
+                SelectedTabItem = Tabs.IndexOf(Tabs.ElementAt(0));
             }
             else
             {
-                int maxCount = 15;
-                TabItem newTabItem = new TabItem();
-                int count = Tabs.Count;
-
-                if (count <= maxCount)
-                {
-
-                    newTabItem.Header = "Новий чек №" + count;
-                    newTabItem.TabIndex = count;
-                    newTabItem.Content = new Frame() { Content = App.Container.GetViewWithViewModel<SaleProductMenuView, SaleProductMenuViewModel>() };
-
-                    Tabs.Add(newTabItem);
-
-                    _workingShiftService.SetTabsOnSession(Tabs);
-                    OnPropertyChanged(nameof(Tabs));
-
-                }
-                if (Tabs.IndexOf(Tabs.Where(item => item.IsSelected == true).FirstOrDefault()) == maxCount)
-                {
-                    SelectedTabItem = Tabs.IndexOf(Tabs.ElementAt(0));
-                }
-                else
-                {
-                    var tab = Tabs.Where(item => item.IsSelected == true).FirstOrDefault();
-                    SelectedTabItem = Tabs.IndexOf(tab) + 1;
-                }
-            }
-
+                var tab = Tabs.Where(item => item.IsSelected == true).FirstOrDefault();
+                SelectedTabItem = Tabs.IndexOf(tab) + 1;
+            } 
         }
 
         public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;

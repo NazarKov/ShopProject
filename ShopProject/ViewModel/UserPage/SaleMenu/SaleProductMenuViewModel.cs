@@ -1,14 +1,15 @@
 ﻿using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using ShopProject.Core.Mvvm.Service;
 using ShopProject.Model.Domain.Discount;
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.User;
+using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
 using ShopProject.Services.Modules.Model.WorkingShift.Interface;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Modules.ModelService.Product.Interface; 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,7 +22,7 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.UserPage.SaleMenu
 {
-    internal class SaleProductMenuViewModel : ViewModel<SaleProductMenuViewModel>
+    internal class SaleProductMenuViewModel : ViewModel<SaleProductMenuViewModel>, IViewModelLoadResourse
     { 
 
         private ICommand _searchBarCodeGoodsCommand;
@@ -38,8 +39,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         private ISaleMenuService _saleMenuService;
         private IProductServiсe _productServiсe;
         private IWorkingShiftService _workingShiftService;
-
-        private static Timer _timer;
+         
         public SaleProductMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe, IWorkingShiftService workingShiftService)
         {
             _saleMenuService = saleMenuService;
@@ -61,11 +61,15 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
             _selectTypePayment = 0;
             _setting = new StorageSetting();
             _settingOperationRecorder = new OperationRecorderSetting();
-            _isEnableSendCheckButton = false;
+            _isEnableSendCheckButton = false; 
 
-            SetFieldPage();
-            ClearField();
             _workingShiftService = workingShiftService;
+        }
+        public Task LoadResourse()
+        {
+            SafeExecute(SetFieldPage);
+            SafeExecute(ClearField);
+            return Task.CompletedTask;
         }
 
         private string _barCodeSearch;
@@ -202,7 +206,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
             SelectTypePayment = 0;
             DrawingCheck = _saleMenuService.IsDrawinfChek;
 
-            //_user = Session.User; 
+            _user = _saleMenuService.GetUserFromSession(); 
         }
 
 
@@ -231,49 +235,31 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         private async Task SearchBarCodeProduct()
         {
             ObservableCollection<ProductForSaleModel> temp;
-
-
             if (BarCodeSearch != _settingOperationRecorder.DeleteBarCode)
-            {
-                if (BarCodeSearch.Length > _setting.ProductBarCodeLength - 1 && BarCodeSearch.Length <= _setting.ProductBarCodeLength + 1)
+            {  
+                var item = await _productServiсe.SearchByBarCode(BarCodeSearch, TypeStatusProduct.Unknown);
+                if (item != null)
                 {
-                    var regex = "^\\d{" + _setting.ProductBarCodeLength + "}.?$";//визначення сепаратора
-                    MatchCollection matchCollection = Regex.Matches(BarCodeSearch, regex);
-                    if (matchCollection.Count > 0)
+
+                    item.Count = 1;
+                    temp = new ObservableCollection<ProductForSaleModel>();
+                    temp = Product;
+
+                    if (temp.FirstOrDefault(pr => pr.Product.Code == item.Code) != null)
                     {
-                        BarCodeSearch = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
+                        temp.FirstOrDefault(pr => pr.Product.Code == item.Code).Count += 1;
                     }
-                    if (BarCodeSearch.Count() == _setting.ProductBarCodeLength && Regex.Matches(BarCodeSearch, "[1-9]").Any())
+                    else
                     {
-                        //var item = await _productServiсe.sea(BarCodeSearch);
-                        //if (item != null)
-                        //{
-
-                        //    item.Count = 1;
-                        //    temp = new ObservableCollection<ProductForSaleModel>();
-                        //    temp = Product;
-
-                        //    if (temp.FirstOrDefault(pr => pr.Product.Code == item.Code) != null)
-                        //    {
-                        //        temp.FirstOrDefault(pr => pr.Product.Code == item.Code).Count += 1;
-                        //    }
-                        //    else
-                        //    {
-                        //        temp.Add(new ProductForSale(item) { Cannnel = _idChannel });
-                        //    }
-
-                        //    CountingSumaOrder();
-
-                        //    Product = new ObservableCollection<ProductForSale>();
-                        //    Product = temp;
-                        //}
-                        //BarCodeSearch = string.Empty;
+                        temp.Add(new ProductForSaleModel(item) { Cannnel = _idChannel });
                     }
+
+                    CountingSumaOrder();
+
+                    Product = new ObservableCollection<ProductForSaleModel>();
+                    Product = temp;
                 }
-                else if (BarCodeSearch.Length > _setting.ProductBarCodeLength + 1)
-                {
-                    BarCodeSearch = string.Empty;
-                }
+                BarCodeSearch = string.Empty;
             }
             else
             {
@@ -432,12 +418,6 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
                         SumaUser = 0;
                         SumaOrder = 0;
                         Discount = 0;
-                        DiscountPrecent = 0;
-
-                        if (Tag != 0)
-                        {
-                            //Session.Tabs.RemoveAt(Tag);
-                        }
                     }
                 }
             }
@@ -512,12 +492,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
                         BarCodeSearch = string.Empty;
                         SumaUser = new decimal();
                         SumaUser = 0;
-                        SumaOrder = 0;
-
-                        if (Tag != 0)
-                        {
-                            //Session.Tabs.RemoveAt(Tag);
-                        }
+                        SumaOrder = 0; 
                     }
                 }
             }
@@ -525,7 +500,6 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-        private bool CanRegister(object parameter) => true;
+        } 
     }
 }

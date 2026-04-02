@@ -37,31 +37,33 @@ namespace ShopProject.Services.Integration.PrintingService
             if (operationRecorder != null&& operationRecorder.ObjectOwner!=null && objectOwner!=null) 
             {
 
-                _check.NameFop.Text = objectOwner.NameOwner;
+                _check.NameFop.Text = "ФОП " + objectOwner.NameOwner;
                 _check.NameShop.Text = objectOwner.NameObject;
                 _check.Seller.Text = "Касир " + seller.FullName;
 
-                List<string> address = operationRecorder.ObjectOwner.Address.Split(',').ToList();
-
-                var count = address.Count / 2;
-
-                for (int i = 0; i < count; i++)
+                List<string> address = objectOwner.Address.Split(',').ToList();
+                if(address.Count > 0)
                 {
-                    _check.RegionDistrictCiti.Text += address.ElementAt(i) + " , ";
-                }
-
-                for (int i = count; i < address.Count; i++)
-                {
-                    if (i == address.Count-1)
-                    {
-                        _check.StreetHouse.Text += address.ElementAt(i);
+                    var count = address.Count / 2;
+                    _check.RegionDistrictCiti.Text = "";
+                    for (int i = 0; i < count; i++)
+                    { 
+                        _check.RegionDistrictCiti.Text += address.ElementAt(i) + ", ";
                     }
-                    else
+                    _check.StreetHouse.Text = "";
+                    for (int i = count; i < address.Count; i++)
                     {
-                        _check.StreetHouse.Text += address.ElementAt(i) + " , ";
+                        if (i == address.Count-1)
+                        {
+                            _check.StreetHouse.Text += address.ElementAt(i);
+                        }
+                        else
+                        {
+                            _check.StreetHouse.Text += address.ElementAt(i) + ", ";
+                        }
                     }
+                    _check.Id.Text = "ID " + operation.FiscalServerId; 
                 }
-                _check.Id.Text = "ID " + operation.FiscalServerId;
             } 
 
             double Height = 0;

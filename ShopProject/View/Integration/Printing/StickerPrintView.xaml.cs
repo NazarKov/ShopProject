@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.ToolsPage
+namespace ShopProject.View.Integration.Printing
 {
     /// <summary>
-    /// Interaction logic for CreateStiker.xaml
+    /// Interaction logic for CreateStickerView.xaml
     /// </summary>
-    public partial class CreateStickerView : Window
+    public partial class StickerPrintView : Window
     {
-        public CreateStickerView()
+        public StickerPrintView()
         {
             InitializeComponent();
         }

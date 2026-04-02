@@ -13,6 +13,7 @@ using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping;
 using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
+using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.Session.Interface;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ShopProject.Services.Modules.Model.WorkingShift.Interface
+namespace ShopProject.Services.Modules.Model.WorkingShift
 {
     internal class SaleMenuService : ISaleMenuService
     {
@@ -80,7 +81,7 @@ namespace ShopProject.Services.Modules.Model.WorkingShift.Interface
                 operation.FiscalServerId = id;
                 operation.MAC = CreateMac();
                 await SaveDataBase(operation, product);
-                //PrintCheck(product, operation, id);
+                PrintCheck(product, operation, id);
 
                 return true;
             }
@@ -181,6 +182,10 @@ namespace ShopProject.Services.Modules.Model.WorkingShift.Interface
             {
                 return "1";
             }
+        }
+        public ShopProject.Model.Domain.User.User GetUserFromSession()
+        {
+            return _sessionService.User;
         }
     }
 }

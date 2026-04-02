@@ -9,6 +9,7 @@ namespace ShopProject.Model.Domain.Setting
 {
     internal class PrinterStickerSetting
     {
+        public string NameCompany { get; set; } = string.Empty;
         public string Printer { get; set; } = "Microsoft Print to PDF";  
     }
 }

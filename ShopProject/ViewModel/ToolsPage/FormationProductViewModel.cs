@@ -1,6 +1,5 @@
 ﻿using ShopProject.Model; 
-using ShopProject.Model.StoragePage;
-using ShopProject.Model.ToolsPage;
+using ShopProject.Model.StoragePage; 
 using ShopProjectDataBase.Entities;
 using System;
 using System.Collections;

@@ -13,5 +13,6 @@ namespace ShopProject.Services.Integration.Printing.Interface
         public BitmapImage CreateBarCode(string company, string name, string description, string code);
         public BitmapImage Clear();
         public void Print();
+        public string GetNameCompany();
     }
 }

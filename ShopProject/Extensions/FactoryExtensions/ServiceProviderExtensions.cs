@@ -38,7 +38,7 @@ using ShopProject.ViewModel.Common.Home;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
-using ShopProject.ViewModel.SalePage;
+using ShopProject.ViewModel.Integration.Printing;
 using ShopProject.ViewModel.SettingPage;
 using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage;
@@ -83,7 +83,9 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.RegisterScoped<OperationRecorderViewModel,OperationRecorderViewModel>();
             factory.RegisterScoped<WorkShiftMenuViewModel, WorkShiftMenuViewModel>();
-            factory.RegisterScoped<SaleProductMenuViewModel, SaleProductMenuViewModel>();
+            factory.RegisterTransient<SaleProductMenuViewModel, SaleProductMenuViewModel>();
+
+            factory.RegisterTransient<StickerPrintViewModel, StickerPrintViewModel>();
 
         }
 

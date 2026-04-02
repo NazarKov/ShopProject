@@ -31,7 +31,7 @@ namespace ShopProject.ViewModel.SettingPage
 
             _printer = new List<string>();
             _selectedPrinter = string.Empty;
-             
+            _nameCompany = string.Empty;
         }
         public Task LoadResourse()
         {
@@ -66,11 +66,18 @@ namespace ShopProject.ViewModel.SettingPage
             set { _selectedPrinter = value; OnPropertyChanged(nameof(SelectedPrinter)); }
         }
 
+        private string _nameCompany;
+        public string NameCompany
+        {
+            get { return _nameCompany; }
+            set { _nameCompany = value; OnPropertyChanged(nameof(NameCompany)); }
+        }
+
         public ICommand SaveSettingCommand => _saveSettingCommand;
 
         private void SaveSetting()
         {
-            _settingService.SetSetting<PrinterStickerSetting>(new PrinterStickerSetting() { Printer = SelectedPrinter });
+            _settingService.SetSetting<PrinterStickerSetting>(new PrinterStickerSetting() { Printer = SelectedPrinter ,NameCompany = NameCompany });
             MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
         } 
         public ICommand PrintTestCheck => _printTestCheckCommand;

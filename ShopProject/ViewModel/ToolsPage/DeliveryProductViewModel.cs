@@ -1,6 +1,5 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Model.ToolsPage;
+using ShopProject.Core.Mvvm.Command; 
 using System;
 using System.Collections.Generic;
 using System.Linq;

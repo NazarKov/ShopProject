@@ -8,6 +8,7 @@ using ShopProject.View.Common.Main;
 using ShopProject.View.Common.Setting;
 using ShopProject.View.Common.Start; 
 using ShopProject.View.HomePage.HomePageComponent;
+using ShopProject.View.Integration.Printing;
 using ShopProject.View.StoragePage;
 using ShopProject.View.UserPage.SaleMenu;
 using ShopProject.ViewModel.StoragePage;
@@ -53,7 +54,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.Register<WorkShiftMenuView>(()=>new WorkShiftMenuView());
             factory.Register<SaleProductMenuView>(()=>new SaleProductMenuView());
 
-
+            factory.Register<StickerPrintView>(()=>new StickerPrintView());
 
 
 

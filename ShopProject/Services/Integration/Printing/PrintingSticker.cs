@@ -237,5 +237,16 @@ namespace ShopProject.Services.Integration.PrintingService
         {
             PrintSticker();
         }
+
+        public string GetNameCompany()
+        {
+            var setting = _settingService.GetSetting<PrinterStickerSetting>();
+            if(setting == null)
+            {
+                setting = new PrinterStickerSetting();
+            }
+
+            return setting.NameCompany;
+        }
     }
 }

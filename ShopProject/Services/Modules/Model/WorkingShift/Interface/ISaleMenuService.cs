@@ -20,5 +20,6 @@ namespace ShopProject.Services.Modules.Model.WorkingShift.Interface
         public Task<MediaAccessControl> GetMAC();
         public Task<string> GetLocalNumber();
         public bool IsDrawinfChek { get; set; }
+        public ShopProject.Model.Domain.User.User GetUserFromSession();
     }
 }

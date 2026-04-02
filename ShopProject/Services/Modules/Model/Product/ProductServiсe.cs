@@ -5,6 +5,7 @@ using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Exceptions;
 using ShopProject.Model.UI.Product;
+using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Product;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping; 
 using ShopProject.Services.Modules.ModelService.Product.Interface;
@@ -89,21 +90,57 @@ namespace ShopProject.Services.Modules.ModelService.Product
                 return new Paginator<ShopProject.Model.Domain.Product.Product>();
             }
         }
-        public async Task<Paginator<ShopProject.Model.Domain.Product.Product>> SearchByBarCode(string item,int page , int countColumn ,TypeStatusProduct statusProduct)
+        public async Task<Paginator<ShopProject.Model.Domain.Product.Product>> SearchByBarCode(string item, int page, int countColumn, TypeStatusProduct statusProduct)
         {
             try
-            { 
-                var result = await _webServerService.DataBase.ProductController.GetProductsByBarCode(_token, item, page,countColumn, statusProduct);
+            {
+                var result = await _webServerService.DataBase.ProductController.GetProductsByBarCode(_token, item, page, countColumn, statusProduct);
                 if (result == null)
                 {
                     throw new Exception();
                 }
 
-                return new Paginator<ShopProject.Model.Domain.Product.Product>(result.Page, result.Pages, result.Data.ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession()));
+                return new Paginator<ShopProject.Model.Domain.Product.Product>(result.Page, result.Pages, result.Data.ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(), await _productUnitServiсe.GetFromSession()));
             }
             catch (Exception ex)
             {
                 return new Paginator<ShopProject.Model.Domain.Product.Product>();
+            }
+        }
+        public async Task<ShopProject.Model.Domain.Product.Product> SearchByBarCode(string item,TypeStatusProduct statusProduct)
+        {
+            try
+            {
+                var result = new ProductDto();
+
+                if (item.Length > _setting.ProductBarCodeLength - 1 && item.Length <= _setting.ProductBarCodeLength + 1)
+                {
+                    var regex = "^\\d{" + _setting.ProductBarCodeLength + "}.?$";//визначення сепаратора
+                    MatchCollection matchCollection = Regex.Matches(item, regex);
+                    if (matchCollection.Count > 0)
+                    {
+                        item = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
+                    }
+                    if (item.Count() == _setting.ProductBarCodeLength && Regex.Matches(item, "[1-9]").Any())
+                    {
+                        result = await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, item, statusProduct); 
+                    }
+                }
+                else if (item.Length > _setting.ProductBarCodeLength + 1)
+                {
+                    item = string.Empty;
+                }
+
+                if (result == null&&result == new ProductDto())
+                {
+                    throw new Exception();
+                }
+
+                return result.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits);
+            }
+            catch (Exception ex)
+            {
+                return null; 
             }
         }
 
@@ -225,11 +262,7 @@ namespace ShopProject.Services.Modules.ModelService.Product
         }
         public ShopProject.Model.Domain.Product.Product GetProductOnSession()
         {
-            var item = _sessionService.UpdateProduct;
-            if (item == null)
-            {
-                throw new Exception("Невдалося завантажити товар");
-            }
+            var item = _sessionService.UpdateProduct; 
             return item;
         }
         public void SetProductsOnSession(List<ShopProject.Model.Domain.Product.Product> items)
