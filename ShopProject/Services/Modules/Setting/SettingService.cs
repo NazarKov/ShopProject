@@ -9,9 +9,9 @@ namespace ShopProject.Services.Modules.Setting
     { 
         private readonly string _pathSetting;
         private Dictionary<string, object> _cache;
-        private IFileServise _fileServise;
+        private IFileService _fileServise;
 
-        public SettingService(IDirectoryService directoryService, IFileServise fileServise)
+        public SettingService(IDirectoryService directoryService, IFileService fileServise)
         {
             _fileServise = fileServise;
             directoryService.Init();

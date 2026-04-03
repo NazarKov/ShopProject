@@ -6,6 +6,7 @@ using ShopProject.Core.Mvvm.Mediator.Notifications;
 using ShopProject.Core.Mvvm.Service;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
+using ShopProject.Services.Infrastructure.Logging.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,10 +22,11 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
     { 
 
         private ICommand _removeNotificationCommand;
+        private ILoggerService _loggerService;
 
-        public NotificationViewModel()
+        public NotificationViewModel(ILoggerService loggerService)
         { 
-
+            _loggerService = loggerService; 
             _removeNotificationCommand = CreateCommandParameterAsync(async (object obj) => await RemoveNotification(obj as Notification));
 
             _notifications = new ObservableCollection<Notification>();
@@ -111,6 +113,10 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
 
                     }
                 }
+                if(not.Type != TypeNotification.Succes)
+                {
+                    _loggerService.WriteLog("[Date:" + not.DateTime + "] " + "[" + not.Type.ToString() + "]  Title:" + not.Title + " Content:" + not.Content);
+                }
             }
             else
             {
@@ -134,6 +140,8 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
 
                     Notifications.Insert(0, notification);
                     await MediatorService.ExecuteEventAsync("AddNotificationCount", Notifications.Count);
+                    if (notification.Type != TypeNotification.Succes)
+                        _loggerService.WriteLog("[Date:" + notification.DateTime + "] "+"[" + notification.Type.ToString() + "]  Title:" + notification.Title + " Content:" + notification.Content);
                 }
             } 
         }
@@ -159,8 +167,6 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
                 Background = "Transparent";
             }
             await MediatorService.ExecuteEventAsync("AddNotificationCount", Notifications.Count);
-        }
-
-
+        } 
     }
 }

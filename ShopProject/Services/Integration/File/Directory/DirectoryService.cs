@@ -38,7 +38,8 @@ namespace ShopProject.Services.Integration.File.Directory
             System.IO.Directory.CreateDirectory(_path + _projectTitle); 
             System.IO.Directory.CreateDirectory(_path + _projectTitle + "\\Temp");
             System.IO.Directory.CreateDirectory(_path + _projectTitle + "\\Setting");
-        } 
+            System.IO.Directory.CreateDirectory(_path + _projectTitle + "\\Log");
+        }
         public bool IsCreateProgramFolders()
         {
             try
@@ -47,7 +48,8 @@ namespace ShopProject.Services.Integration.File.Directory
 
                 var isCreateTempFolder = directoryInfo.Contains(_path + _projectTitle + "\\Temp");
                 var isCreateSettingFolder = directoryInfo.Contains(_path + _projectTitle + "\\Setting");
-                if (isCreateTempFolder && isCreateTempFolder) 
+                var isCreateLogFolder = directoryInfo.Contains(_path + _projectTitle + "\\Log");
+                if (isCreateTempFolder && isCreateTempFolder&& isCreateLogFolder) 
                 {
                     return true;
                 }
@@ -64,6 +66,9 @@ namespace ShopProject.Services.Integration.File.Directory
         {
             return _path + _projectTitle + "\\Setting";
         }
-
+        public string GetPathLog()
+        {
+            return _path + _projectTitle + "\\Log";
+        } 
     }
 }

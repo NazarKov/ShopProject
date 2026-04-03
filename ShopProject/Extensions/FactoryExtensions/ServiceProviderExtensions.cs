@@ -1,4 +1,6 @@
 ﻿using ShopProject.Core.Mvvm.CompositionRoot;
+using ShopProject.Services.Infrastructure.Logging;
+using ShopProject.Services.Infrastructure.Logging.Interface;
 using ShopProject.Services.Integration.File.Directory;
 using ShopProject.Services.Integration.File.Directory.Interface;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi;
@@ -91,7 +93,7 @@ namespace ShopProject.Extensions.FactoryExtensions
 
         public static void AddApplicationService(this ServiceProvider factory) 
         { 
-            factory.RegisterScoped<IFileServise, FileServise>();
+            factory.RegisterScoped<IFileService, FileService>();
             factory.RegisterScoped<ISettingService, SettingService>(); 
             factory.RegisterScoped<ISessionService , SessionService>();
             factory.RegisterTransient<ISettingWebServerService, SettingWebServerService>();
@@ -115,6 +117,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<IOperationRecorderServise, OperationRecorderServise>();
             factory.RegisterScoped<IWorkingShiftService,WorkingShiftService>();
             factory.RegisterScoped<ISaleMenuService,SaleMenuService>();
+            factory.RegisterSingleton<ILoggerService, FileLoggerService>();
         }
     }
 }

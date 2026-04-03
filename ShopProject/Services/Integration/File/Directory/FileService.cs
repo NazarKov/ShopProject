@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Services.Integration.File.Directory
 {
-    internal class FileServise : IFileServise
+    internal class FileService : IFileService
     {
         public string? Read(string path)
         {
@@ -18,6 +18,18 @@ namespace ShopProject.Services.Integration.File.Directory
         public void Write(string path, string content)
         {
             System.IO.File.WriteAllText(path, content);
+        }
+
+        public bool IsCreateFile(string path) 
+        {
+            if (System.IO.File.Exists(path)) 
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

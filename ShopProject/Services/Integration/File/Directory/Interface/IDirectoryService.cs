@@ -12,5 +12,6 @@ namespace ShopProject.Services.Integration.File.Directory.Interface
         public void CreateProgramFolders(); 
         public bool IsCreateProgramFolders();
         public string GetPathSetting();
+        public string GetPathLog();
     }
 }

@@ -19,27 +19,6 @@ namespace ShopProject.Model.Domain.WorkingShift
         public string? StatusOnline { get; set; }
         public OperationRecorder.OperationRecorder? OperationRecorder { get; set; }
         [JsonIgnore]
-        public MediaAccessControl.MediaAccessControl? MediaAccessControl { get; set; }
-        public string Serialize()
-        {
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve,
-                WriteIndented = true
-            };
-            string json = JsonSerializer.Serialize(this, options);
-            return json;
-        }
-        public static WorkingShiftStatus? Deserialize(string jason)
-        {
-            if (jason != null && jason != string.Empty)
-            {
-                return JsonSerializer.Deserialize<WorkingShiftStatus>(jason);
-            }
-            else
-            {
-                return null;
-            }
-        }
+        public MediaAccessControl.MediaAccessControl? MediaAccessControl { get; set; } 
     }
 }
