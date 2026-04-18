@@ -1,8 +1,8 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Exceptions;
-using ShopProject.Services.Integration.File.Directory.Interface;
+using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping; 
+using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting;

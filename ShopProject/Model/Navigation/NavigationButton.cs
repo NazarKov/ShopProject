@@ -24,6 +24,7 @@ namespace ShopProject.Model.Navigation
         RedirectToAuthorizationPage,
         RedirectServerSelectionPage,
         RedirectStartPage,
+        RedirectToRegisterWindwoServicePage,
         ExitApp, 
     }
 }

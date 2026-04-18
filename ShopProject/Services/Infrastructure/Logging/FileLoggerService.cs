@@ -1,5 +1,6 @@
 ﻿using ShopProject.Services.Infrastructure.Logging.Interface;
-using ShopProject.Services.Integration.File.Directory.Interface;
+using ShopProject.Services.Integration.Directory.Interface;
+using ShopProject.Services.Integration.File.BaseFile.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.DataBase.Helpers;
-using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using ShopProjectDataBase.Helper; 
+using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -32,7 +31,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase.SaveChanges(); 
         }
 
-        public UserEntity Authorization(string login, string password)
+        public UserEntity? GetUserByLogin(string login)
         {
             IQueryable<UserEntity> query = _contextDataBase.Users.Include(u => u.UserRole).Include(s => s.SignatureKey).AsNoTracking();
 
@@ -44,7 +43,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
             else
             {
-                throw new Exception("Користувача не занайдено");
+                return null;
             }
         }
 

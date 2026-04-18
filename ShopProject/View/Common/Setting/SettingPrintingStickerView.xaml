@@ -67,7 +67,7 @@
                                SelectedItem="{Binding SelectedPrinter}"
                                Height="30"/>
                         <Label x:Name="label1" Content="Назва компанії для стікеру" HorizontalAlignment="Left" Grid.Row="1" Margin="0,15,0,15" VerticalAlignment="Top"/>
-                        <TextBox x:Name="textBox1" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="1" TextWrapping="Wrap" Text="{Binding NameCompany}" VerticalAlignment="Top"/>
+                        <TextBox x:Name="textBox1" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="1" TextWrapping="Wrap" Text="{Binding NameCompany , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
 
                         <!-- Кнопка -->
                         <Button Grid.Row="4"

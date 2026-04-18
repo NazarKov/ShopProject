@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using ShopProject.Core.Mvvm.Mediator.Interface;
 using ShopProject.Model.Enum;
+using ShopProject.Services.Infrastructure.Mediator.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

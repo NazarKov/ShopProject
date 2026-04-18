@@ -1,7 +1,7 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Navigation;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.ModelService.User.Interface;
 using ShopProject.Services.Modules.Session;
 using ShopProject.Services.Modules.Session.Interface;

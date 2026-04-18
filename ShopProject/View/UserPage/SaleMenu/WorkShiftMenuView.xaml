@@ -157,7 +157,7 @@
             <Label x:Name="label8" Grid.Column="4" FontSize="20" Content="Онлайн" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top"/>
             <Label x:Name="label9" Grid.Column="4" FontSize="16" Content="{Binding StatusOnline}"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
 
-            <Label x:Name="label10" Grid.Column="5" FontSize="16" Content="Режим тестування" Visibility="{Binding TestMode}" Foreground="Red"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
+            <Label x:Name="label10" Grid.Column="5" FontSize="16" Content="Режим тестування" Visibility="{Binding TestMode,UpdateSourceTrigger=PropertyChanged}" Foreground="Red"  HorizontalAlignment="Left" Margin="0,10,0,10" VerticalAlignment="Bottom"/>
         </Grid>
 
         <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gainsboro" BorderThickness="0.5" HorizontalAlignment="Left"></Border>

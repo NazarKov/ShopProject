@@ -1,9 +1,9 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Exceptions;
 using ShopProject.Model.Navigation;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Main.Interface;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.Services.Modules.Session.Interface;
@@ -15,6 +15,7 @@ using ShopProject.View.Common.Start;
 using ShopProject.View.GiftCertificatesPage;
 using ShopProject.View.HomePage.HomePageComponent;
 using ShopProject.View.Integration.Printing;
+using ShopProject.View.Integration.Windows.Service;
 using ShopProject.View.StatisticsPage;
 using ShopProject.View.StoragePage;
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
@@ -28,6 +29,7 @@ using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
 using ShopProject.ViewModel.Integration.Printing;
+using ShopProject.ViewModel.Integration.Windows.Service;
 using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.UserPage;
 using ShopProject.ViewModel.UserPage.SaleMenu;
@@ -58,7 +60,7 @@ namespace ShopProject.ViewModel.Common.Home
         private ICommand _openStatisticsPageCommand; 
         private ICommand _openUserPageCommand;
         private ICommand _openGiftCertificatesPageCommand;
-        private ICommand _openNotificationPanelCommand;
+        private ICommand _openNotificationPanelCommand; 
 
         private ICommand _exitUserCommand;
 
@@ -212,6 +214,7 @@ namespace ShopProject.ViewModel.Common.Home
             MediatorService.AddNavigation(NavigationButton.RedirectToAuthorizationPage, () => { Page = App.Container.GetViewWithViewModel<AuthorizationView,AuthorizationViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectServerSelectionPage, () => { Page = App.Container.GetViewWithViewModel<ServerSelectionView, ServerSelectionViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectStartPage, () => { Page = App.Container.GetViewWithViewModel<StartView, StartViewModel>(); });
+            MediatorService.AddNavigation(NavigationButton.RedirectToRegisterWindwoServicePage, () => { Page = App.Container.GetViewWithViewModel<RegisterWindowsServiceView, RegisterWindowsServiceViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.ExitApp, ExitApp);
         } 
 

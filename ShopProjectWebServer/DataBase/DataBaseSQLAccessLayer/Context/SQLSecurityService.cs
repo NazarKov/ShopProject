@@ -19,20 +19,18 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 
         public async Task<bool> CreateLogin(string login, string password, string nameDataBase)
         {
-            try
-            {
-                using var connection = new SqlConnection(_connectionString);
-                await connection.OpenAsync();
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
 
-                string sql = @"
+            string sql = @"
                         DECLARE @sql NVARCHAR(MAX);
                         
                         IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = @login)
                         BEGIN
                             SET @sql =
                                 N'CREATE LOGIN [' + REPLACE(@login, ']', ']]') +
-                                N'] WITH PASSWORD = ''' + REPLACE(@password, '''', '''''') + N'''';
-                        
+                                N'] WITH PASSWORD = ''' + REPLACE(@password, '''', '''''') +
+                                N''', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;'; 
                             EXEC (@sql);
                         END
                         
@@ -43,16 +41,16 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                         EXEC (@sql);
                         ";
 
-                using var cmdMaster = new SqlCommand(sql, connection);
-                cmdMaster.Parameters.Add("@login", SqlDbType.NVarChar, 128).Value = login;
-                cmdMaster.Parameters.Add("@password", SqlDbType.NVarChar, 128).Value = password;
-                cmdMaster.Parameters.Add("@db", SqlDbType.NVarChar, 128).Value = nameDataBase;
+            using var cmdMaster = new SqlCommand(sql, connection);
+            cmdMaster.Parameters.Add("@login", SqlDbType.NVarChar, 128).Value = login;
+            cmdMaster.Parameters.Add("@password", SqlDbType.NVarChar, 128).Value = password;
+            cmdMaster.Parameters.Add("@db", SqlDbType.NVarChar, 128).Value = nameDataBase;
 
-                await cmdMaster.ExecuteNonQueryAsync(); 
+            await cmdMaster.ExecuteNonQueryAsync();
 
-                connection.ChangeDatabase(nameDataBase);
+            connection.ChangeDatabase(nameDataBase);
 
-                string sqlDb = $@"
+            string sqlDb = $@"
                         IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = '{login}')
                         BEGIN
                             CREATE USER [{login}] FOR LOGIN [{login}];
@@ -62,18 +60,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
                         ALTER ROLE db_datawriter ADD MEMBER [{login}];
                         ";
 
-                using var cmdDb = new SqlCommand(sqlDb, connection);
-                 await cmdDb.ExecuteNonQueryAsync(); 
-                return true;
-            }
-            catch(SqlException ex)
-            {
-                foreach (SqlError error in ex.Errors)
-                {
-                    Console.WriteLine(error.Message);
-                }
-                return false;
-            }
+            using var cmdDb = new SqlCommand(sqlDb, connection);
+            await cmdDb.ExecuteNonQueryAsync();
+            return true;
         }
     }
 }

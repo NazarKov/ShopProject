@@ -1,11 +1,11 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
 using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Core.Mvvm.Mediator.Notifications;
-using ShopProject.Core.Mvvm.Service;
 using ShopProject.Helpers;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.UI.ProductCodeUKTZED;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
 using ShopProject.Services.Modules.MappingServise;
 using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
 using ShopProjectDataBase.Entities;

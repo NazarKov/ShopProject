@@ -1,6 +1,6 @@
-﻿using ShopProject.Core.Mvvm.Service;
-using ShopProject.Model.Domain.Product;
+﻿using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Navigation;
+using ShopProject.Services.Infrastructure.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,0 +1,48 @@
+﻿@{
+    Layout = ViewData["Layout"]?.ToString() ?? "_Layout";
+    ViewData["Title"] = "Profile Page";
+}
+@model ShopProjectWebServer.Models.UI.ProfileModel
+<div>
+    <div class="border admin-informaion">
+        <div class="border admin-informaion-header">
+            <p>User Details </p>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Login</th>
+                <th>
+                    <p>@Model.Login</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <th>
+                    <p>@Model.Password</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <th>
+                    <p>@Model.Email</p>
+                </th>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <th>
+                    <p>@Model.Role</p>
+                </th>
+            </tr> 
+        </table>
+        <br />
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <form asp-action="ChangeData" asp-controller="Profile" method="post">
+                <button class="btn button button-size">Змінити дані</button>
+            </form>
+
+            <form asp-action="ChangePassword" asp-controller="Profile" method="post">
+                <button class="btn button button-size">Змінити пароль</button>
+            </form>
+        </div>
+    </div>
+</div>

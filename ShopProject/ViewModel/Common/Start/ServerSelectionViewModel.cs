@@ -1,8 +1,8 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface; 
-using ShopProject.Core.Mvvm.Service; 
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Navigation;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using System;
 using System.Collections.Generic;

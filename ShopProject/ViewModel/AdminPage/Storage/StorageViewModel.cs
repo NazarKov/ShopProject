@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks; 
-using ShopProject.Core.Mvvm; 
+﻿using System.Threading.Tasks;
+using ShopProject.Core.Mvvm;
 using System.Windows.Controls;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using ShopProject.ViewModel.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.Product;
 using System.Collections.ObjectModel;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 
 namespace ShopProject.ViewModel.StoragePage
 {

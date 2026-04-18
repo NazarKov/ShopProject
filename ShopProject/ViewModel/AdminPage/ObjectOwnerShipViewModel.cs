@@ -1,7 +1,7 @@
 ﻿using ShopProject.Controls.Paginator;
 using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface; 
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ObjectOwner;

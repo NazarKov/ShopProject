@@ -1,7 +1,7 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using ShopProject.Core.Mvvm.Interface;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Modules.ModelService.Product.Interface;
 using System;

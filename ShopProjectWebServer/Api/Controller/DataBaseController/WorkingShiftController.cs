@@ -2,10 +2,9 @@
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
 using ShopProjectWebServer.Api.DtoModels.WorkingShift;
-using ShopProjectWebServer.Api.Interface.Services;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.Api.Services;
+using ShopProjectWebServer.Api.Mappings; 
 using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Services.Modules.Domain.WorkingShift;
 using System.Text.Json;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController

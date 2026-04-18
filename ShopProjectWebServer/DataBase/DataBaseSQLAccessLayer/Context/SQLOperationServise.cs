@@ -7,18 +7,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
     {
         public async Task<bool> Сonnection(string connectionString)
         {
-            try
+            using (var connect = new SqlConnection(connectionString))
             {
-                using (var connect = new SqlConnection(connectionString))
-                {
-                    await connect.OpenAsync();
-                }
-                return true;
+                await connect.OpenAsync();
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return true;
         }
     }
 }

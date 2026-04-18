@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Operation;
-using ShopProjectWebServer.Api.DtoModels.UserRole;
-using ShopProjectWebServer.Api.Interface.Services;
-using ShopProjectWebServer.Api.Services;
+using ShopProjectWebServer.Api.DtoModels.UserRole; 
 using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Services.Modules.Domain.UserRole;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

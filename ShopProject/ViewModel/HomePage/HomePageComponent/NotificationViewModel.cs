@@ -1,12 +1,12 @@
 ﻿using FiscalServerApi.Helpers;
 using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.Mediator.Interface;
-using ShopProject.Core.Mvvm.Mediator.Notifications; 
-using ShopProject.Core.Mvvm.Service;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
 using ShopProject.Services.Infrastructure.Logging.Interface;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Interface;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,12 +21,10 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
     internal class NotificationViewModel :ViewModel<NotificationViewModel>
     { 
 
-        private ICommand _removeNotificationCommand;
-        private ILoggerService _loggerService;
+        private ICommand _removeNotificationCommand; 
 
-        public NotificationViewModel(ILoggerService loggerService)
-        { 
-            _loggerService = loggerService; 
+        public NotificationViewModel()
+        {  
             _removeNotificationCommand = CreateCommandParameterAsync(async (object obj) => await RemoveNotification(obj as Notification));
 
             _notifications = new ObservableCollection<Notification>();
@@ -112,11 +110,7 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
                         await MediatorService.ExecuteEventAsync("AddNotificationCount", Notifications.Count);
 
                     }
-                }
-                if(not.Type != TypeNotification.Succes)
-                {
-                    _loggerService.WriteLog("[Date:" + not.DateTime + "] " + "[" + not.Type.ToString() + "]  Title:" + not.Title + " Content:" + not.Content);
-                }
+                } 
             }
             else
             {
@@ -139,9 +133,7 @@ namespace ShopProject.ViewModel.HomePage.HomePageComponent
                     await MediatorService.ExecuteEventAsync("VisibilitiNotification");
 
                     Notifications.Insert(0, notification);
-                    await MediatorService.ExecuteEventAsync("AddNotificationCount", Notifications.Count);
-                    if (notification.Type != TypeNotification.Succes)
-                        _loggerService.WriteLog("[Date:" + notification.DateTime + "] "+"[" + notification.Type.ToString() + "]  Title:" + notification.Title + " Content:" + notification.Content);
+                    await MediatorService.ExecuteEventAsync("AddNotificationCount", Notifications.Count); 
                 }
             } 
         }

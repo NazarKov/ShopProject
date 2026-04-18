@@ -1,0 +1,98 @@
+﻿using ShopProjectDataBase.Entities;
+using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.Common;
+using ShopProjectWebServer.Api.DtoModels.Product;
+using ShopProjectWebServer.Api.DtoModels.ProductUnit;
+using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Services.Modules.Authorization;
+using System.Reflection.Metadata;
+
+namespace ShopProjectWebServer.Services.Modules.Domain.ProductUnit
+{
+    internal class ProductUnitService : IProductUnitServise
+    {
+        private DataBaseService _controller;
+        private AuthorizationService _authorizationServise;
+
+        public ProductUnitService(DataBaseService controller)
+        {
+            _controller = controller;
+            _authorizationServise = new AuthorizationService(controller);
+        }
+        public bool AddUnit(string token, CreateProductUnitDto unit)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            _controller.DataBaseAccess.ProductUnitTable.Add(unit.ToProductUnitEntity());
+            return true;
+        }
+
+        public bool DeleteUnit(string token, int id)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            _controller.DataBaseAccess.ProductUnitTable.Delete(new ShopProjectDataBase.Entities.ProductUnitEntity() { ID = id});
+            return true;
+        }
+
+        public PaginatorDto<ProductUnitDto> GetUnitsByCode(string token, string code, int page, int countColumn, TypeStatusUnit status)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+
+            var result = _controller.DataBaseAccess.ProductUnitTable.GetUnitsByCode(int.Parse(code), status); 
+            return PaginatorDto<ProductUnitDto>.CreationPaginator(result.Reverse().ToProductUnitDto(), page, countColumn); 
+        }
+
+        public IEnumerable<ProductUnitDto> GetUnits(string token)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            return _controller.DataBaseAccess.ProductUnitTable.GetAll().ToProductUnitDto();
+        }
+
+        public PaginatorDto<ProductUnitDto> GetUnitsByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUnit status)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            var units = _controller.DataBaseAccess.ProductUnitTable.GetByNameAndStatus(name, status);
+            var paginator = PaginatorDto<ProductUnitEntity>.CreationPaginator(units, page, countColumn);
+
+            return new PaginatorDto<ProductUnitDto>(paginator.Page,paginator.Pages,paginator.Data.ToProductUnitDto());
+        }
+
+        public PaginatorDto<ProductUnitDto> GetUnitsPageColumn(string token, int page, int countColumn, TypeStatusUnit status)
+            =>GetUnitsByNamePageColumn(token,string.Empty,page,countColumn,status);
+
+        public bool UpdateParameterUnit(string token, string parameter, string value, UpdateProductUnitDto unit)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            _controller.DataBaseAccess.ProductUnitTable.UpdateParameter(unit.ToProductUnitEntity(),parameter,value);
+            return true;
+        }
+
+        public bool UpdateUnit(string token, UpdateProductUnitDto unit)
+        {
+            if (!_authorizationServise.LoginToken(token))
+            {
+                throw new Exception("Невірний токен авторизації");
+            }
+            _controller.DataBaseAccess.ProductUnitTable.Update(unit.ToProductUnitEntity());
+            return true;
+        }
+    }
+}

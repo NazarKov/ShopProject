@@ -4,9 +4,8 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using ShopProjectWebServer.Api.DtoModels.Order;
 using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.Services;
-using ShopProjectWebServer.Api.Interface.Services;
+using ShopProjectWebServer.Api.Common; 
+using ShopProjectWebServer.Services.Modules.Domain.Order;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {

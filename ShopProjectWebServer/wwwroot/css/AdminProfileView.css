@@ -12,3 +12,17 @@
     height:50px;
     border-radius:5px;
 }
+.admin-info {
+    padding: 15px;
+    max-width: 500px;
+}
+
+.admin-info-header {
+    font-weight: bold;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+.error{
+    background:red;
+}
+ 

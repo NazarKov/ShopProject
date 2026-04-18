@@ -1,4 +1,4 @@
-﻿using ShopProject.Core.Mvvm.CompositionRoot;
+﻿using ShopProject.Infrastructure.CompositionRoot;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
@@ -6,9 +6,10 @@ using ShopProject.View.AdminPage.Storage.ProductUnit;
 using ShopProject.View.Authorization;
 using ShopProject.View.Common.Main;
 using ShopProject.View.Common.Setting;
-using ShopProject.View.Common.Start; 
+using ShopProject.View.Common.Start;
 using ShopProject.View.HomePage.HomePageComponent;
 using ShopProject.View.Integration.Printing;
+using ShopProject.View.Integration.Windows.Service;
 using ShopProject.View.StoragePage;
 using ShopProject.View.UserPage.SaleMenu;
 using ShopProject.ViewModel.StoragePage;
@@ -21,9 +22,10 @@ namespace ShopProject.Extensions.FactoryExtensions
         {
             factory.Register<MainView>(()=>new MainView());
 
+
             factory.Register<StartView>(()=>new StartView());
             factory.Register<ServerSelectionView>(()=>new ServerSelectionView());
-
+            factory.Register<RegisterWindowsServiceView>(()=>new RegisterWindowsServiceView());
 
             factory.Register<NotificationView>(()=>new NotificationView()); 
 

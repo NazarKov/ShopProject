@@ -3,7 +3,7 @@ using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Discount;
 using ShopProjectWebServer.Api.DtoModels.GiftCertificate;
-using ShopProjectWebServer.Api.Interface.Services;
+using ShopProjectWebServer.Services.Modules.Domain.GiftCertificates;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {

@@ -4,7 +4,7 @@ using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.ProductCodeUKTZED;
-using ShopProjectWebServer.Api.Interface.Services; 
+using ShopProjectWebServer.Services.Modules.Domain.ProductCodeUKTZED;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {

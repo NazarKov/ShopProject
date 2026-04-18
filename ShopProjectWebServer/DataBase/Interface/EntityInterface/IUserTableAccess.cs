@@ -10,8 +10,8 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void UpdateParameter(Guid id, string nameParameter, object valueParameter);
         void Delete(UserEntity item);
         IEnumerable<UserEntity> GetAll();
-        UserEntity GetUser(string token); 
-        UserEntity Authorization(string login, string password);
+        UserEntity GetUser(string token);
+        public UserEntity? GetUserByLogin(string login);
         IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status); 
         UserEntity GetById(Guid id);
     }

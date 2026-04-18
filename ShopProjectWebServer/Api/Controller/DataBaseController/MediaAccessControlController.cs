@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
-using ShopProjectWebServer.Api.Interface.Services; 
+using ShopProjectWebServer.Services.Modules.Domain.MediaAccessControl;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {

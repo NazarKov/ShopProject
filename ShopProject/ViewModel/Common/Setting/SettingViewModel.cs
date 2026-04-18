@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Input; 
+using System.Windows.Input;
 using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using System.Threading.Tasks;
 using ShopProject.View.Common.Setting;
 using ShopProject.ViewModel.SettingPage;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 
 namespace ShopProject.ViewModel.Common.Setting
 {

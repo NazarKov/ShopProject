@@ -1,13 +1,13 @@
 ﻿using FiscalServerApi.ExceptionServer;
 using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.OperationRecorder;
 using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.User;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Mapping;
 using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface;
@@ -306,11 +306,11 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
 
             if (_operationRecorderServise.GetSetting().IsTestMode)
             {
-                _testMode = Visibility.Visible;
+                TestMode = Visibility.Visible;
             }
             else
             {
-                _testMode = Visibility.Hidden;
+                TestMode = Visibility.Collapsed;
             }
         }
 

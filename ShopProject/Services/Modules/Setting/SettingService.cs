@@ -1,4 +1,5 @@
-﻿using ShopProject.Services.Integration.File.Directory.Interface;
+﻿using ShopProject.Services.Integration.Directory.Interface;
+using ShopProject.Services.Integration.File.BaseFile.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System.Collections.Generic;
 using System.Text.Json;

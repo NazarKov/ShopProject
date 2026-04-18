@@ -23,23 +23,16 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 
         private async Task<bool> Create(string connectionString , string login , string password)
         {
-            try
+            var optionsBuilder = new DbContextOptionsBuilder<ContextDataBase>();
+            optionsBuilder.UseSqlServer(connectionString);
+            _contextDataBase = new ContextDataBase(optionsBuilder.Options); 
+            await _contextDataBase.Database.MigrateAsync();
+            _contextDataBase.Initial(new UserEntity()
             {
-                var optionsBuilder = new DbContextOptionsBuilder<ContextDataBase>();
-                optionsBuilder.UseSqlServer(connectionString); 
-                _contextDataBase = new ContextDataBase(optionsBuilder.Options);
-
-                await _contextDataBase.Database.MigrateAsync();
-                _contextDataBase.Initial(new UserEntity() { 
-                    Login = login,
-                    Password = password,  
-                });
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                Login = login,
+                Password = password,
+            });
+            return true;
         }
 
         public async Task<bool> CreateDataBase(ISqlOperationServise dataBaseOperation, ISqlSecurityService dataBaseSecurityService,
@@ -60,42 +53,28 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 
         public async Task<bool> IsCreate()
         {
-            try
+            using (ContextDataBase context = _contextDataBase)
             {
-                using (ContextDataBase context = _contextDataBase)
+
+                if (!await CheckDbFastAsync())
                 {
-
-                    if (!await CheckDbFastAsync())
-                    {
-                        return false;
-                    }
-
-                    context.Database.Migrate();
-
-                    return true;
+                    return false;
                 }
-            }
-            catch
-            {
-                return false;
+
+                context.Database.Migrate();
+
+                return true;
             }
         }
 
         public async Task<bool> CheckDbFastAsync()
         {
-            try
-            {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-                using var conn = new SqlConnection(_contextDataBase.Database.GetConnectionString());
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            using var conn = new SqlConnection(_contextDataBase.Database.GetConnectionString());
 
 
-                await conn.OpenAsync(cts.Token);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            await conn.OpenAsync(cts.Token);
+            return true;
         }
 
         public void Delete()

@@ -1,7 +1,7 @@
-﻿using ShopProject.Core.Mvvm.ExceptionServise.Interface;
-using ShopProject.Core.Mvvm.Mediator.Interface;
-using ShopProject.Model.Domain.Notification;
+﻿using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
+using ShopProject.Services.Infrastructure.Exception.Interface;
+using ShopProject.Services.Infrastructure.Mediator.Interface;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Exception;
 using System;
 using System.Collections.Generic;

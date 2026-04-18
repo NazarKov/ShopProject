@@ -1,13 +1,17 @@
-﻿using ShopProject.Core.Mvvm.CompositionRoot;
+﻿using ShopProject.Infrastructure.CompositionRoot;
 using ShopProject.Services.Infrastructure.Logging;
 using ShopProject.Services.Infrastructure.Logging.Interface;
-using ShopProject.Services.Integration.File.Directory;
-using ShopProject.Services.Integration.File.Directory.Interface;
+using ShopProject.Services.Integration.Directory;
+using ShopProject.Services.Integration.Directory.Interface;
+using ShopProject.Services.Integration.File.BaseFile;
+using ShopProject.Services.Integration.File.BaseFile.Interface;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
 using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
+using ShopProject.Services.Integration.Windows.WindowsService;
+using ShopProject.Services.Integration.Windows.WindowsService.Interface;
 using ShopProject.Services.Modules.Main;
 using ShopProject.Services.Modules.Main.Interface;
 using ShopProject.Services.Modules.Model.WorkingShift;
@@ -41,6 +45,7 @@ using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
 using ShopProject.ViewModel.Integration.Printing;
+using ShopProject.ViewModel.Integration.Windows.Service;
 using ShopProject.ViewModel.SettingPage;
 using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage;
@@ -55,6 +60,7 @@ namespace ShopProject.Extensions.FactoryExtensions
         {
             factory.RegisterTransient<MainViewModel,MainViewModel>();
             factory.RegisterTransient<StartViewModel, StartViewModel>();
+            factory.RegisterTransient<RegisterWindowsServiceViewModel, RegisterWindowsServiceViewModel>();
 
             factory.RegisterTransient<NotificationViewModel, NotificationViewModel>(); 
             factory.RegisterScoped<ServerSelectionViewModel, ServerSelectionViewModel>();
@@ -118,6 +124,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<IWorkingShiftService,WorkingShiftService>();
             factory.RegisterScoped<ISaleMenuService,SaleMenuService>();
             factory.RegisterSingleton<ILoggerService, FileLoggerService>();
+            factory.RegisterScoped<IWindowsServiceManager, WindowsServiceManager>();
         }
     }
 }

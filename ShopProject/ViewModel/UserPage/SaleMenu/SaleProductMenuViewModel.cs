@@ -1,6 +1,5 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Discount;
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.Setting;
@@ -8,8 +7,9 @@ using ShopProject.Model.Domain.User;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Model.WorkingShift.Interface;
-using ShopProject.Services.Modules.ModelService.Product.Interface; 
+using ShopProject.Services.Modules.ModelService.Product.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,8 +27,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
 
         private ICommand _searchBarCodeGoodsCommand;
         private ICommand _printingCheckCommand;
-        private ICommand _clearFieldDataGrid;
-        private ICommand _updateSize;
+        private ICommand _clearFieldDataGrid; 
         private ICommand _cleareSumUserCommand;
         private ICommand _sendReturnCheckCommand;
         private Guid _idChannel;
@@ -45,8 +44,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
             _saleMenuService = saleMenuService;
             _productServiсe = productServiсe;
             _searchBarCodeGoodsCommand = CreateCommandAsync(DebounceSearch);
-            _printingCheckCommand = CreateCommandAsync(PrintingCheck);
-            _updateSize = CreateCommand(UpdateSizes);
+            _printingCheckCommand = CreateCommandAsync(PrintingCheck); 
             _clearFieldDataGrid = CreateCommand(ClearField);
             _cleareSumUserCommand = CreateCommand(ClearSumUser);
             _sendReturnCheckCommand = CreateCommandAsync(ReturnCheck);
@@ -134,19 +132,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         {
             get { return _selectTypePayment; }
             set { _selectTypePayment = value; OnPropertyChanged(nameof(SelectTypePayment)); }
-        }
-        private int _widght;
-        public int Widght
-        {
-            get { return _widght; }
-            set { _widght = value; OnPropertyChanged(nameof(Widght)); }
-        }
-        private int _height;
-        public int Height
-        {
-            get { return _height; }
-            set { _height = value; OnPropertyChanged(nameof(Height)); }
-        }
+        } 
         private bool _draingCheck;
         public bool DrawingCheck
         {
@@ -166,23 +152,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         {
             get { return _isEnableSendCheckButton; }
             set { _isEnableSendCheckButton = value; OnPropertyChanged(nameof(IsEnableSendCheckButton)); }
-        }
-
-        public ICommand UpdateSize => _updateSize;
-        private void UpdateSizes()
-        {
-
-            var widght = (int)Application.Current.MainWindow.ActualWidth;
-            if (widght <= 1750)
-            {
-                Widght = 10;
-            }
-            else
-            {
-                Widght = 5;
-            }
-            Height = 70;
-        }
+        } 
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
@@ -213,7 +183,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         public ICommand SearchBarCodeGoodsCommand => _searchBarCodeGoodsCommand;
 
 
-        private CancellationTokenSource _searchCts;
+        private CancellationTokenSource? _searchCts;
         private async Task DebounceSearch()
         {
             _searchCts?.Cancel();

@@ -1,12 +1,12 @@
 ﻿using ShopProject.Controls.Paginator;
 using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.MappingServise;
 using ShopProject.Services.Modules.ModelService.Product.Interface;
 using ShopProject.View.AdminPage.Storage.Product;

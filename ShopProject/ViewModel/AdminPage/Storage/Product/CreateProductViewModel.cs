@@ -1,8 +1,6 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
 using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Core.Mvvm.Mediator.Notifications;
-using ShopProject.Core.Mvvm.Service;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
@@ -10,6 +8,8 @@ using ShopProject.Model.UI.Discount;
 using ShopProject.Model.UI.Product;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
 using ShopProject.Services.Modules.MappingServise;
 using ShopProject.Services.Modules.ModelService.Product.Interface;
 using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;

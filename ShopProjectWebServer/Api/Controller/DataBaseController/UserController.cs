@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Common; 
+using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Token;
 using ShopProjectWebServer.Api.DtoModels.User;
-using ShopProjectWebServer.Api.Interface.Services; 
+using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.Services.Modules.Domain.User.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -11,8 +13,8 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserServise _servise;
-        public UserController(IUserServise servise)
+        private IUserService _servise;
+        public UserController(IUserService servise)
         {
             _servise = servise;
         }
@@ -96,8 +98,9 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.Authorization(login,password,devise); 
-                return Ok(ApiResponse<AuthorizationUserDto>.Ok(result));
+                var result = _servise.Authorization(login,password,devise);
+                // return Ok(ApiResponse<AuthorizationUserDto>.Ok(result.ToUser().to));
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -125,7 +128,8 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.GetUserById(token,id); 
-                return Ok(ApiResponse<UserDto>.Ok(result));
+                //return Ok(ApiResponse<UserDto>.Ok(result));
+                return Ok();
             }
             catch (Exception ex)
             {

@@ -1,5 +1,5 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.CompositionRoot.Interface;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;

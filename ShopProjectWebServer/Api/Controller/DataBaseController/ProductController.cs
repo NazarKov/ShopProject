@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Product;
-using ShopProjectWebServer.Api.Interface.Services;
 using ShopProjectWebServer.DataBase.DataBaseException;
+using ShopProjectWebServer.Services.Modules.Domain.Product;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {

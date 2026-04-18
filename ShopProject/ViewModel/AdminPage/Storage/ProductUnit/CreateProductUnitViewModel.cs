@@ -1,13 +1,13 @@
-﻿using ShopProject.Core.Mvvm; 
+﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Core.Mvvm.Mediator.Notifications;
-using ShopProject.Core.Mvvm.Service;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.ProductUnit;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
 using ShopProject.Services.Modules.MappingServise;
 using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
-using System; 
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;

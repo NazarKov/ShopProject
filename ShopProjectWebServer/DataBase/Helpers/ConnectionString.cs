@@ -50,7 +50,7 @@
                         }
                         else
                         {
-                            return $"Data Source={Server}\\SQLEXPRESS;Database = {DataBaseName}; User Id = {UserName}; Password = {Password};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False";
+                            return $"Data Source={Server}\\SQLEXPRESS;Database = {DataBaseName}; User Id = {UserName}; Password = {Password};Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False";
 
                         }
                     }
@@ -69,7 +69,7 @@
                         }
                         else
                         { 
-                            return $"Data Source={Server};Database = {DataBaseName};User Id = {UserName}; Password = {Password};Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False;";
+                            return $"Data Source={Server};Database = {DataBaseName};User Id = {UserName}; Password = {Password};Connect Timeout=30;Encrypt=True;Trust Server Certificate={TrustServerCertificate};Application Intent=ReadWrite;Multi Subnet Failover=False;";
                    
                         }
                     }
