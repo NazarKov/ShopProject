@@ -7,5 +7,6 @@ namespace ShopProjectWebServer.DataBase.Interface
     {
         public IDataAccess DataBaseAccess {  get; set; }
         public SettingDataBaseConnection GetSetting();
+        public Task<bool> IsConnect();
     }
 }

@@ -99,7 +99,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             try
             {
                 var result = _servise.Authorization(login,password,devise);
-                // return Ok(ApiResponse<AuthorizationUserDto>.Ok(result.ToUser().to));
+                return Ok(ApiResponse<AuthorizationUserDto>.Ok(result.ToAuthoUserDto()));
                 return Ok();
             }
             catch (Exception ex)
@@ -127,8 +127,8 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetUserById(token,id); 
-                //return Ok(ApiResponse<UserDto>.Ok(result));
+                var result = _servise.GetUserById(token,id);
+                return Ok(ApiResponse<UserDto>.Ok(result.ToUserDto()));
                 return Ok();
             }
             catch (Exception ex)

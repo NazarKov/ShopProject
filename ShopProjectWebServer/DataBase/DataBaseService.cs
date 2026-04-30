@@ -1,24 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore; 
 using ShopProjectDataBase.Context;
 using ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context;
 using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectWebServer.DataBase.Helpers.Enum;
 using ShopProjectWebServer.DataBase.Interface;
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface; 
-using ShopProjectWebServer.Models.Domain.Setting;
-using ShopProjectWebServer.Service.Modules.Setting;
-using ShopProjectWebServer.Service.Modules.Setting.Interface;
-using System.Threading.Tasks;
+using ShopProjectWebServer.Models.Domain.Setting; 
+using ShopProjectWebServer.Service.Modules.Setting.Interface; 
 
 namespace ShopProjectWebServer.DataBase
 {
     public class DataBaseService : IDataBaseService
     {  
         private IDataAccess _dataBaseAccess;
-        private IDataBaseInitializer? _databaseInitializer;
-        private ISqlSecurityService? _securityService; 
-        private ISqlOperationServise? _dataBaseOperation; 
+        private IDataBaseInitializer _databaseInitializer;
+        private IDataBaseSecurityService _securityService; 
+        private IDataBaseOperationServise _dataBaseOperation; 
 
         public IDataAccess  DataBaseAccess
         {
@@ -134,6 +131,11 @@ namespace ShopProjectWebServer.DataBase
         public SettingDataBaseConnection GetSetting()
         {
             return _settingService.GetSetting<SettingDataBaseConnection>(); 
+        }
+
+        public async Task<bool> IsConnect()
+        {
+            return await _dataBaseOperation.Сonnection(_settingDataBaseConnection.ConnectionString.ToString());
         }
     }
 }

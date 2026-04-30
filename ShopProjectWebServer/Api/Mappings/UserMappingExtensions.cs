@@ -1,6 +1,7 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Api.DtoModels.User;
+using ShopProjectWebServer.Models.Domain.User;
 
 namespace ShopProjectWebServer.Api.Mappings
 {
@@ -55,7 +56,7 @@ namespace ShopProjectWebServer.Api.Mappings
             userEntity.Status = type;
             return userEntity;
         }
-        public static UserDto ToUserDto(this UserEntity item) 
+        public static UserDto ToUserDto(this User item) 
         { 
             var result = new UserDto()
             {
@@ -69,20 +70,30 @@ namespace ShopProjectWebServer.Api.Mappings
                 Login = item.Login,
                 Password = item.Password,
                 TIN = item.TIN,
-            }; 
-            if (item.SignatureKey != null) {
-
-                result.SignatureKeyID = item.SignatureKey.ID.ToString();
-            }
+            };  
             return result; 
         }
-        public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserEntity> item) 
+        public static IEnumerable<UserDto> ToUserDto(this IEnumerable<User> item) 
         {
             var result = new List<UserDto>();
             foreach (var itemEntity in item) 
             {
                 result.Add(ToUserDto(itemEntity));
             }
+            return result;
+        }
+        public static AuthorizationUserDto ToAuthoUserDto(this User item)
+        {
+            var result = new AuthorizationUserDto()
+            {
+                AutomaticLogin = item.AutomaticLogin, 
+                Email = item.Email,
+                FullName = item.FullName,
+                Login = item.Login, 
+                TIN = item.TIN,
+                UserRoleID = item.UserRole.ID,
+                Token = item.Token, 
+            };  
             return result;
         }
     }

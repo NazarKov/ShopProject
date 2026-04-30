@@ -28,7 +28,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Rectangle>
-        <TextBlock x:Name="TextBlock" Grid.Row="0" Margin="0" Visibility="{Binding ViewModel.TextBlockVisibility, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" Style="{StaticResource GeneralTextBlock}" VerticalAlignment="Top" />
+        <TextBlock x:Name="TextBlock" Grid.Row="0" Margin="0" TextWrapping="Wrap" Visibility="{Binding ViewModel.TextBlockVisibility, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" Style="{StaticResource GeneralTextBlock}" VerticalAlignment="Top" />
         <Grid x:Name="ResizableGrid" Grid.Row="1" 
               Width="{Binding ViewModel.Width, RelativeSource={RelativeSource AncestorType=UserControl} , Mode=TwoWay}" 
               Height="{Binding ViewModel.Height, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}"

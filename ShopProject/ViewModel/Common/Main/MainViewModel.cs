@@ -1,23 +1,21 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Exceptions;
+﻿using ShopProject.Core.Mvvm; 
+using ShopProject.Infrastructure.CompositionRoot.Interface; 
 using ShopProject.Model.Navigation;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Main.Interface;
-using ShopProject.Services.Modules.Resourse.Interface;
+using ShopProject.Services.Modules.Main.Interface; 
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.View.AdminPage.Dashboard;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.Authorization;
+using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Setting;
 using ShopProject.View.Common.Start;
 using ShopProject.View.GiftCertificatesPage;
 using ShopProject.View.HomePage.HomePageComponent;
+using ShopProject.View.Integration.DeviceStatus;
 using ShopProject.View.Integration.Printing;
 using ShopProject.View.Integration.Windows.Service;
-using ShopProject.View.StatisticsPage;
-using ShopProject.View.StoragePage;
+using ShopProject.View.StatisticsPage; 
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
 using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage;
 using ShopProject.View.TemplatePage;
@@ -25,9 +23,11 @@ using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage.SaleMenu;
 using ShopProject.ViewModel.AdminPage.Dashboard;
 using ShopProject.ViewModel.Authorization;
+using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
+using ShopProject.ViewModel.Integration.DeviceStatus;
 using ShopProject.ViewModel.Integration.Printing;
 using ShopProject.ViewModel.Integration.Windows.Service;
 using ShopProject.ViewModel.StoragePage;
@@ -65,7 +65,7 @@ namespace ShopProject.ViewModel.Common.Home
         private ICommand _exitUserCommand;
 
         private IMainAppServise _mainAppServise;
-        private ISessionService _sessionService;
+        private ISessionService _sessionService; 
 
 
         public MainViewModel(IMainAppServise mainAppServise, ISessionService sessionService)
@@ -92,6 +92,9 @@ namespace ShopProject.ViewModel.Common.Home
             _openGiftCertificatesPageCommand = CreateCommand(() => { Page = new GiftCertificatesView(); });
             _openNotificationPanelCommand = CreateCommandAsync(OpenNotificationPanel);
 
+            _pageVisibiliti = Visibility.Visible;
+            _visibilitiLostConnectionPage = Visibility.Collapsed;
+            _isEnableMenuButton = false;
             _visibilitiMenu = Visibility.Collapsed;
             _visibilitiNotification = Visibility.Collapsed;
             _notificationValue = "🔔 0";
@@ -99,11 +102,10 @@ namespace ShopProject.ViewModel.Common.Home
             _windowState = WindowState.Normal;
             _resizeModeWindow = ResizeMode.NoResize; 
 
-            StatusMenu = new DeviceStatusView();
-            Notification = App.Container.GetViewWithViewModel<NotificationView, NotificationViewModel>(); 
-            Page = new LoadingView();  
-            MediatorService.AddEventAsync("VisibilitiNotification", async ()=> await ShowNotificationPanel());
-            MediatorService.AddEventAsync<int>("AddNotificationCount", async count => await ShowNotificationCount(count));
+            StatusMenu = App.Container.GetViewWithViewModel<DeviceStatusView,DeviceStatusViewModel>();
+            LostConnectionPage = App.Container.GetViewWithViewModel<ConnectionLostView,ConnectionLostViewModel>();
+            Notification = App.Container.GetViewWithViewModel<NotificationView, NotificationViewModel>();
+            Page = new LoadingView(); 
         } 
 
         private string _userName;
@@ -126,6 +128,32 @@ namespace ShopProject.ViewModel.Common.Home
         {
             get { return _page; }
             set {_page = value; OnPropertyChanged(nameof(Page));}
+        }
+
+        private Visibility _pageVisibiliti;
+        public Visibility PageVisibiliti
+        {
+            get { return _pageVisibiliti; }
+            set { _pageVisibiliti = value;OnPropertyChanged(nameof(PageVisibiliti)); }
+        }
+
+        private Page _lostConnectionPage;
+        public Page LostConnectionPage
+        {
+            get { return _lostConnectionPage; }
+            set { _lostConnectionPage = value; OnPropertyChanged(nameof(LostConnectionPage));}
+        }
+        private Visibility _visibilitiLostConnectionPage;
+        public Visibility VisibilitiLostConnectionPage
+        {
+            get { return _visibilitiLostConnectionPage; }
+            set { _visibilitiLostConnectionPage = value;OnPropertyChanged(nameof(VisibilitiLostConnectionPage)); }
+        }
+        private bool _isEnableMenuButton;
+        public bool IsEnableMenuButton
+        {
+            get { return _isEnableMenuButton; }
+            set { _isEnableMenuButton = value; OnPropertyChanged(nameof(IsEnableMenuButton)); }
         }
 
         private System.Windows.Controls.UserControl _statusMenu;
@@ -181,17 +209,21 @@ namespace ShopProject.ViewModel.Common.Home
             if (await _mainAppServise.IsConnectServer())
             {
                 if (_sessionService.CheckingSession())
-                {
+                {  
                     await SetFieldWindow();
                 }
                 else
                 {
+                    await MediatorService.ExecuteEventAsync("StopTimerCheckConnect");
+                    VisibilitiLostConnectionPage = Visibility.Collapsed;
                     Page = App.Container.GetViewWithViewModel<AuthorizationView, AuthorizationViewModel>();
                 }
 
             }
             else
-            { 
+            {
+                VisibilitiLostConnectionPage = Visibility.Collapsed;
+                await MediatorService.ExecuteEventAsync("StopTimerCheckConnect");
                 WindowState = WindowState.Normal;
                 ResizeModeWindow = ResizeMode.NoResize;
                 Page = App.Container.GetViewWithViewModel<StartView, StartViewModel>();
@@ -200,7 +232,14 @@ namespace ShopProject.ViewModel.Common.Home
 
         private void InitStartViewButton()
         {
-            InitNavigationButton(); 
+            InitNavigationButton();
+            MediatorService.AddEventAsync("VisibilitiNotification", async () => await ShowNotificationPanel());
+            MediatorService.AddEventAsync<int>("AddNotificationCount", async count => await ShowNotificationCount(count));
+
+            MediatorService.AddEventAsync("LostConnectSetVisible", async () => { VisibilitiLostConnectionPage = Visibility.Visible; IsEnableMenuButton = false; });
+            MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
+            MediatorService.AddEventAsync("SetPageAfterLoadingResourse", async () => { Page = App.Container.GetViewWithViewModel<DashBoardView, DashBoardViewModel>(); PageVisibiliti = Visibility.Visible; });
+            MediatorService.AddEventAsync("SetHidenPage", async () => { PageVisibiliti = Visibility.Hidden; });
             //MediatorService.AddNavigation(NavigationButton.RedirectToChangePassword, (object obj) => { Page = new ChangePassword(); }); 
             //MediatorService.AddNavigation(NavigationButton.RedirectToTitleView, (object obg) => { VisibilityMenu = Visibility.Visible; SetName(); Page = new TitleView(); });
             //MediatorService.AddNavigation(NavigationButton.ExitApp, ExitApp);
@@ -208,8 +247,11 @@ namespace ShopProject.ViewModel.Common.Home
 
         private void InitNavigationButton()
         {
-            MediatorService.AddNavigation(NavigationButton.RedirectToDashBoadPage,async ()=> { await SetFieldWindow(); });
-            MediatorService.AddNavigation(NavigationButton.RedirectToOperationsRecorderPage, () => { Page = Page = App.Container.GetViewWithViewModel<OperationRecorderView, OperationRecorderViewModel>(); });
+            MediatorService.AddNavigation(NavigationButton.RedirectToDashBoadPage,async ()=> { 
+                VisibilitiLostConnectionPage = Visibility.Visible; 
+                await SetFieldWindow(); 
+            });
+            MediatorService.AddNavigation(NavigationButton.RedirectToOperationsRecorderPage, () => { Page = App.Container.GetViewWithViewModel<OperationRecorderView, OperationRecorderViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectToWorkShiftMenuPage, () => { Page = App.Container.GetViewWithViewModel<WorkShiftMenuView, WorkShiftMenuViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectToAuthorizationPage, () => { Page = App.Container.GetViewWithViewModel<AuthorizationView,AuthorizationViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectServerSelectionPage, () => { Page = App.Container.GetViewWithViewModel<ServerSelectionView, ServerSelectionViewModel>(); });
@@ -222,12 +264,11 @@ namespace ShopProject.ViewModel.Common.Home
         { 
             WindowState = WindowState.Maximized;
             ResizeModeWindow = ResizeMode.CanResize;  
-            SetName();
-            Page = new DashBoardView();
-            VisibilityMenu = Visibility.Visible; 
-            await _mainAppServise.LoadResourse(); 
-        } 
-
+            SetName(); 
+            VisibilityMenu = Visibility.Visible;
+            await _mainAppServise.LoadResourse();
+            await MediatorService.ExecuteEventAsync("StartTimerCheckConnect");
+        }  
         private void RemoveSession()
         { 
             VisibilityMenu = Visibility.Hidden;

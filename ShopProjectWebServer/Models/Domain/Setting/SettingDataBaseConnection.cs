@@ -1,4 +1,5 @@
 ﻿using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectWebServer.DataBase.Helpers.Enum;
 using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Models.Domain.Setting

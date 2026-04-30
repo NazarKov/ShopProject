@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectWebServer.DataBase.Helpers.Enum;
 using ShopProjectWebServer.Models.UI;
 using System.Threading.Tasks;
 

@@ -1,17 +1,21 @@
 ﻿using ShopProject.Infrastructure.CompositionRoot;
+using ShopProject.View.AdminPage.Dashboard;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
 using ShopProject.View.Authorization;
+using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Main;
 using ShopProject.View.Common.Setting;
 using ShopProject.View.Common.Start;
 using ShopProject.View.HomePage.HomePageComponent;
+using ShopProject.View.Integration.DeviceStatus;
 using ShopProject.View.Integration.Printing;
 using ShopProject.View.Integration.Windows.Service;
-using ShopProject.View.StoragePage;
+using ShopProject.View.StoragePage; 
 using ShopProject.View.UserPage.SaleMenu;
+using ShopProject.ViewModel.AdminPage.Dashboard;
 using ShopProject.ViewModel.StoragePage;
 
 namespace ShopProject.Extensions.FactoryExtensions
@@ -20,8 +24,9 @@ namespace ShopProject.Extensions.FactoryExtensions
     {
         public static void AddApplicationView(this FactoryView factory)
         {
+            factory.Register<DeviceStatusView>(() => new DeviceStatusView()); 
             factory.Register<MainView>(()=>new MainView());
-
+            factory.Register<DashBoardView>(()=>new DashBoardView());
 
             factory.Register<StartView>(()=>new StartView());
             factory.Register<ServerSelectionView>(()=>new ServerSelectionView());
@@ -59,7 +64,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.Register<StickerPrintView>(()=>new StickerPrintView());
 
 
-
+            factory.Register<ConnectionLostView>(()=>new ConnectionLostView());
             factory.Register<AuthorizationView>(() => new AuthorizationView());
         }
     }

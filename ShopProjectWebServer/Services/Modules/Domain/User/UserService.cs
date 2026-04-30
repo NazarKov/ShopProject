@@ -7,8 +7,7 @@ using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.DataBase.Interface;
 using ShopProjectWebServer.Helpers;
-using ShopProjectWebServer.Models.Exceptions;
-using ShopProjectWebServer.Services.Modules.Authorization;
+using ShopProjectWebServer.Models.Exceptions; 
 using ShopProjectWebServer.Services.Modules.Authorization.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.User.Interface;
 using ShopProjectWebServer.Services.Modules.Mapping;
@@ -111,7 +110,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.User
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return _dataBaseService.DataBaseAccess.UserTable.GetUser(token).ToUserDto(); 
+            return _dataBaseService.DataBaseAccess.UserTable.GetUser(token).ToUser().ToUserDto(); 
         }
 
         public ShopProjectWebServer.Models.Domain.User.User GetUserById(string token, string id)
@@ -131,7 +130,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.User
             }
             var users = _dataBaseService.DataBaseAccess.UserTable.GetByNameAndStatus(name, status);
             var paginator = PaginatorDto<UserEntity>.CreationPaginator(users,page, countColumn);
-            return new PaginatorDto<UserDto>(paginator.Page, paginator.Pages, paginator.Data.ToUserDto());
+            return new PaginatorDto<UserDto>(paginator.Page, paginator.Pages, paginator.Data.ToUser().ToUserDto());
         }
 
         public IEnumerable<UserDto> GetUsers(string token)
@@ -140,7 +139,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.User
             {
                 throw new Exception("Невірний токен авторизації");
             }
-            return _dataBaseService.DataBaseAccess.UserTable.GetAll().ToUserDto();
+            return _dataBaseService.DataBaseAccess.UserTable.GetAll().ToUser().ToUserDto();
         }
 
         public PaginatorDto<UserDto> GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser status)

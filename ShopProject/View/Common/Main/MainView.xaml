@@ -20,13 +20,13 @@
             <DockPanel>
                 <Menu Background="#F5F5F5" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16"
                Visibility="{Binding VisibilityMenu, UpdateSourceTrigger=PropertyChanged}">
-                    <MenuItem Header="Програма">
+                    <MenuItem Header="Програма" IsEnabled="{Binding IsEnableMenuButton}">
                         <MenuItem Header="⚙️ Настройки" Command="{Binding OpenSettingCommand}" />
                         <Separator />
                         <MenuItem Header="🚪 Вийти" Command="{Binding ExitAppCommand}" />
                     </MenuItem>
 
-                    <MenuItem Header="📋 Списки">
+                    <MenuItem Header="📋 Списки" IsEnabled="{Binding IsEnableMenuButton}">
                         <MenuItem Header="Список товарів" Command="{Binding OpenStorageCommand}" />
                         <Separator />  
                         <MenuItem Header="Користувачі" Command="{Binding OpenUsersCommand}" />
@@ -36,9 +36,9 @@
                         <MenuItem Header="Подарункові сертифікати" Command="{Binding OpenGiftCertificatesPageCommand}" />
                     </MenuItem>
 
-                    <MenuItem Header="🛍️ Меню продаж" Command="{Binding OpenSaleMenuCommand}" />
+                    <MenuItem Header="🛍️ Меню продаж" Command="{Binding OpenSaleMenuCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
 
-                    <MenuItem Header="🧰 Інструменти">
+                    <MenuItem Header="🧰 Інструменти" IsEnabled="{Binding IsEnableMenuButton}">
                         <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoodsCommnad}" />
                         <Separator />
                         <MenuItem Header="Роздрукувати етикетку" Command="{Binding OpenCreateStikerCommnad}" />
@@ -47,9 +47,9 @@
                         <MenuItem Header="Імпорт товарів" Command="{Binding OpenImportProductCommnad}" />
                     </MenuItem>
 
-                    <MenuItem Header="📊 Статистика" Command="{Binding OpenStatisticsPageCommand}" />
-                    <MenuItem Header="📚 Довідник" />
-                    <MenuItem Header="❓ Справка" />
+                    <MenuItem Header="📊 Статистика" Command="{Binding OpenStatisticsPageCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
+                    <MenuItem Header="📚 Довідник" IsEnabled="{Binding IsEnableMenuButton}"/>
+                    <MenuItem Header="❓ Справка" IsEnabled="{Binding IsEnableMenuButton}"/>
                 </Menu>
 
                 <StackPanel Visibility="{Binding VisibilityMenu}"  Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -61,7 +61,7 @@
 
                     <Menu Background="#F5F5F5" Visibility="{Binding VisibilityMenu}" Margin="20,0,20,0" VerticalAlignment="Center" FontSize="16" >
                         <MenuItem Header="{Binding NotificationValue}" Command="{Binding OpenNotificationPanelCommand}"></MenuItem>
-                        <MenuItem Header="{Binding UserName}" HorizontalAlignment="Right">
+                        <MenuItem Header="{Binding UserName}" HorizontalAlignment="Right" IsEnabled="{Binding IsEnableMenuButton}">
                             <MenuItem Header="👤 Профіль" Command="{Binding OpenSettingCommand}"/>
                             <MenuItem Header="🚪 Вийти" Command="{Binding ExitUserCommand}" />
                         </MenuItem>
@@ -73,13 +73,21 @@
              Width="450" 
              Visibility="{Binding VisibilityNotification}"
              Panel.ZIndex="2" >
-            <UserControl Content="{Binding Notification}" Panel.ZIndex="2"></UserControl>
+            <UserControl Content="{Binding Notification}" Panel.ZIndex="3"></UserControl>
         </Border>
         <Border HorizontalAlignment="Stretch" Grid.Row="1" Margin="0" Panel.ZIndex="1">
-            <Frame x:Name="frame" Grid.Row="1"
-            Content="{Binding Path=Page, UpdateSourceTrigger=PropertyChanged}"
-            NavigationUIVisibility="Hidden"
-            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Frame x:Name="frame" Grid.Row="1" 
+                   Visibility="{Binding PageVisibiliti}"
+                   Content="{Binding Path=Page, UpdateSourceTrigger=PropertyChanged}"
+                   NavigationUIVisibility="Hidden"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Border>
+        <Border HorizontalAlignment="Stretch" Grid.Row="1" Margin="0" Panel.ZIndex="2" Visibility="{Binding VisibilitiLostConnectionPage,UpdateSourceTrigger=PropertyChanged}">
+            <Frame x:Name="frame1" Grid.Row="1"
+                   Content="{Binding Path=LostConnectionPage, UpdateSourceTrigger=PropertyChanged}"
+                   NavigationUIVisibility="Hidden"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </Border>
     </Grid>
+    
 </Window>

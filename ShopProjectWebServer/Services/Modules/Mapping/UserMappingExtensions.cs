@@ -28,6 +28,15 @@ namespace ShopProjectWebServer.Services.Modules.Mapping
             }
             return result;
         }
+        public static IEnumerable<ShopProjectWebServer.Models.Domain.User.User> ToUser(this IEnumerable<UserEntity> items)
+        {
+            var result = new List<ShopProjectWebServer.Models.Domain.User.User>();
+            foreach(var item in items)
+            {
+                result.Add(ToUser(item));
+            }
+            return result;
+        }
 
         public static UserEntity ToUser(this ShopProjectWebServer.Models.Domain.User.User item)
         {

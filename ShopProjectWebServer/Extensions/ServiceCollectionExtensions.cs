@@ -6,6 +6,8 @@ using ShopProjectWebServer.Service.Integration.File.BaseFile;
 using ShopProjectWebServer.Service.Integration.File.BaseFile.Interface;
 using ShopProjectWebServer.Service.Modules.Setting;
 using ShopProjectWebServer.Service.Modules.Setting.Interface;
+using ShopProjectWebServer.Services.Infrastructure.ContolWebServer;
+using ShopProjectWebServer.Services.Infrastructure.ContolWebServer.Interface;
 using ShopProjectWebServer.Services.Infrastructure.Logging;
 using ShopProjectWebServer.Services.Infrastructure.Logging.Interface;
 using ShopProjectWebServer.Services.Modules.Authorization;
@@ -59,6 +61,7 @@ namespace ShopProjectWebServer.Extensions
 
         public static void AppAppServices(this IServiceCollection services)
         {
+            services.AddTransient<IControlWebServerService, ControlWebServerService>();
             services.AddTransient<IDirectoryService, DirectoryService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ISettingService, SettingService>();

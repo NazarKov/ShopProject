@@ -69,9 +69,26 @@ namespace ShopProject.Services.Modules.Session
 
         public bool CheckingSession()
         {
+            var setting = _settingService.GetSetting<SessionSetting>();
             if(User.Token == string.Empty)
             {
-                return false;
+                if (setting.User == null)
+                {
+                    return false;
+                }
+
+                if (setting.User.Token == string.Empty)
+                {
+                    return false;
+                }
+
+                if(setting.User.AutomaticLogin == false)
+                {
+                    return false;
+                }
+                 
+                User = setting.User;
+                return true;
             }
             else
             {
@@ -101,63 +118,7 @@ namespace ShopProject.Services.Modules.Session
             {
                 return false;
             }
-        }
-
-        //public static bool CheckSession()
-        //{
-        //    try
-        //    {
-        //        //if (User == null)
-        //        //{
-        //        //    var user = SettingService.GetSetting<User>("User");
-        //        //    User = user;
-        //        //    if (user != null)
-        //        //    {
-        //        //        InitResourse();
-        //        //        user.AutomaticLogin = true;
-        //        //        if (user.Token == null && user.Token == string.Empty)
-        //        //        {
-        //        //            return false;
-        //        //        }
-        //        //        if (!user.AutomaticLogin)
-        //        //        {
-        //        //            return false;
-        //        //        }
-        //        //    }
-        //        //    else
-        //        //    {
-        //        //        return false;
-        //        //    }
-        //        //    return true;
-        //        //}
-        //        //else
-        //        //{
-        //        //    return true;
-        //        //}
-        //    }
-        //    catch (Exception ex)
-        //    { 
-        //        return false;
-        //    }
-        //}
-        //public static void RemoveSession()
-        //{
-        //    User = null;
-        //    //SettingService.SetSetting<User>(null, "User");
-        //}
-        //private static void InitResourse()
-        //{
-        //    if (Roles == null)
-        //    {
-        //       // ResourseSerivce.InitWebServerResourses();
-        //    }
-        //    WorkingShiftStatus = new WorkingShiftStatus();
-        //    //var item = SettingService.GetSetting<WorkingShiftStatus>("WorkingShiftStatus");
-        //    //if (item != null)
-        //    //{
-        //    //    WorkingShiftStatus = item;
-        //    //}
-        //}
+        } 
       
     }
 }

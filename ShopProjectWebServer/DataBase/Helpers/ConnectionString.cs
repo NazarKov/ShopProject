@@ -1,4 +1,6 @@
-﻿namespace ShopProjectWebServer.DataBase.Helpers
+﻿using ShopProjectWebServer.DataBase.Helpers.Enum;
+
+namespace ShopProjectWebServer.DataBase.Helpers
 {
     public class ConnectionString
     {

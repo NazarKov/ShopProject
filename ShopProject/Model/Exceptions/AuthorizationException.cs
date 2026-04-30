@@ -2,7 +2,7 @@
 using ShopProject.Model.Enum;
 using ShopProject.Services.Infrastructure.Exception.Interface;
 using ShopProject.Services.Infrastructure.Mediator.Interface;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Exception;
+using ShopProject.Services.Integration.Network.WebServerApi.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;

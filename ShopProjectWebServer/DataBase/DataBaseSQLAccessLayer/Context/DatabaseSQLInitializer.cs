@@ -35,7 +35,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             return true;
         }
 
-        public async Task<bool> CreateDataBase(ISqlOperationServise dataBaseOperation, ISqlSecurityService dataBaseSecurityService,
+        public async Task<bool> CreateDataBase(IDataBaseOperationServise dataBaseOperation, IDataBaseSecurityService dataBaseSecurityService,
           string login, string password, string nameDataBase, ConnectionString connectionString)
         {
             connectionString.DataBaseName = nameDataBase;

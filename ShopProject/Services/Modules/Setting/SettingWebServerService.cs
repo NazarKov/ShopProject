@@ -1,5 +1,5 @@
 ﻿using ShopProject.Model.Domain.Setting;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;
 using System.Collections.Generic;

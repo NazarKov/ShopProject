@@ -1,4 +1,4 @@
-﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface; 
+﻿using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Main.Interface;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.Services.Modules.Session.Interface;

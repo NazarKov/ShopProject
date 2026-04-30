@@ -1,6 +1,6 @@
 ﻿using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Exceptions;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface; 
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.NetworkUrlManager;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Setting.Interface;

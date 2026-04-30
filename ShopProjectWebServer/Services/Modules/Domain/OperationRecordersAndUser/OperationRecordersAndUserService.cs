@@ -4,6 +4,7 @@ using ShopProjectWebServer.Api.DtoModels.OperationRecorderUser;
 using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Services.Modules.Authorization;
+using ShopProjectWebServer.Services.Modules.Mapping;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser
 {
@@ -49,7 +50,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser
 
             var result = new OperationRecorderUserDto()
             {
-                User = user.ToUserDto(),
+                User = user.ToUser().ToUserDto(),
                 OpertionsRecorders = operationRecoreder.ToOperationRecorderDto(),
             }; 
             return result; 

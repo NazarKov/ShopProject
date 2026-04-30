@@ -6,8 +6,9 @@ using ShopProject.Model.Enum;
 using ShopProject.Model.Exceptions;
 using ShopProject.Model.UI.Product;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Product;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping; 
+using ShopProject.Services.Integration.Network.WebServerApi.Exception;
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
 using ShopProject.Services.Modules.ModelService.Product.Interface;
 using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
 using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
@@ -246,14 +247,23 @@ namespace ShopProject.Services.Modules.ModelService.Product
         public async Task<bool> Update(ShopProject.Model.Domain.Product.Product product)
         {
             Validation(product);
+            DeleteSpace(product);
             return await _webServerService.DataBase.ProductController.UpdateProduct(_token, product.ToUpdateProductDto()); 
         }
 
         public async Task<bool> Add(ShopProject.Model.Domain.Product.Product product)
         {
-            product.CreatedAt = DateTime.Now;
-            Validation(product);
-            return await _webServerService.DataBase.ProductController.AddProduct(_token, product.ToCreateProductDto());
+            try
+            {
+                product.CreatedAt = DateTime.Now;
+                Validation(product);
+                DeleteSpace(product);
+                return await _webServerService.DataBase.ProductController.AddProduct(_token, product.ToCreateProductDto());
+            }
+            catch (ExceptionObjectExists ex)
+            {
+                throw new ExceptionGeneral(ex.Message);
+            }
         }
 
         public void SetProductOnSession(ShopProject.Model.Domain.Product.Product item)
@@ -366,7 +376,14 @@ namespace ShopProject.Services.Modules.ModelService.Product
                 throw new ExceptionStringEmpty("Ведіть артикуль товару");
             }
         }
-    
+        private void DeleteSpace(ShopProject.Model.Domain.Product.Product product)
+        {
+            product.NameProduct = product.NameProduct.Trim();
+            product.Code = product.Code.Trim();
+            product.Articule = product.Articule.Trim(); 
+        }
+
+
     }
 
 }

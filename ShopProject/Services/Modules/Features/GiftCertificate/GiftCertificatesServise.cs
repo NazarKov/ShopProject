@@ -1,8 +1,8 @@
 ﻿using ShopProject.Helpers;
 using ShopProject.Model.Domain.GiftCertificate;
 using ShopProject.Model.Domain.Paginator;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Mapping; 
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
 using ShopProject.Services.Modules.ModelService.GiftCertificate.Interface;
 using ShopProject.Services.Modules.NetworkUrlManager;
 using ShopProject.Services.Modules.Setting.Interface;

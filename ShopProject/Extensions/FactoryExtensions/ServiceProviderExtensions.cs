@@ -1,12 +1,14 @@
 ﻿using ShopProject.Infrastructure.CompositionRoot;
 using ShopProject.Services.Infrastructure.Logging;
 using ShopProject.Services.Infrastructure.Logging.Interface;
+using ShopProject.Services.Infrastructure.Monitoring.WebServerStatus;
+using ShopProject.Services.Infrastructure.Monitoring.WebServerStatus.Interface;
 using ShopProject.Services.Integration.Directory;
 using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.File.BaseFile;
 using ShopProject.Services.Integration.File.BaseFile.Interface;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.Interface;
+using ShopProject.Services.Integration.Network.WebServerApi;
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
@@ -36,14 +38,16 @@ using ShopProject.Services.Modules.Session;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting;
 using ShopProject.Services.Modules.Setting.Interface;
-using ShopProject.View.Common.Setting;
+using ShopProject.ViewModel.AdminPage.Dashboard;
 using ShopProject.ViewModel.AdminPage.Storage.Product;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
 using ShopProject.ViewModel.Authorization;
+using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Home;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
+using ShopProject.ViewModel.Integration.DeviceStatus;
 using ShopProject.ViewModel.Integration.Printing;
 using ShopProject.ViewModel.Integration.Windows.Service;
 using ShopProject.ViewModel.SettingPage;
@@ -58,6 +62,7 @@ namespace ShopProject.Extensions.FactoryExtensions
     {
         public static void AddApplicationViewModel(this ServiceProvider factory)
         {
+            factory.RegisterTransient<DeviceStatusViewModel,DeviceStatusViewModel>();
             factory.RegisterTransient<MainViewModel,MainViewModel>();
             factory.RegisterTransient<StartViewModel, StartViewModel>();
             factory.RegisterTransient<RegisterWindowsServiceViewModel, RegisterWindowsServiceViewModel>();
@@ -93,8 +98,9 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<WorkShiftMenuViewModel, WorkShiftMenuViewModel>();
             factory.RegisterTransient<SaleProductMenuViewModel, SaleProductMenuViewModel>();
 
+            factory.RegisterTransient<ConnectionLostViewModel, ConnectionLostViewModel>();
             factory.RegisterTransient<StickerPrintViewModel, StickerPrintViewModel>();
-
+            factory.RegisterTransient<DashBoardViewModel, DashBoardViewModel>();
         }
 
         public static void AddApplicationService(this ServiceProvider factory) 
@@ -103,7 +109,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<ISettingService, SettingService>(); 
             factory.RegisterScoped<ISessionService , SessionService>();
             factory.RegisterTransient<ISettingWebServerService, SettingWebServerService>();
-            factory.RegisterSingleton<IMainWebServerService,MainWebServerService>();
+            factory.RegisterSingleton<IMainWebServerService,WebServerService>();
             
             factory.RegisterScoped<IMainAppServise, MainAppServise>();
 
@@ -125,6 +131,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<ISaleMenuService,SaleMenuService>();
             factory.RegisterSingleton<ILoggerService, FileLoggerService>();
             factory.RegisterScoped<IWindowsServiceManager, WindowsServiceManager>();
+            factory.RegisterScoped<IWebServerStatusService, WebServerStatusService>();
         }
     }
 }

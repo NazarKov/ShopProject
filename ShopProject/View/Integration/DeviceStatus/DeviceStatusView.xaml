@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="ShopProject.View.Integration.DeviceStatus.DeviceStatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ShopProject.View.Integration.DeviceStatus"
+             mc:Ignorable="d" 
+             Height="Auto" Width="Auto">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Margin="2"> 
+
+            <!-- 🖨️ Принтер -->
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                <TextBlock Text="🖨️" 
+                           FontSize="13"
+                           FontWeight="Bold"
+                           Foreground="#444"
+                           HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+                           Margin="0,2,0,0"
+                           Fill="{Binding DeviceStatus.PrinterStatusColor}"
+                           Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding DeviceStatus.PrinterTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 📠 Сканер -->
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                <TextBlock Text="📠" 
+                           FontSize="13"
+                           FontWeight="Bold"
+                           Foreground="#444"
+                           HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+                         Margin="0,2,0,0"
+                         Fill="{Binding DeviceStatus.ScannerStatusColor}"
+                         Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding DeviceStatus.ScannerTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 🌐 Сервер -->
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="💻" 
+                           FontSize="13"
+                           FontWeight="Bold"
+                           Foreground="#444"
+                           HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+                           Margin="0,2,0,0"
+                           Fill="{Binding DeviceStatus.ServerStatusColor}"
+                           Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding DeviceStatus.ServerTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+
+            <!-- 🌍 Інтернет -->
+            <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="🗄️" 
+                           FontSize="13"
+                           FontWeight="Bold"
+                           Foreground="#444"
+                           HorizontalAlignment="Center"/>
+                <Ellipse Width="12" Height="12"
+                           Margin="0,2,0,0"
+                           Fill="{Binding DeviceStatus.DataBaseStatusColor}"
+                           Stroke="Gray" StrokeThickness="0.6">
+                    <Ellipse.ToolTip>
+                        <TextBlock Text="{Binding DeviceStatus.InternetTooltip}" FontSize="12"/>
+                    </Ellipse.ToolTip>
+                </Ellipse>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

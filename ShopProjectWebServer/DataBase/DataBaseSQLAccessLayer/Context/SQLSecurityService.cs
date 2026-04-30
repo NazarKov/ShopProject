@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {
-    public class SqlSecurityService : ISqlSecurityService
+    public class SqlSecurityService : IDataBaseSecurityService
     { 
         private string _connectionString; 
         public SqlSecurityService(string connectionString)

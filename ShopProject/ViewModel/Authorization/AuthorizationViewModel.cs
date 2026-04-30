@@ -42,11 +42,9 @@ namespace ShopProject.ViewModel.Authorization
             _messegeBlockVisibiliti = Visibility.Collapsed;
         } 
 
-        public Task LoadResourse()
+        public async Task LoadResourse()
         {
-            SafeExecute(SetFieldPage);
-
-            return Task.CompletedTask;
+            await SafeExecuteAsync(SetFieldPage); 
         }
 
         private string _login;
@@ -104,12 +102,13 @@ namespace ShopProject.ViewModel.Authorization
             set { _messegeBlockVisibiliti = value; OnPropertyChanged(nameof(MessegeBlockVisibiliti)); }
         }
 
-        private void SetFieldPage()
+        private async Task SetFieldPage()
         {
             MessegeBlockVisibiliti = Visibility.Collapsed;
             if (_sessionService.CheckingSession())
             {
-                MediatorService.ExecuteNavigation(NavigationButton.RedirectToTitleView);
+                await MediatorService.ExecuteEventAsync("SetHidenPage");
+                MediatorService.ExecuteNavigation(NavigationButton.RedirectToDashBoadPage);
             } 
         }
         public ICommand LogInCommnad => _logInCommnad;
@@ -121,6 +120,7 @@ namespace ShopProject.ViewModel.Authorization
                 SuccessTextBlockVisibiliti = Visibility.Visible;
                 ErrorTextBlockVisibiliti = Visibility.Collapsed;
                 MessegeBlockVisibiliti = Visibility.Visible;
+                await MediatorService.ExecuteEventAsync("SetHidenPage");
                 MediatorService.ExecuteNavigation(NavigationButton.RedirectToDashBoadPage); 
             }
             else
