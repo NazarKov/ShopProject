@@ -3,6 +3,7 @@ using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,23 +27,23 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi
         public SignatureKeyController SignatureKeyController { get; private set; }
         public DiscountController DiscountController { get; private set; } 
         public GiftCertificatesController GiftCertificatesController { get; private set; }
-        public MainDataBaseFacade(string url)
+        public MainDataBaseFacade(HttpClient client)
         { 
-            UserController = new UserController(url);
-            ProductController = new ProductController(url);
-            ProductUnitController = new ProductUnitController(url);
-            ProductCodeUKTZEDController = new ProductCodeUKTZEDController(url);
-            UserRoleController = new UserRoleController(url);
-            ObjectOwnerController = new ObjectOwnerController(url);
-            OperationRecorederController = new OperationRecorderController(url);
-            OperationRecorderAndUserController = new OperationRecorderAndUserController(url);
-            OperationController = new OperationController(url);
-            OrderController = new OrderController(url);
-            MediaAccessControlController = new MediaAccessControlController(url);
-            WorkingShiftContoller = new WorkingShiftContoller(url);
-            SignatureKeyController = new SignatureKeyController(url);
-            DiscountController = new DiscountController(url);
-            GiftCertificatesController = new GiftCertificatesController(url);
+            UserController = new UserController(client);
+            ProductController = new ProductController(client);
+            ProductUnitController = new ProductUnitController(client);
+            ProductCodeUKTZEDController = new ProductCodeUKTZEDController(client);
+            UserRoleController = new UserRoleController(client);
+            ObjectOwnerController = new ObjectOwnerController(client);
+            OperationRecorederController = new OperationRecorderController(client);
+            OperationRecorderAndUserController = new OperationRecorderAndUserController(client);
+            OperationController = new OperationController(client);
+            OrderController = new OrderController(client);
+            MediaAccessControlController = new MediaAccessControlController(client);
+            WorkingShiftContoller = new WorkingShiftContoller(client);
+            SignatureKeyController = new SignatureKeyController(client);
+            DiscountController = new DiscountController(client);
+            GiftCertificatesController = new GiftCertificatesController(client);
         }
     }
 }

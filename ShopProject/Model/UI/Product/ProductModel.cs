@@ -1,6 +1,5 @@
 ﻿using ShopProject.Core.Mvvm;
-using ShopProject.Model.Domain.Discount;
-using ShopProject.Model.Domain.PorductCodeUKTZED;
+using ShopProject.Model.Domain.Discount; 
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.Discount;
@@ -30,7 +29,7 @@ namespace ShopProject.Model.UI.Product
         public string Articule { get; set; } = string.Empty;
         public decimal Price { get; set; } = decimal.Zero;
         public decimal Count { get; set; } = decimal.Zero; 
-        public DiscountModel? Discount { get; set; }
+        public ShopProject.Model.UI.Discount.DiscountModel? Discount { get; set; }
         public TypeStatusProduct Status { get; set; } 
         public ProductUnitModel? Unit { get; set; }
         public int UnitId { get { return Unit.ID; } set { Unit.ID = value; } }

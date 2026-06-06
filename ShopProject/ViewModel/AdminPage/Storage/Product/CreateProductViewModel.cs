@@ -10,16 +10,18 @@ using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.Product;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.Product.Interface;
 
 namespace ShopProject.ViewModel.AdminPage.Storage.Product
 {
@@ -65,8 +67,28 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             _errorTextBlockVisibiliti = Visibility.Collapsed;
             _successTextBlockVisibiliti = Visibility.Collapsed;
 
-            Units = (await _productUnitServiсe.GetFromSession()).ToProductUnitModel().ToList() ;
-            CodeUKTZED = (await _productCodeUKTZEDServiсe.GetFromSession()).ToProductCodeUKTZEDModel().ToList();
+
+            var units = (await _productUnitServiсe.GetFromSession()).ToProductUnitModel();
+            var favoriteUnit = units.Where(u => u.Status == TypeStatusUnit.Favorite);
+            if (favoriteUnit.Any())
+            {
+                Units = new List<ProductUnitModel>(favoriteUnit);
+            }
+            else
+            {
+                Units = new List<ProductUnitModel>(units); 
+            }
+
+            var codeUKTZED = (await _productCodeUKTZEDServiсe.GetFromSession()).ToProductCodeUKTZEDModel();
+            var favoriteCodeUKTZED = codeUKTZED.Where(c => c.Status == TypeStatusCodeUKTZED.Favorite);
+            if (favoriteCodeUKTZED.Any()) 
+            {
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>(favoriteCodeUKTZED);
+            }
+            else
+            {
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>(codeUKTZED);
+            } 
         }
         private ProductModel _product;
         public ProductModel Product
@@ -153,7 +175,8 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             }
 
             IsEnableSaveButton = false;
-            if (await _productServiсe.Add(new ProductModel()
+
+            var result = await _productServiсe.Add(new ProductModel()
             {
                 NameProduct = _product.NameProduct,
                 Code = _product.Code,
@@ -161,29 +184,40 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 Price = _product.Price,
                 Count = _product.Count,
                 Unit = _units[_selectUnitsIndex],
-                CodeUKTZED = _codeUKTZED[_selectCodeUKTZEDIndex], 
+                CodeUKTZED = _codeUKTZED[_selectCodeUKTZEDIndex],
                 Status = TypeStatusProduct.InStock,
                 Discount = new DiscountModel(),
-            }.ToProduct()))
+            }.ToProduct()); 
+
+            if (result.IsSuccess)
             {
-                SetSuccess();
+                SetSuccess(result.Data.NameProduct);
                 await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Товар", "Товар успішно створений в базі даних")));
                 await MediatorService.ExecuteEventAsync(NavigationButton.ReloadProduct.ToString());
+
             }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
+
+            IsEnableSaveButton = true;
         }
         private void SetError(string error)
-        {
-            IsEnableSaveButton = true;
-            SuccessTextBlockVisibiliti = Visibility.Collapsed;
+        { 
             Error = error;
+            SuccessTextBlockVisibiliti = Visibility.Collapsed;
             ErrorTextBlockVisibiliti = Visibility.Visible;
         }
-        private void SetSuccess()
+        private void SetSuccess(string name)
         {
-            Success = "Товар добавлений";
+            Success = $"Товар {name} добавлений";
             ErrorTextBlockVisibiliti = Visibility.Collapsed;
-            SuccessTextBlockVisibiliti = Visibility.Visible;
-            IsEnableSaveButton = true;
+            SuccessTextBlockVisibiliti = Visibility.Visible; 
         }
 
     } 

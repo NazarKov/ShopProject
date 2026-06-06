@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Core.Mvvm.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,17 @@ namespace ShopProject.View.AdminPage.UserPage
         public CreateUserView()
         {
             InitializeComponent();
+            Loaded += LoadExitButton;
+        }
+        private void LoadExitButton(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is IСontrolView vm)
+            {
+                vm.CloseView += () =>
+                {
+                    this.Close();
+                };
+            }
         }
     }
 }

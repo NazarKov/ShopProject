@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.SignatureKey;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoMo
     public class UpdateUserDto
     {
         [JsonPropertyName("ID")]
-        public string ID { get; set; }
+        public string ID { get; set; } = string.Empty;
         [JsonPropertyName("Login")]
         public string Login { get; set; } = string.Empty;
         [JsonPropertyName("Password")]
@@ -27,8 +28,8 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoMo
         public int Status { get; set; }
         [JsonPropertyName("UserRoleID")]
         public int? UserRoleID { get; set; }
-        [JsonPropertyName("SignatureKeyID")]
-        public string? SignatureKeyID { get; set; }
+        [JsonPropertyName("SignatureKey")]
+        public SignatureKeyDto? SignatureKey { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTimeOffset? CreatedAt { get; set; }
     }

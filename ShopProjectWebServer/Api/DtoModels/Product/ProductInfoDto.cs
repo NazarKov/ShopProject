@@ -13,18 +13,6 @@ namespace ShopProjectWebServer.Api.DtoModels.Product
         [JsonPropertyName("CountProductOutStockStatus")]
         public int CountProductOutStockStatus { get; set; }
         [JsonPropertyName("CountProductArchivedStauts")] 
-        public int CountProductArchivedStauts { get; set; }
-
-
-        public static ProductInfoDto Create(IEnumerable<ProductEntity> products)
-        {
-            return new ProductInfoDto()
-            {
-                CountProductAllStatus = products.Count(),
-                CountProductInStockStatus = products.Where(i => i.Status == TypeStatusProduct.InStock).Count(),
-                CountProductOutStockStatus = products.Where(i => i.Status == TypeStatusProduct.OutStock).Count(),
-                CountProductArchivedStauts = products.Where(i => i.Status == TypeStatusProduct.Archived).Count(),
-            };
-        }
+        public int CountProductArchivedStauts { get; set; } 
     }
 }

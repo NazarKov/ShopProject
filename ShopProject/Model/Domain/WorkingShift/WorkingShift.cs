@@ -1,7 +1,7 @@
 ﻿using ShopProject.Model.Domain.MediaAccessControl;
 using ShopProject.Model.Domain.Operation;
-using ShopProject.Model.Domain.User; 
-using ShopProjectDataBase.Helper;
+using ShopProject.Model.Domain.User;
+using ShopProject.Model.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

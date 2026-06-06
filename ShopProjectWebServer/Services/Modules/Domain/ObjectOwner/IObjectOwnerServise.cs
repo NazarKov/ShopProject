@@ -12,7 +12,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.ObjectOwner
         public bool Delete(string token, string id);
 
         public IEnumerable<ObjectOwnerListDto> GetAll(string token);
-        public PaginatorDto<ObjectOwnerListDto> GetPageColumnByName(string token, string name, int page, int column, TypeStatusObjectOwner typeStatus);
-        public PaginatorDto<ObjectOwnerListDto> GetPageColumn(string token, int page, int column, TypeStatusObjectOwner typeStatus);
+        //public PaginatorDto<ObjectOwnerListDto> GetPageColumnByName(string token, string name, int page, int column, TypeStatusObjectOwner typeStatus);
+        //public PaginatorDto<ObjectOwnerListDto> GetPageColumn(string token, int page, int column, TypeStatusObjectOwner typeStatus);
     }
 }

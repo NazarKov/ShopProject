@@ -21,15 +21,13 @@ using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.ModelService.ObjectOwner;
 using ShopProject.Services.Modules.ModelService.ObjectOwner.Interface;
 using ShopProject.Services.Modules.ModelService.OperationRecorder;
-using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface;
-using ShopProject.Services.Modules.ModelService.Product;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
-using ShopProject.Services.Modules.ModelService.ProductUnit;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
-using ShopProject.Services.Modules.ModelService.User;
-using ShopProject.Services.Modules.ModelService.User.Interface;
+using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface; 
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
+using ShopProject.Services.Modules.Domain.ProductUnit;
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.User;
+using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.NetworkUrlScanner;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Resourse;
@@ -55,6 +53,12 @@ using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage;
 using ShopProject.ViewModel.StoragePage.ProductUnitPage;
 using ShopProject.ViewModel.UserPage.SaleMenu;
+using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Domain.Product;
+using ShopProject.Views.AdminPage;
+using ShopProject.ViewModel.AdminPage.UserPage;
+using ShopProject.Services.Modules.Domain.UserRole.Interface;
+using ShopProject.Services.Modules.Domain.UserRole;
 
 namespace ShopProject.Extensions.FactoryExtensions
 {
@@ -86,6 +90,10 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.RegisterScoped<StorageViewModel, StorageViewModel>();
 
+            factory.RegisterScoped<UsersDataViewModel, UsersDataViewModel>();
+            factory.RegisterTransient<CreateUserViewModel, CreateUserViewModel>();
+            factory.RegisterTransient<UpdateUserViewModel, UpdateUserViewModel>();
+
             factory.RegisterScoped<SettingProfileViewModel, SettingProfileViewModel>();
             factory.RegisterScoped<SettingStorageViewModel, SettingStorageViewModel>();
             factory.RegisterScoped<SettingPrintingStickerViewModel, SettingPrintingStickerViewModel>();
@@ -115,7 +123,7 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.RegisterTransient<IResourseService , ResourseService>();
             factory.RegisterTransient<IDirectoryService, DirectoryService>();
-            factory.RegisterTransient<IUserServise, UserServise>();
+            factory.RegisterTransient<IUserService, UserService>();
             factory.RegisterTransient<INetworkUrlManagerService, NetworkUrlManagerService>();
 
             factory.RegisterScoped<IProductServiсe,ProductServiсe>();
@@ -132,6 +140,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterSingleton<ILoggerService, FileLoggerService>();
             factory.RegisterScoped<IWindowsServiceManager, WindowsServiceManager>();
             factory.RegisterScoped<IWebServerStatusService, WebServerStatusService>();
+            factory.RegisterScoped<IUserRoleService, UserRoleService>();
         }
     }
 }

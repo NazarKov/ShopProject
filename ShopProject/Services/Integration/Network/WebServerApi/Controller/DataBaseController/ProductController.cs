@@ -1,13 +1,10 @@
 ﻿using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Domain.Product;
-using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Product;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Exception;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.Paginator;
+using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using System.Collections.Generic; 
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -18,12 +15,111 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class ProductController
     { 
         private readonly HttpClient _httpClient;
-        public ProductController(string url)
+        public ProductController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
 
         }
+
+        public async Task<ApiResponse<ProductDto>> Add(CreateProductDto product)
+        {
+            var content = JsonSerializer.Serialize(product);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/Add", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            httpResponse.EnsureSuccessStatusCode();
+            return ApiResponse<ProductDto>.Unpacking(responseBody);
+        }
+
+        public async Task<ApiResponse<bool>> Update(UpdateProductDto product)
+        {
+            var content = JsonSerializer.Serialize(product);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/Update", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var result = ApiResponse<bool>.Unpacking(responseBody);
+            httpResponse.EnsureSuccessStatusCode();
+
+            return result;
+        }
+
+        public async Task<ApiResponse<bool>> UpdateRange(IEnumerable<UpdateProductDto> product)
+        {
+            var content = JsonSerializer.Serialize(product);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/UpdateRange", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
+
+            return result;
+        }
+
+        public async Task<ApiResponse<bool>> UpdateParameter(string parameter, object value, UpdateProductDto product)
+        {
+            var content = JsonSerializer.Serialize(product);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
+
+            return result;
+        }
+
+        public async Task<ApiResponse<PaginatorDto<ProductDto, int>>> GetPageColumn(PaginatorDto<ProductDto, int> paginator)
+        {
+            var content = JsonSerializer.Serialize<PaginatorDto<ProductDto, int>>(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/GetPageColumn", httpContent);
+
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            httpResponse.EnsureSuccessStatusCode();
+
+            var result = ApiResponse<PaginatorDto<ProductDto, int>>.Unpacking(responseBody);
+
+            return result;
+        }
+
+        public async Task<ApiResponse<PaginatorDto<ProductDto, int>>> GetByNamePageColumn(string name, PaginatorDto<ProductDto, int> paginator)
+        {
+            var content = JsonSerializer.Serialize<PaginatorDto<ProductDto, int>>(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/GetByNamePageColumn?name={name}", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<PaginatorDto<ProductDto, int>>.Unpacking(responseBody);
+
+            return result;
+        }
+
+        public async Task<ApiResponse<PaginatorDto<ProductDto, int>>> GetProductsByBarCode(string barCode, PaginatorDto<ProductDto, int> paginator)
+        {
+            var content = JsonSerializer.Serialize<PaginatorDto<ProductDto, int>>(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/GetByBarCodePageColumn?barCode={barCode}", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var result = ApiResponse<PaginatorDto<ProductDto, int>>.Unpacking(responseBody);
+            httpResponse.EnsureSuccessStatusCode();
+
+            return result;
+        }
+
+
+
+
+
+
+
         public async Task<ProductInfoDto> GetProductInfo(string token)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetInfoProducts?token={token}");
@@ -35,38 +131,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result.Data;
         }
 
-        //public async Task<ProductEntity> GetProductsByBarCode(string token, string barCode, TypeStatusProduct statusProduct)
-        //{
-        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barCode={barCode}&status={statusProduct}");
-        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
-             
-        //    var result = ApiResponse<ProductEntity>.Unpacking(responseBody);
-        //    httpResponse.EnsureSuccessStatusCode();
-
-        //    return result.Data;
-        //}
-
-        public async Task<Paginator<ProductDto>> GetProductByNamePageColumn(string token,string name, int page, int countColumn, TypeStatusProduct statusProduct)
-        {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={statusProduct}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductDto>>.Unpacking(responseBody);
-
-            return result.Data;
-        }
-
-        public async Task<Paginator<ProductDto>> GetProductsPageColumn(string token, int page, int countColumn , TypeStatusProduct statusProduct)
-        { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsPageColumn?token={token}&countColumn={countColumn}&page={page}&status={statusProduct}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductDto>>.Unpacking(responseBody);
-
-            return result.Data;
-        }
+    
+       
+        
 
         public async Task<IEnumerable<ProductDto>> GetProducts(string token)
         {
@@ -90,104 +157,42 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result.Data;
         }
 
-        public async Task<ProductDto> GetProductByBarCode(string token, string barCode, TypeStatusProduct statusProduct)
-        {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}&status={statusProduct}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+        //public async Task<ProductDto> GetProductByBarCode(string token, string barCode, TypeStatusProduct statusProduct)
+        //{
+        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}&status={statusProduct}");
+        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<ProductDto>.Unpacking(responseBody);
+        //    httpResponse.EnsureSuccessStatusCode();
+        //    var result = ApiResponse<ProductDto>.Unpacking(responseBody);
 
-            return result.Data;
-        }
+        //    return result.Data;
+        //}
 
-        public async Task<Paginator<ProductDto>> GetProductsByBarCode(string token, string barCode, int page, int countColumn, TypeStatusProduct statusProduct)
-        {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetAllProductsByBarCode?token={token}&page={page}&countColumn={countColumn}&barcode={barCode}&status={statusProduct}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+        //public async Task<Paginator<ProductDto>> GetProductsByBarCode(string token, string barCode, int page, int countColumn, TypeStatusProduct statusProduct)
+        //{
+        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetAllProductsByBarCode?token={token}&page={page}&countColumn={countColumn}&barcode={barCode}&status={statusProduct}");
+        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductDto>>.Unpacking(responseBody);
+        //    httpResponse.EnsureSuccessStatusCode();
+        //    var result = ApiResponse<Paginator<ProductDto>>.Unpacking(responseBody);
 
-            return result.Data;
-        }
+        //    return result.Data;
+        //}
+         
 
+        //public async Task<bool> AddProductRange(string token, IEnumerable<Product> product)
+        //{ 
+        //    var content = JsonSerializer.Serialize(product.ToCreateProductDto());
+        //    HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-        public async Task<bool> AddProduct(string token, CreateProductDto product)
-        { 
-            var content = JsonSerializer.Serialize(product);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+        //    HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/AddProductRange?token={token}", httpContent);
+        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/AddProduct?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-            
+        //    httpResponse.EnsureSuccessStatusCode();
+        //    var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            if(result.Status == ResponseStatus.Error)
-            {
-                throw new ExceptionObjectExists(result.Errors.ElementAt(0));
-            }
-
-            return result.Data; 
-        }
-
-        public async Task<bool> AddProductRange(string token, IEnumerable<Product> product)
-        { 
-            var content = JsonSerializer.Serialize(product.ToCreateProductDto());
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/AddProductRange?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result.Data; 
-        }
-
-        public async Task<bool> UpdateProduct(string token, UpdateProductDto product)
-        { 
-            var content = JsonSerializer.Serialize(product);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/UpdateProduct?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-            httpResponse.EnsureSuccessStatusCode();
-
-            return result.Data; 
-        }
-
-        public async Task<bool> UpdateProductRange(string token, IEnumerable<UpdateProductDto> product)
-        { 
-            var content = JsonSerializer.Serialize(product);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/UpdateProductRange?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result.Data;
-        }
-
-        public async Task<bool> UpdateParameterProduct(string token,string parameter , object value, UpdateProductDto product)
-        { 
-            var content = JsonSerializer.Serialize(product);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Product/UpdateParameterProduct?token={token}&parameter={parameter}&value={value.ToString()}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result.Data; 
-        }
-
+        //    return result.Data; 
+        //}
+         
     }
 }

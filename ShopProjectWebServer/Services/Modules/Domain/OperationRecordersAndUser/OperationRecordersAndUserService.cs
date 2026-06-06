@@ -4,7 +4,7 @@ using ShopProjectWebServer.Api.DtoModels.OperationRecorderUser;
 using ShopProjectWebServer.Api.Mappings;
 using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.Services.Modules.Authorization;
-using ShopProjectWebServer.Services.Modules.Mapping;
+using ShopProjectWebServer.Services.Modules.Mapping.User;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser
 {

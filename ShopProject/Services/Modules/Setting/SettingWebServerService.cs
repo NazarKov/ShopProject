@@ -11,8 +11,10 @@ namespace ShopProject.Services.Modules.Setting
 {
     internal class SettingWebServerService : ISettingWebServerService
     {
-        private string _url = string.Empty; 
-        public string Url { get { return _url; } private set { _url = value; }}
+        private string _url = string.Empty;
+        public string Url { get { return _url; } private set { _url = value; } }
+        private string _token = string.Empty;
+        public string Token { get { return _token; } private set { _token = value; } }
 
         private ISettingService _settingService;
 
@@ -23,6 +25,11 @@ namespace ShopProject.Services.Modules.Setting
             if(settingserver != null&&settingserver.SelectServer!= null && settingserver.SelectServer != string.Empty)
             {
                 Url = settingserver.SelectServer.Split(" : ")[1];
+            }
+            var settingSession = _settingService.GetSetting<SessionSetting>();
+            if (settingSession != null && settingSession.User!=null && settingSession.User.Token != string.Empty) 
+            {
+                Token = settingSession.User.Token;
             }
         }
     }

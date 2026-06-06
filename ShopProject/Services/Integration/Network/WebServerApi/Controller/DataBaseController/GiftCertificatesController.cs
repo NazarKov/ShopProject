@@ -1,8 +1,7 @@
 ﻿using ShopProject.Model.Domain.Paginator;
+using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.GiftCertificate;
-using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Integration.Network.WebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +16,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     {
         private HttpClient _httpClient;
 
-        public GiftCertificatesController(string url)
+        public GiftCertificatesController(HttpClient  httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
         public async Task<bool> UpdateParameterGiftCertificate(string token, string parameter, object value, UpdateGiftCertificateDto item)
@@ -72,24 +70,24 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 
             return result.Data;
         }
-        public async Task<Paginator<GiftCertificateDto>> GetGiftCertificateByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusGiftCertificate status)
+        public async Task<Paginator<GiftCertificateDto,TypeStatusGiftCertificate>> GetGiftCertificateByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusGiftCertificate status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/GiftCertificates/GetGiftCertificatesByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<GiftCertificateDto>>.Unpacking(responseBody);
+            var result = ApiResponse<Paginator<GiftCertificateDto, TypeStatusGiftCertificate>>.Unpacking(responseBody);
 
             return result.Data;
         }
 
-        public async Task<Paginator<GiftCertificateDto>> GetGiftCertificatePageColumn(string token, int page, int countColumn, TypeStatusGiftCertificate status)
+        public async Task<Paginator<GiftCertificateDto, TypeStatusGiftCertificate>> GetGiftCertificatePageColumn(string token, int page, int countColumn, TypeStatusGiftCertificate status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/GiftCertificates/GetGiftCertificatesPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<GiftCertificateDto>>.Unpacking(responseBody);
+            var result = ApiResponse<Paginator<GiftCertificateDto, TypeStatusGiftCertificate>>.Unpacking(responseBody);
 
             return result.Data;
         }

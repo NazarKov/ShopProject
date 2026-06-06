@@ -2,7 +2,7 @@
 using ShopProject.Services.Infrastructure.Monitoring.WebServerStatus.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.ControlWebServer;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+using ShopProject.Services.Modules.Mapping.ControlWebServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;

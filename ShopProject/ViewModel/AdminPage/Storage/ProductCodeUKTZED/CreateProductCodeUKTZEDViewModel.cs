@@ -6,10 +6,8 @@ using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
-using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,11 +85,22 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         private async Task CreateProductCodeUKTZED()
         {
             ProductCodeUKTZED.Status = ShopProject.Model.Enum.TypeStatusCodeUKTZED.Favorite;
-            await _productCodeUKTZEDServiсe.Add(ProductCodeUKTZED.ToProductCodeUKTZED());
+            var result = await _productCodeUKTZEDServiсe.Add(ProductCodeUKTZED.ToProductCodeUKTZED());
+            if (result.IsSuccess)
+            {
+                SetSuccess(ProductCodeUKTZED.Code);
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Код", "Код успішно створений в базі даних")));
+                await MediatorService.ExecuteEventAsync("ReloadCodeUKTEDGriedView");
 
-            SetSuccess(ProductCodeUKTZED.Code);
-            await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Код", "Код успішно створений в базі даних")));
-            await MediatorService.ExecuteEventAsync("ReloadCodeUKTEDGriedView");
+            }
+            else if(result.IsError) 
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
         }
         private void SetError(string error)
         {

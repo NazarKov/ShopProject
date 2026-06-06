@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:control="clr-namespace:ShopProject.Controls"
         mc:Ignorable="d"
-        Title="Створення товару" Height="525" Width="455" ResizeMode="NoResize">
+        Title="Створення товару" Height="555" Width="455" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Grid VerticalAlignment="Stretch">
         <Rectangle x:Name="ShadowRect1" Visibility="{Binding Product.ShadowVisibility}" Fill="Black" Panel.ZIndex="1" Opacity="0.5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="7"  Grid.ColumnSpan="3">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDown">
@@ -26,7 +26,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Rectangle>
-        <Grid Margin="25"   Panel.ZIndex="1" Background="White">
+        <Grid Margin="25" VerticalAlignment="Center"  Panel.ZIndex="1" Background="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
@@ -61,8 +61,9 @@
                         Visibility="{Binding SuccessTextBlockVisibiliti}"
                         Style="{StaticResource SuccessTextBlock}"
                         Grid.RowSpan="2" 
+                        TextWrapping="Wrap"
                         Text="{Binding Success}"  
-                        Height="35"
+                        MinHeight="35"
                         Padding="8" />
             </StackPanel>
             <control:TextBoxStretching Panel.ZIndex="1" Grid.Column="0" Grid.Row="1" Grid.RowSpan="7" Grid.ColumnSpan="2"  

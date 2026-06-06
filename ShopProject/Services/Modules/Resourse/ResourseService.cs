@@ -2,7 +2,10 @@
 using ShopProject.Model.Exceptions;
 using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Mapping.ProductUnit;
+using ShopProject.Services.Modules.Mapping.SignatureKey;
+using ShopProject.Services.Modules.Mapping.UserRole;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting;
@@ -56,10 +59,10 @@ namespace ShopProject.Services.Modules.Resourse
                 if (await _mainWebServerService.IsConnectServer())
                 {
                     _sessionService.Roles = (await _mainWebServerService.DataBase.UserRoleController.GetRoles(token)).ToUserRole();
-                    _sessionService.ProductUnits = (await _mainWebServerService.DataBase.ProductUnitController.GetUnits(token)).ToProductUnit();
-                    _sessionService.ProductCodesUKTZED = (await _mainWebServerService.DataBase.ProductCodeUKTZEDController.GetCodeUKTZED(token)).ToProductCodeUKTZED();
+                    _sessionService.ProductUnits = (await _mainWebServerService.DataBase.ProductUnitController.GetAll()).Data.ToProductUnit();
+                    _sessionService.ProductCodesUKTZED = (await _mainWebServerService.DataBase.ProductCodeUKTZEDController.GetAll()).Data.ToProductCodeUKTZED();
 
-                    _sessionService.User = await _mainWebServerService.DataBase.UserController.GetUser(token);
+                    //_sessionService.User = await _mainWebServerService.DataBase.UserController.GetUser(token);
                     _sessionService.User.Token = token;
                     _sessionService.User.SignatureKey = (await _mainWebServerService.DataBase.SignatureKeyController.GetKey(token)).ToSignatureKey();
 
@@ -67,7 +70,7 @@ namespace ShopProject.Services.Modules.Resourse
             }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                //throw new Exception(ex.Message);
             }
         } 
     }

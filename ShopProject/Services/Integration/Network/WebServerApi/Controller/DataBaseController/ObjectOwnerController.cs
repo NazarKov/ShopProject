@@ -2,8 +2,7 @@
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.ObjectOwner;
-using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProjectDataBase.Entities;
+using ShopProject.Services.Integration.Network.WebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +17,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class ObjectOwnerController
     {
         private HttpClient _httpClient;
-        public ObjectOwnerController(string url)
+        public ObjectOwnerController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
         public async Task<bool> DeleteObjectsOwner(string token, ObjectOwner item)
@@ -41,25 +39,25 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result.Data;
         }
 
-        public async Task<Paginator<ObjectOwnerDto>> GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
+        public async Task<Paginator<ObjectOwnerDto,TypeStatusObjectOwner>> GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
         {
 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwnersByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
             httpResponse.EnsureSuccessStatusCode();
 
-            var result = ApiResponse<Paginator<ObjectOwnerDto>>.Unpacking(responseBody);
+            var result = ApiResponse<Paginator<ObjectOwnerDto, TypeStatusObjectOwner>>.Unpacking(responseBody);
 
             return result.Data;
         }
 
-        public async Task<Paginator<ObjectOwnerDto>> GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
+        public async Task<Paginator<ObjectOwnerDto, TypeStatusObjectOwner>> GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwnersPageColumn?token={token}&countColumn={countColumn}&page={page}&status={status}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
             
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ObjectOwnerDto>>.Unpacking(responseBody);
+            var result = ApiResponse<Paginator<ObjectOwnerDto, TypeStatusObjectOwner>>.Unpacking(responseBody);
 
             return result.Data;
         }
@@ -75,19 +73,19 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result.Data; 
         }
 
-        public async Task<bool> AddObjectOwner(string token, ObjectOwnerEntity item)
-        { 
-            var content = JsonSerializer.Serialize(item);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+        //public async Task<bool> AddObjectOwner(string token, ObjectOwnerEntity item)
+        //{ 
+        //    var content = JsonSerializer.Serialize(item);
+        //    HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/AddObjectOwner?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+        //    HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/AddObjectOwner?token={token}", httpContent);
+        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
+        //    httpResponse.EnsureSuccessStatusCode();
+        //    var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data; 
-        }
+        //    return result.Data; 
+        //}
 
         public async Task<bool> AddObjectsOwners(string token, List<CreateObjectOwnerDto> item)
         { 

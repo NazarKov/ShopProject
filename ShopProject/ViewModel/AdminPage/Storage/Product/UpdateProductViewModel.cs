@@ -3,21 +3,25 @@ using ShopProject.Core.Mvvm.Interface;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
+using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Discount;
 using ShopProject.Model.UI.Product;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.Product;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.AdminPage.Storage.Product
@@ -70,8 +74,28 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 
             var item = _productServiсe.GetProductOnSession();
 
-            Units = (await _productUnitServiсe.GetFromSession()).ToProductUnitModel().ToList();
-            CodeUKTZED = (await _productCodeUKTZEDServiсe.GetFromSession()).ToProductCodeUKTZEDModel().ToList();
+            var units = (await _productUnitServiсe.GetFromSession()).ToProductUnitModel();
+            var favoriteUnit = units.Where(u => u.Status == TypeStatusUnit.Favorite);
+            if (favoriteUnit.Any())
+            {
+                Units = new List<ProductUnitModel>(favoriteUnit);
+            }
+            else
+            {
+                Units = new List<ProductUnitModel>(units);
+            }
+
+            var codeUKTZED = (await _productCodeUKTZEDServiсe.GetFromSession()).ToProductCodeUKTZEDModel();
+            var favoriteCodeUKTZED = codeUKTZED.Where(c => c.Status == TypeStatusCodeUKTZED.Favorite);
+            if (favoriteCodeUKTZED.Any())
+            {
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>(favoriteCodeUKTZED);
+            }
+            else
+            {
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>(codeUKTZED);
+            } 
+
             if (StatusProduct.Count == 0)
             {
                 StatusProduct = new List<string>(ProductStatusModel.GetProductStatus()); 
@@ -94,9 +118,33 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             if (item.Count != 0)
                 Product.Count = item.Count;
             if (item.Unit != null && item.Unit.ShortNameUnit != null)
-                SelectUnits = Units.IndexOf(Units.Where(i => i.NameUnit == item.Unit.NameUnit).First());
+            {
+                var itemUnit = Units.Where(u => u.NameUnit == item.Unit.NameUnit);
+                if (itemUnit.Any())
+                {
+                    SelectUnits = Units.IndexOf(itemUnit.First());
+                }
+                else
+                {
+                    var unit = units.Where(u => u.NameUnit == item.Unit.NameUnit).First();
+                    Units.Add(unit); 
+                    SelectUnits = Units.IndexOf(unit);
+                }
+            } 
             if (item.CodeUKTZED != null)
-                SelectCodeUKTZED = CodeUKTZED.IndexOf(CodeUKTZED.Where(i => i.NameCode == item.CodeUKTZED.NameCode).First());
+            {
+                var itemCode = CodeUKTZED.Where(u => u.NameCode == item.CodeUKTZED.NameCode);
+                if (itemCode.Any())
+                {
+                    SelectCodeUKTZED = CodeUKTZED.IndexOf(itemCode.First());
+                }
+                else
+                {
+                    var code = codeUKTZED.Where(u => u.NameCode == item.CodeUKTZED.NameCode).First();
+                    CodeUKTZED.Add(code);
+                    SelectCodeUKTZED = CodeUKTZED.IndexOf(code);
+                } 
+            } 
 
             if (Enum.GetValues<TypeStatusProduct>().Where(s => s == item.Status).Any())
             {
@@ -195,7 +243,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             _isEnableSaveButton = false;
 
-            if (await _productServiсe.Update(new ProductModel()
+            var result = await _productServiсe.Update(new ProductModel()
             {
                 ID = Product.ID,
                 NameProduct = Product.NameProduct,
@@ -207,15 +255,37 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 CodeUKTZED = CodeUKTZED.ElementAt(_selectCodeUKTZED),
                 Discount = new DiscountModel(),
                 Status = Enum.GetValues<TypeStatusProduct>().ElementAt(_selectStatusProduct)
-            }.ToProduct()))
-            {
+            }.ToProduct());
 
-                Success = "Товар редаговано";
-                ErrorTextBlockVisibiliti = Visibility.Collapsed;
-                SuccessTextBlockVisibiliti = Visibility.Visible;
-                _isEnableSaveButton = true;
+
+            if (result.IsSuccess)
+            {
+                SetSuccess("Товар редаговано");
                 await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Товар", "Товар редаговано")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadProduct.ToString());
             }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            } 
+        }
+        private void SetError(string error)
+        {
+            IsEnableSaveButton = true;
+            SuccessTextBlockVisibiliti = Visibility.Collapsed;
+            Error = error;
+            ErrorTextBlockVisibiliti = Visibility.Visible;
+        }
+        private void SetSuccess(string message)
+        {
+            Success = message;
+            ErrorTextBlockVisibiliti = Visibility.Collapsed;
+            SuccessTextBlockVisibiliti = Visibility.Visible;
+            IsEnableSaveButton = true;
         }
     }
 }

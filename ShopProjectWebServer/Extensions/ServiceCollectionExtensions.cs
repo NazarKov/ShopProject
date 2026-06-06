@@ -1,4 +1,12 @@
-﻿using ShopProjectWebServer.DataBase;
+﻿using ShopProjectWebServer.Api.DtoModels.Product;
+using ShopProjectWebServer.Api.DtoModels.ProductCodeUKTZED;
+using ShopProjectWebServer.Api.DtoModels.ProductUnit;
+using ShopProjectWebServer.Api.DtoModels.User;
+using ShopProjectWebServer.Api.Validation.ProductCodeUKTZEDValidation;
+using ShopProjectWebServer.Api.Validation.ProductUnitValidation;
+using ShopProjectWebServer.Api.Validation.ProductValidation;
+using ShopProjectWebServer.Api.Validation.User;
+using ShopProjectWebServer.DataBase;
 using ShopProjectWebServer.DataBase.Interface;
 using ShopProjectWebServer.Service.Integration.Directory;
 using ShopProjectWebServer.Service.Integration.Directory.Interface;
@@ -22,11 +30,15 @@ using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder;
 using ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser;
 using ShopProjectWebServer.Services.Modules.Domain.Order;
 using ShopProjectWebServer.Services.Modules.Domain.Product;
+using ShopProjectWebServer.Services.Modules.Domain.Product.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.ProductCodeUKTZED;
+using ShopProjectWebServer.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.ProductUnit;
+using ShopProjectWebServer.Services.Modules.Domain.ProductUnit.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.User;
 using ShopProjectWebServer.Services.Modules.Domain.User.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.UserRole;
+using ShopProjectWebServer.Services.Modules.Domain.UserRole.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.WorkingShift;
 
 namespace ShopProjectWebServer.Extensions
@@ -41,15 +53,25 @@ namespace ShopProjectWebServer.Extensions
             services.AddScoped<IOperationRecorderServise, OperationRecorderService>();
             services.AddScoped<IOperationServise, OperationServise>();
             services.AddScoped<IOrderServise, OrderService>();
-            services.AddScoped<IProductServise, ProductService>();
-            services.AddScoped<IProductCodeUKTZEDServise, ProductCodeUKTZEDService>(); 
-            services.AddScoped<IProductUnitServise, ProductUnitService>(); 
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductCodeUKTZEDService, ProductCodeUKTZEDService>(); 
+            services.AddScoped<IProductUnitService, ProductUnitService>(); 
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRoleServise, UserRoleService>();
+            services.AddScoped<IUserRoleServiсe, UserRoleService>();
             services.AddScoped<IWorkingShiftServise, WorkingShiftService>(); 
             services.AddScoped<IElectronicSignatureKeyServise, ElectronicSignatureKeyService>();
             services.AddScoped<IDiscountServise, DiscountService>();
-            services.AddScoped<IGiftCertificatesServise, GiftCertificatesService>();
+           // services.AddScoped<IGiftCertificatesServise, GiftCertificatesService>();
+
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<CreateProductDto>,CreateProductValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<UpdateProductDto>, UpdateProductValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<CreateProductUKTZEDDto>, CreateProductCodeUTKZEDValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<UpdateProductCodeUKTZEDDto>, UpdateProductCoduUKTZEDValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<CreateProductUnitDto>, CreateProductUnitValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<UpdateProductUnitDto>, UpdateProductUnitValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<CreateUserDto>, CreateUserValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<UpdateUserDto>, UpdateUserValidator>();
+            services.AddScoped<ShopProjectWebServer.Api.Validation.Interface.IValidator<UserDto>, AuthorizationUserValidator>();
         }
         public static void AddDataBaseServices(this IServiceCollection services)
         {

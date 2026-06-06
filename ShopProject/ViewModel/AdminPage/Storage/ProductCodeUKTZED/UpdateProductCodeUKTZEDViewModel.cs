@@ -1,14 +1,13 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Interface;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Notification;
-using ShopProject.Model.Domain.PorductCodeUKTZED;
+using ShopProject.Model.Domain.Notification; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,11 +125,21 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         private async Task UpdateProductCodeUKTZED()
         {
             ProductCodeUKTZED.Status = Enum.GetValues<TypeStatusCodeUKTZED>().ElementAt(SelectStatusCodeUTKZED);
-            await _productCodeUKTZEDServiсe.Update(ProductCodeUKTZED.ToProductCodeUKTZED());
-
-            SetSuccess(ProductCodeUKTZED.Code);
-            await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Код", "Код успішно редаговано в базі даних")));
-            await MediatorService.ExecuteEventAsync("ReloadCodeUKTEDGriedView");
+            var result = await _productCodeUKTZEDServiсe.Update(ProductCodeUKTZED.ToProductCodeUKTZED());
+            if (result.IsSuccess)
+            {
+                SetSuccess(ProductCodeUKTZED.Code);
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Код", "Код успішно редаговано в базі даних")));
+                await MediatorService.ExecuteEventAsync("ReloadCodeUKTEDGriedView");
+            }
+            else if(result.IsError) 
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
         }
         private void SetError(string error)
         {

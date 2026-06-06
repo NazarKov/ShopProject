@@ -5,72 +5,144 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.ViewModel.AdminPage.UserPage"
         mc:Ignorable="d"
-        Title="UpdateUserView"  Width="400" Height="520"  ResizeMode="NoResize">
-    <Window.DataContext>
-        <local:UpdateUserViewModel></local:UpdateUserViewModel>
-    </Window.DataContext>
-    <Grid Height="520">
-        <Grid VerticalAlignment="Center" Height="{Binding SizeWindow , UpdateSourceTrigger=PropertyChanged}">
+        Title="UpdateUserView"  Width="460" Height="520"  ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid VerticalAlignment="Center"  >
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="300" ></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
+
             <Grid.RowDefinitions>
-                <RowDefinition Height="10"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Label x:Name="label2" Grid.Column="1" Grid.Row="1" Content="ПІБ" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            <TextBox x:Name="textBox2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding FullName}" VerticalAlignment="Center" Width="120"/>
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <TextBlock x:Name="textBlock"
+                           Visibility="{Binding ErrorTextBlockVisibiliti}"
+                           Style="{StaticResource ErrorTextBlock}"
+                           Grid.RowSpan="2" 
+                           Text="{Binding Error}"  
+                           Height="35"
+                           Padding="8" />
+                <TextBlock x:Name="textBlock1"
+                           Visibility="{Binding SuccessTextBlockVisibiliti}"
+                           Style="{StaticResource SuccessTextBlock}"
+                           Grid.RowSpan="2" 
+                           TextWrapping="Wrap"
+                           Text="{Binding Success}"  
+                           MinHeight="35"
+                           Padding="8" />
+            </StackPanel>
 
-            <Label x:Name="label" Grid.Column="1" Grid.Row="2" Content="Логін" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            <TextBox x:Name="textBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Login}" VerticalAlignment="Center" Width="120"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,10,0,0" >
 
-            <Label x:Name="lable0" Grid.Column="1" Grid.Row="3" Content="Email" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            <TextBox x:Name="textBox0" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Email}" VerticalAlignment="Center" Width="120"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="5" >
+                    <TextBlock Text="ПІБ:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="250" Height="30"  Text="{Binding User.FullName}"  Padding="5" Style="{StaticResource GeneralTextBox}" />
+                </StackPanel>
 
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Логін:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="250" Height="30" Text="{Binding User.Login}"  Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                </StackPanel>
 
-            <Label x:Name="label1" Grid.Column="1" Grid.Row="4" Content="Пароль" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            <TextBox x:Name="textBox1" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,15,0" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Center" Width="120"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Email:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="250" Height="30" Text="{Binding User.Email}"  Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5"  >
+                    <TextBlock Text="Податковий номер:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="250" Height="30" Padding="5"  Style="{StaticResource GeneralTextBox}"
+                             Text="{Binding User.TIN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
 
-            <Label x:Name="label3" Grid.Column="1" Grid.Row="5" Content="Посада" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            <ComboBox x:Name="comboBox" Grid.Column="1" ItemsSource="{Binding UserRoles}" SelectedIndex="{Binding SelectUserRole}" DisplayMemberPath="NameRole" HorizontalAlignment="Right" Margin="0,0,15,0" Grid.Row="5" VerticalAlignment="Center" Width="120"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5"  >
+                    <TextBlock Text="Пароль:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="250" Height="30" Padding="5"  Style="{StaticResource GeneralTextBox}"
+                             Text="{Binding User.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
 
-            <Label x:Name="label5" Grid.Column="1" Content="Ключ ЕЦП" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Center" Margin="15,0,0,0" Visibility="{Binding VisibilityFielKey}" />
-            <Grid HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Width="120" Height="18" Grid.Row="6" Grid.Column="1" Visibility="{Binding VisibilityFielKey}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding PathKey, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                <Button Grid.Column="1" x:Name="button5" HorizontalAlignment="Right" Width="30" Command="{Binding OpenFiLeKeyCommand}">
-                    <Button.Content>
-                        <Image Source="/Resource/Images/arrow.png"></Image>
-                    </Button.Content>
-                </Button>
-            </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                    <TextBlock Text="Посада:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                    <ComboBox Width="250" Height="30"
+                          ItemsSource="{Binding UserRoles}" SelectedIndex="{Binding SelectUserRole}"
+                          DisplayMemberPath="NameRole" Style="{StaticResource GeneralComboBox}" />
+                </StackPanel>
+                <StackPanel Visibility="{Binding UserHasSignatureKeyVisibility}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                        <TextBlock Text="Ключ ЕЦП:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <TextBlock Text="Завантажений"  Width="250" VerticalAlignment="Center" Foreground="#444"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                        <TextBlock Text="" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <Button Content="Переглянути ключ" Width="250" Style="{StaticResource GeneralButton}" VerticalAlignment="Center" Foreground="#444"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                        <TextBlock Text="" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <Button Content="Видалити ключ" Width="250" Style="{StaticResource ExitButton}" Command="{Binding DeleteKeyCommand}" VerticalAlignment="Center" Foreground="#444"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Visibility="{Binding UserNoneSignatureKeyVisibility}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                        <TextBlock Text="Ключ ЕЦП:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <TextBlock Text="відсутній"  Width="250" VerticalAlignment="Center" Foreground="#444"/>
+                    </StackPanel> 
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                        <TextBlock Text="" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <Button Content="Добавити ключ" Command="{Binding OpenAddKeyFieldCommand}" Width="250" Style="{StaticResource SuccessButton}" VerticalAlignment="Center" Foreground="#444"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Visibility="{Binding AddKeyFieldVisibility}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                        <TextBlock Text="Ключ ЕЦП:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <Grid Width="250" Height="30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="40"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                 Text="{Binding PathKey, UpdateSourceTrigger=PropertyChanged}"
+                 Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                            <Button Grid.Column="1"
+                Command="{Binding OpenFiLeKeyCommand}"
+                Background="CadetBlue"
+                BorderThickness="0" >
+                                <Image Source="/Resource/Images/key.png" Width="16" Height="16"/>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
 
-            <Label x:Name="label4" Grid.Column="1" Content="{Binding MessageByKey}"  HorizontalAlignment="Left" Margin="15,0,0,0" Grid.Row="6" Visibility="{Binding VisibilityUpdateButtonKey}" VerticalAlignment="Center"/>
-            <Button x:Name="button" Grid.Column="1" Content="{Binding ContentUpdateKeyButton}" Margin="0,0,15,0"  Grid.Row="6" Command="{Binding OpenPanelWithKeyCommand}" Visibility="{Binding VisibilityUpdateButtonKey}" HorizontalAlignment="Right"  Width="120" VerticalAlignment="Center"/>
-            
-            
-            <Label x:Name="label6" Grid.Column="1" Content="Пароль ЕЦП" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Center" Margin="15,0,0,0" Visibility="{Binding VisibilityFielKey}"/>
-            <TextBox x:Name="textBox4" Grid.Column="1" Grid.Row="7" HorizontalAlignment="Right" Margin="0,0,15,0"  TextWrapping="Wrap" Text="{Binding PasswordKey}" VerticalAlignment="Center" Width="120" Visibility="{Binding VisibilityFielKey}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                        <TextBlock Text="Пароль ЕЦП:" Width="120" VerticalAlignment="Center" Foreground="#444"/>
+                        <TextBox Width="250" Height="30"
+                 Padding="5"  Style="{StaticResource GeneralTextBox}"
+                 Text="{Binding PasswordKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel> 
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,20,0,0"  >
+                <Button Content="Редагувати" Height="35" Margin="5" Width="92" Command="{Binding UpdateUserCommand}" Style="{StaticResource SuccessButton}"/> 
 
-            <Button x:Name="button1" Grid.Column="1" Margin="15,0,0,0" Grid.Row="{Binding ButtonRowIndex , UpdateSourceTrigger=PropertyChanged}" Content="Оновити користувача" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding UpdateUserCommand}"/>
-            <Button x:Name="button2" Grid.Column="1" Margin="0,0,15,0" Grid.Row="{Binding ButtonRowIndex, UpdateSourceTrigger=PropertyChanged}" Content="Вийти" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding ExitWindowCommand}"/>
-            <Button x:Name="button3" Grid.Column="1" Margin="80,0,0,0"  Grid.Row="{Binding ButtonRowIndex, UpdateSourceTrigger=PropertyChanged}" Content="очистити" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding ClearWindowCommadn}"/>
-
-
+                <Button Content="Вийти" Height="35" Margin="5"  Width="92" Command="{Binding ExitWindowCommand}" Style="{StaticResource ExitButton}" />
+            </StackPanel>
         </Grid>
-    </Grid>
+    </Grid> 
 </Window>
+

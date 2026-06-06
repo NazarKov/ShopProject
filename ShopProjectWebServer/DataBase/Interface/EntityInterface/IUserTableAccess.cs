@@ -5,15 +5,16 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IUserTableAccess
     {
-        void Add(UserEntity item);
-        void Update(UserEntity item);
-        void UpdateParameter(Guid id, string nameParameter, object valueParameter);
-        void Delete(UserEntity item);
-        IEnumerable<UserEntity> GetAll();
-        UserEntity GetUser(string token);
-        public UserEntity? GetUserByLogin(string login);
-        IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status); 
-        UserEntity GetById(Guid id);
+        public Task<UserEntity> AddAsync(UserEntity item);
+        public Task UpdateAsync(UserEntity item);
+        public Task UpdateParameterAsync(Guid id, string nameParameter, object valueParameter);
+        public Task DeleteAsync(Guid id);
+        public IEnumerable<UserEntity> GetAll();
+        public UserEntity? GetUser(string token);
+        public UserEntity? GetByLogin(string login);
+        public IEnumerable<UserEntity> GetByNameAndStatus(string name, TypeStatusUser status); 
+        public UserEntity? GetById(Guid id);
+        public Task<bool> ExistsByLogin(string login);
     }
 
 

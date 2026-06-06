@@ -1,4 +1,5 @@
 ﻿using ShopProjectDataBase.Entities;
+using ShopProjectWebServer.Api.DtoModels.SignatureKey;
 using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.DtoModels.User
@@ -22,9 +23,9 @@ namespace ShopProjectWebServer.Api.DtoModels.User
         [JsonPropertyName("Status")]
         public int Status { get; set; }
         [JsonPropertyName("UserRoleID")]
-        public int? UserRoleID { get; set; }
-        [JsonPropertyName("SignatureKeyID")]
-        public string? SignatureKeyID { get; set; }
+        public int UserRoleID { get; set; }
+        [JsonPropertyName("SignatureKey")]
+        public SignatureKeyDto? SignatureKey { get; set; }
         [JsonPropertyName("CreatedAt")]
         public DateTimeOffset? CreatedAt { get; set; }
     }

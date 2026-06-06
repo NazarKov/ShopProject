@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Common;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc; 
+using ShopProjectWebServer.Api.Common; 
 using ShopProjectWebServer.Api.DtoModels.ProductUnit;
-using ShopProjectWebServer.Services.Modules.Domain.ProductUnit;
+using ShopProjectWebServer.Api.Validation.Interface; 
+using ShopProjectWebServer.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.ProductUnit; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -10,121 +12,203 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class ProductUnitController : ControllerBase
     {
-        private IProductUnitServise _servise;
-        public ProductUnitController(IProductUnitServise servise)
+        private IValidator<CreateProductUnitDto> _createValidator;
+        private IValidator<UpdateProductUnitDto> _updateValidator;
+        private IProductUnitService _service;
+        public ProductUnitController(IProductUnitService servise, IValidator<CreateProductUnitDto> createValidator , IValidator<UpdateProductUnitDto> updateValidator)
         {
-            _servise = servise;
+            _service = servise;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
-        [HttpPost("AddUnit")]
-        public IActionResult AddUnit(string token, CreateProductUnitDto unit)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add([FromBody] CreateProductUnitDto unit)
         {
             try
             {
-                var result = _servise.AddUnit(token,unit); 
-                return Ok(ApiResponse<bool>.Ok(result));
+                var validation = _createValidator.Validation(unit);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<ProductUnitDto>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.Add(unit.ToProductUnit());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<ProductUnitDto>.Ok(result.Data.ToProductUnit()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<ProductUnitDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));  
             }
         }
-
-        [HttpPost("UpdateUnit")]
-        public IActionResult UpdateUnit(string token, UpdateProductUnitDto unit)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update([FromBody] UpdateProductUnitDto unit)
         {
             try
             {
-                var result = _servise.UpdateUnit(token, unit); 
-                return Ok(ApiResponse<bool>.Ok(result));
+                var validation = _updateValidator.Validation(unit);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.Update(unit.ToProductUnit());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("UpdateParameter")]
+        public async Task<IActionResult> UpdateParameter([FromQuery] string parameter, [FromQuery] string value, [FromBody] UpdateProductUnitDto unit)
+        {
+            try
+            {
+                var validation = _updateValidator.Validation(unit);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.UpdateParameter(parameter, value, unit.ToProductUnit());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
             }
         }
-
-        [HttpPost("UpdateParameterUnit")]
-        public IActionResult UpdateParameterUnit(string token, [FromQuery] string parameter, [FromQuery] string value, UpdateProductUnitDto unit)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete([FromBody] int id)
         {
             try
             {
-                var result = _servise.UpdateParameterUnit(token,parameter,value, unit); 
-                return Ok(ApiResponse<bool>.Ok(result));
+                var result = await _service.Delete(id); 
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
-        [HttpPost("DeleteUnit")]
-        public IActionResult DeleteUnit(string token, int id)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByCodePageColumn")]
+        public async Task<IActionResult> GetByCodePageColumn([FromQuery] int code, [FromBody] PaginatorDto<ProductUnitDto, int> paginator)
         {
             try
             {
-                var result = _servise.DeleteUnit(token, id); 
-                return Ok(ApiResponse<bool>.Ok(result));
+                var result = _service.GetByCodePageColumn(code, paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
-        [HttpGet("GetUnitByCode")]
-        public IActionResult GetUnitByCode(string token, string code, int page, int countColumn, TypeStatusUnit status)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByNamePageColumn")]
+        public IActionResult GetByNamePageColumn([FromQuery] string name, [FromBody] PaginatorDto<ProductUnitDto, int> paginator)
         {
             try
             {
-                var result = _servise.GetUnitsByCode(token, code,page,countColumn,status); 
-                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
+                var result = _service.GetByNamePageColumn(name, paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
-        [HttpGet("GetUnitsByNamePageColumn")]
-        public IActionResult GetUnitsByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUnit status)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetPageColumn")]
+        public IActionResult GetPageColumn([FromBody] PaginatorDto<ProductUnitDto, int> paginator)
         {
             try
             {
-                var result = _servise.GetUnitsByNamePageColumn(token, name,page,countColumn, status); 
-                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
+                var result = _service.GetPageColumn(paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductUnitDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
-        [HttpGet("GetUnitsPageColumn")]
-        public IActionResult GetUnitsPageColumn(string token, int page, int countColumn, TypeStatusUnit status)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpGet("GetAll")]
+        public IActionResult GetAll() 
         {
             try
             {
-                var result = _servise.GetUnitsPageColumn(token, page, countColumn, status); 
-                return Ok(ApiResponse<PaginatorDto<ProductUnitDto>>.Ok(result));
+                var result = _service.GetAll();
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<IEnumerable<ProductUnitDto>>.Ok(result.Data.ToProductUnit()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<IEnumerable<ProductUnitDto>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpGet("GetUnits")]
-        public IActionResult GetUnits(string token) 
-        {
-            try
-            {
-                var result = _servise.GetUnits(token); 
-                return Ok(ApiResponse<IEnumerable<ProductUnitDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
     }

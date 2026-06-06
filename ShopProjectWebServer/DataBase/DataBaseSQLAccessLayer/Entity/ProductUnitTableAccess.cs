@@ -3,6 +3,7 @@ using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -15,48 +16,16 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
 
-        public void Add(ProductUnitEntity item)
-        { 
-            var unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.NameUnit == item.NameUnit);
-
-            if (unit == null)
-            {
-                unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.ShortNameUnit == item.ShortNameUnit);
-            }
-
-            if (unit == null)
-            {
-                unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.NameUnit == item.NameUnit);
-            }
-
-            if (unit != null)
-            {
-                throw new Exception("Одиниця виміру існує");
-            }
-            _contextDataBase.ProductUnits.Add(item);
-            _contextDataBase.SaveChanges();
+        public async Task<ProductUnitEntity> AddAsync(ProductUnitEntity item)
+        {  
+            await _contextDataBase.ProductUnits.AddAsync(item);
+            await _contextDataBase.SaveChangesAsync();
+            return item;
         }
-
-        public IEnumerable<ProductUnitEntity> GetAll()
-        {
-            return _contextDataBase.ProductUnits.ToList();
-        } 
-
-        public IEnumerable<ProductUnitEntity> GetUnitsByCode(int number, TypeStatusUnit statusUnit)
-        { 
-            if (statusUnit == TypeStatusUnit.Unknown)
-            {
-                return _contextDataBase.ProductUnits.Where(i => i.Number.ToString().Contains(number.ToString()));
-            }
-            else
-            {
-                return _contextDataBase.ProductUnits.Where(t => t.Status == statusUnit).Where(i => i.Number.ToString().Contains(number.ToString()));
-            } 
-        }  
-        public void Update(ProductUnitEntity item)
+        public async Task UpdateAsync(ProductUnitEntity item)
         {
             UpdateFieldUnit(_contextDataBase.ProductUnits.Find(item.ID), item);
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
         }
 
         private void UpdateFieldUnit(ProductUnitEntity UnitUpdate, ProductUnitEntity unit)
@@ -65,17 +34,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             UnitUpdate.ShortNameUnit = unit.ShortNameUnit;
             UnitUpdate.Number = unit.Number;
             UnitUpdate.Status = unit.Status;
-        } 
-        public void Delete(ProductUnitEntity item)
-        {
-            var unit = _contextDataBase.ProductUnits.Find(item.ID);
-
-            if (unit == null) return; 
-            _contextDataBase.ProductUnits.Remove(unit);
-            _contextDataBase.SaveChanges();
         }
 
-        public void UpdateParameter(ProductUnitEntity item, string parameter, object value)
+        public async Task UpdateParameterAsync(ProductUnitEntity item, string parameter, object value)
         {
             var unit = _contextDataBase.ProductUnits.FirstOrDefault(i => i.ID == item.ID);
             if (unit != null)
@@ -122,10 +83,38 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                             }
                             break;
                         }
-                } 
-                _contextDataBase.SaveChanges();
-            } 
+                }
+                await _contextDataBase.SaveChangesAsync();
+            }
         }
+
+        public IEnumerable<ProductUnitEntity> GetAll()
+        {
+            return _contextDataBase.ProductUnits.ToList();
+        } 
+
+        public IEnumerable<ProductUnitEntity> GetByCode(int number, TypeStatusUnit status)
+        { 
+            if (status == TypeStatusUnit.Unknown)
+            {
+                return _contextDataBase.ProductUnits.Where(i => i.Number.ToString().Contains(number.ToString()));
+            }
+            else
+            {
+                return _contextDataBase.ProductUnits.Where(t => t.Status == status).Where(i => i.Number.ToString().Contains(number.ToString()));
+            } 
+        }  
+       
+        public async Task DeleteAsync(int id)
+        {
+            var unit = _contextDataBase.ProductUnits.Find(id);
+
+            if (unit == null) return; 
+            _contextDataBase.ProductUnits.Remove(unit);
+            await _contextDataBase.SaveChangesAsync();
+        }
+
+      
 
         public IEnumerable<ProductUnitEntity> GetByNameAndStatus(string name, TypeStatusUnit status)
         {
@@ -143,6 +132,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             var result = query.ToList();
             return result;
+        }
+
+        public async Task<bool> ExistsByBarCode(int code)
+        {
+            return await _contextDataBase.ProductUnits.AnyAsync(p => p.Number == code);  
         }
     }
 }

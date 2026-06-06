@@ -1,98 +1,164 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.DtoModels.Product;
-using ShopProjectWebServer.Api.DtoModels.ProductUnit;
 using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Authorization;
-using System.Reflection.Metadata;
+using ShopProjectWebServer.DataBase; 
+using ShopProjectWebServer.Services.Common;
+using ShopProjectWebServer.Services.Common.Enum; 
+using ShopProjectWebServer.Services.Modules.Domain.ProductUnit.Interface; 
+using ShopProjectWebServer.Services.Modules.Mapping.ProductUnit; 
+using ProductUnitModel = ShopProjectWebServer.Models.Domain.ProductUnit.ProductUnit;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.ProductUnit
 {
-    internal class ProductUnitService : IProductUnitServise
+    internal class ProductUnitService : IProductUnitService
     {
-        private DataBaseService _controller;
-        private AuthorizationService _authorizationServise;
+        private DataBaseService _controller; 
 
         public ProductUnitService(DataBaseService controller)
         {
-            _controller = controller;
-            _authorizationServise = new AuthorizationService(controller);
+            _controller = controller; 
         }
-        public bool AddUnit(string token, CreateProductUnitDto unit)
+        public async Task<OperationResult<ProductUnitModel>> Add(ProductUnitModel item)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                var valid = await CreateValidation(item);
+                if (valid.IsError)
+                {
+                    return valid;
+                }
+
+                var result = await _controller.DataBaseAccess.ProductUnitTable.AddAsync(item.ToProductUnitEntity());
+                return OperationResult<ProductUnitModel>.Success(result.ToProductUnit());
             }
-            _controller.DataBaseAccess.ProductUnitTable.Add(unit.ToProductUnitEntity());
-            return true;
+            catch(Exception ex)
+            {
+                return OperationResult<ProductUnitModel>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            } 
         }
 
-        public bool DeleteUnit(string token, int id)
+        private async Task<OperationResult<ProductUnitModel>> CreateValidation(ProductUnitModel model)
         {
-            if (!_authorizationServise.LoginToken(token))
+            if (await _controller.DataBaseAccess.ProductUnitTable.ExistsByBarCode(model.Number))
             {
-                throw new Exception("Невірний токен авторизації");
+                return new OperationResult<ProductUnitModel>()
+                {
+                    Status = ResultStatus.Error,
+                    ErrorType = ErrorType.ObjectExists,
+                    Source = ErrorSource.Database,
+                    ErrorMessage = "Товарна одиниця існує"
+                };
             }
-            _controller.DataBaseAccess.ProductUnitTable.Delete(new ShopProjectDataBase.Entities.ProductUnitEntity() { ID = id});
-            return true;
+            return new OperationResult<ProductUnitModel>()
+            {
+                Status = ResultStatus.Success,
+            };
         }
 
-        public PaginatorDto<ProductUnitDto> GetUnitsByCode(string token, string code, int page, int countColumn, TypeStatusUnit status)
+        public async Task<OperationResult<bool>> Update(ProductUnitModel unit)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                await _controller.DataBaseAccess.ProductUnitTable.UpdateAsync(unit.ToProductUnitEntity());
+                return OperationResult<bool>.Success(true);
             }
-
-            var result = _controller.DataBaseAccess.ProductUnitTable.GetUnitsByCode(int.Parse(code), status); 
-            return PaginatorDto<ProductUnitDto>.CreationPaginator(result.Reverse().ToProductUnitDto(), page, countColumn); 
+            catch(Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+           
         }
 
-        public IEnumerable<ProductUnitDto> GetUnits(string token)
+        public async Task<OperationResult<bool>> UpdateParameter(string parameter, string value, ProductUnitModel unit)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                await _controller.DataBaseAccess.ProductUnitTable.UpdateParameterAsync(unit.ToProductUnitEntity(), parameter, value);
+                return OperationResult<bool>.Success(true);
             }
-            return _controller.DataBaseAccess.ProductUnitTable.GetAll().ToProductUnitDto();
+            catch(Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
         }
 
-        public PaginatorDto<ProductUnitDto> GetUnitsByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUnit status)
+        public async Task<OperationResult<bool>> Delete(int id)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                await _controller.DataBaseAccess.ProductUnitTable.DeleteAsync(id);
+                return OperationResult<bool>.Success(true);
             }
-            var units = _controller.DataBaseAccess.ProductUnitTable.GetByNameAndStatus(name, status);
-            var paginator = PaginatorDto<ProductUnitEntity>.CreationPaginator(units, page, countColumn);
-
-            return new PaginatorDto<ProductUnitDto>(paginator.Page,paginator.Pages,paginator.Data.ToProductUnitDto());
+            catch(Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            } 
         }
 
-        public PaginatorDto<ProductUnitDto> GetUnitsPageColumn(string token, int page, int countColumn, TypeStatusUnit status)
-            =>GetUnitsByNamePageColumn(token,string.Empty,page,countColumn,status);
-
-        public bool UpdateParameterUnit(string token, string parameter, string value, UpdateProductUnitDto unit)
+        public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>> GetByCodePageColumn(int code, ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int> paginator)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                var items = _controller.DataBaseAccess.ProductUnitTable.GetByCode(code, (TypeStatusUnit)paginator.DataType);
+
+                var result = ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitEntity, TypeStatusUnit>.CreationPaginator(items.Reverse(), paginator.Page, paginator.CountItemPage, (TypeStatusUnit)paginator.DataType);
+                if (result.Data != null)
+                {
+
+                    return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Success(new ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>(result.Page, result.Pages, result.CountItemPage, result.Data.ToProductUnit(), (int)result.DataType));
+                }
+                else
+                {
+                    return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Fail("Невдалося завантажити товари", ErrorType.NotFound, ErrorSource.Database);
+                }
             }
-            _controller.DataBaseAccess.ProductUnitTable.UpdateParameter(unit.ToProductUnitEntity(),parameter,value);
-            return true;
+            catch (Exception ex)
+            {
+                return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
         }
 
-        public bool UpdateUnit(string token, UpdateProductUnitDto unit)
+        public OperationResult<IEnumerable<ProductUnitModel>> GetAll()
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                var result = _controller.DataBaseAccess.ProductUnitTable.GetAll().ToProductUnit();
+                return OperationResult<IEnumerable<ProductUnitModel>>.Success(result);
             }
-            _controller.DataBaseAccess.ProductUnitTable.Update(unit.ToProductUnitEntity());
-            return true;
+            catch(Exception ex)
+            {
+                return OperationResult<IEnumerable<ProductUnitModel>>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            } 
         }
+
+        public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>> GetByNamePageColumn(string name, ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int> paginator)
+        {
+            try
+            {
+                var items = _controller.DataBaseAccess.ProductUnitTable.GetByNameAndStatus(name, (TypeStatusUnit)paginator.DataType);
+
+                var result = ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitEntity, TypeStatusUnit>.CreationPaginator(items.Reverse(), paginator.Page, paginator.CountItemPage, (TypeStatusUnit)paginator.DataType);
+                if (result.Data != null)
+                {
+
+                    return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Success(new ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>(result.Page, result.Pages, result.CountItemPage, result.Data.ToProductUnit(), (int)result.DataType));
+                }
+                else
+                {
+                    return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Fail("Невдалося завантажити товари", ErrorType.NotFound, ErrorSource.Database);
+                }
+            }
+            catch(Exception ex)
+            {
+                return OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            } 
+        }
+
+        public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int>> GetPageColumn(ShopProjectWebServer.Models.Domain.Paginator.Paginator<ProductUnitModel, int> paginator)
+            => GetByNamePageColumn(string.Empty, paginator);
+
+        
+
+       
     }
 }

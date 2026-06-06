@@ -3,7 +3,7 @@
     public enum ResponseStatus
     {
         None,
-        Message,
+        Success,
         Error,
     }
 }

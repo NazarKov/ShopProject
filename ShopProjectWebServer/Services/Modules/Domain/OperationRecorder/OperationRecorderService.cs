@@ -78,17 +78,17 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder
             return _controller.DataBaseAccess.OperationRecorderTable.SearchByNameAndUser(name, userId).ToOperationRecorderDto();
         }
 
-        public PaginatorDto<OperationRecorderDto> GetOperationRecordersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status)
-        {
-            if (!_authorizationServise.LoginToken(token))
-            {
-                throw new Exception("Невірний токен авторизації");
-            }
-            var operationRecorders = _controller.DataBaseAccess.OperationRecorderTable.GetByNameAndStatus(name, status);
+        //public PaginatorDto<OperationRecorderDto> GetOperationRecordersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status)
+        //{
+        //    if (!_authorizationServise.LoginToken(token))
+        //    {
+        //        throw new Exception("Невірний токен авторизації");
+        //    }
+        //    var operationRecorders = _controller.DataBaseAccess.OperationRecorderTable.GetByNameAndStatus(name, status);
 
-            var paginator = PaginatorDto<OperationsRecorderEntity>.CreationPaginator(operationRecorders, page, countColumn);
-            return new PaginatorDto<OperationRecorderDto>(paginator.Page, paginator.Pages, operationRecorders.ToOperationRecorderDto());
-        }
+        //    var paginator = PaginatorDto<OperationsRecorderEntity>.CreationPaginator(operationRecorders, page, countColumn);
+        //    return new PaginatorDto<OperationRecorderDto>(paginator.Page, paginator.Pages, operationRecorders.ToOperationRecorderDto());
+        //}
 
         public IEnumerable<OperationRecorderDto> GetOperationRecordersByNumberAndUser(string token, string number, Guid userId)
         {
@@ -99,7 +99,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder
             return _controller.DataBaseAccess.OperationRecorderTable.SearchByNumberAndUser(number, userId).ToOperationRecorderDto();
         }
 
-        public PaginatorDto<OperationRecorderDto> GetOperationRecordersPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status)
-            => GetOperationRecordersByNamePageColumn(token, string.Empty, page, countColumn, status);
+        //public PaginatorDto<OperationRecorderDto> GetOperationRecordersPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status)
+        //    => GetOperationRecordersByNamePageColumn(token, string.Empty, page, countColumn, status);
     }
 }

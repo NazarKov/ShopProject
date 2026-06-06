@@ -2,8 +2,10 @@
 using ShopProject.Services.Infrastructure.Exception;
 using ShopProject.Services.Infrastructure.Exception.Interface;
 using ShopProject.Services.Infrastructure.Logging;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Integration.Directory;
 using ShopProject.Services.Integration.File.BaseFile;
+using ShopProject.Services.Integration.Network.WebServerApi.Exception;
 using System; 
 using System.ComponentModel;
 using System.Linq;
@@ -38,6 +40,10 @@ namespace ShopProject.Core.Mvvm
                 try
                 {
                     func();
+                }
+                catch (ExeptionNonAuthorization)
+                {
+                    MediatorService.ExecuteNavigation(ShopProject.Model.Navigation.NavigationButton.RedirectToAuthorizationPage);
                 }
                 catch (System.Exception ex)
                 {

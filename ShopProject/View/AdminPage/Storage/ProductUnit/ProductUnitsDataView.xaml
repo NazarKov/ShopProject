@@ -17,7 +17,8 @@
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
-                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ContextMenuStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries> 
         </ResourceDictionary>
     </Page.Resources>
@@ -226,20 +227,23 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Добавити одиницю" Command="{Binding OpenCreateProductUnitPageCommand}"/>
-                    <MenuItem
-                            Header="Редагувати одиницю"
-                            CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding OpenUpdateProductUnitPageCommand }" />
+                <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                    <MenuItem Header="Добавити одиницю" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductUnitPageCommand}"/>
+                    <MenuItem Header="Редагувати одиницю"
+                              Style="{StaticResource ModernMenuItemStyle}"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding OpenUpdateProductUnitPageCommand }" />
                     <MenuItem Header="Видалити одиницю"
-                            CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding DeleteProductUnitCommand }" />
+                              Style="{StaticResource ModernMenuItemStyle}"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding DeleteProductUnitCommand }" />
                     <Separator></Separator>
                     <MenuItem Header="Добавити до обраних"
+                              Style="{StaticResource ModernMenuItemStyle}"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                               Command="{Binding UpdateStatusToFavoriteProductUnitCommand }" />
-                                 <MenuItem Header="Видалити з обраних"
+                    <MenuItem Header="Видалити з обраних"
+                              Style="{StaticResource ModernMenuItemStyle}"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                               Command="{Binding UpdateStatusToUnFavoriteProductUnitCommand }" /> 
                 </ContextMenu>

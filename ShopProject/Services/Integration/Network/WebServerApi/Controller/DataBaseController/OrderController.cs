@@ -1,7 +1,6 @@
 ﻿using ShopProject.Model.Domain.Order;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
-using ShopProjectDataBase.Entities;
+using ShopProject.Services.Modules.Mapping.Order; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,44 +13,39 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 {
     public class OrderController
     {
-        private string _url;
-        public OrderController(string url)
+        private HttpClient _httpClient;
+        public OrderController(HttpClient httpClient)
         {
-            _url = url;
+            _httpClient = httpClient;
         }
         public async Task<bool> AddOrderRange(string token, List<Order> orders)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_url);
+            var content = JsonSerializer.Serialize(orders.ToListCreatOrderDto());
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-                var content = JsonSerializer.Serialize(orders.ToListCreatOrderDto());
-                HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Order/AddOrderRange?token={token}", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                HttpResponseMessage httpResponse = await client.PostAsync($"/api/Order/AddOrderRange?token={token}", httpContent);
-                string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
+            httpResponse.EnsureSuccessStatusCode();
 
-                var result = ApiResponse<bool>.Unpacking(responseBody);
-                httpResponse.EnsureSuccessStatusCode();
-
-                return result.Data;
-            }
+            return result.Data;
         }
 
-        public async Task<IEnumerable<OrderEntity>> GetOrders(string token)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_url);
+        //public async Task<IEnumerable<OrderEntity>> GetOrders(string token)
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri(_url);
 
-                HttpResponseMessage httpResponse = await client.GetAsync($"/api/Order/GetOrders?token={token}");
-                string responseBody = await httpResponse.Content.ReadAsStringAsync();
+        //        HttpResponseMessage httpResponse = await client.GetAsync($"/api/Order/GetOrders?token={token}");
+        //        string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                var result = ApiResponse<IEnumerable<OrderEntity>>.Unpacking(responseBody);
-                httpResponse.EnsureSuccessStatusCode();
+        //        var result = ApiResponse<IEnumerable<OrderEntity>>.Unpacking(responseBody);
+        //        httpResponse.EnsureSuccessStatusCode();
 
-                return result.Data;
-            }
-        }
+        //        return result.Data;
+        //    }
+        //}
     }
 }

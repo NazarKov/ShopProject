@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ShopProject.Model.Domain.Discount;
-using ShopProject.Model.Domain.PorductCodeUKTZED;
+using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using System;
 using System.Collections.Generic;

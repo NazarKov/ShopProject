@@ -29,22 +29,22 @@ namespace ShopProjectWebServer.Services.Modules.Domain.ObjectOwner
             return true;
         }
 
-        public PaginatorDto<ObjectOwnerListDto> GetPageColumnByName(string token, string name, int page, int column, TypeStatusObjectOwner typeStatus)
-        {
-            if (!_authorizationServise.LoginToken(token))
-            {
-                throw new Exception("Невірний токен авторизації");
-            }
+        //public PaginatorDto<ObjectOwnerListDto> GetPageColumnByName(string token, string name, int page, int column, TypeStatusObjectOwner typeStatus)
+        //{
+        //    if (!_authorizationServise.LoginToken(token))
+        //    {
+        //        throw new Exception("Невірний токен авторизації");
+        //    }
 
-            var ObjectOwners = _controller.DataBaseAccess.ObjectOwnerTable.GetByNameAndStatus(name, typeStatus);
+        //    var ObjectOwners = _controller.DataBaseAccess.ObjectOwnerTable.GetByNameAndStatus(name, typeStatus);
  
-            var paginator = PaginatorDto<ObjectOwnerEntity>.CreationPaginator(ObjectOwners, page, column);
-            var result = new PaginatorDto<ObjectOwnerListDto>(paginator.Page, paginator.Pages, paginator.Data.ToObjectOwnerListDto().ToList());
+        //    var paginator = PaginatorDto<ObjectOwnerEntity>.CreationPaginator(ObjectOwners, page, column);
+        //    var result = new PaginatorDto<ObjectOwnerListDto>(paginator.Page, paginator.Pages, paginator.Data.ToObjectOwnerListDto().ToList());
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public PaginatorDto<ObjectOwnerListDto> GetPageColumn(string token, int page, int column, TypeStatusObjectOwner typeStatus) => GetPageColumnByName(token, string.Empty, page, column, typeStatus);
+        //public PaginatorDto<ObjectOwnerListDto> GetPageColumn(string token, int page, int column, TypeStatusObjectOwner typeStatus) => GetPageColumnByName(token, string.Empty, page, column, typeStatus);
 
         public IEnumerable<ObjectOwnerListDto> GetAll(string token)
         {

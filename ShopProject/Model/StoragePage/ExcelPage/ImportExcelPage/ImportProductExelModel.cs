@@ -1,7 +1,5 @@
 ﻿using ShopProject.Helpers;
-using ShopProject.Services.Integration.File.Excel;
-using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Integration.File.Excel; 
 using System;
 using System.Collections.Generic;
 using System.Data;

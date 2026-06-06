@@ -95,6 +95,21 @@ namespace SigningFileLib
             }
             return false;
         }
+
+        public IEUSignCP.EU_CERT_OWNER_INFO GetDataOwner(string pathKey, string passwordKey)
+        {
+            if (IEUSignCP.IsInitialized())
+            {
+                IEUSignCP.EU_CERT_OWNER_INFO info = new IEUSignCP.EU_CERT_OWNER_INFO(); 
+                _error = IEUSignCP.ReadPrivateKeyFile(pathKey, passwordKey, out info);
+                if (AuditError(_error))
+                {
+                    return info;
+                } 
+            }
+            throw new Exception("Невдалося відкрити ключ");
+        }
+
         public void Finalize() => IEUSignCP.Finalize();
         
         private void CreateFile(string dRFOCode)

@@ -1,5 +1,4 @@
-﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.SignatureKey;
-using ShopProjectDataBase.Entities;
+﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.SignatureKey; 
 using System;
 using System.Collections.Generic;
 using System.Linq;

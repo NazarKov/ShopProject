@@ -57,7 +57,7 @@ namespace ShopProjectWebServer.Areas.Admin.Controllers
                 {
                     return RedirectToAction("Index", "Authorization");
                 }
-                var item = _userService.GetUserById(user.Token, user.ID.ToString());
+                var item = _userService.GetById(user.ID.ToString()).Data;
                  
                 if(model.OldPassword == null || model.OldPassword == string.Empty)
                 {
@@ -70,7 +70,7 @@ namespace ShopProjectWebServer.Areas.Admin.Controllers
 
                 if (item.Password == model.OldPassword)
                 { 
-                    _userService.UpdateParameterUser(item.Token,item.ID.ToString(),nameof(item.Password),model.Password);
+                    _userService.UpdateParameter(item.ID.ToString(),nameof(item.Password),model.Password);
                 }
                 else
                 {
@@ -119,18 +119,18 @@ namespace ShopProjectWebServer.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Authorization");
                 }
 
-                var item = _userService.GetUserById(user.Token,user.ID.ToString());
+                var item = _userService.GetById(user.ID.ToString()).Data;
 
                 if (item != null)
                 {
                     if (model.Login != string.Empty)
                     {
-                        _userService.UpdateParameterUser(user.Token,item.ID.ToString(), nameof(item.Login), model.Login);
+                        _userService.UpdateParameter(item.ID.ToString(), nameof(item.Login), model.Login);
                     }
 
                     if (model.Email != string.Empty)
                     {
-                        _userService.UpdateParameterUser(user.Token, item.ID.ToString(), nameof(item.Email), model.Email); 
+                        _userService.UpdateParameter(item.ID.ToString(), nameof(item.Email), model.Email); 
                     }
 
                     item.UserRole = user.UserRole;

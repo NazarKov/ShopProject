@@ -9,5 +9,6 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Interface
     internal interface ISettingWebServerService
     {
         public string Url { get; }
+        public string Token { get; }
     }
 }

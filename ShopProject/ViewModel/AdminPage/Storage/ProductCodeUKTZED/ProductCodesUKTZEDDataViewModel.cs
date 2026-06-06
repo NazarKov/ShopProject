@@ -2,19 +2,19 @@
 using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Paginator;
-using ShopProject.Model.Domain.PorductCodeUKTZED;
+using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,23 +166,32 @@ namespace ShopProject.ViewModel.StoragePage
 
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
-            var result = await _productCodeUKTZEDServiсe.GetCodeUKTZEDPageColumn(page, countCoulmn, Enum.GetValues<TypeStatusCodeUKTZED>().ToList().ElementAt(SelectedStatusCodeUKTZED));
-            
-            if (reloadbutton)
+            var result = await _productCodeUKTZEDServiсe.GetPageColumn(page, countCoulmn, Enum.GetValues<TypeStatusCodeUKTZED>().ToList().ElementAt(SelectedStatusCodeUKTZED));
+            if (result.IsSuccess)
             {
-                if (result.Pages == 0)
+                var paginator = result.Data;
+
+                if (reloadbutton)
                 {
-                    Paginator.CountButton = 1;
+                    if (paginator.Pages == 0)
+                    {
+                        Paginator.CountButton = 1;
+                    }
+                    else
+                    {
+                        Paginator.CountButton = paginator.Pages;
+                    }
                 }
-                else
+                if (result.Data != null)
                 {
-                    Paginator.CountButton = result.Pages;
+                    CodeUKTZED = paginator.Data.ToProductCodeUKTZEDModel().ToList();
+                    _isReadyUpdateDataGriedView = true;
                 }
-            }
-            if (result.Data != null)
+            } 
+            else if (result.IsError)
             {
-                CodeUKTZED = result.Data.ToProductCodeUKTZEDModel().ToList();
-                _isReadyUpdateDataGriedView = true; 
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>();
+                Paginator.CountButton = 0;
             }
         }
 
@@ -228,7 +237,7 @@ namespace ShopProject.ViewModel.StoragePage
         }  
         private async Task SearchByNameAndByBarCode(int countColumn, int page)
         {
-            Paginator<ProductCodeUKTZED> result = new Paginator<ProductCodeUKTZED>();
+            OperationResult<Paginator<ProductCodeUKTZED, TypeStatusCodeUKTZED>> result = new OperationResult<Paginator<ProductCodeUKTZED, TypeStatusCodeUKTZED>>();
 
             if (Regex.Matches(_searchItem, "[0-9]").Count == _searchItem.Length)
             {
@@ -238,18 +247,28 @@ namespace ShopProject.ViewModel.StoragePage
             {
                 result = await _productCodeUKTZEDServiсe.SearchByName(_searchItem, page, countColumn, Enum.GetValues<TypeStatusCodeUKTZED>().ToList().ElementAt(SelectedStatusCodeUKTZED));
             }
-            if (result.Pages == 0)
-            {
-                Paginator.CountButton = 1;
-            }
-            else
-            {
-                Paginator.CountButton = result.Pages;
-            }
 
-            if (result.Data != null) 
+            if (result.IsSuccess)
             {
-                CodeUKTZED = result.Data.ToProductCodeUKTZEDModel().ToList(); 
+                var paginator = result.Data;
+                if (paginator.Pages == 0)
+                {
+                    Paginator.CountButton = 1;
+                }
+                else
+                {
+                    Paginator.CountButton = paginator.Pages;
+                }
+
+                if (result.Data != null)
+                {
+                    CodeUKTZED = paginator.Data.ToProductCodeUKTZEDModel().ToList();
+                }
+            }
+            else if (result.IsError)
+            {
+                CodeUKTZED = new List<ProductCodeUKTZEDModel>();
+                Paginator.CountButton = 0;
             }
         } 
 
@@ -281,11 +300,20 @@ namespace ShopProject.ViewModel.StoragePage
 
             if (items != null && items.Count > 0)
             {
-                if (await _productCodeUKTZEDServiсe.Delete(((ProductCodeUKTZEDModel)items[0]).ToProductCodeUKTZED()))
-                    {
+                var result = await _productCodeUKTZEDServiсe.Delete(((ProductCodeUKTZEDModel)items[0]).ToProductCodeUKTZED());
+                if (result.IsSuccess)
+                {
                     MessageBox.Show("Одиницю видалено");
+                    await UpdateDataGridView();
                 }
-                await UpdateDataGridView();
+                else if (result.IsError) 
+                {
+                    MessageBox.Show(result.ErrorMessage);
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося виконати операцію");
+                } 
             }
             else
             {
@@ -302,11 +330,23 @@ namespace ShopProject.ViewModel.StoragePage
 
             if (items != null && items.Count > 0)
             {
-                if (await _productCodeUKTZEDServiсe.ChangeStatus(((ProductCodeUKTZEDModel)items[0]).ToProductCodeUKTZED(), TypeStatusCodeUKTZED.Favorite))
-                    {
+                var item = (ProductCodeUKTZEDModel)items[0];
+
+                var result = await _productCodeUKTZEDServiсe.UpdateParameter(nameof(item.Status), TypeStatusCodeUKTZED.Favorite, item.ToProductCodeUKTZED());
+
+                if (result.IsSuccess)
+                {
                     MessageBox.Show("Одиницю оновлено");
+                    await UpdateDataGridView();
                 }
-                await UpdateDataGridView();
+                else if (result.IsError)
+                {
+                    MessageBox.Show(result.ErrorMessage);
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося виконати операцію");
+                }  
             }
             else
             {
@@ -322,12 +362,24 @@ namespace ShopProject.ViewModel.StoragePage
             var items = parameter as IList;
 
             if (items != null && items.Count > 0)
-            { 
-                if (await _productCodeUKTZEDServiсe.ChangeStatus(((ProductCodeUKTZEDModel)items[0]).ToProductCodeUKTZED(), TypeStatusCodeUKTZED.UnFavorite))
+            {
+                var item = (ProductCodeUKTZEDModel)items[0];
+
+                var result = await _productCodeUKTZEDServiсe.UpdateParameter(nameof(item.Status), TypeStatusCodeUKTZED.UnFavorite, item.ToProductCodeUKTZED());
+
+                if (result.IsSuccess)
                 {
                     MessageBox.Show("Одиницю оновлено");
+                    await UpdateDataGridView();
                 }
-                await UpdateDataGridView();
+                else if (result.IsError)
+                {
+                    MessageBox.Show(result.ErrorMessage);
+                }
+                else
+                {
+                    MessageBox.Show("Невдалося виконати операцію");
+                }
             }
             else
             {

@@ -22,6 +22,7 @@ using ShopProject.View.TemplatePage;
 using ShopProject.View.ToolsPage;
 using ShopProject.View.UserPage.SaleMenu;
 using ShopProject.ViewModel.AdminPage.Dashboard;
+using ShopProject.ViewModel.AdminPage.UserPage;
 using ShopProject.ViewModel.Authorization;
 using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Setting;
@@ -84,7 +85,7 @@ namespace ShopProject.ViewModel.Common.Home
             _openCreateStikerCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<StickerPrintView, StickerPrintViewModel>().Show(); });
             _openSaleMenuCommand = CreateCommand(OpenSaleMenu);
             _openDeliveryOfGoodsCommand = CreateCommand(() => { new DeliveryProductView().Show(); });
-            _openUsersPageCommand = CreateCommand(() => { Page = new UsersView(); });
+            _openUsersPageCommand = CreateCommand(() => { Page = App.Container.GetViewWithViewModel<UsersDataView, UsersDataViewModel>(); });
             _openObjectOwnerPageCommand = CreateCommand(() => { Page = new ObjectOwnerShip(); });
             _openSoftwareDeviceSettlementOperationsPageCommand = CreateCommand(() => { Page = new OperationsRecorder(); });
             _openStatisticsPageCommand = CreateCommand(() => { Page = new StatisticsView(); }); 

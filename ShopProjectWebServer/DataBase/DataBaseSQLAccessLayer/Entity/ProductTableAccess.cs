@@ -2,10 +2,11 @@
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.DataBase.DataBaseException;
-using ShopProjectWebServer.DataBase.Helpers;
-using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using ShopProjectWebServer.DataBase.DataBaseException; 
+using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -19,15 +20,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
 
-        public void Add(ProductEntity item)
-        {
-            var product = _contextDataBase.Products.FirstOrDefault(i => i.Code == item.Code);
-
-            if(product != null)
-            {
-                throw new ExceptionObjectExists("Товар вже існує");
-            }
-
+        public async Task<ProductEntity> AddAsync(ProductEntity item)
+        { 
             if (item.Unit != null)
             {
                 item.Unit = _contextDataBase.ProductUnits.Find(item.Unit.ID);
@@ -40,8 +34,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
             } 
-            _contextDataBase.Products.Add(item);
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.Products.AddAsync(item);
+            await _contextDataBase.SaveChangesAsync();
+            return item;
         }
 
         public async Task AddRangeAsync(IEnumerable<ProductEntity> items)
@@ -87,20 +82,15 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             await _contextDataBase.SaveChangesAsync();
         }
 
-
-        public void Delete(ProductEntity item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(ProductEntity product)
+        public async Task UpdateAsync(ProductEntity product)
         {
             UpdateFieldProducts(_contextDataBase.Products.Find(product.ID), product,
                             _contextDataBase.ProductUnits.Find(product.Unit.ID),
                             _contextDataBase.ProductCodeUKTZED.Find(product.CodeUKTZED.ID));
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
         }
-        public void UpdateRange(IEnumerable<ProductEntity> items)
+ 
+        public async Task UpdateRangeAsync(IEnumerable<ProductEntity> items)
         { 
             if (items != null)
             {
@@ -115,7 +105,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 throw new Exception("Товар не заповнено");
             }
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
         }
 
         private void UpdateFieldProducts(ProductEntity ProductsUpdate, ProductEntity Products, ProductUnitEntity unit, ProductCodeUKTZEDEntity codeUKTZED)
@@ -131,7 +121,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             ProductsUpdate.Unit = unit;
         }
 
-        public void UpdateParameter(ProductEntity product, string nameParameter, object valueParameter)
+        public async Task UpdateParameterAsync(ProductEntity product, string nameParameter, object valueParameter)
         {
             ProductEntity item;
             if (product.Code != null && product.Code != string.Empty)
@@ -178,8 +168,25 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         break;
                     }
             }
-            _contextDataBase.SaveChanges();
-        } 
+            await _contextDataBase.SaveChangesAsync();
+        }
+
+        public void Delete(ProductEntity item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetCountStatusProduct(TypeStatusProduct status)
+        {
+            if(status == TypeStatusProduct.Unknown)
+            {
+                return _contextDataBase.Products.ToList().Count();
+            }
+            else
+            {
+                return _contextDataBase.Products.Where(p => p.Status == status).ToList().Count(); 
+            }
+        }
 
 
         public IEnumerable<ProductEntity> GetAll()
@@ -187,7 +194,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             return _contextDataBase.Products.Include(u => u.Unit).Include(c => c.CodeUKTZED).AsNoTracking();
         }
 
-        public ProductEntity GetByBarCode(string barCode, TypeStatusProduct statusProduct)
+        public ProductEntity? GetByBarCode(string barCode, TypeStatusProduct statusProduct)
         {
             if (statusProduct == TypeStatusProduct.Unknown)
             {
@@ -229,6 +236,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             var result = query.ToList();
             return result;
+        }
+
+        public async Task<bool> ExistsByBarCode(string barcode) 
+        {
+           return await _contextDataBase.Products.AnyAsync(p=>p.Code==barcode);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.SignatureKey;
-using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Integration.Network.WebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +13,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     {
         private HttpClient _httpClient;
 
-        public SignatureKeyController(string url)
+        public SignatureKeyController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
         public async Task<SignatureKeyDto> GetKey(string token)

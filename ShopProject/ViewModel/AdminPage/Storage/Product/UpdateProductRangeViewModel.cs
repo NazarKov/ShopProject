@@ -2,15 +2,18 @@
 using ShopProject.Core.Mvvm.Interface;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Notification;
+using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
-using ShopProject.Services.Modules.ModelService.ProductCodeUKTZED.Interface;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.Product;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -169,17 +172,20 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             IsEnableSaveButton = false;
 
-            if (await _productServiсe.Update(item.ToProduct()))
+            var result = await _productServiсe.Update(item.ToProduct());  
+            if (result.IsSuccess)
             {
-                Success = "Товар : " + item.NameProduct+" редаговано ";
-                ErrorTextBlockVisibiliti = Visibility.Collapsed;
-                SuccessTextBlockVisibiliti = Visibility.Visible; 
+                SetSuccess("Товар "+ result.Data.NameProduct +" редаговано");
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Товар", "Товар редаговано")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadProduct.ToString());
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
             }
             else
             {
-                Error = "Невдалося редагувати товар";
-                ErrorTextBlockVisibiliti = Visibility.Visible;
-                SuccessTextBlockVisibiliti = Visibility.Collapsed; 
+                SetError("Невдалося виконати операцію");
             }
 
             Product.Remove(item);
@@ -209,30 +215,73 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         public ICommand UpdateProductRangeCommand => _updateProductRangeCommand;
         public async Task UpdateProductRange()
         {
-            IsEnableSaveButton = false;
+            IsEnableSaveButton = false; 
 
-            if(Count != 0)
+
+            if (Count != 0)
             {
-                Product = new ObservableCollection<ProductModel>((await _productServiсe.UpdateProductParatemer(Product.ToProduct(), nameof(Count), Count)).ToProductModel());
+                var resultChange = _productServiсe.ChangeParameterList(nameof(Count), Count, Product.ToProduct());
+                if (resultChange.IsSuccess)
+                {
+                    Product = new ObservableCollection<ProductModel>((resultChange.Data).ToProductModel());
+                }
+                else if(resultChange.IsError)
+                {
+                    SetError(resultChange.ErrorMessage);
+                    return;
+                }
             }
-            if(Price != 0)
-            {
-               Product = new ObservableCollection<ProductModel>((await _productServiсe.UpdateProductParatemer(Product.ToProduct(), nameof(Price), Price)).ToProductModel());
+            if (Price != 0)
+            { 
+                var resultChange = _productServiсe.ChangeParameterList(nameof(Price), Price, Product.ToProduct());
+                if (resultChange.IsSuccess)
+                {
+                    Product = new ObservableCollection<ProductModel>((resultChange.Data).ToProductModel());
+                }
+                else if (resultChange.IsError)
+                {
+                    SetError(resultChange.ErrorMessage);
+                    return;
+                }
             }
 
-            if (await _productServiсe.UpdateRange(Product.ToProduct().ToList()))
+
+            var result = await _productServiсe.UpdateRange(Product.ToProduct().ToList()); 
+
+            if (result.IsSuccess)
             {
                 Success = "Товари редаговано ";
                 ErrorTextBlockVisibiliti = Visibility.Collapsed;
-                SuccessTextBlockVisibiliti = Visibility.Visible;
+                SuccessTextBlockVisibiliti = Visibility.Visible; 
             }
-            else
+            else if(result.IsError)
             {
                 Error = "Невдалося редагувати товар";
                 ErrorTextBlockVisibiliti = Visibility.Visible;
-                SuccessTextBlockVisibiliti = Visibility.Collapsed;
-            } 
+                SuccessTextBlockVisibiliti = Visibility.Collapsed; 
+            }
+            else
+            {
+                Error = "Невдалося виконати операцію";
+                ErrorTextBlockVisibiliti = Visibility.Visible;
+                SuccessTextBlockVisibiliti = Visibility.Collapsed; 
+            }
+
             IsEnableSaveButton = true; 
+        }
+        private void SetError(string error)
+        {
+            IsEnableSaveButton = true;
+            SuccessTextBlockVisibiliti = Visibility.Collapsed;
+            Error = error;
+            ErrorTextBlockVisibiliti = Visibility.Visible;
+        }
+        private void SetSuccess(string message)
+        {
+            Success = message;
+            ErrorTextBlockVisibiliti = Visibility.Collapsed;
+            SuccessTextBlockVisibiliti = Visibility.Visible;
+            IsEnableSaveButton = true;
         }
 
     }

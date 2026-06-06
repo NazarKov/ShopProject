@@ -12,5 +12,6 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Interface
         public ISettingDataBaseController Settings { get;}
         public Task<bool> IsConnectServer();
         public Task SetUrl(string url);
+        public void SetToken(string token);
     }
 }

@@ -5,6 +5,8 @@ namespace ShopProjectWebServer.Api.DtoModels.SignatureKey
 {
     public class SignatureKeyDto
     {
+        [JsonPropertyName("ID")]
+        public Guid ID { get; set; }
         [JsonPropertyName("Signature")]
         public byte[]? Signature { get; set; }
         [JsonPropertyName("SignaturePassword")]

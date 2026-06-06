@@ -1,34 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows; 
-using ShopProject.Helpers;
-using ShopProject.Core.Mvvm;
+﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
+using ShopProject.Core.Mvvm.Interface;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Domain.UserRole;
+using ShopProject.Model.Navigation;
+using ShopProject.Model.UI.UserRole;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Domain.UserRole.Interface;
+using ShopProject.Services.Modules.Mapping.UserRole;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input; 
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
-    internal class CreateUserViewModel : ViewModel<CreateUserViewModel>
+    internal class CreateUserViewModel : ViewModel<CreateUserViewModel>, IViewModelLoadResourse, IСontrolView
     {
 
-        private ICommand _createUserCommand;
-        private ICommand _openPanelWithKeyCommand;
-        private ICommand _openPanelWithoutKeyCommand;
-
+        private ICommand _createUserCommand;  
         private ICommand _openFileKeyCommand;
         private ICommand _clearWindowCommand;
         private ICommand _exitWindowCommand;
-         
-        private bool _isUserHaveKey;
+
+        private readonly IUserRoleService _userRoleService;
+        private readonly IUserService _userService;
+          
         private string _nameFile;
 
-        public CreateUserViewModel()
+        public CreateUserViewModel(IUserRoleService userRoleService, IUserService userService)
         {
+            _userRoleService = userRoleService;
+            _userService = userService;
             _login = string.Empty;
             _nameFile = string.Empty;
             _fullName = string.Empty;
@@ -36,23 +44,27 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             _password = string.Empty;
             _pathKey = string.Empty;
             _passwordKey = string.Empty;
-            _userRoles = new List<UserRole>();
-            _backgroundButtonWihtKey = Brushes.LightGray;
-            _backgroundButtonWithoutKey = Brushes.LightGray;
-             
-
-            _createUserCommand = new DelegateCommand(CreateUser);
-            _openPanelWithKeyCommand = new DelegateCommand(OpenPanelWithKey);
-            _openPanelWithoutKeyCommand = new DelegateCommand(OpenPanelWithoutKey);
+            _error = string.Empty;
+            _success = string.Empty;
+            _userRoles = new List<UserRoleModel>(); 
+              
+            _createUserCommand = CreateCommandAsync(CreateUser); 
 
 
-            _openFileKeyCommand = new DelegateCommand(OpenFileKey);
-            _clearWindowCommand = new DelegateCommand(ClearWindow);
-            _exitWindowCommand = new DelegateCommand(ExitWindow);
+            _openFileKeyCommand = CreateCommand(OpenFileKey);
+            _clearWindowCommand = CreateCommand(ClearWindow);
+            _exitWindowCommand = CreateCommand(()=> { CloseView?.Invoke(); });
 
-            _isUserHaveKey = false;
+            _successTextBlockVisibiliti = Visibility.Collapsed;
+            _errorTextBlockVisibiliti = Visibility.Collapsed;
 
             SetFieldPage();
+        }
+        public Action? CloseView { get; set; }
+
+        public async Task LoadResourse()
+        {
+            SafeExecute(SetFieldPage);
         }
 
         private string _login;
@@ -95,8 +107,8 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             set { _passwordKey = value; OnPropertyChanged(nameof(PasswordKey)); }
         }
 
-        private List<UserRole> _userRoles;
-        public List<UserRole> UserRoles
+        private List<UserRoleModel> _userRoles;
+        public List<UserRoleModel> UserRoles
         {
             get { return _userRoles; }
             set { _userRoles = value; OnPropertyChanged(nameof(UserRoles)); }
@@ -108,111 +120,66 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             set { _selectUserRole = value; OnPropertyChanged(nameof(SelectUserRole)); }
         }
 
-        private double _sizeWindow;
-        public double SizeWindow
+        private string _error;
+        public string Error
         {
-            get { return _sizeWindow; }
-            set { _sizeWindow = value; OnPropertyChanged(nameof(SizeWindow)); }
+            get { return _error; }
+            set { _error = value; OnPropertyChanged(nameof(Error)); }
         }
 
-        private int _buttonRowIndex;
-        public int ButtonRowIndex
+        private string _success;
+        public string Success
         {
-            get { return _buttonRowIndex; }
-            set { _buttonRowIndex = value; OnPropertyChanged(nameof(ButtonRowIndex)); }
+            get { return _success; }
+            set { _success = value; OnPropertyChanged(nameof(Success)); }
         }
 
-        private Visibility _visibilityFielKey;
-        public Visibility VisibilityFielKey
+        private Visibility _successTextBlockVisibiliti;
+        public Visibility SuccessTextBlockVisibiliti
         {
-            get { return _visibilityFielKey; }
-            set { _visibilityFielKey = value; OnPropertyChanged(nameof(VisibilityFielKey)); }
+            get { return _successTextBlockVisibiliti; }
+            set { _successTextBlockVisibiliti = value; OnPropertyChanged(nameof(SuccessTextBlockVisibiliti)); }
         }
 
-        private Brush _backgroundButtonWihtKey;
-        public Brush BackgroundButtonWihtKey
+        private Visibility _errorTextBlockVisibiliti;
+        public Visibility ErrorTextBlockVisibiliti
         {
-            get { return _backgroundButtonWihtKey; }
-            set { _backgroundButtonWihtKey = value; OnPropertyChanged(nameof(BackgroundButtonWihtKey)); }
-        }
-
-        private Brush _backgroundButtonWithoutKey;
-        public Brush BackgroundButtonWithoutKey
-        {
-            get { return _backgroundButtonWithoutKey; }
-            set { _backgroundButtonWithoutKey = value; OnPropertyChanged(nameof(BackgroundButtonWithoutKey)); }
+            get { return _errorTextBlockVisibiliti; }
+            set { _errorTextBlockVisibiliti = value; OnPropertyChanged(nameof(ErrorTextBlockVisibiliti)); }
         }
 
         private void SetFieldPage()
-        {
-            SetButton();
-            SetFielComboBoxRole();
-
-            _visibilityFielKey = Visibility.Hidden;
-            _sizeWindow = 400;
-        }
-
-        private void SetButton()
-        {
-            _backgroundButtonWithoutKey = Brushes.CadetBlue;
-            _backgroundButtonWihtKey = Brushes.LightGray;
-
-            _buttonRowIndex = 6;
-        }
-
+        { 
+            SetFielComboBoxRole(); 
+        } 
         private void SetFielComboBoxRole()
         {
-            //if (Session.Roles != null)
-            //{
-            //    UserRoles = Session.Roles.ToList();
-            //}
+            UserRoles = new List<UserRoleModel>(_userRoleService.GetFromSession().ToUserRoleModel());
+            SelectUserRole = 0;
         }
 
         public ICommand CreateUserCommand => _createUserCommand;
 
-        public void CreateUser()
-        {
-            Task t = Task.Run(async () => {
-                if (_isUserHaveKey)
-                {
-                    //if (await _model.CreateUserKey(PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
-                    //{
-                    //    MessageBox.Show("Корисувача створено");
-                    //}
-                }
-                else
-                {
-                    //if (await _model.CreateUser(FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
-                    //{
-                    //    MessageBox.Show("Корисувача створено");
-                    //}
-                }  
-            });
+        public async Task CreateUser()
+        {  
+            var result = await _userService.CreateUser(Login, Email, FullName, Password, PathKey, PasswordKey, UserRoles.ElementAt(SelectUserRole).ToUserRole());
+            if (result.IsSuccess)
+            {
+                SetSuccess(result.Data.FullName);
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Користувач", "Користувач успішно створений в базі даних")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadUser.ToString());
 
-        }
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            } 
 
-        public ICommand OpenPanelWithKeyCommand => _openPanelWithKeyCommand;
-        private void OpenPanelWithKey()
-        {
-            ButtonRowIndex = 8;
-            SizeWindow = 520;
-            VisibilityFielKey = Visibility.Visible;
-            BackgroundButtonWithoutKey = Brushes.LightGray;
-            BackgroundButtonWihtKey = Brushes.CadetBlue;
-            _isUserHaveKey = true;
-        }
-
-        public ICommand OpenPanelWithoutKeyCommand => _openPanelWithoutKeyCommand;
-        private void OpenPanelWithoutKey()
-        {
-            ButtonRowIndex = 6;
-            SizeWindow = 400;
-            VisibilityFielKey = Visibility.Hidden;
-            BackgroundButtonWithoutKey = Brushes.CadetBlue;
-            BackgroundButtonWihtKey = Brushes.LightGray;
-            _isUserHaveKey = false;
-        }
-
+        } 
         public ICommand OpenFiLeKeyCommand => _openFileKeyCommand;
         private void OpenFileKey()
         {
@@ -235,10 +202,18 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             SelectUserRole = 0;
         }
         public ICommand ExitWindowCommand => _exitWindowCommand;
-        private void ExitWindow()
+
+        private void SetError(string error)
         {
-
+            Error = error;
+            SuccessTextBlockVisibiliti = Visibility.Collapsed;
+            ErrorTextBlockVisibiliti = Visibility.Visible;
         }
-
+        private void SetSuccess(string name)
+        {
+            Success = $"Користувач {name} створений";
+            ErrorTextBlockVisibiliti = Visibility.Collapsed;
+            SuccessTextBlockVisibiliti = Visibility.Visible;
+        }
     }
 }

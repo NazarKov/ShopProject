@@ -13,11 +13,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller
     public class SettingsController : ISettingDataBaseController
     {
         private HttpClient _httpClient;  
-        public SettingsController(string url)
+        public SettingsController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
-            _httpClient.Timeout = TimeSpan.FromSeconds(4);
+            _httpClient = httpClient;  
         }
 
         public async Task<ControlWebServerDto> IsAvailableServer()
@@ -33,7 +31,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller
             HttpResponseMessage responseMessage = await _httpClient.GetAsync("/api/Settings/Ping");
             string responseBody = await responseMessage.Content.ReadAsStringAsync();
             responseMessage.EnsureSuccessStatusCode();
-
+             
             var result = ApiResponse<string>.Unpacking(responseBody);
             
             return result.Data.ToString(); 

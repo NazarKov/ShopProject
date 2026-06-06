@@ -22,6 +22,6 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoMo
         [JsonPropertyName("CreateAt")]
         public DateTime CreateAt { get; set; }
         [JsonPropertyName("FinishedAt")]
-        public DateTime FinishedAt { get; set; }
+        public DateTime FinishedAt { get; set; } 
     }
 }

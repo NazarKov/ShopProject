@@ -1,5 +1,4 @@
-﻿using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.DataBase.Interface;
+﻿using ShopProjectWebServer.DataBase.Interface;
 using ShopProjectWebServer.Services.Modules.Authorization.Interface;
 
 namespace ShopProjectWebServer.Services.Modules.Authorization

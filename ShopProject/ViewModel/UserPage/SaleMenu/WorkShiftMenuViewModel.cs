@@ -8,10 +8,11 @@ using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.User;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Mapping;
+using ShopProject.Services.Modules.Mapping.SignatureKey;
+using ShopProject.Services.Modules.Mapping.User;
 using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface;
-using ShopProject.Services.Modules.ModelService.User.Interface;
+using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.View.UserPage.SaleMenu;
 using System;
 using System.Collections.ObjectModel;
@@ -44,7 +45,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         private ICommand _printLastCheckCommand;
         private ICommand _publishCertificateCommand;
 
-        private IUserServise _userServise;
+        private IUserService _userServise;
         private IWorkingShiftService _workingShiftService;
         private IOperationRecorderServise _operationRecorderServise;
 
@@ -52,7 +53,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
         private OperationRecorder _operationsRecorder;
         private UserModel _user;
 
-        public WorkShiftMenuViewModel(IUserServise userServise, IWorkingShiftService workingShiftService,IOperationRecorderServise operationRecorderServise)
+        public WorkShiftMenuViewModel(IUserService userServise, IWorkingShiftService workingShiftService,IOperationRecorderServise operationRecorderServise)
         {
 
             _userServise = userServise;
@@ -327,7 +328,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
                 {
                     TypeRRO = 0,
                     FiscalNumberRRO = _operationsRecorder.FiscalNumber,
-                    TypeShiftCrateAt = (ShopProjectDataBase.Helper.TypeWorkingShift)TypeWorkingShift.OpenShift,
+                    TypeShiftCrateAt = TypeWorkingShift.OpenShift,
                     UserOpenShift = _user.ToUser(),
                     DataPacketIdentifier = decimal.Parse(_operationsRecorder.FiscalNumber),
                     FactoryNumberRRO = "v1",
@@ -408,7 +409,7 @@ namespace ShopProject.ViewModel.UserPage.SaleMenu
                 shift.AmountOfOfficialFundsReceivedCard = 0;
                 shift.EndAt = DateTimeOffset.Now;
                 shift.MACEndAt = await _workingShiftService.GetMAC(_operationsRecorder.ID);
-                shift.TypeShiftEndAt = (ShopProjectDataBase.Helper.TypeWorkingShift)TypeWorkingShift.CloseShift;
+                shift.TypeShiftEndAt = TypeWorkingShift.CloseShift;
 
                 if (await _workingShiftService.CloseShift(shift))
                 {

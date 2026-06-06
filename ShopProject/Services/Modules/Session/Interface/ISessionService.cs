@@ -1,5 +1,5 @@
-﻿using ShopProject.Model.Domain.PorductCodeUKTZED;
-using ShopProject.Model.Domain.Product;
+﻿using ShopProject.Model.Domain.Product;
+using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Domain.User;
 using ShopProject.Model.Domain.UserRole;
@@ -28,6 +28,9 @@ namespace ShopProject.Services.Modules.Session.Interface
         public IEnumerable<Product>? UpdateProductRange { get; set; }
         public ProductUnit? UpdateProductUnit { get; set; }
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
+        public User UpdateUser { get; set; }
+
+
         public bool CheckingSession();
         public bool CheckingWorkingShiftStatus();
         public bool RemoveSession();

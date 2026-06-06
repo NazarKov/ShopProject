@@ -1,6 +1,7 @@
 ﻿using ShopProject.Model.Domain.SignatureKey;
 using ShopProject.Model.Domain.UserRole;
 using ShopProject.Model.Enum;
+using ShopProject.Model.UI.Product;
 using ShopProject.Model.UI.SignatureKey;
 using ShopProject.Model.UI.UserRole;
 using System;
@@ -26,5 +27,25 @@ namespace ShopProject.Model.UI.User
         public SignatureKeyModel? SignatureKey { get; set; } 
         public DateTimeOffset? CreatedAt { get; set; }
         public string Token { get; set; } = string.Empty;
+
+        public string StatusString
+        {
+            get { return UserStatusModel.GetUserStatus().ElementAt(System.Enum.GetValues<TypeStatusUser>().ToList().IndexOf(Status)); }
+            set { Status = System.Enum.GetValues<TypeStatusUser>().ToList().ElementAt(UserStatusModel.GetUserStatus().IndexOf(value)); }
+        }
+
+        public string Name
+        {
+            get { if (!string.IsNullOrEmpty(FullName))
+                {
+                    return FullName;
+                }
+                else 
+                {
+                    return Login;
+                } 
+            }
+        }
+
     }
 }

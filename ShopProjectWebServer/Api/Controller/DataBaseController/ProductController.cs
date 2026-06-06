@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Helper;
+﻿using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Mvc; 
 using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.Product;
-using ShopProjectWebServer.DataBase.DataBaseException;
-using ShopProjectWebServer.Services.Modules.Domain.Product;
+using ShopProjectWebServer.Api.Validation.Interface; 
+using ShopProjectWebServer.Services.Modules.Domain.Product.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Product; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -12,68 +12,116 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private IProductServise _servise;
-        public ProductController (IProductServise servise)
+        private IValidator<CreateProductDto> _createValidator;
+        private IValidator<UpdateProductDto> _updateValidator;
+        private IProductService _service;
+        public ProductController (IProductService servise,IValidator<CreateProductDto> createValidator , IValidator<UpdateProductDto> updateValidator)
         {
-            _servise = servise;
+            _service = servise;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
-        [HttpGet("GetInfoProducts")]
-        public IActionResult GetInfoProducts(string token)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(CreateProductDto product)
         {
             try
             {
-                var result = _servise.GetInfoProducts(token); 
-                return Ok(ApiResponse<ProductInfoDto>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
-
-        [HttpGet("GetProductsByBarCode")]
-        public IActionResult GetProductsByBarCode(string token, string barCode, TypeStatusProduct statusProduct = TypeStatusProduct.Unknown)
-        {
-            try
-            {
-                var result = _servise.GetProductByBarCode(token, barCode, statusProduct);
-                return Ok(ApiResponse<ProductDto>.Ok(result));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                if (invalidOperationException.Message == "Sequence contains no elements")
+                var validation = _createValidator.Validation(product);
+                if (!validation.isValid)
                 {
-                    return Ok(ApiResponse<ProductDto>.Ok(new ProductDto()));
+                    return Ok(ApiResponse<ProductDto>.Fail(validation.Errors,ErrorType.Validation,ErrorSource.Client));
+                }
+
+                var result = await _service.AddAsync(product.ToProduct());
+                 
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<ProductDto>.Ok(result.Data.ToProductDto()));
                 }
                 else
                 {
-                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                    return Ok(ApiResponse<ProductDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
                 }
-            }
+            } 
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+                return BadRequest(ApiResponse<string>.Fail(ex.Message,ErrorType.Server));
             }
         }
 
-        [HttpGet("GetAllProductsByBarCode")]
-        public IActionResult GetAllProductsByBarCode(string token, int page, int countColumn, string barCode, TypeStatusProduct status = TypeStatusProduct.Unknown)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("AddRange")]
+        public async Task<IActionResult> AddRange(IEnumerable<CreateProductDto> products)
         {
             try
             {
-                var result = _servise.GetProductsByBarCode(token,page,countColumn ,barCode, status);
-                return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                if (invalidOperationException.Message == "Sequence contains no elements")
+                var result = await _service.AddRangeAsync(products.ToProduct());
+                if (result.IsSuccess)
                 {
-                    return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(new PaginatorDto<ProductDto>(0,0,new List<ProductDto>())));
+                    return Ok(ApiResponse<bool>.Ok(true));
                 }
                 else
                 {
-                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                } 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(UpdateProductDto product)
+        {
+            try
+            {
+                var validation = _updateValidator.Validation(product);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.UpdateAsync(product.ToProduct());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                } 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("UpdateParameter")]
+        public async Task<IActionResult> UpdateParameter([FromQuery] string parameter, [FromQuery] string value, UpdateProductDto product)
+        {
+            try
+            {
+                var validation = _updateValidator.Validation(product);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.UpdateParameterAsync(parameter,value, product.ToProduct());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
                 }
             }
             catch (Exception ex)
@@ -82,121 +130,134 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
         }
 
-        [HttpGet("GetProductByNamePageColumn")]
-        public IActionResult GetProductByNamePageColumn(string token,string name, int page, int countColumn, TypeStatusProduct status)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("UpdateRange")]
+        public async Task<IActionResult> UpdateRange(IEnumerable<UpdateProductDto> product)
         {
             try
-            {
-                var result = _servise.GetProductByNamePageColumn(token, name,page,countColumn,status); 
-               return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
+            {  
+                var result = await _service.UpdateRangeAsync(product.ToProduct());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
-        [HttpGet("GetProductsPageColumn")]
-        public IActionResult GetProductsPageColumn(string token, int page, int countColumn, TypeStatusProduct status)
+         
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetPageColumn")]
+        public async Task<IActionResult> GetPageColumn(PaginatorDto<ProductDto,int> paginator)
         {
             try
-            {
-                var result = _servise.GetProductsPageColumn(token, page, countColumn, status); 
-                return Ok(ApiResponse<PaginatorDto<ProductDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpGet("GetProducts")]
-        public async Task<IActionResult> GetProducts(string token)
-        {
-            try
-            {
-                var result = _servise.GetProducts(token); 
-                return Ok(ApiResponse<IEnumerable<ProductDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpPost("AddProduct")]
-        public async Task<IActionResult> AddProduct(string token, CreateProductDto product)
-        {
-            try
-            {
-                var result = _servise.Add(token,product); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (ExceptionObjectExists exeption)
-            {
-                return Ok(ApiResponse<bool>.Fail(exeption.Message));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpPost("AddProductRange")]
-        public async Task<IActionResult> AddProductRange(string token, IEnumerable<CreateProductDto> product)
-        {
-            try
-            {
-                var result = await _servise.AddProductRangeAsync(token, product); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpPost("UpdateProduct")]
-        public async Task<IActionResult> UpdateProduct(string token, UpdateProductDto product)
-        {
-            try
-            {
-                var result = _servise.UpdateProduct(token, product); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpPost("UpdateProductRange")]
-        public async Task<IActionResult> UpdateProductRange(string token, IEnumerable<UpdateProductDto> product)
-        {
-            try
-            {
-                var result = _servise.UpdateProductRange(token, product); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpPost("UpdateParameterProduct")]
-        public async Task<IActionResult> UpdateParameterProduct(string token,[FromQuery]string parameter , [FromQuery]string value ,UpdateProductDto product)
-        {
-            try
-            {
-                var result = _servise.UpdateParameterProduct(token, parameter,value,product); 
-                return Ok(ApiResponse<bool>.Ok(result)); 
-
-            }
-            catch (Exception ex)
             { 
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                var result = _service.GetPageColumn(paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                } 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByNamePageColumn")]
+        public IActionResult GetByNamePageColumn([FromQuery]string name, [FromBody]PaginatorDto<ProductDto, int> paginator)
+        {
+            try
+            {
+                var result = _service.GetByNamePageColumn(name,paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+          
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpGet("GetInfoProducts")]
+        public IActionResult GetInfoProducts()
+        {
+            try
+            {
+                var result = _service.GetInfoProducts();
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<ProductInfoDto>.Ok(result.Data.ToProductInfo()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<ProductInfoDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString()))); 
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByBarCodePageColumn")]
+        public IActionResult GetByBarCodePageColumn([FromQuery] string barCode, [FromBody] PaginatorDto<ProductDto, int> paginator)
+        {
+            try
+            {
+                var result = _service.GetByBarCode(barCode, paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<ProductDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                } 
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByBarCode")]
+        public IActionResult GetByBarCode([FromQuery] string barCode , int status)
+        {
+            try
+            {
+                var result = _service.GetByBarCode(barCode);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<ProductDto>.Ok(result.Data.ToProductDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<ProductDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }    
     }
 }

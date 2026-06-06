@@ -1,6 +1,6 @@
-﻿using ShopProject.Model.Domain.GiftCertificate;
-using ShopProject.Model.Domain.PorductCodeUKTZED;
+﻿using ShopProject.Model.Domain.GiftCertificate; 
 using ShopProject.Model.Domain.Product;
+using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.User;
@@ -47,10 +47,11 @@ namespace ShopProject.Services.Modules.Session
         public IEnumerable<Product>? UpdateProductRange { get; set; } 
         public ProductUnit? UpdateProductUnit { get; set; } 
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
+
+        public User UpdateUser { get; set; }
         #endregion
 
-        #region resourse
-        public static User? UserItem { get; set; }
+        #region resourse 
         public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }  
         public static GiftCertificate? GiftCertificate { get; set; } 
 

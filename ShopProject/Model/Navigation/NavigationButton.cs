@@ -13,6 +13,7 @@ namespace ShopProject.Model.Navigation
         RedirectToChangePassword,
         RedirectToTitleView,
         ReloadProduct,
+        ReloadUser,
         CountingSumaOrder,
         RemoveProduct,
         ReloadGiftCertificates,

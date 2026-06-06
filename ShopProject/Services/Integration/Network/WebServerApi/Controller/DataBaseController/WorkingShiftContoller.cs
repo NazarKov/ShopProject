@@ -1,7 +1,7 @@
 ﻿using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.WorkingShift;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+using ShopProject.Services.Modules.Mapping.WorkingShift;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,10 +15,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     {
         private HttpClient _httpClient;
 
-        public WorkingShiftContoller(string url)
+        public WorkingShiftContoller(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
         public async Task<int> AddWorkingShift(string token, WorkingShift shift)

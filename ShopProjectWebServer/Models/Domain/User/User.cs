@@ -1,5 +1,5 @@
-﻿using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
+﻿
+using ShopProjectWebServer.Models.Domain.Enum;
 
 namespace ShopProjectWebServer.Models.Domain.User
 {
@@ -13,7 +13,8 @@ namespace ShopProjectWebServer.Models.Domain.User
         public string TIN { get; set; } = string.Empty; 
         public bool AutomaticLogin { get; set; } 
         public TypeStatusUser Status { get; set; }
-        public ShopProjectWebServer.Models.Domain.UserRole.UserRole UserRole { get; set; } = new UserRole.UserRole();
+        public ShopProjectWebServer.Models.Domain.UserRole.UserRole UserRole { get; set; } = new UserRole.UserRole(); 
+        public ShopProjectWebServer.Models.Domain.SignatureKey.SignatureKey? SignatureKey { get; set; }
         public string Token { get; set; } = string.Empty;
         public DateTimeOffset? CreatedAt { get; set; }
     }

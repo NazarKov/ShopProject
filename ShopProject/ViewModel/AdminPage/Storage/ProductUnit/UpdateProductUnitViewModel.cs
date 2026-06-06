@@ -1,20 +1,17 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
+﻿using ShopProject.Core.Mvvm; 
 using ShopProject.Core.Mvvm.Interface;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Notification;
-using ShopProject.Model.Domain.ProductUnit;
+using ShopProject.Model.Domain.Notification; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Linq; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -133,12 +130,22 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         private async Task UpdateProductUnit()
         {
             Unit.Status = Enum.GetValues<TypeStatusUnit>().ElementAt(SelectStatusUnit);
-            if(await _productUnitServiсe.Update(Unit.ToProductUnit()))
+            var result = await _productUnitServiсe.Update(Unit.ToProductUnit()); 
+
+            if (result.IsSuccess)
             {
                 SetSuccess();
                 await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Одиниці", "Одиниця успішно редагована в базі даних")));
                 await MediatorService.ExecuteEventAsync(NavigationButton.ReloadProduct.ToString());
-            } 
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
         }
 
         private void SetError(string error)

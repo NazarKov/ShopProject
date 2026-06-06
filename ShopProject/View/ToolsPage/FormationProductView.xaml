@@ -7,9 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="FormationProduct" Height="450" Width="900" ResizeMode="NoResize" Name="window">
-    <Window.DataContext>
-        <local:FormationProductViewModel></local:FormationProductViewModel>
-    </Window.DataContext>
+ 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"></ColumnDefinition>

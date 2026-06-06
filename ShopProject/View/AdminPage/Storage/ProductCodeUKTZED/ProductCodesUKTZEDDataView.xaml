@@ -17,7 +17,8 @@
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
-                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ContextMenuStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <ControlTemplate x:Key="SearchTextBoxTemplate" TargetType="{x:Type TextBox}">
                 <Border BorderBrush="Black" BorderThickness="0.1" Height="35" Padding="3">
@@ -233,22 +234,25 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Добавити код" Command="{Binding OpenCreateProductCodeUKTZEDPageCommand}"/>
-                        <MenuItem
-                                 Header="Редагувати код"
-                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                                 Command="{Binding OpenUpdateProductCodeUKTZEDPageCommand }" />
+                    <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                        <MenuItem Header="Добавити код" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductCodeUKTZEDPageCommand}"/>
+                        <MenuItem Header="Редагувати код" 
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding OpenUpdateProductCodeUKTZEDPageCommand }" />
                         <MenuItem Header="Видалити код"
-                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                                 Command="{Binding DeleteProductCodeUKTZEDCommand }" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding DeleteProductCodeUKTZEDCommand }" />
                         <Separator></Separator>
                         <MenuItem Header="Добавити до обраних"
-                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                                 Command="{Binding UpdateStatusToFavoriteProductCodeUKTZEDCommand }" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding UpdateStatusToFavoriteProductCodeUKTZEDCommand }" />
                         <MenuItem Header="Видалити з обраних"
-                                 CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                                 Command="{Binding UpdateStatusToUnFavoriteProductCodeUKTZEDCommand }" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding UpdateStatusToUnFavoriteProductCodeUKTZEDCommand }" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

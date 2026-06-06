@@ -6,9 +6,11 @@ using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
+using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.Product.Interface;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Mapping.Product; 
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.Integration.Printing;
 using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
@@ -19,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -104,7 +107,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
                 if (_reloadField)
-                {
+                { 
                     Task.Run(async () => { await UpdateDataGridView(); });
                 }
             }
@@ -201,37 +204,40 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             var result = await _productService.GetProductStatistics();
             StatusBarCountProduct = $"Кількість товарів: {result.CountProductAllStatus}   " +
-                                         $"Кількість товарів в наявності: {result.CountProductInStockStatus}  " +
-                                         $"Кількість товарів не в наявносіть: {result.CountProductOutStockStatus}  " +
-                                         $"Кількксть товарів в архіві: {result.CountProductArchivedStauts}  ";
+                                    $"Кількість товарів в наявності: {result.CountProductInStockStatus}  " +
+                                    $"Кількість товарів не в наявносіть: {result.CountProductOutStockStatus}  " +
+                                    $"Кількксть товарів в архіві: {result.CountProductArchivedStauts}  ";
         }
 
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = true)
         {
-            Paginator<Model.Domain.Product.Product> result = await _productService.GetPageColumn(page, countCoulmn, Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
-            if (reloadbutton)
+            var result = await _productService.GetPageColumn(page, countCoulmn, Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
+            if (result.IsSuccess)
             {
-                
-                if (result.Pages == 0)
+                if (reloadbutton)
                 {
-                    Paginator.CountButton = 1; 
-                }
-                else
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    
+                    if (result.Data.Pages == 0)
                     {
-                        Paginator.ReloadButton = true;
-                        Paginator.CountButton = result.Pages;
-                    }); 
+                        Paginator.CountButton = 1; 
+                    }
+                    else
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Paginator.ReloadButton = true;
+                            Paginator.CountButton = result.Data.Pages;
+                        }); 
+                    }
                 }
-            }
-            if (result.Data == null)
-            {
-                throw new Exception("Невдалося завантажити товари");
-            }
+                if (result.Data == null)
+                {
+                    throw new Exception("Невдалося завантажити товари");
+                }
 
-            ProductList = result.Data.ToProductModel().ToList();
-            _isReadyUpdateDataGriedView = true;
+                ProductList = result.Data.Data.ToProductModel().ToList();
+                _isReadyUpdateDataGriedView = true;
+            }
         }
 
         private async Task UpdateDataGridView(int page = 1,bool reloadbutton = false)
@@ -282,11 +288,11 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 
         private async Task SearchByNameAndByBarCode(int countColumn, int page)
         {
-            var result = new Paginator<Model.Domain.Product.Product>();
+            var result = new OperationResult<Paginator<ShopProject.Model.Domain.Product.Product,TypeStatusProduct>>();
 
             _searchItem = _productService.RemoveSeparatorBarCode(_searchItem);
 
-            if (_productService.ValidationSearchitem(_searchItem))
+            if (Regex.Matches(_searchItem, "[0-9]").Count == _searchItem.Length)
             {
                 result = (await _productService.SearchByBarCode(_searchItem,page, countColumn,
                     Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct))));
@@ -296,20 +302,28 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 result = await _productService.SearchByName(_searchItem, page, countColumn,
                     Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
             }
-            if (result.Data == null) 
+            if (result.IsSuccess)
+            { 
+                if (result.Data.Data.Count() > 0 & result.Data.Pages == 0)
+                {
+                    Paginator.CountButton = 1;
+                }
+                else
+                {
+                    Paginator.CountButton = result.Data.Pages;
+                }
+                ProductList = result.Data.Data.ToProductModel().ToList();
+            }
+            else if (result.IsError)
+            {
+                ProductList = new List<ProductModel>();
+                Paginator.CountButton = 0;
+            }
+            else
             {
                 ProductList = new List<ProductModel>();
                 throw new Exception("Невдалося завантажити товари");
             }
-            if (result.Data.Count() > 0 & result.Pages == 0)
-            {
-                Paginator.CountButton = 1;
-            }
-            else
-            {
-                Paginator.CountButton = result.Pages;
-            }
-            ProductList = result.Data.ToProductModel().ToList();
         }
 
 
@@ -317,19 +331,19 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private async Task UpdateProduct(object parameter)
         {
 
-            var products = new List<ProductModel>();
-            if (parameter != null)
+            var products = new List<ShopProject.Model.Domain.Product.Product>();
+            if (parameter != null) 
                 products = _productService.ContertIListToList((IList)parameter);
 
             if (products.Count == 1)
             {
-                    _productService.SetProductOnSession(products[0].ToProduct());
+                    _productService.SetProductOnSession(products[0]);
                 var windwow = App.Container.GetNewViewWithViewModel<UpdateProductView, UpdateProductViewModel>();
                 windwow.ShowDialog();
             }
             else
             {
-                _productService.SetProductsOnSession(products.ToProduct().ToList());
+                _productService.SetProductsOnSession(products.ToList());
                 var windwow = App.Container.GetNewViewWithViewModel<UpdateProductRangeView, UpdateProductRangeViewModel>();
                 windwow.ShowDialog();
             }
@@ -342,17 +356,23 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                var products = new List<ProductModel>();
+                var products = new List<ShopProject.Model.Domain.Product.Product>();
                 if (parameter != null)
                 {
                     products = _productService.ContertIListToList((IList)parameter);
                     if (products.Count == 1)
                     {
-                        if (await _productService.SetTypeInArhive(products[0].ToProduct()))
+                        var item = products[0];
+                        var result = await _productService.UpdateParameter(nameof(item.Status), TypeStatusProduct.Archived, item);
+                        if (result.IsSuccess)
                         {
                             await SetFieldPage();
                             MessageBox.Show("Товар перенесено в архів");
                         }
+                        else
+                        {
+                            MessageBox.Show("Невдалося виконати операцію");
+                        } 
                     }
                 }
             }
@@ -363,16 +383,22 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                var products = new List<ProductModel>();
+                var products = new List<ShopProject.Model.Domain.Product.Product>();
                 if (parameter != null)
                 {
                     products = _productService.ContertIListToList((IList)parameter);
                     if (products.Count == 1)
                     {
-                        if (await _productService.SetTypeOutOfStock(products[0].ToProduct()))
+                        var item = products[0];
+                        var result = await _productService.UpdateParameter(nameof(item.Status), TypeStatusProduct.OutStock, item);
+                        if (result.IsSuccess)
                         {
                             await SetFieldPage();
                             MessageBox.Show("Товар перенесено в архів");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Невдалося виконати операцію");
                         }
                     }
                 }
@@ -382,13 +408,13 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         public ICommand OpenWindoiwCreateStikerCommand { get => CreateCommandParameter<object>(ShowWindowCreateStikerCommand); }
         private void ShowWindowCreateStikerCommand(object parameter)
         {
-            var products = new List<ProductModel>();
+            var products = new List<ShopProject.Model.Domain.Product.Product>();
             if (parameter != null)
                 products = _productService.ContertIListToList((IList)parameter);
 
             if (products.Count == 1)
             {
-                _productService.SetProductOnSession(products[0].ToProduct());
+                _productService.SetProductOnSession(products[0]);
                 App.Container.GetNewViewWithViewModel<StickerPrintView,StickerPrintViewModel>().Show();
             }
         }

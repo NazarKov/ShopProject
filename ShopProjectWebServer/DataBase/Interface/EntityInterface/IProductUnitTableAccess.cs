@@ -1,19 +1,18 @@
 ﻿using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper; 
-using ShopProjectWebServer.DataBase.Helpers;
+using ShopProjectDataBase.Helper;  
 
 namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IProductUnitTableAccess
     {
-        void Add(ProductUnitEntity item);
-        void Update(ProductUnitEntity item);
-        void UpdateParameter(ProductUnitEntity item, string parameter, object value);
+        Task<ProductUnitEntity> AddAsync(ProductUnitEntity item);
+        Task UpdateAsync(ProductUnitEntity item);
+        Task UpdateParameterAsync(ProductUnitEntity item, string parameter, object value);
 
-        void Delete(ProductUnitEntity item);
+        Task DeleteAsync(int id);
         IEnumerable<ProductUnitEntity> GetAll();
-        public IEnumerable<ProductUnitEntity> GetUnitsByCode(int number, TypeStatusUnit statusUnit);
-
+        public IEnumerable<ProductUnitEntity> GetByCode(int number, TypeStatusUnit status);
         IEnumerable<ProductUnitEntity> GetByNameAndStatus(string name, TypeStatusUnit status);
+        public Task<bool> ExistsByBarCode(int code);
     }
 }

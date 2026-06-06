@@ -1,6 +1,4 @@
-﻿using Microsoft.Identity.Client.NativeInterop;
-using ShopProject.Model.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,14 +10,20 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Common
 {
     public class ApiResponse<T>
     {
-        [JsonPropertyName("status")]
-        public ResponseStatus Status { get; set; }
-        [JsonPropertyName("message")]
-        public string? Message { get; set; }
-        [JsonPropertyName("data")]
+        [JsonPropertyName("Status")]
+        public int Status { get; set; }
+        [JsonPropertyName("Message")]
+        public string Message { get; set; } = string.Empty;
+        [JsonPropertyName("Data")]
         public T? Data { get; set; }
-        [JsonPropertyName("errors")]
-        public List<string>? Errors { get; set; }
+        [JsonPropertyName("Error")]
+        public string Error { get; set; } = string.Empty;
+        [JsonPropertyName("Errors")]
+        public List<string> Errors { get; set; } = new List<string>();
+        [JsonPropertyName("ErrorType")]
+        public int ErrorType { get; set; }
+        [JsonPropertyName("Source")]
+        public int Source { get; set; }
 
         public static ApiResponse<T> Unpacking(string json)
         { 

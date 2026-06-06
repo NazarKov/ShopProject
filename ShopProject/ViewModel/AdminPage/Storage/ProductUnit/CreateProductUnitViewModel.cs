@@ -1,12 +1,11 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Model.Domain.Notification;
-using ShopProject.Model.Navigation;
+using ShopProject.Model.Domain.Notification; 
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.MappingServise;
-using ShopProject.Services.Modules.ModelService.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -86,11 +85,22 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
         private async Task CreateProductUnit()
         {
             Unit.Status = ShopProject.Model.Enum.TypeStatusUnit.Favorite;
-            await _productUnitServiсe.Add(Unit.ToProductUnit());
+            var result = await _productUnitServiсe.Add(Unit.ToProductUnit());
+            if (result.IsSuccess)
+            {
+                SetSuccess(Unit.NameUnit);
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Одиниці", "Одиниця успішно створена в базі даних")));
+                await MediatorService.ExecuteEventAsync("ReloadUnitsGriedView");
 
-            SetSuccess();
-            await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Одиниці", "Одиниця успішно створена в базі даних")));
-            await MediatorService.ExecuteEventAsync("ReloadUnitsGriedView");
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            } 
         }
 
         private void SetError(string error)
@@ -100,9 +110,9 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
             Error = error;
             ErrorTextBlockVisibiliti = Visibility.Visible;
         }
-        private void SetSuccess()
+        private void SetSuccess(string name)
         {
-            Success = "Одиниця добавлена";
+            Success = "Одиниця "+name+" добавлена";
             ErrorTextBlockVisibiliti = Visibility.Collapsed;
             SuccessTextBlockVisibiliti = Visibility.Visible;
             IsEnableSaveButton = true;

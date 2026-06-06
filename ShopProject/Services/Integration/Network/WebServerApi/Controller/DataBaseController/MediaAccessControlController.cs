@@ -1,7 +1,7 @@
 ﻿using ShopProject.Model.Domain.MediaAccessControl;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.MediaAccessControl;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+using ShopProject.Services.Modules.Mapping.MediaAccess;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -13,10 +13,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class MediaAccessControlController
     {
         private HttpClient _httpClient;
-        public MediaAccessControlController(string url)
+        public MediaAccessControlController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
         public async Task<bool> AddMAC(string token, MediaAccessControl item)

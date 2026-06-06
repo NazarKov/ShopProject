@@ -5,7 +5,7 @@ using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ObjectOwner;
-using ShopProject.Services.Modules.MappingServise;
+using ShopProject.Services.Modules.Mapping.ObjectOwner;
 using ShopProject.Services.Modules.ModelService.ObjectOwner.Interface;
 using ShopProject.Views.AdminPage;
 using System;

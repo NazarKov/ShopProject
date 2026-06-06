@@ -18,16 +18,17 @@
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
                 <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
-                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ContextMenuStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
-        <Grid x:Name="Grid"  Panel.ZIndex="0">
+        <Grid x:Name="Grid"  Panel.ZIndex="0"  Background="Transparent">
             <Grid.ContextMenu>
-                <ContextMenu Name="context">
-                    <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindowCommand}"/>
-                    <MenuItem Header="Сфомувати товар" Command="{Binding OpenFormationProductWindowCommand}"></MenuItem>
+                <ContextMenu Name="context" Style="{StaticResource ModernContextMenuStyle}">
+                    <MenuItem Header="Добавити товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductWindowCommand}"/>
+                    <MenuItem Header="Сфомувати товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenFormationProductWindowCommand}"></MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>
 
@@ -299,24 +300,28 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Добавити товар" Command="{Binding OpenCreateProductWindowCommand}"/>
+                    <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                        <MenuItem Header="Добавити товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductWindowCommand}"/>
                         <MenuItem
                             Header="Редагувати товар"
+                            Style="{StaticResource ModernMenuItemStyle}"
                             CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                             Command="{Binding UpdateProductCommand}" />
                         <Separator></Separator>
                         <MenuItem Header="Перенести в архів"
-                            CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding AddProductArhiveCommand}" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding AddProductArhiveCommand}" />
                         <MenuItem Header="Товар закінчився"
-                            CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding AddOutOfStockProductCommand}" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding AddOutOfStockProductCommand}" />
                         <MenuItem Header="Роздрукувати етикетку"
-                            CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                            Command="{Binding OpenWindoiwCreateStikerCommand}" />
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding OpenWindoiwCreateStikerCommand}" />
                         <Separator></Separator>
-                        <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveriOfProductCommand}"></MenuItem>
+                        <MenuItem Header="Поставка товару" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenDeliveriOfProductCommand}"></MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

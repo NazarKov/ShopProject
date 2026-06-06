@@ -1,6 +1,5 @@
-﻿using ShopProject.Model.Domain.Discount;
-using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Discount;
+using ShopProject.Services.Integration.Network.WebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +14,14 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     {
         private HttpClient _httpClient;
 
-        public DiscountController(string url)
+        public DiscountController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
-        public async Task<int> AddDiscount(string token, Discount item)
+        public async Task<int> AddDiscount(string token, CreateDiscountDto item)
         {
-            var discount = JsonSerializer.Serialize(item.ToCreateDicount());
+            var discount = JsonSerializer.Serialize(item);
             HttpContent httpContent = new StringContent(discount, Encoding.UTF8, "application/json");
 
             HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Discount/AddDiscount?token={token}", httpContent);

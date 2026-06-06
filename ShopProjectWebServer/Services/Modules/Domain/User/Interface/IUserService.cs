@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.DtoModels.Token;
-using ShopProjectWebServer.Api.DtoModels.User;
+﻿using ShopProjectWebServer.Api.DtoModels.User;
+using ShopProjectWebServer.Services.Common;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.User.Interface
 {
     public interface IUserService
-    {
-        public PaginatorDto<UserDto> GetUserByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusUser status);
-        public PaginatorDto<UserDto> GetUsersPageColumn(string token, int page, int countColumn, TypeStatusUser status); 
-        public bool AddUser(string token, CreateUserDto user);
-        public bool UpdateUser(string token, UpdateUserDto user);
-        public bool UpdateParameterUser(string token, string id, string nameParameter, object value);
-        public bool DeleteUser(string token, string id);
+    { 
+        public Task<OperationResult<ShopProjectWebServer.Models.Domain.User.User>> Add(ShopProjectWebServer.Models.Domain.User.User user);
+        public Task<OperationResult<bool>> Update(ShopProjectWebServer.Models.Domain.User.User user);
+        public Task<OperationResult<bool>> UpdateParameter(string id, string nameParameter, object value);
+        public OperationResult<bool> Delete(string id);
        
-        public Models.Domain.User.User Authorization(string login, string password, string devise);
-        public IEnumerable<UserDto> GetUsers(string token);
-        public Models.Domain.User.User GetUserById(string token, string id);
-        public UserDto GetUser(string token);
+        public OperationResult<ShopProjectWebServer.Models.Domain.User.User> Authorization(string login, string password, string devise);
+
+        public OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.User.User>> GetUsers();
+        public OperationResult<ShopProjectWebServer.Models.Domain.User.User> GetById(string id);
+        public OperationResult<ShopProjectWebServer.Models.Domain.User.User> GetUser(string token);
+
+        public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ShopProjectWebServer.Models.Domain.User.User, int>> GetByNamePageColumn(string name,
+            ShopProjectWebServer.Models.Domain.Paginator.Paginator<ShopProjectWebServer.Models.Domain.User.User, int> paginator);
+        public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<ShopProjectWebServer.Models.Domain.User.User, int>> GetPageColumn(
+            ShopProjectWebServer.Models.Domain.Paginator.Paginator<ShopProjectWebServer.Models.Domain.User.User, int> paginator);
     }
 }

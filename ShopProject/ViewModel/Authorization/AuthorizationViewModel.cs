@@ -2,7 +2,7 @@
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Navigation;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.ModelService.User.Interface;
+using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Session;
 using ShopProject.Services.Modules.Session.Interface;
 using System;
@@ -21,10 +21,10 @@ namespace ShopProject.ViewModel.Authorization
         private ICommand _openChangePassowordCommand;
         private ICommand _exitCommand;
 
-        private IUserServise _userServise;
+        private IUserService _userServise;
         private ISessionService _sessionService;
 
-        public AuthorizationViewModel(IUserServise userServise , ISessionService sessionService)
+        public AuthorizationViewModel(IUserService userServise , ISessionService sessionService)
         {
             _userServise = userServise;
             _sessionService = sessionService;

@@ -1,30 +1,30 @@
-﻿using ShopProjectWebServer.Api.DtoModels.UserRole;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Authorization;
+﻿using ShopProjectWebServer.DataBase;
+using ShopProjectWebServer.Services.Common;
+using ShopProjectWebServer.Services.Common.Enum; 
+using ShopProjectWebServer.Services.Modules.Domain.UserRole.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.UserRole;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.UserRole
 {
-    internal class UserRoleService : IUserRoleServise
+    internal class UserRoleService : IUserRoleServiсe
     {
-        private DataBaseService _controller;
-        private AuthorizationService _authorizationServise;
+        private DataBaseService _controller; 
 
         public UserRoleService(DataBaseService controller)
         {
-            _controller = controller;
-            _authorizationServise = new AuthorizationService(controller);
+            _controller = controller; 
         }
-        public IEnumerable<UserRoleDto> GetAll(string token)
+        public OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.UserRole.UserRole>> GetAll()
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                var result = _controller.DataBaseAccess.UserRoleTable.GetAll();
+                return OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.UserRole.UserRole>>.Success(result.ToUserRole());
             }
-
-            var result = _controller.DataBaseAccess.UserRoleTable.GetAll();
-
-            return result.ToUserRoleDto();
+            catch (Exception ex) 
+            {
+                return OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.UserRole.UserRole>>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }   
         }
     }
 }

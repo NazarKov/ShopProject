@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Hosting;
-using ShopProjectWebServer.DataBase;
+using Microsoft.AspNetCore.Authentication; 
 using ShopProjectWebServer.Extensions;
 using ShopProjectWebServer.Services.Infrastructure.Exception;
+using ShopProjectWebServer.Services.Modules.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +11,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AppAppServices();
 builder.Services.AddAppApiServices();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "ApiAuthorization";
+    options.DefaultChallengeScheme = "ApiAuthorization";
+})
+    .AddScheme<AuthenticationSchemeOptions, DbTokenAuthenticationHandler>(
+        "ApiAuthorization", null);
 
+builder.Services.AddAuthorization();
 
 builder.Services.AddDataBaseServices();
 builder.Services.AddSession(option =>
@@ -21,6 +29,8 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 builder.Host.UseWindowsService();
+
+ 
 
 var app = builder.Build(); 
 
@@ -60,3 +70,7 @@ app.MapPost("/setup/complete", (IHostApplicationLifetime appLifetime) =>
 });
 
 app.Run();
+
+public partial class Program
+{
+}

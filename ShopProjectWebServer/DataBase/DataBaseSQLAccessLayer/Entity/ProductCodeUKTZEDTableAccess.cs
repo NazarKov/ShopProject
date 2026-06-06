@@ -4,6 +4,7 @@ using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -15,7 +16,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
 
-        public void Add(ProductCodeUKTZEDEntity item)
+        public async Task<ProductCodeUKTZEDEntity> AddAsync(ProductCodeUKTZEDEntity item)
         { 
             var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.NameCode == item.NameCode); 
             if (unit == null)
@@ -26,48 +27,25 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             {
                 throw new Exception("Одиниця виміру існує");
             }
-            _contextDataBase.ProductCodeUKTZED.Add(item);
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.ProductCodeUKTZED.AddAsync(item);
+            await _contextDataBase.SaveChangesAsync(); 
+            return item;
         }
 
-        public IEnumerable<ProductCodeUKTZEDEntity> GetAll()
-        {
-            return _contextDataBase.ProductCodeUKTZED.AsNoTracking().ToList();
-        } 
-        public IEnumerable<ProductCodeUKTZEDEntity> GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
-        { 
-            if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
-            {
-                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(i => i.Code.Contains(number.ToString()));
-            }
-            else
-            {
-                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(t => t.Status == statusCodeUKTZED).Where(i => i.Code.Contains(number.ToString()));
-            } 
-        } 
-        public void Update(ProductCodeUKTZEDEntity item)
+        public async Task UpdateAsync(ProductCodeUKTZEDEntity item)
         {
             UpdateFieldCodeUKTZED(_contextDataBase.ProductCodeUKTZED.Find(item.ID), item);
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
         }
 
         private void UpdateFieldCodeUKTZED(ProductCodeUKTZEDEntity codeUKTZEDUpdate, ProductCodeUKTZEDEntity codeUKTZED)
         {
             codeUKTZEDUpdate.NameCode = codeUKTZED.NameCode;
             codeUKTZEDUpdate.Code = codeUKTZED.Code;
-            codeUKTZEDUpdate.Status = codeUKTZED.Status; 
-        }
-         
-        public void Delete(ProductCodeUKTZEDEntity item)
-        {
-            var codeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.ID);
-            if (codeUKTZED == null) return;
-
-            _contextDataBase.ProductCodeUKTZED.Remove(codeUKTZED);
-            _contextDataBase.SaveChanges();
+            codeUKTZEDUpdate.Status = codeUKTZED.Status;
         }
 
-        public void UpdateParameter(ProductCodeUKTZEDEntity item, string parameter, object value)
+        public async Task UpdateParameterAsync(ProductCodeUKTZEDEntity item, string parameter, object value)
         {
             var unit = _contextDataBase.ProductCodeUKTZED.FirstOrDefault(i => i.ID == item.ID);
             if (unit != null)
@@ -111,9 +89,34 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         }
                 }
             }
+            await _contextDataBase.SaveChangesAsync();
+        }
+        public void Delete(ProductCodeUKTZEDEntity item)
+        {
+            var codeUKTZED = _contextDataBase.ProductCodeUKTZED.Find(item.ID);
+            if (codeUKTZED == null) return;
+
+            _contextDataBase.ProductCodeUKTZED.Remove(codeUKTZED);
             _contextDataBase.SaveChanges();
         }
 
+
+
+        public IEnumerable<ProductCodeUKTZEDEntity> GetAll()
+        {
+            return _contextDataBase.ProductCodeUKTZED.AsNoTracking().ToList();
+        } 
+        public IEnumerable<ProductCodeUKTZEDEntity> GetByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED)
+        { 
+            if (statusCodeUKTZED == TypeStatusCodeUKTZED.Unknown)
+            {
+                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(i => i.Code.Contains(number.ToString()));
+            }
+            else
+            {
+                return _contextDataBase.ProductCodeUKTZED.AsNoTracking().Where(t => t.Status == statusCodeUKTZED).Where(i => i.Code.Contains(number.ToString()));
+            } 
+        }  
         public IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status)
         {
             IQueryable<ProductCodeUKTZEDEntity> query = _contextDataBase.ProductCodeUKTZED.AsNoTracking();
@@ -128,6 +131,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 query = query.Where(o => o.NameCode.Contains(name));
             } 
             return query.ToList();
+        }
+
+        public async Task<bool> ExistsByCodeAsync(string code)
+        {
+            return await _contextDataBase.ProductCodeUKTZED.AnyAsync(p => p.Code == code);
         }
     }
 }

@@ -35,34 +35,34 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
         }
 
-        [HttpGet("GetObjectsOwnersByNamePageColumn")]
-        public IActionResult GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
-        {
-            try
-            {
-                var result = _servise.GetPageColumnByName(token, name, page, countColumn, status); 
-                return Ok(ApiResponse<PaginatorDto<ObjectOwnerListDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+        //[HttpGet("GetObjectsOwnersByNamePageColumn")]
+        //public IActionResult GetObjectsOwnersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusObjectOwner status)
+        //{
+        //    try
+        //    {
+        //        var result = _servise.GetPageColumnByName(token, name, page, countColumn, status); 
+        //        return Ok(ApiResponse<PaginatorDto<ObjectOwnerListDto>>.Ok(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+        //    }
+        //}
 
-        [HttpGet("GetObjectsOwnersPageColumn")]
-        public IActionResult GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
-        {
-            try
-            { 
-                var result = _servise.GetPageColumn(token, page, countColumn, status); 
-                return Ok(ApiResponse<PaginatorDto<ObjectOwnerListDto>>.Ok(result)); 
+        //[HttpGet("GetObjectsOwnersPageColumn")]
+        //public IActionResult GetObjectsOwnersPageColumn(string token, int page, int countColumn, TypeStatusObjectOwner status)
+        //{
+        //    try
+        //    { 
+        //        var result = _servise.GetPageColumn(token, page, countColumn, status); 
+        //        return Ok(ApiResponse<PaginatorDto<ObjectOwnerListDto>>.Ok(result)); 
 
-            }
-            catch (Exception ex) 
-            { 
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+        //    }
+        //    catch (Exception ex) 
+        //    { 
+        //        return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+        //    }
+        //}
 
 
         [HttpGet("GetObjectsOwners")]

@@ -1,7 +1,5 @@
 ﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.OperationRecorderUser;
-using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
+using ShopProject.Services.Integration.Network.WebServerApi.Common; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +14,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class OperationRecorderAndUserController
     { 
         private HttpClient _httpClient;
-        public OperationRecorderAndUserController(string url)
+        public OperationRecorderAndUserController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }  
 
         public async Task<bool> AddOperationRecordersAndUser(string token, Guid userId ,List<BindingUserToOperationRecorderDto> items)

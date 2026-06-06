@@ -1,10 +1,6 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using ShopProject.Model.Domain.Paginator;
-using ShopProject.Model.Domain.ProductUnit;
-using ShopProject.Model.Enum;
-using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.ProductUnit;
+﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.ProductUnit;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using System;
+using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.Paginator; 
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -16,109 +12,114 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class ProductUnitController
     {
         private HttpClient _httpClient;
-        public ProductUnitController(string url)
+        public ProductUnitController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
 
-        public async Task<bool> AddProductUnit(string token, CreateProductUnitDto unit)
+        public async Task<ApiResponse<ProductUnitDto>> Add(CreateProductUnitDto unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/AddUnit?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Add", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<ProductUnitDto>.Unpacking(responseBody); 
+            return result;
+        }
+
+        public async Task<ApiResponse<bool>> Update(UpdateProductUnitDto unit)
+        {
+            var content = JsonSerializer.Serialize(unit);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Update", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<bool> UpdateUnit(string token, UpdateProductUnitDto unit)
-        {
-            var content = JsonSerializer.Serialize(unit);
-            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/UpdateUnit?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result.Data;
-        }
-
-        public async Task<bool> UpdateParameterUnit(string token, string parameter, object value, UpdateProductUnitDto product)
+        public async Task<ApiResponse<bool>> UpdateParameter(string parameter, object value, UpdateProductUnitDto product)
         {
             var content = JsonSerializer.Serialize(product);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/UpdateParameterUnit?token={token}&parameter={parameter}&value={value.ToString()}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<bool> DeleteUnit(string token, ProductUnit unit)
-        { 
-            HttpContent httpContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+        public async Task<ApiResponse<bool>> Delete(int id)
+        {
+            var content = JsonSerializer.Serialize(id.ToString());
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/DeleteUnit?token={token}&id={unit.ID}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Delete", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<Paginator<ProductUnitDto>> GetUnitByCode(string token, string code, int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<ApiResponse<PaginatorDto<ProductUnitDto,int>>> GetUnitByCode(string code, PaginatorDto<ProductUnitDto, int> paginator)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitByCode?token={token}&code={code}&countColumn={countColumn}&page={page}&status={statusUnit}");
+            var content = JsonSerializer.Serialize(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetByCodePageColumn?code={code}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductUnitDto>>.Unpacking(responseBody);
+            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<Paginator<ProductUnitDto>> GetUnitsByNamePageColumn(string token, string name,int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<ApiResponse<PaginatorDto<ProductUnitDto, int>>> GetByNamePageColumn(string name, PaginatorDto<ProductUnitDto, int> paginator)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitsByNamePageColumn?token={token}&name={name}&countColumn={countColumn}&page={page}&status={statusUnit}");
+            var content = JsonSerializer.Serialize(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetByNamePageColumn?name={name}",httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductUnitDto>>.Unpacking(responseBody);
+            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<Paginator<ProductUnitDto>> GetUnitsPageColumn(string token ,int page, int countColumn, TypeStatusUnit statusUnit)
+        public async Task<ApiResponse<PaginatorDto<ProductUnitDto, int>>> GetPageColumn(PaginatorDto<ProductUnitDto, int> paginator)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnitsPageColumn?token={token}&countColumn={countColumn}&page={page}&status={statusUnit}");
+            var content = JsonSerializer.Serialize(paginator);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetPageColumn",httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<Paginator<ProductUnitDto>>.Unpacking(responseBody);
+            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<IEnumerable<ProductUnitDto>> GetUnits(string token)
+        public async Task<ApiResponse<IEnumerable<ProductUnitDto>>> GetAll()
         { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetUnits?token={token}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetAll");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<IEnumerable<ProductUnitDto>>.Unpacking(responseBody);
 
-            return result.Data; 
+            return result; 
         }
     }
 }

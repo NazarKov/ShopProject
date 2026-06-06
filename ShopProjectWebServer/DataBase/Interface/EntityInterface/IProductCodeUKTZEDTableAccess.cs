@@ -6,14 +6,14 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IProductCodeUKTZEDTableAccess
     {
-        void Add(ProductCodeUKTZEDEntity item);
-        void Update(ProductCodeUKTZEDEntity item);
-        void UpdateParameter(ProductCodeUKTZEDEntity item, string parameter, object value);
+        public Task<ProductCodeUKTZEDEntity> AddAsync(ProductCodeUKTZEDEntity item);
+        public Task UpdateAsync(ProductCodeUKTZEDEntity item);
+        public Task UpdateParameterAsync(ProductCodeUKTZEDEntity item, string parameter, object value);
 
-        void Delete(ProductCodeUKTZEDEntity item);
-        IEnumerable<ProductCodeUKTZEDEntity> GetAll();
-        public IEnumerable<ProductCodeUKTZEDEntity> GetCodeUKTZEDByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED);
-
-        IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status);
+        public void Delete(ProductCodeUKTZEDEntity item);
+        public IEnumerable<ProductCodeUKTZEDEntity> GetAll();
+        public IEnumerable<ProductCodeUKTZEDEntity> GetByCode(int number, TypeStatusCodeUKTZED statusCodeUKTZED);
+        public IEnumerable<ProductCodeUKTZEDEntity> GetByNameAndStatus(string name, TypeStatusCodeUKTZED status); 
+        public Task<bool> ExistsByCodeAsync(string code);
     } 
 }

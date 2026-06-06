@@ -1,81 +1,79 @@
-﻿using ShopProject.Helpers; 
-using ShopProjectDataBase.Entities;
+﻿using ShopProject.Core.Mvvm; 
+using ShopProject.Core.Mvvm.Interface; 
+using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Model.Domain.Notification;
+using ShopProject.Model.Navigation;
+using ShopProject.Model.UI.User;
+using ShopProject.Model.UI.UserRole;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Domain.UserRole.Interface;
+using ShopProject.Services.Modules.Mapping.User;
+using ShopProject.Services.Modules.Mapping.UserRole;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Generic; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input; 
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
 
 namespace ShopProject.ViewModel.AdminPage.UserPage
 {
-    internal class UpdateUserViewModel : ViewModel<UpdateUserViewModel>
+    internal class UpdateUserViewModel : ViewModel<UpdateUserViewModel>, IViewModelLoadResourse, IСontrolView
     {  
-        private ICommand _updateUserCommand;
-        private ICommand _openPanelWithKeyCommand; 
+        private ICommand _updateUserCommand; 
 
-        private ICommand _openFileKeyCommand;
-        private ICommand _clearWindowCommand;
+        private ICommand _openFileKeyCommand; 
         private ICommand _exitWindowCommand;
-         
-        private bool _isUserHaveKey;
-        private string _nameFile;
-        private Guid _id;
+        private ICommand _openAddKeyFieldCommand;
+        private ICommand _deleteKeyCommand;
 
-        public UpdateUserViewModel()
-        { 
-            _login = string.Empty;
-            _nameFile = string.Empty;
-            _fullName = string.Empty;
-            _email = string.Empty;
-            _password = string.Empty;
+        private readonly IUserRoleService _userRoleService;
+        private readonly IUserService _userService;
+
+        private string _nameFile; 
+
+        public UpdateUserViewModel(IUserRoleService userRoleService,IUserService userService)
+        {
+            _userService = userService;
+            _userRoleService = userRoleService;
+
+            _user = new UserModel();
+            _nameFile = string.Empty; 
             _pathKey = string.Empty;
-            _passwordKey = string.Empty;
-            _userRoles = new List<UserRoleEntity>();
-            _messageByKey = string.Empty;
-            _contentUpdateKeyButton = string.Empty;
+            _passwordKey = string.Empty; 
+            _userRoles = new List<UserRoleModel>();
+            _error = string.Empty;
+            _success = string.Empty;
 
-            _updateUserCommand = new DelegateCommand(UpdateUser);
-            _openPanelWithKeyCommand = new DelegateCommand(OpenPanelWithKey); 
+            _updateUserCommand = CreateCommandAsync(UpdateUser);  
 
-            _openFileKeyCommand = new DelegateCommand(OpenFileKey);
-            _clearWindowCommand = new DelegateCommand(ClearWindow);
-            _exitWindowCommand = new DelegateCommand(ExitWindow);
-             
+            _openFileKeyCommand = CreateCommand(OpenFileKey); 
+            _exitWindowCommand = CreateCommand(() => { CloseView?.Invoke(); });
+            _openAddKeyFieldCommand = CreateCommand(() => { AddKeyFieldVisibility = Visibility.Visible; UserHasSignatureKeyVisibility = Visibility.Collapsed; UserNoneSignatureKeyVisibility = Visibility.Collapsed; });
+            _deleteKeyCommand = CreateCommandAsync(DeleteKey);
 
-            SetFieldPage();
+            _errorTextBlockVisibiliti = Visibility.Collapsed;
+            _successTextBlockVisibiliti = Visibility.Collapsed;
+            _userHasSignatureKeyVisibility = Visibility.Collapsed;
+            _userNoneSignatureKeyVisibility = Visibility.Collapsed;
+            _addKeyFieldVisibility = Visibility.Collapsed;
+
         }
+        public Action? CloseView { get; set; }
 
-        private string _login;
-        public string Login
+        public async Task LoadResourse()
         {
-            get { return _login; }
-            set { _login = value; OnPropertyChanged(nameof(Login)); }
-        }
-        private string _fullName;
-        public string FullName
-        {
-            get { return _fullName; }
-            set { _fullName = value; OnPropertyChanged(nameof(FullName)); }
+            SafeExecute(SetFieldPage);
         }
 
-        private string _email;
-        public string Email
+        private UserModel _user;
+        public UserModel User
         {
-            get { return _email; }
-            set { _email = value; OnPropertyChanged(nameof(Email)); }
+            get { return _user; }
+            set { _user = value; OnPropertyChanged(nameof(User)); }
         }
-
-        private string _password;
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; OnPropertyChanged(nameof(Password)); }
-        }
-
+      
         private string _pathKey;
         public string PathKey
         {
@@ -89,147 +87,163 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
             set { _passwordKey = value; OnPropertyChanged(nameof(PasswordKey)); }
         }
 
-        private List<UserRoleEntity> _userRoles;
-        public List<UserRoleEntity> UserRoles
+        private List<UserRoleModel> _userRoles;
+        public List<UserRoleModel> UserRoles
         {
             get { return _userRoles; }
             set { _userRoles = value; OnPropertyChanged(nameof(UserRoles)); }
         }
+
         private int _selectUserRole;
         public int SelectUserRole
         {
             get { return _selectUserRole; }
             set { _selectUserRole = value; OnPropertyChanged(nameof(SelectUserRole)); }
         }
-
-        private double _sizeWindow;
-        public double SizeWindow
+        private Visibility _userHasSignatureKeyVisibility;
+        public Visibility UserHasSignatureKeyVisibility
         {
-            get { return _sizeWindow; }
-            set { _sizeWindow = value; OnPropertyChanged(nameof(SizeWindow)); }
+            get { return _userHasSignatureKeyVisibility; }
+            set { _userHasSignatureKeyVisibility = value; OnPropertyChanged(nameof(UserHasSignatureKeyVisibility)); }
+        }
+        public Visibility _userNoneSignatureKeyVisibility;
+        public Visibility UserNoneSignatureKeyVisibility
+        {
+            get { return _userNoneSignatureKeyVisibility; }
+            set { _userNoneSignatureKeyVisibility = value;OnPropertyChanged(nameof(UserNoneSignatureKeyVisibility)); }
+        }
+        private Visibility _addKeyFieldVisibility;
+        public Visibility AddKeyFieldVisibility
+        {
+            get { return _addKeyFieldVisibility; }
+            set { _addKeyFieldVisibility = value; OnPropertyChanged(nameof(AddKeyFieldVisibility)); }
         }
 
-        private int _buttonRowIndex;
-        public int ButtonRowIndex
+
+        private string _error;
+        public string Error
         {
-            get { return _buttonRowIndex; }
-            set { _buttonRowIndex = value; OnPropertyChanged(nameof(ButtonRowIndex)); }
+            get { return _error; }
+            set { _error = value; OnPropertyChanged(nameof(Error)); }
         }
 
-        private Visibility _visibilityFielKey;
-        public Visibility VisibilityFielKey
+        private string _success;
+        public string Success
         {
-            get { return _visibilityFielKey; }
-            set { _visibilityFielKey = value; OnPropertyChanged(nameof(VisibilityFielKey)); }
+            get { return _success; }
+            set { _success = value; OnPropertyChanged(nameof(Success)); }
         }
 
-        private Visibility _visibilityUpdateButtonKey;
-        public Visibility VisibilityUpdateButtonKey
+        private Visibility _successTextBlockVisibiliti;
+        public Visibility SuccessTextBlockVisibiliti
         {
-            get { return _visibilityUpdateButtonKey; }
-            set { _visibilityUpdateButtonKey = value; OnPropertyChanged(nameof(VisibilityUpdateButtonKey)); }
+            get { return _successTextBlockVisibiliti; }
+            set { _successTextBlockVisibiliti = value; OnPropertyChanged(nameof(SuccessTextBlockVisibiliti)); }
         }
 
-        private string _messageByKey;
-        public string MessageByKey
+        private Visibility _errorTextBlockVisibiliti;
+        public Visibility ErrorTextBlockVisibiliti
         {
-            get { return _messageByKey; }
-            set { _messageByKey = value; OnPropertyChanged(nameof(MessageByKey)); }
-        }
-
-        private string _contentUpdateKeyButton;
-        public string ContentUpdateKeyButton
-        {
-            get { return _contentUpdateKeyButton; }
-            set { _contentUpdateKeyButton = value; OnPropertyChanged(nameof(ContentUpdateKeyButton)); }
-        }
-
+            get { return _errorTextBlockVisibiliti; }
+            set { _errorTextBlockVisibiliti = value; OnPropertyChanged(nameof(ErrorTextBlockVisibiliti)); }
+        } 
         private void SetFieldPage()
-        {
-            SetButton();
+        { 
             SetFielComboBoxRole();
 
-            _visibilityFielKey = Visibility.Hidden;
-            _sizeWindow = 400;
 
-            //var user = Session.UserEntity;
 
-            //if (user != null)
-            //{
-            //    _login = user.Login;
-            //    _fullName = user.FullName;
-            //    _email = user.Email;
-            //    _password = user.Password;
-            //    _id = user.ID;
-            //    if (user.SignatureKey != null)
-            //    {
-            //        MessageByKey = "";
-            //        ContentUpdateKeyButton = "Оновити ключ";
-            //        _isUserHaveKey = true;
-            //    }
-            //    else
-            //    {
-            //        MessageByKey = "Ключ вісутній";
-            //        ContentUpdateKeyButton = "Добавити ключ";
-            //        _isUserHaveKey= false;
-            //    }
-            //}
-        }
+            var user = _userService.GetUpdateUserFromSession();
 
-        private void SetButton()
-        {
-            _buttonRowIndex = 7;
-        }
+            if (user != null)
+            {
+                _user = user.ToUserModel(); 
+                switch (user.Status)
+                {
+                    case ShopProject.Model.Enum.TypeStatusUser.AvailableElectronicKey:
+                        {
+                            UserHasSignatureKeyVisibility = Visibility.Visible;
+                            break;
+                        }
+                    case ShopProject.Model.Enum.TypeStatusUser.NotAvailableElectronicKey:
+                        {
+                            UserNoneSignatureKeyVisibility = Visibility.Visible;
+                            break;
+                        }
+                    default:
+                        {
+                            UserNoneSignatureKeyVisibility = Visibility.Visible;
+                            break;
+                        }
+                } 
+            }
+        } 
 
         private void SetFielComboBoxRole()
         {
-            //var item = new List<UserRoleEntity>();
-            //Task t = Task.Run(async () =>
-            //{
-            //    item = await _model.GetUserRoles();
-            //});
-            //t.ContinueWith(t =>
-            //{
-            //    if (item.Count > 0)
-            //    {
-            //        UserRoles = item;
-            //    }
-            //});
+            UserRoles = new List<UserRoleModel>(_userRoleService.GetFromSession().ToUserRoleModel());
+            SelectUserRole = 0;
         }
 
         public ICommand UpdateUserCommand => _updateUserCommand;
 
-        public void UpdateUser()
+        public async Task UpdateUser()
         {
-            //Task t = Task.Run(async () => {
-            //    if (_isUserHaveKey)
-            //    {
-            //        if (await _model.UpdateUserKey(_id,PathKey, _nameFile, Login, Email, Password, PasswordKey, UserRoles.ElementAt(SelectUserRole)))
-            //        {
-            //            MessageBox.Show("Корисувача створено");
-            //            //MediatorService.ExecuteNavigation("ReloadUser");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (await _model.UpdateUser(_id,FullName, Login, Email, Password, UserRoles.ElementAt(SelectUserRole)))
-            //        {
-            //            MessageBox.Show("Корисувача створено");
-            //            //MediatorService.ExecuteEvent("ReloadUser");
-            //        }
-            //    }
-            //});
 
+            var result = await _userService.UpdateUser(User.ToUser(), PathKey, PasswordKey);
+
+            if (result.IsSuccess)
+            {
+                SetSuccess($"Користувач{result.Data.FullName} редаговано");
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Користувач", "Користувач успішно створений в базі даних")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadUser.ToString());
+
+                if (!string.IsNullOrEmpty(PathKey)||!string.IsNullOrEmpty(PasswordKey))
+                {
+                    UserNoneSignatureKeyVisibility = Visibility.Collapsed;
+                    UserHasSignatureKeyVisibility = Visibility.Visible;
+                    AddKeyFieldVisibility = Visibility.Collapsed;
+                }
+
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
+            PathKey = string.Empty;
+            PasswordKey = string.Empty;
         }
+        public ICommand OpenAddKeyFieldCommand => _openAddKeyFieldCommand;
+        public ICommand DeleteKeyCommand => _deleteKeyCommand;
+        private async Task DeleteKey()
+        {  
+            var result = await _userService.UpdateUser(User.ToUser(), string.Empty, string.Empty);
 
-        public ICommand OpenPanelWithKeyCommand => _openPanelWithKeyCommand;
-        private void OpenPanelWithKey()
-        {
-            ButtonRowIndex = 8;
-            SizeWindow = 520;
-            VisibilityFielKey = Visibility.Visible;
-            VisibilityUpdateButtonKey = Visibility.Hidden;
-            _isUserHaveKey = true;
+            if (result.IsSuccess)
+            {
+                SetSuccess("Ключ ЕЦП видалено");
+
+                UserNoneSignatureKeyVisibility = Visibility.Visible;
+                UserHasSignatureKeyVisibility = Visibility.Collapsed;
+                AddKeyFieldVisibility = Visibility.Collapsed;
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Користувач", "Користувач успішно редаговано")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadUser.ToString());
+
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
+            }
+            else
+            {
+                SetError("Невдалося виконати операцію");
+            }
+            PathKey = string.Empty;
+            PasswordKey = string.Empty;
         }
 
         public ICommand OpenFiLeKeyCommand => _openFileKeyCommand;
@@ -243,21 +257,20 @@ namespace ShopProject.ViewModel.AdminPage.UserPage
                 _nameFile = openFileDialog.SafeFileName;
             }
 
-        }
-        public ICommand ClearWindowCommadn => _clearWindowCommand;
-        private void ClearWindow()
-        {
-            Login = string.Empty;
-            FullName = string.Empty;
-            Password = string.Empty;
-            PasswordKey = string.Empty;
-            PathKey = string.Empty;
-            SelectUserRole = 0;
-        }
+        } 
         public ICommand ExitWindowCommand => _exitWindowCommand;
-        private void ExitWindow()
-        {
 
+        private void SetError(string error)
+        {
+            Error = error;
+            SuccessTextBlockVisibiliti = Visibility.Collapsed;
+            ErrorTextBlockVisibiliti = Visibility.Visible;
+        }
+        private void SetSuccess(string message)
+        {
+            Success = message;
+            ErrorTextBlockVisibiliti = Visibility.Collapsed;
+            SuccessTextBlockVisibiliti = Visibility.Visible;
         }
     }
 }

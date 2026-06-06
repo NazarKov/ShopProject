@@ -1,68 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ShopProjectDataBase.Helper;
+using System.Text.Json.Serialization;
 
 namespace ShopProjectWebServer.Api.Common
 {
-    public class PaginatorDto<T>
+    public class PaginatorDto<TData, TStatusData>
     {
+        [JsonPropertyName("Page")]
         public int Page { get; set; }
+        [JsonPropertyName("Pages")]
         public int Pages { get; set; }
-        public IEnumerable<T>? Data { get; set; } 
-        public PaginatorDto(int page, int pages, IEnumerable<T> data)
-        {
-            Page = page;
-            Pages = pages;
-            Data = data; 
-        }
-
-        public static PaginatorDto<T> CreationPaginator(IEnumerable<T> values , int page, int column)
-        {
-
-            double pages = 0;
-
-            int countEnd = (int)(page * column);
-            int countStart = (int)(countEnd - column); 
-            var data = values.Skip(countStart).Take((int)column); 
-
-            pages = (double)values.Count() / (double)column;
-            int pagesCount = 0;
-            var surplus = pages - (int)pages;
-
-            if (surplus > 0)
-            {
-                pagesCount = (int)pages;
-                pagesCount++;
-            }
-            else
-            {
-                pagesCount = (int)pages;
-            }
-
-            return new PaginatorDto<T>(page, pagesCount, data);
-        } 
-
-        public static PaginatorDto<T> CreationPaginator<T, TKey>(IEnumerable<T> values, int page, int column, Func<T, TKey> orderBySelector = null)
-        {
-
-            double pages = 0;
-
-            int countEnd = (int)(page * column);
-            int countStart = (int)(countEnd - column);
-
-            IEnumerable<T> ordered = orderBySelector != null ? values.OrderBy(orderBySelector) : values;
-
-            var data = ordered.Skip(countStart)
-                              .Take((int)column);
-
-            pages = values.Count() / column;
-            int pagesCount = 0;
-            if (!(pages % 2 == 0))
-            {
-                pagesCount = (int)pages;
-                pagesCount++;
-            }
-
-            return new PaginatorDto<T>(page, pagesCount, data);
-        } 
+        [JsonPropertyName("CountItemPage")]
+        public int CountItemPage { get; set; }
+        [JsonPropertyName("Data")]
+        public IEnumerable<TData>? Data { get; set; }
+        [JsonPropertyName("DataType")]
+        public TStatusData DataType { get; set; }  
     }
 }

@@ -4,6 +4,7 @@ using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
+using ShopProject.View.AdminPage.UserPage;
 using ShopProject.View.Authorization;
 using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Main;
@@ -17,6 +18,7 @@ using ShopProject.View.StoragePage;
 using ShopProject.View.UserPage.SaleMenu;
 using ShopProject.ViewModel.AdminPage.Dashboard;
 using ShopProject.ViewModel.StoragePage;
+using ShopProject.Views.AdminPage;
 
 namespace ShopProject.Extensions.FactoryExtensions
 {
@@ -48,6 +50,10 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.Register<UpdateProductCodeUKTZEDView>(() => new UpdateProductCodeUKTZEDView());
             
             factory.Register<StorageView>(()=>new StorageView());
+
+            factory.Register<UsersDataView>(()=>new UsersDataView());
+            factory.Register<CreateUserView>(()=>new CreateUserView());
+            factory.Register<UpdateUserView>(()=>new UpdateUserView());
 
             factory.Register<SettingProfileView>(()=>new SettingProfileView());
             factory.Register<SettingStorageView>(()=>new SettingStorageView());

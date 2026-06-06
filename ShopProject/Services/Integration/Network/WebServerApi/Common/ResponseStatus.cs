@@ -9,7 +9,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Common
     public enum ResponseStatus
     {
         None,
-        Message,
+        Success,
         Error,
     }
 }

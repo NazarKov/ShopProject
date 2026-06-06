@@ -1,7 +1,7 @@
 ﻿using ShopProject.Model.Domain.Operation;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Operation;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Integration.Network.WebServerApi.Mapping;
+using ShopProject.Services.Modules.Mapping.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +16,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
     public class OperationController
     { 
         private HttpClient _httpClient;
-        public OperationController(string url)
+        public OperationController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(url);
+            _httpClient = httpClient; 
         }
         public async Task<OperationІnformationDto> GetOperationsІnformation(string token, int shiftId)
         {

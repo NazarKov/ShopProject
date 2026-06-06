@@ -86,32 +86,32 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
         }
 
-        [HttpGet("GetGiftCertificatesByNamePageColumn")]
-        public IActionResult GetGiftCertificatesByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusGiftCertificate status)
-        {
-            try
-            {
-                var result = _servise.GetGiftCertificatesByNamePageColumn(token, name, page, countColumn, status);
-                return Ok(ApiResponse<PaginatorDto<GiftCertificateDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
+        //[HttpGet("GetGiftCertificatesByNamePageColumn")]
+        //public IActionResult GetGiftCertificatesByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusGiftCertificate status)
+        //{
+        //    try
+        //    {
+        //        var result = _servise.GetGiftCertificatesByNamePageColumn(token, name, page, countColumn, status);
+        //        return Ok(ApiResponse<PaginatorDto<GiftCertificateDto>>.Ok(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ApiResponse<string>.Fail(ex.Message));
+        //    }
+        //}
 
-        [HttpGet("GetGiftCertificatesPageColumn")]
-        public IActionResult GetGiftCertificatesPageColumn(string token, int page, int countColumn, TypeStatusGiftCertificate status)
-        {
-            try
-            {
-                var result = _servise.GetGiftCertificatesPageColumn(token, page, countColumn, status);
-                return Ok(ApiResponse<PaginatorDto<GiftCertificateDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
+        //[HttpGet("GetGiftCertificatesPageColumn")]
+        //public IActionResult GetGiftCertificatesPageColumn(string token, int page, int countColumn, TypeStatusGiftCertificate status)
+        //{
+        //    try
+        //    {
+        //        var result = _servise.GetGiftCertificatesPageColumn(token, page, countColumn, status);
+        //        return Ok(ApiResponse<PaginatorDto<GiftCertificateDto>>.Ok(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ApiResponse<string>.Fail(ex.Message));
+        //    }
+        //}
     }
 }

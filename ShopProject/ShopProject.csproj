@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <None Remove="Resource\gif\Loading.gif" />
+    <None Remove="Resource\Images\arrow.png" />
+    <None Remove="Resource\Images\key.png" />
     <None Remove="Resource\Images\reboot.png" />
     <None Remove="Resource\Images\Search.png" />
   </ItemGroup>
@@ -38,11 +40,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FiscalServerApi\FiscalServerApi.csproj" />
-    <ProjectReference Include="..\ShopProjectDataBase\ShopProjectDataBase.csproj" />
     <ProjectReference Include="..\SigningFileLib\SigningFileLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Images\arrow.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\Images\key.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resource\Images\reboot.png" />
     <Resource Include="Resource\Images\Search.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
