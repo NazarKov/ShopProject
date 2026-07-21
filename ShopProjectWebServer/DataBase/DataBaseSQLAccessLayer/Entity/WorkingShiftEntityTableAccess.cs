@@ -3,6 +3,7 @@ using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Helpers;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -14,7 +15,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
 
-        public int Add(WorkingShiftEntity item)
+        public async Task<WorkingShiftEntity> Add(WorkingShiftEntity item)
         {
             item.UserOpenShift = _contextDataBase.Users.FirstOrDefault(i => i.ID == item.UserOpenShift.ID);
 
@@ -31,9 +32,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     item.MACCreateAt.OperationsRecorder = _contextDataBase.OperationsRecorders.Find(item.MACCreateAt.OperationsRecorder.ID);
                 }
             }
-            _contextDataBase.WorkingShift.Add(item);
+            await _contextDataBase.WorkingShift.AddAsync(item);
 
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
 
             var mediaAccessControls = _contextDataBase.MediaAccessControls.Find(item.MACCreateAt.ID);
             if (mediaAccessControls != null)
@@ -41,26 +42,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 mediaAccessControls.WorkingShifts = item;
             }
 
-            _contextDataBase.SaveChanges();
-            return item.ID;
+            await _contextDataBase.SaveChangesAsync();
+            return item;
         }
-
-        public void Delete(WorkingShiftEntity item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<WorkingShiftEntity> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkingShiftEntity GetById(int id)
-        { 
-            return _contextDataBase.WorkingShift.Where(w => w.ID == id).FirstOrDefault();
-        }
-
-        public void Update(WorkingShiftEntity item)
+        public async Task<WorkingShiftEntity> Update(WorkingShiftEntity item)
         {
             var shift = _contextDataBase.WorkingShift.Find(item.ID);
 
@@ -110,8 +95,33 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
                 }
             }
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.SaveChangesAsync();
+
+            return item;
         }
+        public WorkingShiftEntity GetById(int id)
+        {
+            return _contextDataBase.WorkingShift.Where(w => w.ID == id).FirstOrDefault();
+        }
+
+        public int GetLastId(string fiscalNumberRRO)
+        {
+            return _contextDataBase.WorkingShift.Where(w=>w.FiscalNumberRRO == fiscalNumberRRO).OrderBy(i=>i.ID).Last().ID;
+        }
+
+
+
+        public void Delete(WorkingShiftEntity item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<WorkingShiftEntity> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+ 
 
         public void UpdateParameter(Guid id, string nameParameter, object valueParameter)
         {

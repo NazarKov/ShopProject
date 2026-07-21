@@ -1,6 +1,7 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.Models.Domain.Enum;
+using ShopProjectWebServer.Services.Modules.Mapping.SignatureKey;
 using ShopProjectWebServer.Services.Modules.Mapping.UserRole;
 
 namespace ShopProjectWebServer.Services.Modules.Mapping.User
@@ -21,6 +22,10 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.User
                 TIN = item.TIN,
                 Password = item.Password,
             };
+            if(item.SignatureKey != null)
+            {
+                result.SignatureKey = item.SignatureKey.ToSignatureKey();
+            }
             if (item.UserRole != null)
             {
                 result.UserRole = item.UserRole.ToUserRole();
@@ -68,6 +73,15 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.User
                 result.SignatureKey.EndAt = item.SignatureKey.EndAt;
             }
 
+            return result;
+        }
+        public static IEnumerable<UserEntity> ToUserEntity(this IEnumerable<ShopProjectWebServer.Models.Domain.User.User> items) 
+        {
+            var result = new List<UserEntity>();
+            foreach(var item in items)
+            {
+                result.Add(ToUserEntity(item));
+            }
             return result;
         }
     }

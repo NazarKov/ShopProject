@@ -17,15 +17,15 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         {
             _httpClient = httpClient;
         }
-        public async Task<IEnumerable<UserRoleDto>> GetRoles(string token)
+        public async Task<ApiResponse<IEnumerable<UserRoleDto>>> GetRoles()
         { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/UserRole/GetRoles?token={token}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/UserRole/GetRoles");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var result = ApiResponse<IEnumerable<UserRoleDto>>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return result.Data;
+            return result;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using QRCoder;
-using ShopProject.Model.Domain.ObjectOwner;
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.OperationRecorder;
 using ShopProject.Model.Domain.Product;
+using ShopProject.Model.Domain.TaxObject;
 using ShopProject.Model.Domain.User;
-using ShopProject.Resource.template; 
+using ShopProject.Resource.template;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -28,7 +28,7 @@ namespace ShopProject.Services.Integration.PrintingService
             return _check;
         }
 
-        public void CreateFisckalCheck(List<Product> products, Operation operation, User seller, OperationRecorder operationRecorder , ObjectOwner objectOwner = null)
+        public void CreateFisckalCheck(List<Product> products, Operation operation, User seller, OperationRecorder operationRecorder , TaxObject objectOwner = null)
         { 
             _check = new TemplatePrintingCheck();
             TemplatePrintingCheckBody body;

@@ -98,66 +98,22 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             var result = ApiResponse<UserDto>.Unpacking(responseBody);
             return result; 
         } 
-        public async Task<AuthorizationUserDto> Authorization(string login, string password)
+        public async Task<ApiResponse<AuthorizationUserDto>> Authorization(string login, string password)
         { 
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/Authorization?login={login}&password={password}&devise={Environment.MachineName}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-            
-            var result = new ApiResponse<AuthorizationUserDto>();
-            
-            if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                result = ApiResponse<AuthorizationUserDto>.Unpacking(responseBody);
-                if (result.Data != null)
-                {
-                    return result.Data;
-                }
-            }
-            else if (httpResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                //result = ApiResponse<AuthorizationUserDto>.Unpacking(responseBody); 
-                //if (result.Status == ResponseStatus.Error)
-                //{
-                //    throw new AuthorizationException(result?.Errors?.ElementAt(0) ?? "Не вдалося авторизуватися");
-                //}
-            }  
-
+            string responseBody = await httpResponse.Content.ReadAsStringAsync(); 
             httpResponse.EnsureSuccessStatusCode(); 
-
-            throw new AuthorizationException("Не вдалося авторизуватися");
+            var result = ApiResponse<AuthorizationUserDto>.Unpacking(responseBody); 
+            return result;
         }
 
-        //public async Task<User> GetUser(string token)
-        //{
-        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUser?token={token}");
-        //    string responseBody = await httpResponse.Content.ReadAsStringAsync(); 
-        //    httpResponse.EnsureSuccessStatusCode();
-
-        //    var result = ApiResponse<UserDto>.Unpacking(responseBody);
-        //    return result.Data.ToUser(); 
-        //}
-
-        //public async Task<User> GetUserById(string token , string id)
-        //{
-        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUserById?token={token}&id={id}");
-        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-        //    var result = ApiResponse<UserDto>.Unpacking(responseBody);
-        //    httpResponse.EnsureSuccessStatusCode();
-
-        //    return result.Data.ToUser();
-        //}
-
-        //public async Task<IEnumerable<User>> GetUsers(string token)
-        //{
-        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetUsers?token={token}");
-        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-        //    var result = ApiResponse<IEnumerable<UserDto>>.Unpacking(responseBody);
-        //    httpResponse.EnsureSuccessStatusCode();
-
-        //    return result.Data.ToUser(); 
-        //}
-
+        public async Task<ApiResponse<UserDto>> GetUser(string token)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetByToken?token={token}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            httpResponse.EnsureSuccessStatusCode(); 
+            var result = ApiResponse<UserDto>.Unpacking(responseBody);
+            return result;
+        } 
     }
 }

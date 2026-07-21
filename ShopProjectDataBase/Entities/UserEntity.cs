@@ -48,11 +48,12 @@ namespace ShopProjectDataBase.Entities
         public ElectronicSignatureKey? SignatureKey { get; set; }
         /// <summary>
         /// Списко токенів користувача
-        /// </summary>
+        /// </summary> 
+        public ICollection<TaxObjectUserEnitity>? TaxObjects { get; set; }
         public ICollection<TokenEntity>? Tokens { get; set; }
         /// <summary>
         /// дата створення користувача
-        /// </summary>
+        /// </summary> 
         public DateTimeOffset? CreatedAt { get; set; } 
     }
 }

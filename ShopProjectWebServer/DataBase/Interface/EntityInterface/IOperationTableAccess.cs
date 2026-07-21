@@ -4,7 +4,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IOperationTableAccess
     {
-        int Add(OperationEntity item);
+        public Task<OperationEntity> AddAsync(OperationEntity item);
         void Update(OperationEntity item);
         void Delete(OperationEntity item);
         IEnumerable<OperationEntity> GetAll();

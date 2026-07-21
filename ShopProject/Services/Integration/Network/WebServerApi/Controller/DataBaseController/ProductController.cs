@@ -112,14 +112,17 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             httpResponse.EnsureSuccessStatusCode();
 
             return result;
-        }
+        } 
+        public async Task<ApiResponse<ProductDto>> GetProductByBarCode(string barCode)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetByBarCode?barCode={barCode}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<ProductDto>.Unpacking(responseBody);
 
-
-
-
-
-
+            return result;
+        }   
         public async Task<ProductInfoDto> GetProductInfo(string token)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetInfoProducts?token={token}");
@@ -129,11 +132,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             httpResponse.EnsureSuccessStatusCode();
 
             return result.Data;
-        }
-
-    
-       
-        
+        } 
 
         public async Task<IEnumerable<ProductDto>> GetProducts(string token)
         {
@@ -146,17 +145,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result.Data;
         }
 
-        public async Task<ProductDto> GetProductByBarCode(string token, string barCode)
-        {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barCode={barCode}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<ProductDto>.Unpacking(responseBody);
-
-            return result.Data;
-        }
-
+        
         //public async Task<ProductDto> GetProductByBarCode(string token, string barCode, TypeStatusProduct statusProduct)
         //{
         //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Product/GetProductsByBarCode?token={token}&barcode={barCode}&status={statusProduct}");

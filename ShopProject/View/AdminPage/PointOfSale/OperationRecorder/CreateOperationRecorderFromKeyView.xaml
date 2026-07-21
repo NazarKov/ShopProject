@@ -1,0 +1,127 @@
+﻿<Window x:Class="ShopProject.View.AdminPage.PointOfSale.OperationRecorder.CreateOperationRecorderFromKeyView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.View.AdminPage.PointOfSale.OperationRecorder"
+        mc:Ignorable="d"
+        Title="CreateOperationRecorderFromKeyView" Width="640" Height="420" >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/DataGridStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid VerticalAlignment="Center">
+        <Grid VerticalAlignment="Center"  >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <TextBlock x:Name="textBlock"
+                Visibility="{Binding ErrorTextBlockVisibiliti}"
+                Style="{StaticResource ErrorTextBlock}"
+                Grid.RowSpan="2" 
+                Text="{Binding Error}"  
+                Height="35"
+                Padding="8" />
+                <TextBlock x:Name="textBlock1"
+                Visibility="{Binding SuccessTextBlockVisibiliti}"
+                Style="{StaticResource SuccessTextBlock}"
+                Grid.RowSpan="2" 
+                TextWrapping="Wrap"
+                Text="{Binding Success}"  
+                MinHeight="35"
+                Padding="8" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Пароль ЕЦП:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="200" Height="30"
+                         Padding="5"  Style="{StaticResource GeneralTextBox}"
+                         Text="{Binding PasswordKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Ключ ЕЦП:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <Grid Width="200" Height="30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                             Text="{Binding PathKey, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                        <Button Grid.Column="1"
+                             Command="{Binding OpenFiLeKeyCommand}"
+                             Background="CadetBlue"
+                             BorderThickness="0" >
+                            <Image Source="/Resource/Images/key.png" Width="16" Height="16"/>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="2" Visibility="{Binding TaxObjectVisibiliti}">
+                <DataGrid Name="list"  
+                      Margin="15,0,15,0"
+                      FontSize="12" 
+                      RowHeight="40"  
+                      Panel.ZIndex="0"
+                      ItemsSource="{Binding OperationRecorders , UpdateSourceTrigger=PropertyChanged}" 
+                      Style="{StaticResource DataGrid}"
+                      ColumnHeaderStyle="{StaticResource DataGridColumnHeader}" 
+                      RowStyle="{StaticResource DataGridRow}" 
+                      CellStyle="{StaticResource RectangleCellStyle}" MaxHeight="150">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Назва каси"  Binding="{Binding OperationRecorder.Name}" Width="Auto">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="10,0,20,0"></Setter>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Адреса"  Binding="{Binding OperationRecorder.Address}" Width="Auto">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="10"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridCheckBoxColumn Header="Вибрати" Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <DataGridCheckBoxColumn.ElementStyle>
+                                <Style TargetType="CheckBox">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridCheckBoxColumn.ElementStyle>
+                        </DataGridCheckBoxColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,20,0,0"  >
+                <Button Content="Зберегти" Height="35" Margin="5" Width="92" Command="{Binding CreateTaxObjectCommand}" Style="{StaticResource SuccessButton}"/>
+
+                <Button Content="Вийти" Height="35" Margin="5"  Width="92" Command="{Binding ExitWindowCommand}" Style="{StaticResource ExitButton}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

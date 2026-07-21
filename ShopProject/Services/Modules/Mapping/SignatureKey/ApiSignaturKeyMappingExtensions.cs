@@ -20,5 +20,16 @@ namespace ShopProject.Services.Modules.Mapping.SignatureKey
                 EndAt = signatureKey.EndAt,
             };
         }
+
+        public static SignatureKeyDto ToSignatureKeyDto(this ShopProject.Model.Domain.SignatureKey.SignatureKey signatureKey)
+        {
+            return new SignatureKeyDto()
+            {
+                Signature = signatureKey.Signature,
+                SignaturePassword = signatureKey.SignaturePassword,
+                CreateAt = signatureKey.CreateAt,
+                EndAt = signatureKey.EndAt,
+            };
+        }
     }
 }

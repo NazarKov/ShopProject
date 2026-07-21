@@ -352,42 +352,76 @@ namespace ShopProject.Services.Modules.Domain.Product
             return result;
         }
 
-        public async Task<ShopProject.Model.Domain.Product.Product> SearchByBarCode(string item,TypeStatusProduct statusProduct)
+        public async Task<OperationResult<ProductModel>> SearchByBarCode(string barCode)
         {
             try
             {
-                var result = new ProductDto();
+                var result = new OperationResult<ProductModel>();
 
-                if (item.Length > _setting.ProductBarCodeLength - 1 && item.Length <= _setting.ProductBarCodeLength + 1)
+                result = await CheckBarCodeToDeleteCode(barCode);
+                if (result.IsError)
                 {
-                    var regex = "^\\d{" + _setting.ProductBarCodeLength + "}.?$";//визначення сепаратора
-                    MatchCollection matchCollection = Regex.Matches(item, regex);
-                    if (matchCollection.Count > 0)
+                    return result;
+                }
+                result = await CheckProductToSearch(barCode); 
+
+                if (result.IsSuccess)
+                {
+                    var response = await _webServerService.DataBase.ProductController.GetProductByBarCode(barCode);
+                    result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                    result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                    result.ErrorMessage = response.Error;
+                    result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                    result.ValidationErrors = response.Errors;
+                    if (result.IsSuccess)
                     {
-                        item = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
-                    }
-                    if (item.Count() == _setting.ProductBarCodeLength && Regex.Matches(item, "[1-9]").Any())
-                    {
-                       // result = await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, item, statusProduct); 
+                        result.Data = response.Data.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits);
                     }
                 }
-                else if (item.Length > _setting.ProductBarCodeLength + 1)
-                {
-                    item = string.Empty;
-                }
 
-                if (result == null&&result == new ProductDto())
-                {
-                    throw new Exception();
-                }
-
-                return result.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits);
+                return result;
             }
             catch (Exception ex)
             {
-                return null; 
+                return OperationResult<ProductModel>.Fail(ex.Message);
             }
         } 
+
+        private async Task<OperationResult<ProductModel>> CheckProductToSearch(string item)
+        {
+            if (item.Length == 13)
+            {
+                var regex = "^\\d{" + _setting.ProductBarCodeLength + "}.?$";//визначення сепаратора
+                MatchCollection matchCollection = Regex.Matches(item, regex);
+                if (matchCollection.Count > 0)
+                {
+                    item = matchCollection[0].ToString().Split('═').ElementAt(0);// = сеператор сканера
+                }
+                if (item.Count() == _setting.ProductBarCodeLength && Regex.Matches(item, "[1-9]").Any())
+                {
+                    return OperationResult<ProductModel>.Success(new ProductModel());
+                } 
+            } 
+            else if(item.Length < _setting.ProductBarCodeLength)
+            {
+                return OperationResult<ProductModel>.Fail("Штрихкод менше 13 символів",ErrorType.Validation);
+            }
+
+            return OperationResult<ProductModel>.Fail("Штрихкод недорівнює 13 символів");
+        }
+
+        private async Task<OperationResult<ProductModel>> CheckBarCodeToDeleteCode(string barCode)
+        {
+            if(barCode == _settingService.GetSetting<OperationRecorderSetting>().DeleteBarCode)
+            {
+                return OperationResult<ProductModel>.Fail("Штрих код видалення",ErrorType.DeleteBarCode);
+            }
+            else
+            {
+                return OperationResult<ProductModel>.Success(new ProductModel());
+            }
+        }
+
 
         public string RemoveSeparatorBarCode(string item)
         {
@@ -444,18 +478,18 @@ namespace ShopProject.Services.Modules.Domain.Product
             return items;
         }
 
-        public async Task<ShopProject.Model.Domain.Product.Product> GetItem(string itemSearch)
-        {
-            try
-            {
-                var item = (await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, itemSearch)).ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
-                return item;
-            }
-            catch (Exception ex)
-            {
-                return new ShopProject.Model.Domain.Product.Product();
-            }
-        }
+        //public async Task<ShopProject.Model.Domain.Product.Product> GetItem(string itemSearch)
+        //{
+        //    try
+        //    {
+        //        var item = (await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, itemSearch)).ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
+        //        return item;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new ShopProject.Model.Domain.Product.Product();
+        //    }
+        //}
 
         public async Task<IEnumerable<ShopProject.Model.Domain.Product.Product>> GetItems()
         {
@@ -470,23 +504,23 @@ namespace ShopProject.Services.Modules.Domain.Product
             }
         }
 
-        public async Task<ShopProject.Model.Domain.Product.Product>? Search(string barCode)
-        {
-            try
-            {
-                var item = await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, barCode);
-                if (item == null)
-                {
-                    return null;
-                }
-                return item.ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
-        } 
+        //public async Task<ShopProject.Model.Domain.Product.Product>? Search(string barCode)
+        //{
+        //    try
+        //    {
+        //        var item = await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, barCode);
+        //        if (item == null)
+        //        {
+        //            return null;
+        //        }
+        //        return item.ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        return null;
+        //    }
+        //} 
     }
 
 }

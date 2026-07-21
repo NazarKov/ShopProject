@@ -1,5 +1,7 @@
-﻿using ShopProject.Model.UI.User;
+﻿using ShopProject.Model.UI.TaxObject;
+using ShopProject.Model.UI.User;
 using ShopProject.Services.Modules.Mapping.SignatureKey;
+using ShopProject.Services.Modules.Mapping.TaxObject;
 using ShopProject.Services.Modules.Mapping.UserRole;
 using System;
 using System.Collections.Generic;
@@ -67,6 +69,25 @@ namespace ShopProject.Services.Modules.Mapping.User
             foreach (var item in items)
             {
                 result.Add(ToUserModel(item));
+            }
+            return result;
+        }
+
+        public static IEnumerable<UserSelectItemModel> ToUserSelectItemModel(this IEnumerable<ShopProject.Model.Domain.User.User> items)
+        {
+            var result = new List<UserSelectItemModel>();
+            foreach (var item in items)
+            {
+                result.Add(new UserSelectItemModel() { User = item.ToUserModel(), IsActive = false });
+            }
+            return result;
+        }
+        public static IEnumerable<ShopProject.Model.Domain.User.User> ToUserModel(this IEnumerable<UserSelectItemModel> items)
+        {
+            var result = new List<ShopProject.Model.Domain.User.User>();
+            foreach (var item in items)
+            {
+                result.Add(item.User.ToUser());
             }
             return result;
         }

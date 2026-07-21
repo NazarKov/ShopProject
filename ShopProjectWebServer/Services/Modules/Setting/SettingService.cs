@@ -60,7 +60,10 @@ namespace ShopProjectWebServer.Service.Modules.Setting
                 return; 
             }
 
-            _cache = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+            if (!string.IsNullOrEmpty(json))
+            {
+                _cache = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+            }
         } 
     }
 }

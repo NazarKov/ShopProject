@@ -1,10 +1,8 @@
 ﻿using FiscalServerApi;
-using FiscalServerApi.ExceptionServer;
-using ShopProject.Helpers;
+using FiscalServerApi.ExceptionServer; 
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.Order;
-using ShopProject.Model.Domain.Product;
-using ShopProject.Model.Domain.Setting;
+using ShopProject.Model.Domain.Product; 
 using ShopProject.Model.Domain.SignatureKey;
 using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Model.Enum;
@@ -12,10 +10,7 @@ using ShopProject.Services.Integration.File.Xml;
 using ShopProject.Services.Integration.Network.FiscalServerApi.Helpers; 
 using SigningFileLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic; 
 using System.Windows;
 
 namespace ShopProject.Services.Integration.Network.FiscalServerApi
@@ -24,8 +19,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
     {
         private SigningFileContoller _signFileContoller;
         private FiscalServerController _fiscalServerController;
-        private XmlServise _xmlServise;
-        private bool _testMode = false;
+        private XmlServise _xmlServise; 
         private SignatureKey _key;
         private TypeChek _typeChek;
         private const int Depth = 0;
@@ -37,16 +31,8 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
             _fiscalServerController = new FiscalServerController(); 
             _signFileContoller.Initialize(false);
             _key = new SignatureKey();
-            _xmlServise = new XmlServise();
-            SetMode();
-        }
-
-        private void SetMode()
-        { 
-            //var operationRecorder = SettingService.GetSetting<OperationRecorderSetting>("OperationRecorder"); 
-
-            //_testMode = operationRecorder.IsTestMode;
-        }
+            _xmlServise = new XmlServise(); 
+        } 
 
         public void AddKey(SignatureKey key)
         {
@@ -56,7 +42,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
             }
         }
 
-        private string ChoseTypeOperationRecursive(WorkingShift shift, int depth, int maxDepth, Operation? operation = null, List<Order>? orders = null, List<Product>? products = null)
+        private string ChoseTypeOperationRecursive(WorkingShift shift, int depth, int maxDepth, bool testMode, Operation? operation = null, List<Order>? orders = null, List<Product>? products = null)
         {
             try
             {
@@ -64,7 +50,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                 {
                     throw new Exception("Неможливо виконати операцію");
                 }
-                return SendCheck(shift, operation, orders, products);
+                return SendCheck(shift, operation, orders, products, testMode);
             }
             catch (ExceptionBadHashPrev exbadhash)
             {
@@ -86,7 +72,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                             break;
                         }
                 }
-                return ChoseTypeOperationRecursive(shift, depth, maxDepth, operation, orders, products);
+                return ChoseTypeOperationRecursive(shift, depth, maxDepth,testMode, operation, orders, products);
             }
             catch (ExceptionCheck exCheck)
             {
@@ -108,38 +94,38 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                 return string.Empty;
             }
         }
-        public string OpenShift(WorkingShift shift)
+        public string OpenShift(WorkingShift shift,bool testMode = true)
         {
             _typeChek = TypeChek.OpenShift;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth);
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode);
         }
-        public string CloseShift(WorkingShift shift)
+        public string CloseShift(WorkingShift shift, bool testMode = true)
         {
             _typeChek = TypeChek.CloseShift;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth); 
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode); 
         }
 
-        public string DepositAndWithdrawalMoney(WorkingShift shift , Operation operation)
+        public string DepositAndWithdrawalMoney(WorkingShift shift , Operation operation, bool testMode = true)
         {
             _typeChek = TypeChek.DepositAndWithdrawalMoney;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth , operation);
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth , testMode, operation);
 
         }
 
-        public string SendFiscalCheck(WorkingShift shift, Operation operation, List<Product> products)
+        public string SendFiscalCheck(WorkingShift shift, Operation operation, List<Product> products, bool testMode = true)
         {
             _typeChek = TypeChek.FiscalCheck;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, operation, null, products);
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode, operation, null, products);
 
         }
-        public string SendReturnFiscalCheck(WorkingShift shift, Operation operation, List<Product> products)
+        public string SendReturnFiscalCheck(WorkingShift shift, Operation operation, List<Product> products, bool testMode = true)
         {
             _typeChek = TypeChek.ReturnCheck;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, operation, null, products);
+            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode, operation, null, products);
 
         }
 
-        private string SendCheck(WorkingShift shift, Operation operation, List<Order>? orders, List<Product>? products)
+        private string SendCheck(WorkingShift shift, Operation operation, List<Order>? orders, List<Product>? products , bool testMode)
         { 
             string result = string.Empty;
             switch (_typeChek)
@@ -150,11 +136,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         {
                             result = _fiscalServerController.SendServiceCheck(long.Parse(shift.CreateAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(0), shift.FiscalNumberRRO, _testMode);
-                            if (result != string.Empty)
-                            {
-                                result = "OK";
-                            }
+                            Convert.ToInt32(0), shift.FiscalNumberRRO, testMode);
                         } 
                         break;
                     }
@@ -164,11 +146,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         {
                             result = _fiscalServerController.SendZReport(long.Parse(shift.EndAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(shift.TotalCheckForShift + 1), shift.FiscalNumberRRO, _testMode);
-                            if (result != string.Empty)
-                            {
-                                result = "OK";
-                            }
+                            Convert.ToInt32(shift.TotalCheckForShift + 1), shift.FiscalNumberRRO, testMode); 
                         }
                         break;
                     }
@@ -187,11 +165,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         { 
                             result = _fiscalServerController.SendServiceCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
-                            if (result != string.Empty)
-                            {
-                                result = "OK";
-                            }
+                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, testMode); 
                         }
                         break;
                     }
@@ -202,7 +176,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         {
                             result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
+                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, testMode);
                         }
                         break;
                     }
@@ -212,7 +186,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         {
                             result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, _testMode);
+                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, testMode);
                         }
                         break;
                     }

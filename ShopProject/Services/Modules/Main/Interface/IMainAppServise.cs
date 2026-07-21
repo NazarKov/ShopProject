@@ -9,6 +9,7 @@ namespace ShopProject.Services.Modules.Main.Interface
     internal interface IMainAppServise
     {
         public Task<bool> IsConnectServer();
-        public Task LoadResourse();
+        public Task LoadStartData();
+        public Task LoadUserData();
     }
 }

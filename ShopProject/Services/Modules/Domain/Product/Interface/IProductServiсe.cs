@@ -18,9 +18,10 @@ namespace ShopProject.Services.Modules.Domain.Product.Interface
         public OperationResult<IEnumerable<ProductModel>> ChangeParameterList(string parameter, object value, IEnumerable<ProductModel> items);
         public Task<OperationResult<Paginator<ProductModel,TypeStatusProduct>>> GetPageColumn(int page, int countColumn, TypeStatusProduct status);
         public Task<OperationResult<Paginator<ProductModel, TypeStatusProduct>>> SearchByName(string item, int page, int countColumn, TypeStatusProduct status);
-        public Task<OperationResult<Paginator<ProductModel, TypeStatusProduct>>> SearchByBarCode(string item, int page, int countColumn, TypeStatusProduct status); 
-      
-        
+        public Task<OperationResult<Paginator<ProductModel, TypeStatusProduct>>> SearchByBarCode(string item, int page, int countColumn, TypeStatusProduct status);
+        public Task<OperationResult<ProductModel>> SearchByBarCode(string item);
+
+
         public Task<ProductsInfo> GetProductStatistics(); 
  
         public List<ProductModel> ContertIListToList(IList list);
@@ -28,8 +29,7 @@ namespace ShopProject.Services.Modules.Domain.Product.Interface
         public void SetProductOnSession(ShopProject.Model.Domain.Product.Product item);
         public ShopProject.Model.Domain.Product.Product GetProductOnSession();
         public void SetProductsOnSession(List<ProductModel> items);
-        public IEnumerable<ProductModel> GetProductsOnSession();
-        public Task<ProductModel> SearchByBarCode(string item, TypeStatusProduct statusProduct);
+        public IEnumerable<ProductModel> GetProductsOnSession(); 
         public string RemoveSeparatorBarCode(string item);
     }
 }

@@ -239,8 +239,8 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
         }
         [Authorize(AuthenticationSchemes = "ApiAuthorization")]
-        [HttpPost("GetByBarCode")]
-        public IActionResult GetByBarCode([FromQuery] string barCode , int status)
+        [HttpGet("GetByBarCode")]
+        public IActionResult GetByBarCode([FromQuery] string barCode)
         {
             try
             {

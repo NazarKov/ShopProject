@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShopProjectDataBase.Entities;
-using System.Reflection.Emit;
+using ShopProjectDataBase.Entities; 
 
 namespace ShopProjectDataBase.Context
 {
@@ -21,9 +20,9 @@ namespace ShopProjectDataBase.Context
         public DbSet<GiftCertificateAndUser> GiftCertificateAndUsers { get; set; }
         public DbSet<TokenEntity> UserTokens { get; set; } 
 
-        public DbSet<ObjectOwnerEntity> ObjectOwners { get; set; }
-        public DbSet<OperationsRecorderEntity> OperationsRecorders { get; set; }
-        public DbSet<OperationsRecorderUserEntity> OperationsRecorderUsers { get; set; }
+        public DbSet<TaxObjectEntity> TaxObject { get; set; } 
+        public DbSet<TaxObjectUserEnitity> TaxObjectsUsers {  get; set; }
+        public DbSet<OperationsRecorderEntity> OperationsRecorders { get; set; } 
         public DbSet<ElectronicSignatureKey> ElectronicSignatureKeys { get; set; }
         public DbSet<MediaAccessControlEntity> MediaAccessControls { get; set; }
         public ContextDataBase() { }

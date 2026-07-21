@@ -1,26 +1,39 @@
 ﻿using ShopProjectWebServer.Api.DtoModels.Discount;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Authorization;
+using ShopProjectWebServer.Api.Mappings; 
+using ShopProjectWebServer.DataBase.Interface;
+using ShopProjectWebServer.Services.Common;
+using ShopProjectWebServer.Services.Modules.Domain.Discount.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Discount;
+using DiscountModel = ShopProjectWebServer.Models.Domain.Discount.Discount;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.Discount
 {
-    internal class DiscountService : IDiscountServise
+    internal class DiscountService : IDiscountService
     {
-        private DataBaseService _controller;
-        private AuthorizationService _authorizationServise;
-        public DiscountService(DataBaseService controller)
+        private IDataBaseService _service; 
+        public DiscountService(IDataBaseService service)
         {
-            _controller = controller;
-            _authorizationServise = new AuthorizationService(controller);
+            _service = service; 
         }
-        public int Add(string token, CreateDicountDto createDicountDto)
-        {
-            if (!_authorizationServise.LoginToken(token))
+        public OperationResult<int> Add(DiscountModel discount)
+        {  
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                var id = _service.DataBaseAccess.DiscountTable.Add(discount.ToDiscountEntity());
+                if (id != 0)
+                {
+                    return OperationResult<int>.Success(id);
+                }
+                else
+                {
+                    return OperationResult<int>.Fail("Error");
+                }
             }
-            return _controller.DataBaseAccess.DiscountTable.Add(createDicountDto.ToDiscount());
+            catch(Exception ex)
+            {
+                return OperationResult<int>.Fail(ex.Message, Common.Enum.ErrorType.Server);
+            }
+            
         }
 
         public void Get(string token, DiscountDto discountDto)

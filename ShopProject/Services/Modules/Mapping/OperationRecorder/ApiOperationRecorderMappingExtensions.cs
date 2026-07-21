@@ -1,6 +1,4 @@
-﻿using ShopProject.Model.Domain.ObjectOwner;
-using ShopProject.Model.Domain.OperationRecorder;
-using ShopProject.Model.Enum;
+﻿using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.OperationRecorder;
 using System;
 using System.Collections.Generic;
@@ -9,7 +7,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
 {
     public static class ApiOperationRecorderMappingExtensions
     {
-        public static CreateOperationRecorderDto ToOperationRecorder(this ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
+        public static CreateOperationRecorderDto ToCreateOperationRecorderDto(this ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
         {
             return new CreateOperationRecorderDto()
             {
@@ -22,6 +20,21 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 Name = item.Name,
             };
         }
+        public static OperationRecorderDto ToOperationRecorderDto(this ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
+        {
+            return new OperationRecorderDto()
+            {
+                Status = item.Status,
+                TypeStatus = (int)item.TypeStatus,
+                Address = item.Address,
+                D_REG = item.D_REG,
+                FiscalNumber = item.FiscalNumber,
+                LocalNumber = item.LocalNumber,
+                Name = item.Name,
+                ID = item.ID.ToString(), 
+            };
+        }
+
         public static ShopProject.Model.Domain.OperationRecorder.OperationRecorder ToOperationRecorder(this OperationRecorderDto item) 
         {
             var result = new ShopProject.Model.Domain.OperationRecorder.OperationRecorder()
@@ -37,7 +50,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
             };
             if(item.ObjectOwner_ID != null && item.ObjectOwner_ID != string.Empty)
             {
-                result.ObjectOwner = new ShopProject.Model.Domain.ObjectOwner.ObjectOwner() { ID = Guid.Parse(item.ObjectOwner_ID) };
+                result.ObjectOwner = new ShopProject.Model.Domain.TaxObject.TaxObject() { ID = Guid.Parse(item.ObjectOwner_ID) };
             }
             return result;
         }
@@ -50,12 +63,21 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
             }
             return result;
         }
-        public static List<CreateOperationRecorderDto> ToOperationRecorder(this List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> items)
+        public static List<CreateOperationRecorderDto> ToCreateOperationRecorderDto(this IEnumerable<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> items)
         {
             var result = new List<CreateOperationRecorderDto>();
             foreach (var item in items)
             {
-                result.Add(ToOperationRecorder(item));
+                result.Add(ToCreateOperationRecorderDto(item));
+            }
+            return result;
+        }
+        public static List<OperationRecorderDto> ToOperationRecorderDto(this IEnumerable<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> items)
+        {
+            var result = new List<OperationRecorderDto>();
+            foreach (var item in items)
+            {
+                result.Add(ToOperationRecorderDto(item));
             }
             return result;
         }

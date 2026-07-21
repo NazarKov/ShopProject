@@ -28,21 +28,6 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));  
             } 
-        }
-
-        [HttpGet("GetLastMAC")]
-        public async Task<IActionResult> GetLastMAC(string token, Guid operationRecorderId)
-        {
-            try
-            {
-                var result = _servise.GetLastMediaAccessControl(token, operationRecorderId); 
-                return Ok(ApiResponse<MediaAccessControlDto>.Ok(result)); 
-
-            }
-            catch (Exception ex)
-            { 
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+        } 
     }
 }

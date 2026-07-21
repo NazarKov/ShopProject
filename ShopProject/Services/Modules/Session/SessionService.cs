@@ -1,24 +1,17 @@
-﻿using ShopProject.Model.Domain.GiftCertificate; 
-using ShopProject.Model.Domain.Product;
+﻿using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Domain.Setting;
+using ShopProject.Model.Domain.TaxObject;
 using ShopProject.Model.Domain.User;
 using ShopProject.Model.Domain.UserRole;
-using ShopProject.Model.Domain.WorkingShift;
-using ShopProject.Services.Modules.Resourse;
-using ShopProject.Services.Modules.Session.Interface;
-using ShopProject.Services.Modules.Setting;
-using ShopProject.Services.Modules.Setting.Interface;
-using System;
+using ShopProject.Model.Domain.WorkingShift; 
+using ShopProject.Services.Modules.Session.Interface; 
+using ShopProject.Services.Modules.Setting.Interface; 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using Xceed.Wpf.AvalonDock.Properties;
+using System.ComponentModel.DataAnnotations; 
+using System.Windows.Controls; 
 
 namespace ShopProject.Services.Modules.Session
 {
@@ -30,11 +23,11 @@ namespace ShopProject.Services.Modules.Session
         [Required]
         public User User { get; set; } = new User();
         [Required]
-        public IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
+        public IEnumerable<ProductCodeUKTZED> ProductCodesUKTZED { get; set; }
         [Required] 
-        public IEnumerable<ProductUnit>? ProductUnits { get; set; } 
+        public IEnumerable<ProductUnit> ProductUnits { get; set; } 
         [Required]
-        public IEnumerable<UserRole>? Roles { get; set; }
+        public IEnumerable<UserRole> Roles { get; set; }
         [Required]
         public WorkingShiftStatus WorkingShiftStatus { get; set; } = new WorkingShiftStatus();
 
@@ -47,15 +40,10 @@ namespace ShopProject.Services.Modules.Session
         public IEnumerable<Product>? UpdateProductRange { get; set; } 
         public ProductUnit? UpdateProductUnit { get; set; } 
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
-
         public User UpdateUser { get; set; }
+        public TaxObject BindingTaxObject { get; set; }
         #endregion
-
-        #region resourse 
-        public static ProductCodeUKTZED? ProductCodeUKTZEDEntity { get; set; }  
-        public static GiftCertificate? GiftCertificate { get; set; } 
-
-        #endregion
+ 
 
         public SessionService(ISettingService settingService)
         {
@@ -102,24 +90,34 @@ namespace ShopProject.Services.Modules.Session
              _settingService.SetSetting<SessionSetting>(new SessionSetting()); 
             return true;
         }
-        public bool CheckingWorkingShiftStatus()
-        {
+        public bool CheckAndLoadWorkingShiftStatus()
+        { 
             var setting = _settingService.GetSetting<WorkingShiftStatus>();
-
-            if (setting != null && setting != new WorkingShiftStatus()) 
-            {
-                WorkingShiftStatus = setting;
-            }
-
-            if (WorkingShiftStatus!=null&& WorkingShiftStatus.OperationRecorder != null)
-            {
+            if (WorkingShiftStatus.WorkingShift != null && WorkingShiftStatus.TaxObject != null && WorkingShiftStatus.OperationRecorder != null)
+            { 
                 return true;
-            }
+            } 
             else
             {
-                return false;
+                WorkingShiftStatus = setting;
+                return true;
+            } 
+        }
+        public bool CheckIsOpenShift()
+        {
+            if (CheckAndLoadWorkingShiftStatus())
+            {
+                if(WorkingShiftStatus.Status == ShopProject.Model.Enum.TypeStatusShift.Open)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-        } 
+            return false;
+        }
       
     }
 }

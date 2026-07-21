@@ -161,7 +161,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             if (userToken != null)
             {
-                return _contextDataBase.Users.FirstOrDefault(u => u.ID == userToken.User.ID);
+                return _contextDataBase.Users.Include(u=>u.SignatureKey).FirstOrDefault(u => u.ID == userToken.User.ID);
             }
             return null;
         }  

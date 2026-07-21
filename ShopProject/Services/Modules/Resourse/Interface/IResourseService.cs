@@ -9,6 +9,7 @@ namespace ShopProject.Services.Modules.Resourse.Interface
     internal interface IResourseService
     {
         public bool IsInitSystemFolders();
-        public Task LoadSessionResourse();
+        public Task LoadStartData();
+        public Task LoadUserData();
     }
 }

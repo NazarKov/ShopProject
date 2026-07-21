@@ -14,15 +14,14 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
     {
         public IOrderTableAccess OrderTable { get; set; }
         public IOperationTableAccess OperationTable { get; set; }
-        public IOperationRecorderTableAccess OperationRecorderTable { get; set; }
-        public IOperationRecorederUserTableAccess OperationRecorederUserTable { get; set; }
+        public IOperationRecorderTableAccess OperationRecorderTable { get; set; } 
         public IProductTableAccess ProductTable { get; set; }
         public IProductUnitTableAccess ProductUnitTable { get; set; }
         public IProductCodeUKTZEDTableAccess ProductCodeUKTZEDTable { get; set; }
         public IDiscountTableAccess DiscountTable { get; set; }
         public IUserTableAccess UserTable { get; set; }
         public IUserRoleTableAccess UserRoleTable { get; set; }
-        public IObjectOwnerTableAccess ObjectOwnerTable { get; set; }
+        public ITaxObjectTableAccess TaxObjectTable { get; set; }
         public IGiftCertificatesTableAccess GiftCertificatesTable { get; set; }
         public ITokenTableAccess TokenTable { get; set; }
         public IMediaAccessControlTableAccess MediaAccessControlTable { get; set; }
@@ -40,9 +39,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
             ProductTable = new ProductTableAccess(_contextDataBase);
             ProductUnitTable = new ProductUnitTableAccess(_contextDataBase);
             ProductCodeUKTZEDTable = new ProductCodeUKTZEDTableAccess(_contextDataBase);
-            ObjectOwnerTable = new ObjectOwnerTableAccess(_contextDataBase);
-            OperationRecorderTable = new OperationRecorderTableAccess(_contextDataBase);
-            OperationRecorederUserTable = new OperationRecorderUserTableAccess(_contextDataBase);
+            TaxObjectTable = new TaxObjectTableAccess(_contextDataBase);
+            OperationRecorderTable = new OperationRecorderTableAccess(_contextDataBase); 
             OperationTable = new OperationTableAccess(_contextDataBase);
             OrderTable = new OrderTableAccess(_contextDataBase);
             MediaAccessControlTable = new MediaAccessControlTableAccess(_contextDataBase);

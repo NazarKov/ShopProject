@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectWebServer.DataBase;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using ShopProjectWebServer.Api.DtoModels.Order;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.Api.Common; 
-using ShopProjectWebServer.Services.Modules.Domain.Order;
+﻿using Microsoft.AspNetCore.Mvc; 
+using ShopProjectWebServer.Api.DtoModels.Order; 
+using ShopProjectWebServer.Api.Common;
+using ShopProjectWebServer.Services.Modules.Domain.Order.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Order;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -13,19 +10,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private IOrderServise _servise;
+        private IOrderService _servise;
 
-        public OrderController(IOrderServise servise)
+        public OrderController(IOrderService servise)
         {
             _servise = servise;
         }
 
-        [HttpPost("AddOrderRange")]
-        public async Task<IActionResult> AddOrderRange(string token, IEnumerable<CreateOrderDto> orders)
+        [HttpPost("AddRange")]
+        public async Task<IActionResult> AddRange(IEnumerable<CreateOrderDto> orders)
         {
             try
             {
-                _servise.AddRange(token, orders); 
+                _servise.AddRange(orders.ToListOrder()); 
                 return Ok(ApiResponse<bool>.Ok(true, "Обєкти створено"));
             }
             catch (Exception ex)

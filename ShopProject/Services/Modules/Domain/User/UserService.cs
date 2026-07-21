@@ -28,7 +28,7 @@ namespace ShopProject.Services.Modules.Domain.User
 {
     internal class UserService : IUserService
     {
-        private static List<ShopProject.Model.Domain.User.User> _users;
+         
         private string? _token;
         private MainElectronicTaxAccountController _mainTaxAccauntController;
         private SigningFileContoller _mainSigningFileController;
@@ -39,9 +39,7 @@ namespace ShopProject.Services.Modules.Domain.User
         {
             _webServerService = webServerService;
             _sessionService = sessionService;
-            _settingService = settingService;
-            _users = new List<ShopProject.Model.Domain.User.User>();
-            //_token = Session.User.Token;
+            _settingService = settingService;  
 
             _mainTaxAccauntController = new MainElectronicTaxAccountController();
             _mainSigningFileController = new SigningFileContoller();
@@ -299,6 +297,47 @@ namespace ShopProject.Services.Modules.Domain.User
 
         }
 
+        public async Task<OperationResult<bool>> LogIn(string login, string password)
+        {
+            if (login == string.Empty)
+            {
+                throw new ExceptionStringEmpty("Заповніть поле Логін");
+            }
+
+            if (password == string.Empty)
+            {
+                throw new ExceptionStringEmpty("Заповніть поле Пароль");
+            }
+
+            var result = new OperationResult<bool>();
+
+            var response = await _webServerService.DataBase.UserController.Authorization(login, password);
+
+            result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+            result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+            result.ErrorMessage = response.Error;
+            result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+            result.ValidationErrors = response.Errors;
+
+
+            if (result.IsSuccess)
+            {
+                _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+                _settingService.SetSetting<SessionSetting>(new SessionSetting() { User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto()) });
+                _webServerService.SetToken(response.Data.Token);
+
+                return result;
+            }
+            return new OperationResult<bool>()
+            {
+                ErrorMessage = "Невдалося викоанти операцію",
+                Status = ResultStatus.Error,
+            };
+
+        }
+
+
+
 
         public async Task<bool> DeleteUser(ShopProject.Model.Domain.User.User user)
         {
@@ -314,45 +353,45 @@ namespace ShopProject.Services.Modules.Domain.User
 
         }
 
-        public async Task<List<OperationRecorderDialogWindowModel>> GetAllObject()
-        {
-            try
-            {
-                List<OperationRecorderDialogWindowModel> result = new List<OperationRecorderDialogWindowModel>();
-                var response = (await _webServerService.DataBase.OperationRecorederController.GetOperationRecorders(_token)).ToOperationRecorder().ToList();
+        //public async Task<List<OperationRecorderDialogWindowModel>> GetAllObject()
+        //{
+        //    try
+        //    {
+        //        List<OperationRecorderDialogWindowModel> result = new List<OperationRecorderDialogWindowModel>();
+        //        var response = (await _webServerService.DataBase.OperationRecorederController.GetOperationRecorders(_token)).ToOperationRecorder().ToList();
 
-                foreach (var item in response)
-                {
-                    result.Add(new OperationRecorderDialogWindowModel(item));
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+        //        foreach (var item in response)
+        //        {
+        //            result.Add(new OperationRecorderDialogWindowModel(item));
+        //        }
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
 
-        }
-        public async Task<bool> SaveBinding(ShopProject.Model.Domain.User.User user, List<OperationRecorderDialogWindowModel> objectOwnerHelpers)
-        {
-            try
-            {
-                List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> result = new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
-                foreach (var item in objectOwnerHelpers)
-                {
-                    if (item.isActive)
-                    {
-                        result.Add(item.OperationRecorder);
-                    }
-                }
-                return await _webServerService.DataBase.OperationRecorderAndUserController.AddOperationRecordersAndUser(_token, user.ID, result.ToOperationRecordersEntity());
+        //}
+        //public async Task<bool> SaveBinding(ShopProject.Model.Domain.User.User user, List<OperationRecorderDialogWindowModel> objectOwnerHelpers)
+        //{
+        //    try
+        //    {
+        //        List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> result = new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
+        //        foreach (var item in objectOwnerHelpers)
+        //        {
+        //            if (item.isActive)
+        //            {
+        //                result.Add(item.OperationRecorder);
+        //            }
+        //        }
+        //        return await _webServerService.DataBase.OperationRecorderAndUserController.AddOperationRecordersAndUser(_token, user.ID, result.ToOperationRecordersEntity());
 
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //}
         public async Task<ShopProject.Model.Domain.User.User>? GetUser()
         {
             // return await _webServerService.DataBase.UserController.GetUserById(_token, /*Session.UserItem.ID.ToString()*/"");
@@ -363,45 +402,7 @@ namespace ShopProject.Services.Modules.Domain.User
 
        
 
-        public async Task<bool> LogIn(string login, string password)
-        {
-            if (login == string.Empty)
-            {
-                throw new ExceptionStringEmpty("Заповніть поле Логін");
-            }
-
-            if (password == string.Empty)
-            {
-                throw new ExceptionStringEmpty("Заповніть поле Пароль");
-            }
-
-            try
-            { 
-                var response = await _webServerService.DataBase.UserController.Authorization(login, password);
-
-                _sessionService.User = response.ToUser(_sessionService.Roles.ToUserRoleDto());
-                _settingService.SetSetting<SessionSetting>(new SessionSetting() { User = response.ToUser(_sessionService.Roles.ToUserRoleDto()) });
-                _webServerService.SetToken(response.Token);
-                return true;
-
-            }
-            catch (HttpRequestException ex)
-            {
-                if(ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    throw new AuthorizationException("Не вдалося авторизуватися");
-                }
-                return false;
-            }
-            catch (AuthorizationException ex)
-            {
-                throw;
-            }
-            catch (Exception  ex)
-            {
-                throw;
-            }
-        }
+       
 
         //public async Task<List<UserRoleEntity>> GetUserRoles()
         //{

@@ -14,20 +14,25 @@ using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
 using ShopProject.Services.Integration.Windows.WindowsService;
 using ShopProject.Services.Integration.Windows.WindowsService.Interface;
-using ShopProject.Services.Modules.Main;
-using ShopProject.Services.Modules.Main.Interface;
-using ShopProject.Services.Modules.Model.WorkingShift;
-using ShopProject.Services.Modules.Model.WorkingShift.Interface;
-using ShopProject.Services.Modules.ModelService.ObjectOwner;
-using ShopProject.Services.Modules.ModelService.ObjectOwner.Interface;
-using ShopProject.Services.Modules.ModelService.OperationRecorder;
-using ShopProject.Services.Modules.ModelService.OperationRecorder.Interface; 
+using ShopProject.Services.Modules.Domain.OperationRecorder;
+using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
+using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu;
+using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
+using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject;
+using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
+using ShopProject.Services.Modules.Domain.Product;
+using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Domain.ProductCodeUKTZED;
 using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
 using ShopProject.Services.Modules.Domain.User;
 using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Domain.UserRole;
+using ShopProject.Services.Modules.Domain.UserRole.Interface;
+using ShopProject.Services.Modules.Main;
+using ShopProject.Services.Modules.Main.Interface;
+using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.NetworkUrlScanner;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Resourse;
@@ -37,11 +42,15 @@ using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting;
 using ShopProject.Services.Modules.Setting.Interface;
 using ShopProject.ViewModel.AdminPage.Dashboard;
+using ShopProject.ViewModel.AdminPage.PointOfSale;
+using ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder;
+using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject;
 using ShopProject.ViewModel.AdminPage.Storage.Product;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
+using ShopProject.ViewModel.AdminPage.User;
 using ShopProject.ViewModel.Authorization;
 using ShopProject.ViewModel.Common.ConnectionLost;
-using ShopProject.ViewModel.Common.Home;
+using ShopProject.ViewModel.Common.Main;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
@@ -52,13 +61,8 @@ using ShopProject.ViewModel.SettingPage;
 using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage;
 using ShopProject.ViewModel.StoragePage.ProductUnitPage;
-using ShopProject.ViewModel.UserPage.SaleMenu;
-using ShopProject.Services.Modules.Domain.Product.Interface;
-using ShopProject.Services.Modules.Domain.Product;
-using ShopProject.Views.AdminPage;
-using ShopProject.ViewModel.AdminPage.UserPage;
-using ShopProject.Services.Modules.Domain.UserRole.Interface;
-using ShopProject.Services.Modules.Domain.UserRole;
+using ShopProject.ViewModel.UserPage.PointOfSale;
+using ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu;
 
 namespace ShopProject.Extensions.FactoryExtensions
 {
@@ -102,9 +106,22 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.RegisterScoped<SettingViewModel, SettingViewModel>();
 
-            factory.RegisterScoped<OperationRecorderViewModel,OperationRecorderViewModel>();
+            factory.RegisterScoped<PointOfSaleViewModel, PointOfSaleViewModel>();
+            factory.RegisterScoped<TaxObjectsDataViewModel, TaxObjectsDataViewModel>();
+
+            factory.RegisterTransient<CreateTaxObjectViewModel, CreateTaxObjectViewModel>();
+            factory.RegisterTransient<CreateTaxObjectFromKeyViewModel, CreateTaxObjectFromKeyViewModel>();
+            factory.RegisterTransient<BindingOperationRecorderToTaxObjectViewModel, BindingOperationRecorderToTaxObjectViewModel>();
+            factory.RegisterTransient<BindingUserToTaxObjectViewModel, BindingUserToTaxObjectViewModel>();
+
+            factory.RegisterScoped<OperationRecordersDataViewModel, OperationRecordersDataViewModel>();
+            factory.RegisterTransient<CreateOperationRecorederViewModel, CreateOperationRecorederViewModel>();
+            factory.RegisterTransient<CreateOperationRecorderFromKeyViewModel, CreateOperationRecorderFromKeyViewModel>();
+
+            factory.RegisterScoped<AssignedPointsOfSaleViewModel, AssignedPointsOfSaleViewModel>();
             factory.RegisterScoped<WorkShiftMenuViewModel, WorkShiftMenuViewModel>();
-            factory.RegisterTransient<SaleProductMenuViewModel, SaleProductMenuViewModel>();
+             
+            factory.RegisterTransient<SaleMenuViewModel, SaleMenuViewModel>();
 
             factory.RegisterTransient<ConnectionLostViewModel, ConnectionLostViewModel>();
             factory.RegisterTransient<StickerPrintViewModel, StickerPrintViewModel>();
@@ -133,14 +150,15 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterTransient<IPrintingStikerService, PrintingSticker>();
             factory.RegisterTransient<IPrintingFiscalCheckService,PrintingFiscalCheckServise>();
 
-            factory.RegisterScoped<IObjectOwnerService,ObjectOwnerService>();
-            factory.RegisterScoped<IOperationRecorderServise, OperationRecorderServise>();
+            factory.RegisterScoped<ITaxObjectService,TaxObjectService>();
+            factory.RegisterScoped<IOperationRecorderService, OperationRecorderService>();
             factory.RegisterScoped<IWorkingShiftService,WorkingShiftService>();
             factory.RegisterScoped<ISaleMenuService,SaleMenuService>();
             factory.RegisterSingleton<ILoggerService, FileLoggerService>();
             factory.RegisterScoped<IWindowsServiceManager, WindowsServiceManager>();
             factory.RegisterScoped<IWebServerStatusService, WebServerStatusService>();
             factory.RegisterScoped<IUserRoleService, UserRoleService>();
+            factory.RegisterScoped<IWorkingShfitOperationService,WorkingShiftOperationService>();
         }
     }
 }

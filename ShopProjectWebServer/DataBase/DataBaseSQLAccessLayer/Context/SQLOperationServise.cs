@@ -1,8 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using ShopProjectWebServer.DataBase.Helpers;
-using ShopProjectWebServer.DataBase.Helpers.Enum;
-using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
-using System.ServiceProcess;
+﻿using Microsoft.Data.SqlClient; 
+using ShopProjectWebServer.DataBase.Interface.DataBaseInterface; 
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 {

@@ -18,18 +18,18 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         {
             _httpClient = httpClient;
         }
-        public async Task<bool> AddOrderRange(string token, List<Order> orders)
+        public async Task<ApiResponse<bool>> AddOrderRange(List<Order> orders)
         {
             var content = JsonSerializer.Serialize(orders.ToListCreatOrderDto());
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Order/AddOrderRange?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Order/AddRange", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             var result = ApiResponse<bool>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return result.Data;
+            return result;
         }
 
         //public async Task<IEnumerable<OrderEntity>> GetOrders(string token)

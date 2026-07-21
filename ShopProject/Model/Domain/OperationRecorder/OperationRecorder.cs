@@ -1,9 +1,9 @@
-﻿using ShopProject.Model.Domain.ObjectOwner;
-using ShopProject.Model.Enum;
+﻿using ShopProject.Model.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ShopProject.Model.Domain.OperationRecorder
@@ -16,9 +16,10 @@ namespace ShopProject.Model.Domain.OperationRecorder
         public string Name { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public TypeStatusOperationRecorder TypeStatus { get; set; }
+        [JsonIgnore]
         public DateTimeOffset D_REG { get; set; }
         public string Address { get; set; } = string.Empty;
-
-        public ObjectOwner.ObjectOwner? ObjectOwner { get; set; }
+        [JsonIgnore]
+        public TaxObject.TaxObject? ObjectOwner { get; set; }
     }
 }

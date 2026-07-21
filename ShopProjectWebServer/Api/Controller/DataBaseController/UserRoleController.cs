@@ -21,8 +21,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         public UserRoleController(IUserRoleServiсe service)
         {
             _service = service;
-        }
-        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        } 
         [HttpGet("GetRoles")]
         public async Task<IActionResult> GetRoles(string token)
         {

@@ -8,7 +8,8 @@ using System.Text.Json.Serialization;
 namespace ShopProject.Model.Domain.User
 {
     public class User
-    { 
+    {
+        [JsonIgnore]
         public Guid ID { get; set; }
         public string Login { get; set; } = string.Empty;
         [JsonIgnore]
@@ -22,7 +23,7 @@ namespace ShopProject.Model.Domain.User
         [JsonIgnore]
         public UserRole.UserRole? Role { get; set; }
         [JsonIgnore]
-        public SignatureKey.SignatureKey? SignatureKey { get; set; }
+        public SignatureKey.SignatureKey SignatureKey { get; set; } = new SignatureKey.SignatureKey();
         [JsonIgnore]
         public DateTimeOffset? CreatedAt { get; set; }
         public string Token { get; set; } = string.Empty; 

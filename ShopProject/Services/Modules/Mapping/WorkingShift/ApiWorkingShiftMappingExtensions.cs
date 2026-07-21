@@ -1,6 +1,8 @@
 ﻿using ShopProject.Model.Domain.MediaAccessControl;
+using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.WorkingShift;
+using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.WorkingShift;
 using ShopProject.Services.Modules.Mapping.MediaAccess; 
 using System;
 using System.Collections.Generic;
@@ -42,9 +44,14 @@ namespace ShopProject.Services.Modules.Mapping.WorkingShift
             shift.DataPacketIdentifier = workingShift.DataPacketIdentifier;
             shift.FactoryNumberRRO = workingShift.FactoryNumberRRO;
             shift.FiscalNumberRRO = workingShift.FiscalNumberRRO;
-
-            shift.MACCreateAt = workingShift.MACCreateAt.ToCreatMediaAccessControlDto();
-            shift.MACEndAt = workingShift.MACEndAt.ToCreatMediaAccessControlDto() ;
+            if (workingShift.MACCreateAt != null)
+            {
+                shift.MACCreateAt = workingShift.MACCreateAt.ToCreatMediaAccessControlDto();
+            } 
+            if(workingShift.MACEndAt != null)
+            {
+                shift.MACEndAt = workingShift.MACEndAt.ToCreatMediaAccessControlDto();
+            } 
 
             if (workingShift.UserOpenShift != null)
             {
@@ -102,6 +109,16 @@ namespace ShopProject.Services.Modules.Mapping.WorkingShift
             shift.TypeShiftCrateAt = (TypeWorkingShift)workingShift.TypeShiftCrateAt;
             shift.TypeShiftEndAt = (TypeWorkingShift)workingShift.TypeShiftEndAt;
             return shift;
+        }
+
+        public static WorkingShiftResourse ToWorkingShiftResourse(this WorkingShiftResourseDto item)
+        {
+            return new WorkingShiftResourse()
+            {
+                ID = item.ID,
+                OperationNumber = item.OperationNumber,
+                MediaAccessControl = item.MediaAccessControl.ToMediaAccessControl()
+            };
         }
     }
 }

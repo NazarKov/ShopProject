@@ -27,18 +27,18 @@ namespace ShopProjectWebServer.Services.Modules.Domain.MediaAccessControl
             return true;
         }
 
-        public MediaAccessControlDto GetLastMediaAccessControl(string token , Guid id)
-        {
-            if (!_authorizationServise.LoginToken(token))
-            {
-                throw new Exception("Невірний токен авторизації");
-            } 
-            var result = _controller.DataBaseAccess.MediaAccessControlTable.GetLastMAC(id);
-            if (result == null)
-            {
-                throw new Exception("Невдалося отримати MAC");
-            }
-            return result.ToMediaAccessDto();
-        }
+        //public MediaAccessControlDto GetLastMediaAccessControl(string token , Guid id)
+        //{
+        //    if (!_authorizationServise.LoginToken(token))
+        //    {
+        //        throw new Exception("Невірний токен авторизації");
+        //    }
+        //    var result = new MediaAccessControlDto();
+        //    if (result == null)
+        //    {
+        //        throw new Exception("Невдалося отримати MAC");
+        //    }
+        //    return result.ToMediaAccessDto();
+        //}
     }
 }

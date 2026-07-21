@@ -13,6 +13,7 @@ namespace ShopProject.Services.Modules.Common.Enum
         NotFound,
         Unauthorized,
         Conflict,
-        Server
+        Server,
+        DeleteBarCode,
     }
 }

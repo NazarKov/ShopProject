@@ -9,7 +9,7 @@ namespace ShopProject.Model.Domain.Setting
 {
     public class OperationRecorderSetting
     {
-        public bool IsTestMode { get; set; } = false; 
+        public bool IsTestMode { get; set; } = true; 
         public string DeleteBarCode { get; set; } = string.Empty; 
     }
 }

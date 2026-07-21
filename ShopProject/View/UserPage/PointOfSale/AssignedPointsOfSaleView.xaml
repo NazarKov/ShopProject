@@ -1,0 +1,257 @@
+﻿<Page x:Class="ShopProject.View.UserPage.PointOfSale.AssignedPointsOfSaleView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShopProject.View.UserPage.PointOfSale"
+      xmlns:control="clr-namespace:ShopProject.Controls" 
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AssignedPointsOfSaleView">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/> 
+            </ResourceDictionary.MergedDictionaries> 
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid> 
+        <ScrollViewer >
+            <ItemsControl ItemsSource="{Binding PointsOfSale}" x:Name="PointsOfSale">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="15"
+                                Padding="20"
+                                CornerRadius="2"
+                                BorderThickness="2"
+                                BorderBrush="#D6D6D6"
+                                Background="White">
+                            <Grid>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Об'єкт власності -->
+                                <Border Grid.Row="0"
+                                        Margin="15"
+                                        Padding="20"
+                                        CornerRadius="2"
+                                        BorderThickness="1"
+                                        BorderBrush="#D6D6D6"
+                                        HorizontalAlignment="Stretch" 
+                                        Background="White">
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+
+                                            <TextBlock Text="{Binding TaxObject.NameObject}"
+                                                       FontSize="24"
+                                                       FontWeight="SemiBold"/>
+
+                                            <TextBlock Text="{Binding TaxObject.Address}"
+                                                       Margin="0,5,0,0"
+                                                       FontSize="14"
+                                                       Foreground="Gray"/>
+
+                                            <StackPanel Orientation="Horizontal"
+                                                        Margin="0,10,0,0">
+
+                                                <TextBlock Text="Код:"
+                                                           FontWeight="Bold"/>
+
+                                                <TextBlock Text="{Binding TaxObject.CodeObject}"
+                                                           Margin="5,0,0,0"/>
+                                            </StackPanel>
+
+                                        </StackPanel>
+
+                                        <Border Grid.Column="1"
+                                                VerticalAlignment="Top" >
+
+                                            <Border Grid.Column="0"
+                                                    Grid.Row="0" 
+                                                    Padding="10,5"
+                                                    CornerRadius="2" 
+                                                    HorizontalAlignment="Left" Margin="6" >
+
+                                                <StackPanel Orientation="Horizontal">
+
+                                                    <Ellipse Width="8"
+                                                             Height="8"
+                                                             Margin="0,0,5,0"
+                                                             Fill="White"/>
+
+                                                    <TextBlock Text="{Binding TaxObject.StatusString}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White"
+                                                               VerticalAlignment="Center"/>
+
+                                                </StackPanel>
+
+                                                <Border.Style>
+
+                                                    <Style TargetType="Border">
+
+                                                        <Setter Property="Background" Value="Gray"/>
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Unknown">
+                                                                <Setter Property="Background" Value="#6B7280"/>
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Closed">
+                                                                <Setter Property="Background" Value="OrangeRed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Open">
+                                                                <Setter Property="Background" Value="#10B981"/>
+                                                            </DataTrigger>
+
+                                                        </Style.Triggers>
+
+                                                    </Style>
+
+                                                </Border.Style>
+                                            </Border>
+                                        </Border>
+
+                                    </Grid>
+                                </Border> 
+                                <!-- Каси -->
+                                <ScrollViewer Grid.Row="1"
+                                              VerticalScrollBarVisibility="Auto">
+
+                                    <StackPanel Margin="15,0,15,15">
+
+                                        <TextBlock Text="Доступні каси"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Margin="15,0,0,15"/>
+
+                                        <ItemsControl ItemsSource="{Binding OperationRecorders}" Padding="5" HorizontalAlignment="Stretch">
+
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel> 
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Button Command="{Binding DataContext.OpenWorkShifMenuCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                            CommandParameter="{Binding}" Style="{StaticResource SoftButtonStyle}" Panel.ZIndex="1"/>
+                                                    <Border Width="283"
+                                                            Margin="0,0,15,15"
+                                                            Padding="15"
+                                                            CornerRadius="2"
+                                                            BorderThickness="1"
+                                                            BorderBrush="#E5E5E5"
+                                                            Background="#FAFAFA">
+
+                                                        <StackPanel>
+
+                                                            <TextBlock Text="{Binding Name}"
+                                                                       FontSize="16"
+                                                                       FontWeight="SemiBold"/>
+
+                                                            <TextBlock Text="{Binding FiscalNumber}"
+                                                                       Margin="0,10,0,0"
+                                                                       Foreground="Gray"/>
+
+                                                            <TextBlock Text="{Binding LocalNumber}"
+                                                                       Margin="0,5,0,0"
+                                                                       Foreground="Gray"/>
+
+                                                            <Separator Margin="0,10,0,10"/>
+
+                                                            <StackPanel Orientation="Horizontal">
+
+                                                                <Border Grid.Column="0"
+                                                                        Grid.Row="0"
+                                                                        Padding="8,3" 
+                                                                        CornerRadius="2"
+                                                                        HorizontalAlignment="Left" Margin="6">
+
+                                                                    <StackPanel Orientation="Horizontal">
+
+                                                                        <Ellipse Width="8"
+                                                                                 Height="8"
+                                                                                 Margin="0,0,5,0"
+                                                                                 Fill="White"/>
+
+                                                                        <TextBlock Text="{Binding StatusString}"
+                                                                                 FontWeight="SemiBold"
+                                                                                 Foreground="White"
+                                                                                 VerticalAlignment="Center"/>
+
+                                                                    </StackPanel>
+
+                                                                    <Border.Style>
+
+                                                                        <Style TargetType="Border">
+
+                                                                            <Setter Property="Background" Value="Gray"/>
+
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Unknown">
+                                                                                    <Setter Property="Background" Value="#6B7280"/>
+                                                                                </DataTrigger>
+
+                                                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Closed">
+                                                                                    <Setter Property="Background" Value="OrangeRed"/>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Open">
+                                                                                    <Setter Property="Background" Value="#10B981"/>
+                                                                                </DataTrigger>
+
+                                                                            </Style.Triggers>
+
+                                                                        </Style>
+
+                                                                    </Border.Style>
+                                                                </Border>
+                                                            </StackPanel>
+
+                                                        </StackPanel>
+
+                                                    </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+
+                                        </ItemsControl> 
+                                    </StackPanel> 
+                                </ScrollViewer> 
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <TextBlock Text="Немає доступних точок продажі"
+            Grid.Column="0" Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="18"
+            Opacity="0.5">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding PointsOfSale.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+    </Grid>
+</Page>

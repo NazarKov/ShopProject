@@ -11,7 +11,7 @@ using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Integration.Network.WebServerApi.Exception;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.View.Common.Main;
-using ShopProject.ViewModel.Common.Home;
+using ShopProject.ViewModel.Common.Main;
 
 namespace ShopProject
 {

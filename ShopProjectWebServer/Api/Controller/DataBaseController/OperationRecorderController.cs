@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.Api.Common;
+﻿using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Mvc; 
+using ShopProjectWebServer.Api.Common; 
 using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
-using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using ShopProjectWebServer.Api.Mappings;
+using ShopProjectWebServer.Models.Domain.OperationRecorder;
+using ShopProjectWebServer.Models.Domain.TaxObject;
+using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -14,82 +15,101 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     public class OperationRecorderController : ControllerBase
     {
 
-        private IOperationRecorderServise _servise;
+        private IOperationRecorderService _service;
         
-        public OperationRecorderController(IOperationRecorderServise servise)
+        public OperationRecorderController(IOperationRecorderService service)
         {
-            _servise = servise;
+            _service = service;
         }
-
-        [HttpGet(nameof(GetOperationRecordersByNumberAndUser))]
-        public IActionResult GetOperationRecordersByNumberAndUser(string token, string number, Guid userId)
-        {
-            try
-            { 
-               var result = _servise.GetOperationRecordersByNumberAndUser(token, number, userId); 
-               return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
-        [HttpGet("GetOperationRecordersByNameAndUser")]
-        public IActionResult GetOperationRecordersByNameAndUser(string token, string name , Guid userId)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(CreateOperationRecorderDto operationsRecorder)
         {
             try
             {
-                var result = _servise.GetOperationRecordersByNameAndUser(token, name, userId); 
-                return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));
+
+                var result = await _service.Add(operationsRecorder.ToOperationRecorder());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<OperationRecorderDto>.Ok(result.Data.ToOpeartionRecorderDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<OperationRecorderDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+                return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
             }
         }
-
-        [HttpPost("DeleteOperationRecorder")]
-        public async Task<IActionResult> DeleteOperationRecorder([FromQuery] string token, string id)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("AddRange")]
+        public async Task<IActionResult> AddRange(IEnumerable<CreateOperationRecorderDto> operationRecorders)
         {
             try
             {
-                var result = _servise.Delete(token, id); 
-                return Ok(ApiResponse<bool>.Ok(result, "Обєкт Власності видалено")); 
+
+                var result = await _service.AddRange(operationRecorders.ToOperationRecordersEntity());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result.Data.ToOperationRecorderDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
             }
             catch (Exception ex)
-            { 
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
             }
         }
 
-        //[HttpGet("GetOperationRecordersByNamePageColumn")]
-        //public IActionResult GetOperationRecordersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status)
-        //{
-        //    try
-        //    {
-        //        var result = _servise.GetOperationRecordersByNamePageColumn(token, name, page,countColumn , status); 
-        //        return Ok(ApiResponse<PaginatorDto<OperationRecorderDto>>.Ok(result));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-        //    }
-        //}
-
-        //[HttpGet("GetOperationRecordersPageColumn")]
-        //public IActionResult GetOperationRecordersPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status)
-        //{
-        //    try
-        //    {
-        //        var result = _servise.GetOperationRecordersPageColumn(token, page, countColumn, status); 
-        //        return Ok(ApiResponse<PaginatorDto<OperationRecorderDto>>.Ok(result));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-        //    }
-        //}
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetPageColumn")]
+        public IActionResult GetPageColumn([FromBody] PaginatorDto<OperationRecorderDto, int> paginator)
+        {
+            try
+            {
+                var result = _service.GetPageColumn(paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<OperationRecorderDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<OperationRecorderDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("GetByNamePageColumn")]
+        public IActionResult GetByNamePageColumn([FromQuery] string name, [FromBody] PaginatorDto<OperationRecorderDto, int> paginator)
+        {
+            try
+            {
+                var result = _service.GetByNamePageColumn(name, paginator.ToPaginator());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<PaginatorDto<OperationRecorderDto, int>>.Ok(result.Data.ToPaginatorDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PaginatorDto<OperationRecorderDto, int>>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
 
         //[HttpGet("GetOperationRecorders")]
         //public async Task<IActionResult> GetOperationRecorders(string token)
@@ -105,40 +125,17 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         //    }
         //}
 
-        [HttpPost("AddOperationRecorder")]
-        public async Task<IActionResult> AddOperationRecorder(string token, CreateOperationRecorderDto operationsRecorder)
-        {
-            try
-            {
-                var result = _servise.Add(token , operationsRecorder); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+         
 
-        [HttpPost("AddOperationRecorders")]
-        public async Task<IActionResult> AddOperationRecorders(string token, IEnumerable<CreateOperationRecorderDto> operationRecorders)
-        {
-            try
-            {
-                var result = _servise.AddRange(token, operationRecorders); 
-                return Ok(ApiResponse<bool>.Ok(result));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+        
         [HttpPost("AddBindingOperationRecorder")]
         public async Task<IActionResult> AddBindingOperationRecorder(string token, string idoperationrecoreder , string idobjectowner)
         {
             try
             {
-                var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner); 
-                return Ok(ApiResponse<bool>.Ok(result));
+                //var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner); 
+                //return Ok(ApiResponse<bool>.Ok(result));
+                return Ok();
             }
             catch (Exception ex)
             {

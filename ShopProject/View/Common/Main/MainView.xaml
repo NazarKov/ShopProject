@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.View.Common.Main"
         mc:Ignorable="d"   
-        WindowState="{Binding WindowState}"
-        ResizeMode="{Binding ResizeModeWindow}" 
+        WindowState="Maximized" 
         WindowStartupLocation="CenterScreen"
         Title="Магазин" Height="550" Width="800">
     <Grid Background="#F5F5F5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -16,60 +15,58 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#F5F5F5" BorderBrush="#D0D0D0" BorderThickness="0,0,0,1" Padding="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Visibility="{Binding VisibilityMenu}" Panel.ZIndex="1">
-            <DockPanel>
-                <Menu Background="#F5F5F5" DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="16"
-               Visibility="{Binding VisibilityMenu, UpdateSourceTrigger=PropertyChanged}">
-                    <MenuItem Header="Програма" IsEnabled="{Binding IsEnableMenuButton}">
-                        <MenuItem Header="⚙️ Настройки" Command="{Binding OpenSettingCommand}" />
-                        <Separator />
-                        <MenuItem Header="🚪 Вийти" Command="{Binding ExitAppCommand}" />
-                    </MenuItem>
-
-                    <MenuItem Header="📋 Списки" IsEnabled="{Binding IsEnableMenuButton}">
-                        <MenuItem Header="Список товарів" Command="{Binding OpenStorageCommand}" />
-                        <Separator />  
-                        <MenuItem Header="Користувачі" Command="{Binding OpenUsersCommand}" />
-                        <MenuItem Header="Об’єкти власності" Command="{Binding OpenObjectOwnerPageCommand}" />
-                        <MenuItem Header="РРО" Command="{Binding OpenSoftwareDeviceSettlementOperationsPageCommand}" />
-                        <Separator></Separator>
-                        <MenuItem Header="Подарункові сертифікати" Command="{Binding OpenGiftCertificatesPageCommand}" />
-                    </MenuItem>
-
-                    <MenuItem Header="🛍️ Меню продаж" Command="{Binding OpenSaleMenuCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
-
-                    <MenuItem Header="🧰 Інструменти" IsEnabled="{Binding IsEnableMenuButton}">
-                        <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoodsCommnad}" />
-                        <Separator />
-                        <MenuItem Header="Роздрукувати етикетку" Command="{Binding OpenCreateStikerCommnad}" />
-                        <Separator />
-                        <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProductCommand}" />
-                        <MenuItem Header="Імпорт товарів" Command="{Binding OpenImportProductCommnad}" />
-                    </MenuItem>
-
-                    <MenuItem Header="📊 Статистика" Command="{Binding OpenStatisticsPageCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
-                    <MenuItem Header="📚 Довідник" IsEnabled="{Binding IsEnableMenuButton}"/>
-                    <MenuItem Header="❓ Справка" IsEnabled="{Binding IsEnableMenuButton}"/>
-                </Menu>
-
-                <StackPanel Visibility="{Binding VisibilityMenu}"  Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Border Background="White" BorderBrush="#CCC" BorderThickness="1" CornerRadius="6"
-                      Width="180"
-                     ToolTip="Стан підключень">
-                        <UserControl Content="{Binding StatusMenu}" />
-                    </Border>
-
-                    <Menu Background="#F5F5F5" Visibility="{Binding VisibilityMenu}" Margin="20,0,20,0" VerticalAlignment="Center" FontSize="16" >
-                        <MenuItem Header="{Binding NotificationValue}" Command="{Binding OpenNotificationPanelCommand}"></MenuItem>
-                        <MenuItem Header="{Binding UserName}" HorizontalAlignment="Right" IsEnabled="{Binding IsEnableMenuButton}">
-                            <MenuItem Header="👤 Профіль" Command="{Binding OpenSettingCommand}"/>
-                            <MenuItem Header="🚪 Вийти" Command="{Binding ExitUserCommand}" />
+        <Rectangle x:Name="ShadowRect" Visibility="{Binding VisibilitiLostConnectionPage}" Fill="Black" Panel.ZIndex="2" Opacity="0.5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="3"/>
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <Rectangle x:Name="ShadowRect1" Visibility="{Binding VisibilitiShadowPage}" Fill="Black" Opacity="0.5" Panel.ZIndex="2"/>
+            <Border Background="#F5F5F5" BorderBrush="#D0D0D0" BorderThickness="0,0,0,1" Padding="5"   Visibility="{Binding VisibilityMenu}" Panel.ZIndex="1">
+                <DockPanel  HorizontalAlignment="Stretch"> 
+                    <Menu Background="#F5F5F5" DockPanel.Dock="Left" Height="25" VerticalAlignment="Center" FontSize="16" Visibility="{Binding VisibilityMenu, UpdateSourceTrigger=PropertyChanged}">
+                        <MenuItem Header="Програма" IsEnabled="{Binding IsEnableMenuButton}">
+                            <MenuItem Header="⚙️ Настройки" Command="{Binding OpenSettingCommand}" />
+                            <Separator />
+                            <MenuItem Header="🚪 Вийти" Command="{Binding ExitAppCommand}" />
                         </MenuItem>
+    
+                        <MenuItem Header="📋 Списки" IsEnabled="{Binding IsEnableMenuButton}">
+                            <MenuItem Header="Список товарів" Command="{Binding OpenStorageCommand}" />
+                            <Separator />  
+                            <MenuItem Header="Користувачі" Command="{Binding OpenUsersCommand}" />
+                            <MenuItem Header="Об’єкти власності" Command="{Binding OpenPoinOfSalePageCommand}" /> 
+                            <Separator></Separator>
+                            <MenuItem Header="Подарункові сертифікати" Command="{Binding OpenGiftCertificatesPageCommand}" />
+                        </MenuItem>
+    
+                        <MenuItem Header="🛍️ Меню продаж" Command="{Binding OpenAssignedPointOfSaleCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
+    
+                        <MenuItem Header="🧰 Інструменти" IsEnabled="{Binding IsEnableMenuButton}">
+                            <MenuItem Header="Поставка товару" Command="{Binding OpenDeliveryOfGoodsCommnad}" />
+                            <Separator />
+                            <MenuItem Header="Роздрукувати етикетку" Command="{Binding OpenCreateStikerCommnad}" />
+                            <Separator />
+                            <MenuItem Header="Експорт товарів" Command="{Binding OpenExportProductCommand}" />
+                            <MenuItem Header="Імпорт товарів" Command="{Binding OpenImportProductCommnad}" />
+                        </MenuItem>
+    
+                        <MenuItem Header="📊 Статистика" Command="{Binding OpenStatisticsPageCommand}" IsEnabled="{Binding IsEnableMenuButton}" />
+                        <MenuItem Header="📚 Довідник" IsEnabled="{Binding IsEnableMenuButton}"/> 
                     </Menu>
-                </StackPanel>
-            </DockPanel>
-        </Border>
-        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"
+    
+                    <StackPanel Visibility="{Binding VisibilityMenu}" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Border Background="White" BorderBrush="#CCC" BorderThickness="1" CornerRadius="6"   Width="100" ToolTip="Стан підключень">
+                            <UserControl Content="{Binding StatusMenu}" />
+                        </Border>
+                        <Menu Background="#F5F5F5" Visibility="{Binding VisibilityMenu}" Margin="20,0,20,0" VerticalAlignment="Center" FontSize="16">
+                            <MenuItem Header="{Binding NotificationValue}" Command="{Binding OpenNotificationPanelCommand}"></MenuItem>
+                            <MenuItem Header="{Binding UserName}" HorizontalAlignment="Right" IsEnabled="{Binding IsEnableMenuButton}" >
+                                <MenuItem Header="👤 Профіль" Command="{Binding OpenSettingCommand}"/>
+                                <MenuItem Header="🚪 Вийти" Command="{Binding ExitUserCommand}" />
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel> 
+                </DockPanel>  
+            </Border>
+    </Grid>
+    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right"
              Width="450" 
              Visibility="{Binding VisibilityNotification}"
              Panel.ZIndex="2" >

@@ -40,9 +40,12 @@ namespace ShopProject.Services.Modules.Mapping.UserRole
         public static IEnumerable<UserRoleDto> ToUserRoleDto(this IEnumerable<ShopProject.Model.Domain.UserRole.UserRole> roles)
         {
             var result = new List<UserRoleDto>();
-            foreach (var role in roles)
+            if(roles != null)
             {
-                result.Add(ToUserRoleDto(role));
+                foreach (var role in roles)
+                {
+                    result.Add(ToUserRoleDto(role));
+                } 
             }
             return result;
         }

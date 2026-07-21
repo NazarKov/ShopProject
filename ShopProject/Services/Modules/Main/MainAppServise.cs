@@ -35,8 +35,8 @@ namespace ShopProject.Services.Modules.Main
                 return false;
             }
         } 
-        public async Task LoadResourse() => await _resourseSerivce.LoadSessionResourse();
-
+        public async Task LoadStartData() => await _resourseSerivce.LoadStartData();
+        public async Task LoadUserData() => await _resourseSerivce.LoadUserData();
 
         public void Init()
         {

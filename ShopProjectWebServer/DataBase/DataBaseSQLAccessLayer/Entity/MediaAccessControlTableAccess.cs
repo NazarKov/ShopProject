@@ -73,9 +73,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             return result;
         }
 
-        public MediaAccessControlEntity GetLastMAC(Guid operationRecorderId)
+        public MediaAccessControlEntity GetLast(int workingShiftId)
         {
-            return _contextDataBase.MediaAccessControls.Where(i => i.OperationsRecorder.ID == operationRecorderId).OrderByDescending(i => i.ID).FirstOrDefault();    
+            return _contextDataBase.MediaAccessControls.Where(i => i.WorkingShifts.ID == workingShiftId).OrderByDescending(i => i.ID).FirstOrDefault();    
         }
 
         public void Update(MediaAccessControlEntity item)

@@ -2,6 +2,7 @@
 using ShopProjectWebServer.Api.DtoModels.User;
 using ShopProjectWebServer.Models.Domain.Enum;
 using ShopProjectWebServer.Models.Domain.Paginator;
+using ShopProjectWebServer.Services.Modules.Mapping.SignatureKey;
 using UserModel = ShopProjectWebServer.Models.Domain.User.User;
 
 namespace ShopProjectWebServer.Services.Modules.Mapping.User
@@ -80,6 +81,10 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.User
                 Password = item.Password,
                 TIN = item.TIN,
             };
+            if(item.SignatureKey != null)
+            {
+                result.SignatureKey = item.SignatureKey.ToSignatureKey();
+            }
             return result;
         }
         public static IEnumerable<UserDto> ToUserDto(this IEnumerable<UserModel> item)
@@ -128,6 +133,38 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.User
             if(item.Data!= null)
             {
                 result.Data = item.Data.ToUserDto();
+            }
+            return result;
+        }
+
+        public static UserModel ToUser(this UserDto item)
+        {
+            var result = new UserModel()
+            {
+                ID = Guid.Parse(item.ID),
+                UserRole = new Models.Domain.UserRole.UserRole() { ID = (int)item.UserRoleID },
+                Status = (TypeStatusUser)item.Status,
+                AutomaticLogin = item.AutomaticLogin,
+                CreatedAt = item.CreatedAt,
+                Email = item.Email,
+                FullName = item.FullName,
+                Login = item.Login,
+                Password = item.Password,
+                TIN = item.TIN, 
+            };
+            if (item.SignatureKey != null)
+            {
+                result.SignatureKey = item.SignatureKey.ToSignatureKey();
+            }
+
+            return result;
+        }
+        public static IEnumerable<UserModel> ToUser(this IEnumerable<UserDto> users)
+        {
+            var result = new List<UserModel>();
+            foreach (var user in users) 
+            {
+                result.Add(ToUser(user));
             }
             return result;
         }

@@ -25,7 +25,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser
                 throw new Exception("Невірний токен авторизації");
             }
 
-            _controller.DataBaseAccess.OperationRecorederUserTable.AddRange(userID, operationRecorders.ToOperationRecordersEntity());
+            //_controller.DataBaseAccess.OperationRecorederUserTable.AddRange(userID, operationRecorders.ToOperationRecordersEntity());
         }
          
         public OperationRecorderUserDto GetOperationRecorderForUser(string token) 
@@ -35,23 +35,23 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecordersAndUser
                 throw new Exception("Невірний токен авторизації");
             }
              
-            var items = _controller.DataBaseAccess.OperationRecorederUserTable.GetAll();
+            //var items = _controller.DataBaseAccess.OperationRecorederUserTable.GetAll();
 
             var user = _controller.DataBaseAccess.UserTable.GetUser(token);
             var operationRecoreder = new List<OperationsRecorderEntity>();
 
-            foreach (var item in items)
-            { 
-                if(item.Users.ID == user.ID)
-                {
-                    operationRecoreder.Add(item.OpertionsRecorders);
-                }
-            }
+            //foreach (var item in items)
+            //{ 
+            //    if(item.Users.ID == user.ID)
+            //    {
+            //        operationRecoreder.Add(item.OpertionsRecorders);
+            //    }
+            //}
 
             var result = new OperationRecorderUserDto()
             {
                 User = user.ToUser().ToUserDto(),
-                OpertionsRecorders = operationRecoreder.ToOperationRecorderDto(),
+                //OpertionsRecorders = operationRecoreder.ToOperationRecorderDto(),
             }; 
             return result; 
         }

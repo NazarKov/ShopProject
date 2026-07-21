@@ -104,24 +104,21 @@ namespace ShopProject.ViewModel.Authorization
 
         private async Task SetFieldPage()
         {
-            MessegeBlockVisibiliti = Visibility.Collapsed;
-            if (_sessionService.CheckingSession())
-            {
-                await MediatorService.ExecuteEventAsync("SetHidenPage");
-                MediatorService.ExecuteNavigation(NavigationButton.RedirectToDashBoadPage);
-            } 
+            MessegeBlockVisibiliti = Visibility.Collapsed; 
         }
         public ICommand LogInCommnad => _logInCommnad;
         private async Task LogIn()
         {
-            if (await _userServise.LogIn(Login, Password))
+            var result = await _userServise.LogIn(Login, Password);
+
+            if (result.IsSuccess)
             {
                 Success = "Авторизація успішно";
                 SuccessTextBlockVisibiliti = Visibility.Visible;
                 ErrorTextBlockVisibiliti = Visibility.Collapsed;
                 MessegeBlockVisibiliti = Visibility.Visible;
                 await MediatorService.ExecuteEventAsync("SetHidenPage");
-                MediatorService.ExecuteNavigation(NavigationButton.RedirectToDashBoadPage); 
+                await MediatorService.ExecuteEventAsync("StartApp"); 
             }
             else
             {

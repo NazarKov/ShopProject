@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using ShopProjectDataBase.Context;
+﻿using Microsoft.Data.SqlClient; 
 using ShopProjectWebServer.DataBase.Interface.DataBaseInterface;
 using System.Data;
 using System.Text.RegularExpressions;

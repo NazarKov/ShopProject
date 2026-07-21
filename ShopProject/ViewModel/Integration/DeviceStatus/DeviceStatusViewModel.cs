@@ -48,7 +48,7 @@ namespace ShopProject.ViewModel.Integration.DeviceStatus
                 {
                     _isChecking = true;
 
-                    DeviceStatus = await CheckDeviseAvailable();
+                    DeviceStatus = await CheckDeviseAvailable(); 
                     await CheckedDevises(DeviceStatus);
                 }
                 finally
@@ -60,7 +60,7 @@ namespace ShopProject.ViewModel.Integration.DeviceStatus
         private void AddCommnadTimer()
         {
             MediatorService.AddEventAsync("StartTimerCheckConnect",async () => { _timer.Start(); });
-            MediatorService.AddEventAsync("StopTimerCheckConnect",async () => { _timer.Stop(); });
+            MediatorService.AddEventAsync("StopTimerCheckConnect",async () => { _timer.Stop(); isFristLoad = true; });
         }
 
 

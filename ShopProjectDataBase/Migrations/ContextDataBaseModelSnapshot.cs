@@ -170,72 +170,6 @@ namespace ShopProjectDataBase.Migrations
                     b.ToTable("MediaAccessControls");
                 });
 
-            modelBuilder.Entity("ShopProjectDataBase.Entities.ObjectOwnerEntity", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("C_DISTR")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("C_TERRIT")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CodeObject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("D_ACC_END")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("D_ACC_START")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset?>("D_LAST_CH")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("KATOTTG")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameObject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameOwner")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("REG_NUM_OBJ")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TypeObjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TypeOfRights")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TypeStatus")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ObjectOwner");
-                });
-
             modelBuilder.Entity("ShopProjectDataBase.Entities.OperationEntity", b =>
                 {
                     b.Property<int>("ID")
@@ -321,42 +255,21 @@ namespace ShopProjectDataBase.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ObjectOwnerID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TaxObjectID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TypeStatus")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ObjectOwnerID");
+                    b.HasIndex("TaxObjectID");
 
                     b.ToTable("OperationsRecorder");
-                });
-
-            modelBuilder.Entity("ShopProjectDataBase.Entities.OperationsRecorderUserEntity", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("OpertionsRecordersID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UsersID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("OpertionsRecordersID");
-
-                    b.HasIndex("UsersID");
-
-                    b.ToTable("OperationsRecorderAndUser");
                 });
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.OrderEntity", b =>
@@ -490,6 +403,95 @@ namespace ShopProjectDataBase.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("ShopProjectDataBase.Entities.TaxObjectEntity", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("C_DISTR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("C_TERRIT")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodeObject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("D_ACC_END")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("D_ACC_START")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("D_LAST_CH")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("KATOTTG")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameObject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameOwner")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("REG_NUM_OBJ")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeObjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeOfRights")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TaxObject");
+                });
+
+            modelBuilder.Entity("ShopProjectDataBase.Entities.TaxObjectUserEnitity", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<Guid?>("TaxObjectID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TaxObjectID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("TaxObjectUser");
                 });
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.TokenEntity", b =>
@@ -725,26 +727,11 @@ namespace ShopProjectDataBase.Migrations
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.OperationsRecorderEntity", b =>
                 {
-                    b.HasOne("ShopProjectDataBase.Entities.ObjectOwnerEntity", "ObjectOwner")
+                    b.HasOne("ShopProjectDataBase.Entities.TaxObjectEntity", "TaxObject")
                         .WithMany("OperationsRecorderEntitis")
-                        .HasForeignKey("ObjectOwnerID");
+                        .HasForeignKey("TaxObjectID");
 
-                    b.Navigation("ObjectOwner");
-                });
-
-            modelBuilder.Entity("ShopProjectDataBase.Entities.OperationsRecorderUserEntity", b =>
-                {
-                    b.HasOne("ShopProjectDataBase.Entities.OperationsRecorderEntity", "OpertionsRecorders")
-                        .WithMany()
-                        .HasForeignKey("OpertionsRecordersID");
-
-                    b.HasOne("ShopProjectDataBase.Entities.UserEntity", "Users")
-                        .WithMany()
-                        .HasForeignKey("UsersID");
-
-                    b.Navigation("OpertionsRecorders");
-
-                    b.Navigation("Users");
+                    b.Navigation("TaxObject");
                 });
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.OrderEntity", b =>
@@ -781,6 +768,21 @@ namespace ShopProjectDataBase.Migrations
                     b.Navigation("Discount");
 
                     b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("ShopProjectDataBase.Entities.TaxObjectUserEnitity", b =>
+                {
+                    b.HasOne("ShopProjectDataBase.Entities.TaxObjectEntity", "TaxObject")
+                        .WithMany("Users")
+                        .HasForeignKey("TaxObjectID");
+
+                    b.HasOne("ShopProjectDataBase.Entities.UserEntity", "User")
+                        .WithMany("TaxObjects")
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("TaxObject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.TokenEntity", b =>
@@ -846,11 +848,6 @@ namespace ShopProjectDataBase.Migrations
                     b.Navigation("Operation");
                 });
 
-            modelBuilder.Entity("ShopProjectDataBase.Entities.ObjectOwnerEntity", b =>
-                {
-                    b.Navigation("OperationsRecorderEntitis");
-                });
-
             modelBuilder.Entity("ShopProjectDataBase.Entities.OperationEntity", b =>
                 {
                     b.Navigation("Order");
@@ -866,8 +863,17 @@ namespace ShopProjectDataBase.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("ShopProjectDataBase.Entities.TaxObjectEntity", b =>
+                {
+                    b.Navigation("OperationsRecorderEntitis");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("ShopProjectDataBase.Entities.UserEntity", b =>
                 {
+                    b.Navigation("TaxObjects");
+
                     b.Navigation("Tokens");
                 });
 

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.DtoModels.Discount;
-using ShopProjectWebServer.Services.Modules.Domain.Discount;
+using ShopProjectWebServer.Api.DtoModels.Discount; 
+using ShopProjectWebServer.Services.Modules.Domain.Discount.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Discount;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -9,19 +11,19 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class DiscountController : ControllerBase
     {
-        private IDiscountServise _servise;
-        public DiscountController(IDiscountServise servise)
+        private IDiscountService _servise;
+        public DiscountController(IDiscountService servise)
         {
             _servise = servise;
         }
-
-        [HttpPost("AddDiscount")]
-        public IActionResult AddDiscount([FromQuery] string token, CreateDicountDto discount)
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Add")]
+        public IActionResult Add(CreateDicountDto discount)
         {
             try
             {
-                 var result =_servise.Add(token, discount);
-                return Ok(ApiResponse<int>.Ok(result, "Обєкт збережено"));
+                var result =_servise.Add(discount.ToDiscount());
+                return Ok(ApiResponse<int>.Ok(result.Data, "Обєкт збережено"));
             }
             catch (Exception ex)
             {

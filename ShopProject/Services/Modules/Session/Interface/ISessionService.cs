@@ -1,6 +1,7 @@
 ﻿using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
+using ShopProject.Model.Domain.TaxObject;
 using ShopProject.Model.Domain.User;
 using ShopProject.Model.Domain.UserRole;
 using ShopProject.Model.Domain.WorkingShift;
@@ -17,9 +18,9 @@ namespace ShopProject.Services.Modules.Session.Interface
     internal interface ISessionService
     {
         public User User { get; set; }
-        public IEnumerable<ProductCodeUKTZED>? ProductCodesUKTZED { get; set; }
-        public IEnumerable<ProductUnit>? ProductUnits { get; set; }
-        public IEnumerable<UserRole>? Roles { get; set; }
+        public IEnumerable<ProductCodeUKTZED> ProductCodesUKTZED { get; set; }
+        public IEnumerable<ProductUnit> ProductUnits { get; set; }
+        public IEnumerable<UserRole> Roles { get; set; }
         public WorkingShiftStatus WorkingShiftStatus { get; set; }
         public ObservableCollection<TabItem> Tabs { get; set; }
 
@@ -28,11 +29,13 @@ namespace ShopProject.Services.Modules.Session.Interface
         public IEnumerable<Product>? UpdateProductRange { get; set; }
         public ProductUnit? UpdateProductUnit { get; set; }
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
-        public User UpdateUser { get; set; }
+        public User UpdateUser { get; set; } 
+        public TaxObject BindingTaxObject { get; set; }
 
 
         public bool CheckingSession();
-        public bool CheckingWorkingShiftStatus();
+        public bool CheckAndLoadWorkingShiftStatus();
+        public bool CheckIsOpenShift();
         public bool RemoveSession();
     }
 }

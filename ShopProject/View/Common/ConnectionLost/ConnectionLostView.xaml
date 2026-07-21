@@ -9,38 +9,32 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ConnectionLostView">
 
-    <Grid>
-        <!-- Напівпрозорий фон -->
-        <Grid Background="#AA000000"/>
-
-        <!-- Центральна картка -->
+    <Grid> 
+ 
         <Border Width="320"
             Padding="20"
             Background="#1E1E1E"
-            CornerRadius="15"
+            CornerRadius="2"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
 
             <StackPanel HorizontalAlignment="Center">
-
-                <!-- Заголовок -->
+ 
                 <TextBlock Text="Втрата підключення"
                        Foreground="White"
                        FontSize="18"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,5"/>
-
-                <!-- Підзаголовок -->
+ 
                 <TextBlock Text="Спроба перепідключення..."
                        Foreground="#AAAAAA"
                        FontSize="13"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,15"/>
-
-                <!-- Loader -->
+ 
                 <Border Background="#2A2A2A"
-                    CornerRadius="10"
+                    CornerRadius="2"
                     Padding="10">
                     <Image Width="100"
                        Height="100"

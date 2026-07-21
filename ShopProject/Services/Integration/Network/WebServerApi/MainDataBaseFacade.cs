@@ -17,7 +17,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi
         public ProductUnitController ProductUnitController { get; private set; }
         public ProductCodeUKTZEDController ProductCodeUKTZEDController { get; private set; }
         public UserRoleController UserRoleController { get; private set; }
-        public ObjectOwnerController ObjectOwnerController { get; private set; }
+        public TaxObjectController TaxObjectController { get; private set; }
         public OperationRecorderController OperationRecorederController { get; private  set; }
         public OperationRecorderAndUserController OperationRecorderAndUserController { get; private set; }
         public OperationController OperationController { get; private set; }
@@ -27,6 +27,8 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi
         public SignatureKeyController SignatureKeyController { get; private set; }
         public DiscountController DiscountController { get; private set; } 
         public GiftCertificatesController GiftCertificatesController { get; private set; }
+
+        public BootStrapController BootStrapController { get; private set; }
         public MainDataBaseFacade(HttpClient client)
         { 
             UserController = new UserController(client);
@@ -34,7 +36,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi
             ProductUnitController = new ProductUnitController(client);
             ProductCodeUKTZEDController = new ProductCodeUKTZEDController(client);
             UserRoleController = new UserRoleController(client);
-            ObjectOwnerController = new ObjectOwnerController(client);
+            TaxObjectController = new TaxObjectController(client);
             OperationRecorederController = new OperationRecorderController(client);
             OperationRecorderAndUserController = new OperationRecorderAndUserController(client);
             OperationController = new OperationController(client);
@@ -44,6 +46,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi
             SignatureKeyController = new SignatureKeyController(client);
             DiscountController = new DiscountController(client);
             GiftCertificatesController = new GiftCertificatesController(client);
+            BootStrapController = new BootStrapController(client);
         }
     }
 }

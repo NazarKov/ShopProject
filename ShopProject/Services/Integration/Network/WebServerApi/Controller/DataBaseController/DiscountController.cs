@@ -1,8 +1,5 @@
 ﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Discount;
-using ShopProject.Services.Integration.Network.WebServerApi.Common; 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using ShopProject.Services.Integration.Network.WebServerApi.Common;  
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -19,18 +16,18 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             _httpClient = httpClient; 
         }
 
-        public async Task<int> AddDiscount(string token, CreateDiscountDto item)
+        public async Task<ApiResponse<int>> AddDiscount(CreateDiscountDto item)
         {
             var discount = JsonSerializer.Serialize(item);
             HttpContent httpContent = new StringContent(discount, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Discount/AddDiscount?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Discount/Add", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<int>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
     }
 }

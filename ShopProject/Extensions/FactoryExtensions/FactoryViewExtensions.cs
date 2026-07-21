@@ -1,10 +1,13 @@
 ﻿using ShopProject.Infrastructure.CompositionRoot;
 using ShopProject.View.AdminPage.Dashboard;
+using ShopProject.View.AdminPage.PointOfSale;
+using ShopProject.View.AdminPage.PointOfSale.OperationRecorder;
+using ShopProject.View.AdminPage.PointOfSale.TaxObject;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
-using ShopProject.View.AdminPage.UserPage;
+using ShopProject.View.AdminPage.User;
 using ShopProject.View.Authorization;
 using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Main;
@@ -14,11 +17,8 @@ using ShopProject.View.HomePage.HomePageComponent;
 using ShopProject.View.Integration.DeviceStatus;
 using ShopProject.View.Integration.Printing;
 using ShopProject.View.Integration.Windows.Service;
-using ShopProject.View.StoragePage; 
-using ShopProject.View.UserPage.SaleMenu;
-using ShopProject.ViewModel.AdminPage.Dashboard;
-using ShopProject.ViewModel.StoragePage;
-using ShopProject.Views.AdminPage;
+using ShopProject.View.UserPage.PointOfSale;
+using ShopProject.View.UserPage.PointOfSale.SaleMenu; 
 
 namespace ShopProject.Extensions.FactoryExtensions
 {
@@ -63,9 +63,22 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.Register<SettingView>(()=>new SettingView());
             
-            factory.Register<OperationRecorderView>(()=>new OperationRecorderView());
+            factory.Register<PointOfSaleView>(()=>new PointOfSaleView());
+            factory.Register<TaxObjectsDataView>(() => new TaxObjectsDataView());
+            factory.Register<OperationRecordersDataView>(()=>new OperationRecordersDataView());
+
+            factory.Register<CreateTaxObjectView>(()=>new CreateTaxObjectView());
+            factory.Register<CreateTaxObjectFromKeyView>(()=>new CreateTaxObjectFromKeyView());
+
+            factory.Register<CreateOperationRecorederView>(()=>new CreateOperationRecorederView());
+            factory.Register<CreateOperationRecorderFromKeyView>(()=>new CreateOperationRecorderFromKeyView());
+            factory.Register<BindingOperationRecorderToTaxObjectView>(()=> new BindingOperationRecorderToTaxObjectView());
+            factory.Register<BindingUserToTaxObjectView>(() => new BindingUserToTaxObjectView());
+
+            factory.Register<AssignedPointsOfSaleView>(() => new AssignedPointsOfSaleView());
             factory.Register<WorkShiftMenuView>(()=>new WorkShiftMenuView());
-            factory.Register<SaleProductMenuView>(()=>new SaleProductMenuView());
+             
+            factory.Register<SaleMenuView>(()=>new SaleMenuView());
 
             factory.Register<StickerPrintView>(()=>new StickerPrintView());
 

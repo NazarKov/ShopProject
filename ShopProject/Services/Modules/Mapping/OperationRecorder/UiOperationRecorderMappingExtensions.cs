@@ -1,5 +1,5 @@
 ﻿using ShopProject.Model.UI.OperationRecorder;
-using ShopProject.Services.Modules.Mapping.ObjectOwner;
+using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
             };
             if (item.ObjectOwner != null)
             {
-                result.ObjectOwner = item.ObjectOwner.ToObjectOwner();
+                //result.ObjectOwner = item..ToObjectOwner();
             }
             return result;
         }
@@ -45,7 +45,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
             };
             if (item.ObjectOwner != null)
             {
-                result.ObjectOwner = item.ObjectOwner.ToObjectOwnerModel();
+                //result.ObjectOwner = item.ObjectOwner.ToObjectOwnerModel();
             }
             return result;
         }
@@ -64,6 +64,25 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
             foreach (var item in items)
             {
                 result.Add(ToOperationRecorder(item));
+            }
+            return result;
+        }
+
+        public static IEnumerable<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> ToOperationRecorderModel(this IEnumerable<OperationRecorderSelectItemModel> items)
+        {
+            var result = new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
+            foreach (var item in items)
+            {
+                result.Add(item.OperationRecorder.ToOperationRecorder());
+            }
+            return result;
+        }
+        public static IEnumerable<OperationRecorderSelectItemModel> ToOperationRecorderSelectItemModel(this IEnumerable<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> items)
+        {
+            var result = new List<OperationRecorderSelectItemModel>();
+            foreach (var item in items)
+            {
+                result.Add(new OperationRecorderSelectItemModel() { OperationRecorder = item.ToOperationRecorderModel(), IsActive = false });
             }
             return result;
         }

@@ -19,24 +19,38 @@ namespace ShopProject.Model.Domain.WorkingShift
         public string FiscalNumberRRO { get; set; } = string.Empty; 
         public string FactoryNumberRRO { get; set; } = string.Empty; 
         public decimal DataPacketIdentifier { get; set; } = decimal.Zero; 
-        public decimal TypeRRO { get; set; } = decimal.Zero; 
-        public TypeWorkingShift TypeShiftCrateAt { get; set; } 
-        public TypeWorkingShift TypeShiftEndAt { get; set; } 
-        public decimal TotalCheckForShift { get; set; } = decimal.Zero; 
-        public decimal TotalReturnCheckForShift { get; set; } = decimal.Zero; 
-        public decimal AmountOfOfficialFundsReceivedCash { get; set; } = decimal.Zero; 
-        public decimal AmountOfOfficialFundsIssuedCash { get; set; } = decimal.Zero; 
-        public decimal AmountOfOfficialFundsReceivedCard { get; set; } = decimal.Zero; 
-        public decimal AmountOfOfficialFundsIssuedCard { get; set; } = decimal.Zero; 
-        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero; 
+        public decimal TypeRRO { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public TypeWorkingShift TypeShiftCrateAt { get; set; }
+        [JsonIgnore]
+        public TypeWorkingShift TypeShiftEndAt { get; set; }
+        [JsonIgnore]
+        public decimal TotalCheckForShift { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal TotalReturnCheckForShift { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal AmountOfOfficialFundsReceivedCash { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal AmountOfOfficialFundsIssuedCash { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal AmountOfOfficialFundsReceivedCard { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal AmountOfOfficialFundsIssuedCard { get; set; } = decimal.Zero;
+        [JsonIgnore]
+        public decimal AmountOfFundsReceived { get; set; } = decimal.Zero;
+        [JsonIgnore]
         public decimal AmountOfFundsIssued { get; set; } = decimal.Zero; 
         [JsonIgnore]
         public MediaAccessControl.MediaAccessControl? MACCreateAt { get; set; } 
         [JsonIgnore]
-        public MediaAccessControl.MediaAccessControl? MACEndAt { get; set; } 
-        public DateTimeOffset CreateAt { get; set; } 
-        public DateTimeOffset EndAt { get; set; } 
-        public User.User? UserOpenShift { get; set; } 
+        public MediaAccessControl.MediaAccessControl? MACEndAt { get; set; }
+        [JsonIgnore]
+        public DateTimeOffset CreateAt { get; set; }
+        [JsonIgnore]
+        public DateTimeOffset EndAt { get; set; }
+        [JsonIgnore]
+        public User.User? UserOpenShift { get; set; }
+        [JsonIgnore]
         public User.User? UserCloseShift { get; set; } 
         [JsonIgnore]
         public IEnumerable<Operation.Operation>? Operations { get; set; }

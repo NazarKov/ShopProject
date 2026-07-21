@@ -1,36 +1,36 @@
-﻿using ShopProjectWebServer.Api.DtoModels.Order;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Authorization;
+﻿using ShopProjectWebServer.Api.DtoModels.Order; 
+using ShopProjectWebServer.DataBase.Interface;
+using ShopProjectWebServer.Services.Common;
+using ShopProjectWebServer.Services.Modules.Domain.Order.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Order;
+using OrderModel = ShopProjectWebServer.Models.Domain.Order.Order;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.Order
 {
-    internal class OrderService : IOrderServise
+    internal class OrderService : IOrderService
     {
-        private DataBaseService _controller;
-        private AuthorizationService _authorizationServise;
+        private IDataBaseService _service; 
 
-        public OrderService(DataBaseService controller)
+        public OrderService(IDataBaseService service)
         {
-            _controller = controller;
-            _authorizationServise = new AuthorizationService(controller);
+            _service = service; 
         }
-        public void AddRange(string token, IEnumerable<CreateOrderDto> orders)
+        public OperationResult<bool> AddRange(IEnumerable<OrderModel> orders)
         {
-            if (!_authorizationServise.LoginToken(token))
+            try
             {
-                throw new Exception("Невірний токен авторизації");
+                _service.DataBaseAccess.OrderTable.AddRange(orders.ToListOrderEntity());
+                return OperationResult<bool>.Success(true);
             }
-            _controller.DataBaseAccess.OrderTable.AddRange(orders.ToListOrderEntity());
+            catch(Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message, Common.Enum.ErrorType.Server);
+            } 
         }
 
         public IEnumerable<OrderDto> GetAll(string token)
-        {
-            if (!_authorizationServise.LoginToken(token))
-            {
-                throw new Exception("Невірний токен авторизації");
-            }
-            var result = _controller.DataBaseAccess.OrderTable.GetAll();
+        { 
+            var result = _service.DataBaseAccess.OrderTable.GetAll();
 
             return result.ToOrderDto();
         }

@@ -3,6 +3,7 @@ using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -13,7 +14,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         {
             _contextDataBase = contextDataBase;
         }
-        public int Add(OperationEntity item)
+        public async Task<OperationEntity> AddAsync(OperationEntity item)
         {
             if (item.MAC != null)
             {
@@ -33,9 +34,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 item.Discount = _contextDataBase.Discounts.Find(item.Discount.ID);
             }
 
-            _contextDataBase.Operations.Add(item);
-            _contextDataBase.SaveChanges();
-            return item.ID; 
+            await _contextDataBase.Operations.AddAsync(item);
+            await _contextDataBase.SaveChangesAsync();
+            return item; 
         }
 
         public void Delete(OperationEntity item)
@@ -66,7 +67,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public OperationEntity GetLastItem(int shiftId)
         {
-            return _contextDataBase.Operations.Include(d=>d.Discount).OrderBy(i => i.ID).Where(t => t.TypeOperation == TypeOperation.FiscalCheck).Last(i => i.Shift.ID == shiftId);
+            return _contextDataBase.Operations.Include(d=>d.Discount).OrderBy(i => i.ID).LastOrDefault(i => i.Shift.ID == shiftId);
         }
 
         public OperationEntity GetLatsItem()

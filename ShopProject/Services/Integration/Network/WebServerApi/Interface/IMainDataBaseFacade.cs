@@ -14,7 +14,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Interface
         public ProductUnitController ProductUnitController { get; }
         public ProductCodeUKTZEDController ProductCodeUKTZEDController { get;  }
         public UserRoleController UserRoleController { get;}
-        public ObjectOwnerController ObjectOwnerController { get; }
+        public TaxObjectController TaxObjectController { get; }
         public OperationRecorderController OperationRecorederController { get; }
         public OperationRecorderAndUserController OperationRecorderAndUserController { get; }
         public OperationController OperationController { get; }
@@ -24,5 +24,6 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Interface
         public SignatureKeyController SignatureKeyController { get; }
         public DiscountController DiscountController { get; }
         public GiftCertificatesController GiftCertificatesController { get; }
+        public BootStrapController BootStrapController { get; }
     }
 }

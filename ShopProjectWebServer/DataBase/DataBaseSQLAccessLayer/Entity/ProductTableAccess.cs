@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
-using ShopProjectDataBase.Helper;
-using ShopProjectWebServer.DataBase.DataBaseException; 
+using ShopProjectDataBase.Helper; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
 using System.Linq;
 using System.Linq.Expressions;

@@ -20,6 +20,22 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         {
             _httpClient = httpClient; 
         }
+
+        public async Task<ApiResponse<OperationDto>> Add(CreateOperationDto item)
+        {
+            var operation = JsonSerializer.Serialize(item);
+            HttpContent httpContent = new StringContent(operation, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Operation/Add", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<OperationDto>.Unpacking(responseBody);
+
+            return result;
+        }
+
+
         public async Task<OperationІnformationDto> GetOperationsІnformation(string token, int shiftId)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsІnformation?token={token}&shiftId={shiftId}");
@@ -30,9 +46,9 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 
             return result.Data;
         }
-        public async Task<OperationInfoDto> GetOperationsInfo(string token, int shiftId)
+        public async Task<OperationInfoDto> GetOperationsInfo(int shiftId)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsInfo?token={token}&shiftId={shiftId}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsInfo?shiftId={shiftId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
@@ -62,18 +78,6 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         //    return result.Data; 
         //}
 
-        public async Task<int> AddOperation(string token, Operation item)
-        { 
-            var operation = JsonSerializer.Serialize(item.ToCreateOperationDto());
-            HttpContent httpContent = new StringContent(operation, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Operation/AddOperation?token={token}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<int>.Unpacking(responseBody);
-
-            return result.Data; 
-        }
+      
     }
 }

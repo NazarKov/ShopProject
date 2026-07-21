@@ -39,7 +39,7 @@ namespace ShopProjectDataBase.Entities
         /// </summary>
         public string Address { get; set; } = string.Empty;
 
-        public ObjectOwnerEntity? ObjectOwner { get; set; }
+        public TaxObjectEntity? TaxObject { get; set; }
         /// <summary>
         /// Список MAC яких видав ПРРО
         /// </summary>

@@ -9,7 +9,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(MediaAccessControlEntity item);
         void Delete(MediaAccessControlEntity item);
 
-        MediaAccessControlEntity GetLastMAC(Guid operationRecorderId);
+        public MediaAccessControlEntity GetLast(int workingShiftId);
         IEnumerable<MediaAccessControlEntity> GetAll();
 
         MediaAccessControlEntity GetByOperationId(int operationId);

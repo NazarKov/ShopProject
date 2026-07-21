@@ -1,8 +1,8 @@
 ﻿using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.WorkingShift;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
-using ShopProject.Services.Modules.Mapping.WorkingShift;
-using System;
+using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.WorkingShift;
+using ShopProject.Services.Modules.Mapping.WorkingShift; 
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -17,48 +17,56 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 
         public WorkingShiftContoller(HttpClient httpClient)
         {
-            _httpClient = httpClient; 
+            _httpClient = httpClient;
         }
 
-        public async Task<int> AddWorkingShift(string token, WorkingShift shift)
+        public async Task<ApiResponse<WorkingShiftDto>> AddWorkingShift(WorkingShift shift)
         {
             var content = JsonSerializer.Serialize(shift.ToCreateWorkingShiftDto());
 
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/AddWorkingShift?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/Add", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = ApiResponse<int>.Unpacking(responseBody);
+            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
 
-            return result.Data;
+            return result;
         }
 
-        public async Task<bool> UpdateWorkingShift(string token, WorkingShift shift)
+        public async Task<ApiResponse<WorkingShiftDto>> UpdateWorkingShift(WorkingShift shift)
         {
             var content = JsonSerializer.Serialize(shift.ToUpdateWorkingShiftDto());
 
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/UpdateWorkingShift?token={token}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/Update", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = ApiResponse<bool>.Unpacking(responseBody);
+            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
-
-            return result.Data;
+            return result;
         }
-        public async Task<WorkingShiftDto> GetWorkingShift(string token, string id)
+        public async Task<ApiResponse<WorkingShiftDto>> GetWorkingShift(int id)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetWorkingShift?token={token}&id={id}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetById?id={id}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
-            return result.Data;
+            return result;
+        }
+
+        public async Task<ApiResponse<WorkingShiftResourseDto>> GetResourseById(string fiscalNumberRRo)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetResourseByNumberRRO?fiscalNumberRRo={fiscalNumberRRo}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync(); 
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<WorkingShiftResourseDto>.Unpacking(responseBody);
+            return result;
         }
     }
 }

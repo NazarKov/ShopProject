@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShopProjectDataBase.Context;
+﻿using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities; 
 using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 

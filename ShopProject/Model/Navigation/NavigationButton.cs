@@ -14,10 +14,12 @@ namespace ShopProject.Model.Navigation
         RedirectToTitleView,
         ReloadProduct,
         ReloadUser,
+        ReloadTaxObject,
+        ReloadOperationRecroder,
         CountingSumaOrder,
         RemoveProduct,
         ReloadGiftCertificates,
-
+        RedirectToAssignedPointsOfSalePage,
 
         RedirectToWorkShiftMenuPage,
         RedirectToOperationsRecorderPage,

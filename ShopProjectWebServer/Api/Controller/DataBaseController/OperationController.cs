@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.DtoModels.Operation; 
+using ShopProjectWebServer.Api.DtoModels.Operation;
 using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Domain.Operation;
+using ShopProjectWebServer.Services.Modules.Domain.Operation.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.Operation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -12,33 +15,40 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class OperationController : ControllerBase
     {
-        private IOperationServise _servise;
+        private IOperationService _service;
 
-        public OperationController(IOperationServise servise)
+        public OperationController(IOperationService service)
         {
-            _servise = servise;
+            _service = service;
         }
-        [HttpPost("AddOperation")]
-        public IActionResult AddOperation([FromQuery] string token, CreateOperationDto operation)
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(CreateOperationDto operation)
         {
             try
             {
-                var id = _servise.Add(token, operation);
-                return Ok(ApiResponse<int>.Ok(id, "Обєкт збережено"));
+                var result = await _service.Add(operation.ToOperation());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<OperationDto>.Ok(result.Data.ToOperationDto(), "Обєкт створено"));
+                }
+                else
+                {
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage));
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
         [HttpGet("GetOperationsInfo")]
-        public async Task<IActionResult> GetOperationsInfo(string token, int shiftId)
+        public async Task<IActionResult> GetOperationsInfo(int shiftId)
         {
             try
             {
-                var result = _servise.GetInfo(token, shiftId);
-                return Ok(ApiResponse<OperaiontStatisticsDto>.Ok(result));
+                var result = _service.GetInfo(shiftId);
+                return Ok(ApiResponse<OperaiontStatisticsDto>.Ok(result)); 
             }
             catch (Exception ex)
             {
@@ -50,8 +60,9 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetInformation(token, shiftId);
-                return Ok(ApiResponse<OperationІnformationDto>.Ok(result));
+                //var result = _service.GetInformation(token, shiftId);
+                //return Ok(ApiResponse<OperationІnformationDto>.Ok(result));
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -64,8 +75,9 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetAll(token); 
-                return Ok(ApiResponse<IEnumerable<OperationDto>>.Ok(result));
+                //var result = _service.GetAll(token); 
+                //return Ok(ApiResponse<IEnumerable<OperationDto>>.Ok(result));
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -78,8 +90,9 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _servise.GetLast(token,shiftId); 
-                return Ok(ApiResponse<string>.Ok(result.NumberPayment)); 
+                //var result = _service.GetLast(token,shiftId); 
+                //return Ok(ApiResponse<string>.Ok(result.NumberPayment)); 
+                return Ok();
 
             }
             catch (Exception ex)

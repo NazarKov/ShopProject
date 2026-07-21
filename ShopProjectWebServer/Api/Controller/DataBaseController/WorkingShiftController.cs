@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ShopProjectWebServer.Api.Common;
-using ShopProjectWebServer.Api.DtoModels.MediaAccessControl;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ShopProjectWebServer.Api.Common; 
 using ShopProjectWebServer.Api.DtoModels.WorkingShift;
 using ShopProjectWebServer.Api.Mappings; 
-using ShopProjectWebServer.DataBase;
-using ShopProjectWebServer.Services.Modules.Domain.WorkingShift;
-using System.Text.Json;
+using ShopProjectWebServer.Services.Modules.Domain.WorkingShift.Interface;
+using ShopProjectWebServer.Services.Modules.Mapping.WorkingShift; 
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -13,60 +12,89 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
     [ApiController]
     public class WorkingShiftController : ControllerBase
     {
-        private IWorkingShiftServise _servise;
+        private IWorkingShiftService _service;
 
-        public WorkingShiftController(IWorkingShiftServise servise)
+        public WorkingShiftController(IWorkingShiftService service)
         {
-            _servise = servise;
+            _service = service;
         }
-
-        [HttpPost("AddWorkingShift")]
-        public async Task<IActionResult> AddWorkingShift([FromQuery] string token, CreateWorkingShiftDto item )
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add(CreateWorkingShiftDto item )
         {
             try
             {
-                var result =  _servise.Add(token, item);
-                return Ok(ApiResponse<int>.Ok(result, "Обєкт створено"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
-
-        [HttpPost("UpdateWorkingShift")]
-        public async Task<IActionResult> UpdateWorkingShift([FromQuery] string token, UpdateWorkingShiftDto item)
-        {
-            try
-            {
-                _servise.Update(token, item);
-
-                return Ok(ApiResponse<bool>.Ok(true, "Обєкт оновлено"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
-
-        [HttpGet("GetWorkingShift")]
-        public async Task<IActionResult> GetWorkingShift([FromQuery] string token, [FromQuery] string id)
-        {
-            try
-            {
-                var result = _servise.GetById(token, id);
-
-                return Ok(ApiResponse<WorkingShiftDto>.Ok(result));
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                if (invalidOperationException.Message == "Sequence contains no elements")
+                var result = await _service.Add(item.ToWorkingShift());
+                if (result.IsSuccess)
                 {
-                    return Ok(ApiResponse<WorkingShiftDto>.Ok(new WorkingShiftDto()));
+                    return Ok(ApiResponse<WorkingShiftDto>.Ok(result.Data.ToWorkingShiftDto(), "Обєкт створено"));
                 }
                 else
                 {
-                    return BadRequest(ApiResponse<string>.Fail(invalidOperationException.Message));
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage));
+                } 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(UpdateWorkingShiftDto item)
+        {
+            try
+            {
+                var result = await _service.Update(item.ToWorkingShift());
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<WorkingShiftDto>.Ok(result.Data.ToWorkingShiftDto(), "Обєкт оновлено"));
+                }
+                else
+                {
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById([FromQuery] int id)
+        {
+            try
+            {
+                var result = await _service.GetById(id);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<WorkingShiftDto>.Ok(result.Data.ToWorkingShiftDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpGet("GetResourseByNumberRRO")]
+        public async Task<IActionResult> GetResourseByNumberRRO([FromQuery] string fiscalNumberRRo)
+        {
+            try
+            {
+                var result = await _service.GetResourseByWorkingShift(fiscalNumberRRo);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<WorkingShiftResourseDto>.Ok(result.Data.ToWorkingShiftDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<string>.Fail(result.ErrorMessage));
                 }
             }
             catch (Exception ex)

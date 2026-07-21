@@ -16,31 +16,33 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             _contextDataBase = contextDataBase;
         }
 
-        public void Add(OperationsRecorderEntity item)
+        public async Task<OperationsRecorderEntity> AddAsync(OperationsRecorderEntity item)
         { 
-            _contextDataBase.OperationsRecorders.Add(item);
-            _contextDataBase.SaveChanges();
+            await _contextDataBase.OperationsRecorders.AddAsync(item);
+            await _contextDataBase.SaveChangesAsync();
+            return item;
+        }
+
+        public async Task<IEnumerable<OperationsRecorderEntity>> AddRangeAsync(IEnumerable<OperationsRecorderEntity> items)
+        {
+            await _contextDataBase.OperationsRecorders.AddRangeAsync(items);
+            await _contextDataBase.SaveChangesAsync();
+            return items;
         }
 
         public void AddBinding(Guid idoperationrecoreder, Guid idobjectowner)
         {
             _contextDataBase.OperationsRecorders.Load();
-            _contextDataBase.ObjectOwners.Load();
+            _contextDataBase.TaxObject.Load();
 
             var item = _contextDataBase.OperationsRecorders.Where(i => i.ID == idoperationrecoreder).FirstOrDefault();
             if (item != null)
             {
-                item.ObjectOwner = _contextDataBase.ObjectOwners.Where(i => i.ID == idobjectowner).FirstOrDefault();
+                item.TaxObject = _contextDataBase.TaxObject.Where(i => i.ID == idobjectowner).FirstOrDefault();
             }
             _contextDataBase.SaveChanges();
         }
-
-        public void AddRange(IEnumerable<OperationsRecorderEntity> items)
-        { 
-            _contextDataBase.OperationsRecorders.AddRange(items);
-            _contextDataBase.SaveChanges();
-        }
-
+         
         public void Delete(OperationsRecorderEntity item)
         {
 
@@ -72,34 +74,15 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             var result = query.ToList();
             return result;
-        } 
-        public IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId)
-        {
-
-            var result = _contextDataBase.OperationsRecorderUsers
-                            .Where(u => u.Users.ID == userId
-                                        && u.OpertionsRecorders.Name.Contains(item)).Include(o=>o.OpertionsRecorders.ObjectOwner)
-                            .Select(u => u.OpertionsRecorders)
-                            .Distinct()
-                            .ToList();
-            return result;
-        }
-
-        public IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId)
-        {
-
-            var result = _contextDataBase.OperationsRecorderUsers
-                            .Where(u => u.Users.ID == userId
-                                        && u.OpertionsRecorders.FiscalNumber.Contains(item))
-                            .Select(u => u.OpertionsRecorders)
-                            .Distinct()
-                            .ToList();
-            return result; 
-        }
-
+        }   
         public void Update(OperationsRecorderEntity item)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> ExistsByName(string name)
+        {
+            return await _contextDataBase.OperationsRecorders.AnyAsync(p => p.Name == name);
         }
     }
 }

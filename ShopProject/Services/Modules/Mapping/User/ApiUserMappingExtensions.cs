@@ -2,6 +2,7 @@
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.SignatureKey;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.User;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.UserRole;
+using ShopProject.Services.Modules.Mapping.SignatureKey;
 using ShopProject.Services.Modules.Mapping.UserRole;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,9 @@ namespace ShopProject.Services.Modules.Mapping.User
                 Password = user.Password,
                 TIN = user.TIN, 
             };
-            if (user.SignatureKeyID != null)
+            if (user.SignatureKey != null)
             {
-                result.SignatureKey = new ShopProject.Model.Domain.SignatureKey.SignatureKey() { ID = Guid.Parse(user.SignatureKeyID) };
+                result.SignatureKey = user.SignatureKey.ToSignatureKey();
             }
 
             result.Role = usersRoleDto.Where(i => i.ID == user.UserRoleID).First().ToUserRole();
@@ -57,7 +58,10 @@ namespace ShopProject.Services.Modules.Mapping.User
                 TIN = user.TIN,
                 Token = user.Token, 
             };
-            result.Role = usersRoleDto.Where(i => i.ID == user.UserRoleID).First().ToUserRole();
+            if (usersRoleDto != null && usersRoleDto.Count()>0)
+            {
+                result.Role = usersRoleDto.Where(i => i.ID == user.UserRoleID).First().ToUserRole();
+            }
             return result;
         }
 
@@ -117,6 +121,40 @@ namespace ShopProject.Services.Modules.Mapping.User
                 item.SignatureKey.Signature = user.SignatureKey.Signature;
             }
             return item;
+        }
+
+        public static UserDto ToUserDto(this ShopProject.Model.Domain.User.User user, IEnumerable<UserRoleDto> usersRoleDto)
+        {
+            var result = new UserDto()
+            {
+                ID = user.ID.ToString(),
+                AutomaticLogin = user.AutomaticLogin,
+                Status = (int)user.Status,
+                CreatedAt = user.CreatedAt,
+                Email = user.Email,
+                FullName = user.FullName,
+                Login = user.Login,
+                Password = user.Password,
+                TIN = user.TIN, 
+            };
+            if (user.SignatureKey != null)
+            {
+                result.SignatureKey = user.SignatureKey.ToSignatureKeyDto();
+            }
+            if (user.Role != null)
+            {
+                result.UserRoleID = usersRoleDto.Where(i => i.ID == user.Role.ID).First().ID;
+            }
+            return result;
+        }
+        public static IEnumerable<UserDto> ToUserDto(this IEnumerable<ShopProject.Model.Domain.User.User> users, IEnumerable<UserRoleDto> usersRoleDto)
+        {
+            var result = new List<UserDto>();
+            foreach (var user in users)
+            {
+                result.Add(ToUserDto(user, usersRoleDto));
+            }
+            return result;
         }
     }
 }

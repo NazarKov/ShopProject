@@ -1,10 +1,13 @@
-﻿using ShopProject.Helpers;
+﻿using Azure;
+using ShopProject.Helpers;
 using ShopProject.Model.Exceptions;
 using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Services.Modules.Common.Enum;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
 using ShopProject.Services.Modules.Mapping.ProductUnit;
 using ShopProject.Services.Modules.Mapping.SignatureKey;
+using ShopProject.Services.Modules.Mapping.User;
 using ShopProject.Services.Modules.Mapping.UserRole;
 using ShopProject.Services.Modules.Resourse.Interface;
 using ShopProject.Services.Modules.Session.Interface;
@@ -14,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZXing.Aztec.Internal;
 
 namespace ShopProject.Services.Modules.Resourse
 {
@@ -41,37 +45,36 @@ namespace ShopProject.Services.Modules.Resourse
                 return true;
             }
         }
-        public async Task LoadSessionResourse()
+        public async Task LoadStartData()
         {
-            var user = _sessionService.User;
-            if (user == null) 
+            var response = await _mainWebServerService.DataBase.BootStrapController.GetStartData();
+            if ((ResultStatus)response.Status == ResultStatus.Success)
             {
-                throw new AuthorizationException("Помилка авторизації");
+                _sessionService.Roles = response.Data.Roles.ToUserRole();
+                _sessionService.ProductCodesUKTZED = response.Data.ProductCodeUKTZEDs.ToProductCodeUKTZED();
+                _sessionService.ProductUnits = response.Data.ProductUnits.ToProductUnit();
             }
-            var token = _sessionService.User.Token;
-            if (token == null) 
+            else
             {
-                throw new AuthorizationException("Помилка авторизації"); 
-            }
-
-            try
-            {
-                if (await _mainWebServerService.IsConnectServer())
-                {
-                    _sessionService.Roles = (await _mainWebServerService.DataBase.UserRoleController.GetRoles(token)).ToUserRole();
-                    _sessionService.ProductUnits = (await _mainWebServerService.DataBase.ProductUnitController.GetAll()).Data.ToProductUnit();
-                    _sessionService.ProductCodesUKTZED = (await _mainWebServerService.DataBase.ProductCodeUKTZEDController.GetAll()).Data.ToProductCodeUKTZED();
-
-                    //_sessionService.User = await _mainWebServerService.DataBase.UserController.GetUser(token);
-                    _sessionService.User.Token = token;
-                    _sessionService.User.SignatureKey = (await _mainWebServerService.DataBase.SignatureKeyController.GetKey(token)).ToSignatureKey();
-
-                }
-            }
-            catch(Exception ex)
-            {
-                //throw new Exception(ex.Message);
+                throw new Exception("Невдалося заватажити ресурси");
             }
         } 
+
+        public async Task LoadUserData()
+        {
+            var response = await _mainWebServerService.DataBase.UserController.GetUser(_sessionService.User.Token);
+            if((ResultStatus)response.Status == ResultStatus.Success)
+            {
+                _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+            }
+            else
+            {
+                throw new Exception("Невдалося заватажити ресурси");
+            }
+        }
+
+
+
+
     }
 }

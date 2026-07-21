@@ -6,14 +6,19 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
 {
     public interface IOperationRecorderTableAccess
     {
-        void Add(OperationsRecorderEntity item);
-        void AddRange(IEnumerable<OperationsRecorderEntity> items);
+        public Task<OperationsRecorderEntity> AddAsync(OperationsRecorderEntity item);
+        public Task<IEnumerable<OperationsRecorderEntity>> AddRangeAsync(IEnumerable<OperationsRecorderEntity> items); 
+
+ 
+
         void AddBinding(Guid idoperationrecoreder, Guid idobjectowner);
         void Update(OperationsRecorderEntity item);
         void Delete(OperationsRecorderEntity item);
         IEnumerable<OperationsRecorderEntity> GetAll();
-        IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId);
-        IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId);
-        IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status); 
+        //IEnumerable<OperationsRecorderEntity> SearchByNameAndUser(string item, Guid userId);
+        //IEnumerable<OperationsRecorderEntity> SearchByNumberAndUser(string item, Guid userId);
+        IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status);
+
+        public Task<bool> ExistsByName(string name);
     }
 } 
