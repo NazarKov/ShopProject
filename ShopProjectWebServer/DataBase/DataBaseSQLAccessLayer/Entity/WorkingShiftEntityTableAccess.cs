@@ -52,10 +52,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             if (shift != null)
             {
                 shift.AmountOfFundsIssued = item.AmountOfFundsIssued;
-                shift.AmountOfFundsReceived = item.AmountOfFundsReceived;
-
-                shift.AmountOfOfficialFundsIssuedCard = item.AmountOfOfficialFundsIssuedCard;
-                shift.AmountOfOfficialFundsReceivedCard = item.AmountOfOfficialFundsReceivedCard;
+                shift.AmountOfFundsReceived = item.AmountOfFundsReceived; 
 
                 shift.AmountOfOfficialFundsReceivedCash = item.AmountOfOfficialFundsReceivedCash;
                 shift.AmountOfOfficialFundsIssuedCash = item.AmountOfOfficialFundsIssuedCash;

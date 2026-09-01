@@ -14,6 +14,8 @@ using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
 using ShopProject.Services.Integration.Windows.WindowsService;
 using ShopProject.Services.Integration.Windows.WindowsService.Interface;
+using ShopProject.Services.Modules.Control;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.OperationRecorder;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu;
@@ -32,7 +34,6 @@ using ShopProject.Services.Modules.Domain.UserRole;
 using ShopProject.Services.Modules.Domain.UserRole.Interface;
 using ShopProject.Services.Modules.Main;
 using ShopProject.Services.Modules.Main.Interface;
-using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.Services.Modules.NetworkUrlScanner;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Resourse;
@@ -47,7 +48,8 @@ using ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder;
 using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject;
 using ShopProject.ViewModel.AdminPage.Storage.Product;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
-using ShopProject.ViewModel.AdminPage.User;
+using ShopProject.ViewModel.AdminPage.UserManagement;
+using ShopProject.ViewModel.AdminPage.UserManagement.User;
 using ShopProject.ViewModel.Authorization;
 using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Main;
@@ -98,6 +100,8 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterTransient<CreateUserViewModel, CreateUserViewModel>();
             factory.RegisterTransient<UpdateUserViewModel, UpdateUserViewModel>();
 
+            factory.RegisterScoped<UserManagementViewModel, UserManagementViewModel>();
+
             factory.RegisterScoped<SettingProfileViewModel, SettingProfileViewModel>();
             factory.RegisterScoped<SettingStorageViewModel, SettingStorageViewModel>();
             factory.RegisterScoped<SettingPrintingStickerViewModel, SettingPrintingStickerViewModel>();
@@ -117,6 +121,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<OperationRecordersDataViewModel, OperationRecordersDataViewModel>();
             factory.RegisterTransient<CreateOperationRecorederViewModel, CreateOperationRecorederViewModel>();
             factory.RegisterTransient<CreateOperationRecorderFromKeyViewModel, CreateOperationRecorderFromKeyViewModel>();
+            factory.RegisterTransient<UpdateTaxObjectViewModel, UpdateTaxObjectViewModel>();
 
             factory.RegisterScoped<AssignedPointsOfSaleViewModel, AssignedPointsOfSaleViewModel>();
             factory.RegisterScoped<WorkShiftMenuViewModel, WorkShiftMenuViewModel>();
@@ -159,6 +164,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<IWebServerStatusService, WebServerStatusService>();
             factory.RegisterScoped<IUserRoleService, UserRoleService>();
             factory.RegisterScoped<IWorkingShfitOperationService,WorkingShiftOperationService>();
+            factory.RegisterScoped<IMessageBoxControlService, MessageBoxControlService>();
         }
     }
 }

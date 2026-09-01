@@ -14,7 +14,8 @@ namespace ShopProject.Model.UI.User
             {
                 "Не визначений",
                 "Цийфровий підпис завантажений",
-                "Цифровий підпис відсутній", 
+                "Цифровий підпис відсутній",
+                "Профіль вимкнено",
             };
         }
         public static List<string> GetUserStatusForStorage()

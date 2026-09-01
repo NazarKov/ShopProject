@@ -1,23 +1,25 @@
-﻿using ShopProject.Model.Domain.MediaAccessControl;
-using ShopProject.Model.Enum;
+﻿using ShopProject.Model.Enum;
 using ShopProject.Model.UI.Discount;
 using ShopProject.Model.UI.MediaAccessControl;
-using ShopProject.Model.UI.Order;
+using ShopProject.Model.UI.Order; 
 using ShopProject.Model.UI.WorkingShift;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq; 
 
 namespace ShopProject.Model.UI.Operation
 {
-    internal class OperationModel
+    public class OperationModel
     {
         public int ID { get; set; }
         public string FiscalServerId { get; set; } = string.Empty;
         public TypePayment TypePayment { get; set; }
+        public string TypePaymentString
+        {
+            get { return OperationTypePaymentStatusModel.GetStatus().ElementAt(System.Enum.GetValues<TypePayment>().ToList().IndexOf(TypePayment)); }
+            set { TypePayment = System.Enum.GetValues<TypePayment>().ToList().ElementAt(OperationTypePaymentStatusModel.GetStatus().IndexOf(value)); }
+        }
         public TypeOperation TypeOperation { get; set; }
         public decimal BuyersAmount { get; set; } = decimal.Zero;
         public decimal RestPayment { get; set; } = decimal.Zero;

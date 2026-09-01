@@ -10,6 +10,7 @@ namespace ShopProject.Model.Enum
     {
         Unknown,
         AvailableElectronicKey,
-        NotAvailableElectronicKey
+        NotAvailableElectronicKey,
+        ProfileIsDisabled,
     }
 }

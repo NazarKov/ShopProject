@@ -1,8 +1,7 @@
-﻿using ShopProject.Model.Domain.OperationRecorder;
-using ShopProject.Model.Domain.Paginator;
+﻿using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Domain.TaxObjectUser;
 using ShopProject.Model.Domain.WorkingShift;
-using ShopProject.Model.Enum;
+using ShopProject.Model.Enum; 
 using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi;
 using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
@@ -112,6 +111,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
 
         public async Task<OperationResult<TaxObjectModel>> Add(TaxObjectModel taxObject)
         {
+            taxObject.TypeStatus = TypeStatusTaxObject.Open;
             var result = new OperationResult<TaxObjectModel>();
             result.Data = taxObject;
             Validation(result);
@@ -146,6 +146,10 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
         public async Task<OperationResult<IEnumerable<TaxObjectModel>>> AddRange(IEnumerable<TaxObjectModel> taxObjects)
         {
             var result = new OperationResult<IEnumerable<TaxObjectModel>>();
+            foreach (var taxObject in taxObjects) 
+            {
+                taxObject.LoadTaxServer = true;
+            }
             result.Data = taxObjects;
             var response = await _webServerService.DataBase.TaxObjectController.AddRange(result.Data.ToCreateTaxObject());
 
@@ -380,7 +384,11 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
 
         public void SetPoinOfSaleOnSession(TaxObjectModel taxObject, ShopProject.Model.Domain.OperationRecorder.OperationRecorder operationRecorder)
         {
-            var workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
+            var workingShift = new WorkingShift();
+            if (_sessionService.WorkingShiftStatus != null)
+            {
+                workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
+            }
             _sessionService.WorkingShiftStatus = new ShopProject.Model.Domain.WorkingShift.WorkingShiftStatus()
             { 
                 TaxObject = taxObject,
@@ -392,5 +400,47 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
             }
         }
 
+        public async Task<OperationResult<bool>> UpdateParameter(string parameter, object value, TaxObjectModel item)
+        {
+            var result = new OperationResult<bool>();
+            var response = await _webServerService.DataBase.TaxObjectController.UpdateParameter(parameter, value, item.ID.ToString());
+
+            result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+            result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+            result.ErrorMessage = response.Error;
+            result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+            result.ValidationErrors = response.Errors;
+            return result;
+        }
+
+        public async Task<OperationResult<TaxObjectModel>> Update(TaxObjectModel taxObject)
+        {
+            taxObject.TypeStatus = TypeStatusTaxObject.Open;
+            var result = new OperationResult<TaxObjectModel>();
+            result.Data = taxObject;
+            Validation(result);
+            if (result.IsError)
+            {
+                return result;
+            }
+            if (result.IsSuccess)
+            {
+                var response = await _webServerService.DataBase.TaxObjectController.Update(result.Data.ToUpdateTaxObjectDto());
+                 
+                result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                result.ErrorMessage = response.Error;
+                result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                result.ValidationErrors = response.Errors;
+
+                return result;
+            }
+
+            return new OperationResult<TaxObjectModel>()
+            {
+                ErrorMessage = "Невдалося викоанти операцію",
+                Status = ResultStatus.Error,
+            };
+        }
     }
 }

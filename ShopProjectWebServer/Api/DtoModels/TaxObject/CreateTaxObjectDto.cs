@@ -38,5 +38,7 @@ namespace ShopProjectWebServer.Api.DtoModels.TaxObject
         public string KATOTTG { get; set; } = string.Empty; 
         [JsonPropertyName("NameOwner")]
         public string NameOwner { get; set; } = string.Empty;
+        [JsonPropertyName("LoadTaxServer")]
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

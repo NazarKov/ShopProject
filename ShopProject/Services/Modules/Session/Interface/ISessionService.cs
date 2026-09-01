@@ -1,4 +1,5 @@
-﻿using ShopProject.Model.Domain.Product;
+﻿using ShopProject.Model.Domain.Operation;
+using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Domain.TaxObject;
@@ -7,10 +8,7 @@ using ShopProject.Model.Domain.UserRole;
 using ShopProject.Model.Domain.WorkingShift;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel; 
 using System.Windows.Controls;
 
 namespace ShopProject.Services.Modules.Session.Interface
@@ -32,6 +30,7 @@ namespace ShopProject.Services.Modules.Session.Interface
         public User UpdateUser { get; set; } 
         public TaxObject BindingTaxObject { get; set; }
 
+        public Operation Operation { get; set; }
 
         public bool CheckingSession();
         public bool CheckAndLoadWorkingShiftStatus();

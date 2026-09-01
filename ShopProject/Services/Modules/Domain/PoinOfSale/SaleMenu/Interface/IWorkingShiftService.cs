@@ -20,6 +20,8 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface
         public void SetWorkingShiftStatusOnSetting(ShopProject.Model.Domain.WorkingShift.WorkingShiftStatus item);
         public ShopProject.Model.Domain.WorkingShift.WorkingShiftStatus GetWorkingShiftStatusFromSetting();
 
+        public Task<OperationInfo> GetOperationInfo(int id);
+        public Operation GetOperationSession();
         public bool IsTestMode(); 
         //public void AddKey(SignatureKey key);  
         //public  Task<ShopProject.Model.Domain.WorkingShift.WorkingShift> GetWorkingShift(string id);

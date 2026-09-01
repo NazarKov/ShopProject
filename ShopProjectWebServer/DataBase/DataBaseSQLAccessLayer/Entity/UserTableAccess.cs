@@ -31,7 +31,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
         public async Task UpdateAsync(UserEntity item)
         {
-            var user = _contextDataBase.Users.Find(item.ID);
+            var user = _contextDataBase.Users.Include(u=>u.SignatureKey).First(u=>u.ID == item.ID);
             if (user != null)
             {
                 user.Login = item.Login;
@@ -39,10 +39,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 user.Email = item.Email;
                 user.FullName = item.FullName;
                 user.TIN = item.TIN;
-                user.Status = item.Status;
+               
 
 
-                if (item.SignatureKey != null)
+                if (item.SignatureKey != null && user.Status == TypeStatusUser.NotAvailableElectronicKey)
                 {
                     await _contextDataBase.ElectronicSignatureKeys.AddAsync(item.SignatureKey);
                     user.SignatureKey = item.SignatureKey;
@@ -60,6 +60,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                         user.UserRole = role;
                     }
                 }
+                user.Status = item.Status;
+
                 await _contextDataBase.SaveChangesAsync();
             }  
         }
@@ -84,6 +86,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                     case nameof(user.Email):
                         {
                             user.Email = valueParameter.ToString();
+                            break;
+                        }
+                    case nameof(user.Status):
+                        {
+                            user.Status = Enum.Parse<TypeStatusUser>(valueParameter.ToString());
                             break;
                         }
                 }

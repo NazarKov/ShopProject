@@ -437,8 +437,7 @@ namespace ShopProject.Services.Modules.Domain.Product
                 return (await _webServerService.DataBase.ProductController.GetProductInfo(_token)).ToProductsInfo();
             }
             catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
+            { 
                 return new ProductsInfo();
             }
         } 
@@ -476,21 +475,7 @@ namespace ShopProject.Services.Modules.Domain.Product
                 throw new Exception("Невдалося завантажити товар");
             }
             return items;
-        }
-
-        //public async Task<ShopProject.Model.Domain.Product.Product> GetItem(string itemSearch)
-        //{
-        //    try
-        //    {
-        //        var item = (await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, itemSearch)).ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
-        //        return item;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ShopProject.Model.Domain.Product.Product();
-        //    }
-        //}
-
+        } 
         public async Task<IEnumerable<ShopProject.Model.Domain.Product.Product>> GetItems()
         {
             try
@@ -502,25 +487,7 @@ namespace ShopProject.Services.Modules.Domain.Product
             {
                 return null;
             }
-        }
-
-        //public async Task<ShopProject.Model.Domain.Product.Product>? Search(string barCode)
-        //{
-        //    try
-        //    {
-        //        var item = await _webServerService.DataBase.ProductController.GetProductByBarCode(_token, barCode);
-        //        if (item == null)
-        //        {
-        //            return null;
-        //        }
-        //        return item.ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return null;
-        //    }
-        //} 
+        } 
     }
 
 }

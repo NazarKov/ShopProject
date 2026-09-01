@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.Services.Modules.Model.WorkingShift.Interface
+namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface
 {
     internal interface ISaleMenuService
     {

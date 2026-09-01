@@ -70,8 +70,10 @@ namespace ShopProjectDataBase.Entities
         /// </summary>
         public string KATOTTG { get; set; } = string.Empty;
         /// <summary>
-        /// список привязаних РРО до однієї Точки
-        /// </summary>   
+        /// Чи заватжений обєкт з фіскального сервера
+        /// </summary>
+        public bool LoadTaxServer { get; set; } = false;
+
         public ICollection<TaxObjectUserEnitity>? Users { get; set; }
         public ICollection<OperationsRecorderEntity>? OperationsRecorder { get; set; }
     }

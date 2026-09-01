@@ -104,31 +104,6 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder
         { 
            // _controller.DataBaseAccess.OperationRecorderTable.AddBinding(Guid.Parse(idoperationrecoreder),Guid.Parse(idobjectowner));
             return true;
-        }
-
-        
-
-        public bool Delete(string token, string id)
-        { 
-            //_controller.DataBaseAccess.OperationRecorderTable.Delete(new ShopProjectDataBase.Entities.OperationsRecorderEntity() { ID = Guid.Parse(id)});
-            return true;
-        }
-
-        //public IEnumerable<OperationRecorderDto> GetOperationRecorders(string token)
-        //{ 
-        //    return _controller.DataBaseAccess.OperationRecorderTable.GetAll().ToOperationRecorderDto();
-        //}
-
-        //public IEnumerable<OperationRecorderDto> GetOperationRecordersByNameAndUser(string token, string name, Guid userId)
-        //{
-            
-        //    return _controller.DataBaseAccess.OperationRecorderTable.SearchByNameAndUser(name, userId).ToOperationRecorderDto();
-        //}
- 
-
-        //public IEnumerable<OperationRecorderDto> GetOperationRecordersByNumberAndUser(string token, string number, Guid userId)
-        //{ 
-        //    return _controller.DataBaseAccess.OperationRecorderTable.SearchByNumberAndUser(number, userId).ToOperationRecorderDto();
-        //}   => GetOperationRecordersByNamePageColumn(token, string.Empty, page, countColumn, status);
+        } 
     }
 }

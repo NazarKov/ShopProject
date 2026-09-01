@@ -81,12 +81,18 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             }
         }
         [Authorize(AuthenticationSchemes = "ApiAuthorization")]
-        [HttpPost("Delete")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost("UpdateParameter")]
+        public async Task<IActionResult> UpdateParameter([FromQuery] string parameter, [FromQuery] string value, UpdateUserDto userDto)
         {
             try
             {
-                var result = _service.Delete(id);
+                var validation = _updateValidator.Validation(userDto);
+                if (!validation.isValid)
+                {
+                    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                }
+
+                var result = await _service.UpdateParameter(userDto.ID,parameter, value);
 
                 if (result.IsSuccess)
                 {

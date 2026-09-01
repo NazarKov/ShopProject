@@ -42,5 +42,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.DtoModels.TaxObj
 
         [JsonPropertyName("NameOwner")]
         public string NameOwner { get; set; } = string.Empty;
+        [JsonPropertyName("LoadTaxServer")]
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

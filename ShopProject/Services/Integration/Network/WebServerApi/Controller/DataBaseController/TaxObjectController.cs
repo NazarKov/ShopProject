@@ -116,41 +116,31 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             return result;
         }
 
-
-
-        public async Task<bool> DeleteObjectsOwner(string token, TaxObject item)
+        public async Task<ApiResponse<bool>> Update(UpdateTaxObjectDto item)
         {
             var content = JsonSerializer.Serialize(item);
-
-
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ObjectOwner/DeleteObjectsOwner?token={token}&id={item.ID}", httpContent);
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/TaxObject/Update", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
+        public async Task<ApiResponse<bool>> UpdateParameter(string parameter, object value, string id)
+        {
+            var content = JsonSerializer.Serialize(id);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-      
-
-        public async Task<IEnumerable<TaxObjectDto>> GetObjectsOwners(string token)
-        { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ObjectOwner/GetObjectsOwners?token={token}");
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/TaxObject/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent);
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-            var result = ApiResponse<IEnumerable<TaxObjectDto>>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
 
-            return result.Data; 
-        }
-
-      
-
-        
-
+            return result;
+        } 
     }
 }

@@ -1,6 +1,5 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.User;
 using ShopProject.Model.Enum;
@@ -12,9 +11,8 @@ using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Mapping.Operation;
 using ShopProject.Services.Modules.Mapping.Product;
-using ShopProject.Services.Modules.Model.WorkingShift.Interface;
 using ShopProject.View.UserPage.PointOfSale.SaleMenu.PaymentMethod;
-using System; 
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -37,15 +35,12 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         private ICommand _printingCheckCommand;
       
         private ICommand _sendReturnCheckCommand;
-        private Guid _idChannel;
-        private User _user;
-        private StorageSetting _setting; 
+        private Guid _idChannel;  
 
         private ISaleMenuService _saleMenuService;
-        private IProductServiсe _productServiсe;
-        private IWorkingShiftService _workingShiftService;
+        private IProductServiсe _productServiсe; 
          
-        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe, IWorkingShiftService workingShiftService)
+        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe)
         {
             _saleMenuService = saleMenuService;
             _productServiсe = productServiсe;
@@ -58,17 +53,13 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _sendReturnCheckCommand = CreateCommandAsync(ReturnCheck);
 
             _operationSaleInfo = new OperationSaleInfoModel(); 
-            _barCodeSearch = string.Empty;  
-            _user = new User(); 
-            _setting = new StorageSetting(); 
+            _barCodeSearch = string.Empty;   
             _isEnableSendCheckButton = false;
-            PaymentMenthod = new UserControl();
-            _visibilitiCheckMenu = Visibility.Collapsed;
-            _workingShiftService = workingShiftService;
+            _paymentMenthod = new UserControl();
+            _visibilitiCheckMenu = Visibility.Collapsed; 
         }
         public Task LoadResourse()
-        {
-            SafeExecute(SetFieldPage);
+        { 
             SafeExecute(ClearField);
             return Task.CompletedTask;
         } 
@@ -113,13 +104,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, CountingSumaOrder);
             MediatorService.AddEvent<object>(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, RemoveItem);
             EnableButton();
-        } 
-        private void SetFieldPage()
-        { 
-            //DrawingCheck = _saleMenuService.IsDrawinfChek;
-
-            //_user = _saleMenuService.GetUserFromSession(); 
-        } 
+        }  
 
         public ICommand SearchBarCodeCommand => _searchBarCodeCommand;
          
@@ -272,7 +257,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 {
                     await _saleMenuService.SendCheck(OperationSaleInfo.ToOperationInfoSale());
 
-                    MessageBox.Show("ok");
+                    await MediatorService.ExecuteEventAsync("FiscalCheckSuccess");
                     IsEnableSendCheckButton = true;
                     ClearField();
                 }

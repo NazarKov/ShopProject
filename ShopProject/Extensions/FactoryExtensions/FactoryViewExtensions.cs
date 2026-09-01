@@ -1,4 +1,5 @@
-﻿using ShopProject.Infrastructure.CompositionRoot;
+﻿using ShopProject.Controls.MessegeBox;
+using ShopProject.Infrastructure.CompositionRoot;
 using ShopProject.View.AdminPage.Dashboard;
 using ShopProject.View.AdminPage.PointOfSale;
 using ShopProject.View.AdminPage.PointOfSale.OperationRecorder;
@@ -6,8 +7,9 @@ using ShopProject.View.AdminPage.PointOfSale.TaxObject;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
-using ShopProject.View.AdminPage.Storage.ProductUnit;
-using ShopProject.View.AdminPage.User;
+using ShopProject.View.AdminPage.Storage.ProductUnit; 
+using ShopProject.View.AdminPage.UserManagement;
+using ShopProject.View.AdminPage.UserManagement.User;
 using ShopProject.View.Authorization;
 using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Main;
@@ -51,9 +53,12 @@ namespace ShopProject.Extensions.FactoryExtensions
             
             factory.Register<StorageView>(()=>new StorageView());
 
+
             factory.Register<UsersDataView>(()=>new UsersDataView());
             factory.Register<CreateUserView>(()=>new CreateUserView());
             factory.Register<UpdateUserView>(()=>new UpdateUserView());
+
+            factory.Register<UserManagementView>(()=>new UserManagementView());
 
             factory.Register<SettingProfileView>(()=>new SettingProfileView());
             factory.Register<SettingStorageView>(()=>new SettingStorageView());
@@ -69,6 +74,7 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.Register<CreateTaxObjectView>(()=>new CreateTaxObjectView());
             factory.Register<CreateTaxObjectFromKeyView>(()=>new CreateTaxObjectFromKeyView());
+            factory.Register<UpdateTaxObjectView>(()=>new UpdateTaxObjectView());
 
             factory.Register<CreateOperationRecorederView>(()=>new CreateOperationRecorederView());
             factory.Register<CreateOperationRecorderFromKeyView>(()=>new CreateOperationRecorderFromKeyView());
@@ -85,6 +91,8 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.Register<ConnectionLostView>(()=>new ConnectionLostView());
             factory.Register<AuthorizationView>(() => new AuthorizationView());
+
+            factory.Register<MessegeBoxView>(() => new MessegeBoxView());
         }
     }
 }

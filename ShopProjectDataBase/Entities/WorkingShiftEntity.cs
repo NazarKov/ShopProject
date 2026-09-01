@@ -53,15 +53,7 @@ namespace ShopProjectDataBase.Entities
         /// <summary>
         /// Загальна сума службрвих видач коштів готівка
         /// </summary>
-        public decimal AmountOfOfficialFundsIssuedCash { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службових внесень коштів  карта
-        /// </summary>
-        public decimal AmountOfOfficialFundsReceivedCard { get; set; } = decimal.Zero;
-        /// <summary>
-        /// Загальна сума службрвих видач коштів карта
-        /// </summary>
-        public decimal AmountOfOfficialFundsIssuedCard { get; set; } = decimal.Zero;
+        public decimal AmountOfOfficialFundsIssuedCash { get; set; } = decimal.Zero; 
         /// <summary>
         /// Загальна сума чеків за зміну 
         /// </summary>

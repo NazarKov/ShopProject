@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
-using ShopProject.Core.Mvvm;
-using System.Windows.Controls;
-using ShopProject.ViewModel.AdminPage.Storage.Product;
-using ShopProject.View.AdminPage.Storage.Product;
-using System.Collections.ObjectModel;
-using ShopProject.View.AdminPage.Storage.ProductUnit;
-using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
-using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
+﻿using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.View.AdminPage.Storage.Product;
+using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
+using ShopProject.View.AdminPage.Storage.ProductUnit;
+using ShopProject.ViewModel.AdminPage.Storage.Product;
+using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ShopProject.ViewModel.StoragePage
 {
@@ -16,8 +18,17 @@ namespace ShopProject.ViewModel.StoragePage
         public StorageViewModel()
         {
             _tabs = new ObservableCollection<TabItem>();
-        }
 
+            _generalShadowVisibility = Visibility.Collapsed;
+            MediatorService.AddEventAsync("StorageSnadowSetVissible", async () => { GeneralShadowVisibility = Visibility.Visible; });
+            MediatorService.AddEventAsync("StorageSnadowSetCollapsed", async () => { GeneralShadowVisibility = Visibility.Collapsed; });
+        }
+        private Visibility _generalShadowVisibility;
+        public Visibility GeneralShadowVisibility
+        {
+            get { return _generalShadowVisibility; }
+            set { _generalShadowVisibility = value; OnPropertyChanged(nameof(GeneralShadowVisibility)); }
+        }
 
         private ObservableCollection<TabItem> _tabs;
         public ObservableCollection<TabItem> Tabs

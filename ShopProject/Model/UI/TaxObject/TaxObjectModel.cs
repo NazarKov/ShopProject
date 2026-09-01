@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.TaxObject
 {
-    internal class TaxObjectModel
+    public class TaxObjectModel
     {
         public Guid ID { get; set; }
         public string NameOwner { get; set; } = string.Empty;
@@ -26,7 +26,7 @@ namespace ShopProject.Model.UI.TaxObject
         public string C_TERRIT { get; set; } = string.Empty;
         public string? REG_NUM_OBJ { get; set; }
         public string KATOTTG { get; set; } = string.Empty;
-
+        public bool LoadTaxServer { get; set; } = false;
         public string StatusString
         {
             get { return TaxObjectStatusModel.GetTaxObjectStatus().ElementAt(System.Enum.GetValues<TypeStatusTaxObject>().ToList().IndexOf(TypeStatus)); }

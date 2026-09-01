@@ -15,8 +15,7 @@ using System;
 using System.Threading.Tasks; 
 using WorkingShiftModel = ShopProject.Model.Domain.WorkingShift.WorkingShift;
 using ProductModel = ShopProject.Model.Domain.Product.Product;
-using OrderModel = ShopProject.Model.Domain.Order.Order;
-using System.Collections;
+using OrderModel = ShopProject.Model.Domain.Order.Order; 
 using System.Collections.Generic;
 using ShopProject.Services.Modules.Mapping.Discount;
 using System.Linq;
@@ -28,16 +27,14 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
         public ISessionService _sessionService;
         private MainFiscalServerController _fiscalOperationController;
         private IMainWebServerService _mainWebServerService;
-        private ISettingService _settingService;
-        private bool _isTestMod;
+        private ISettingService _settingService; 
         public WorkingShiftOperationService(ISessionService sessionService  ,IMainWebServerService mainWebServerService , ISettingService settingService)
         {
             _sessionService = sessionService; 
             _fiscalOperationController = new MainFiscalServerController();
             _mainWebServerService = mainWebServerService;
             _settingService = settingService;
-            _fiscalOperationController.AddKey(_sessionService.User.SignatureKey);
-            _isTestMod = (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode;
+            _fiscalOperationController.AddKey(_sessionService.User.SignatureKey); 
         } 
 
         public async Task<OperationResult<bool>> OpenShift(WorkingShiftModel shift)
@@ -45,7 +42,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             try
             { 
                 var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.OpenShift(shift, _isTestMod);
+                var id = _fiscalOperationController.OpenShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
                 if (!string.IsNullOrEmpty(id))
                 { 
                     shift.MACCreateAt = CreateMac(shift); 
@@ -79,7 +76,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             try
             {
                 var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.CloseShift(shift, _isTestMod);
+                var id = _fiscalOperationController.CloseShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
                 if (!string.IsNullOrEmpty(id))
                 {
                     shift.MACEndAt = CreateMac(shift);
@@ -110,7 +107,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             try
             {
                 var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.DepositAndWithdrawalMoney(shift, operation);
+                var id = _fiscalOperationController.DepositAndWithdrawalMoney(shift, operation, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
                 if (!string.IsNullOrEmpty(id))
                 {
                     operation.FiscalServerId = id;
@@ -193,14 +190,14 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             }
 
 
-            var id = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, products.ToList());
+            var id = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, products.ToList(), (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
             if (id != string.Empty)
             {
                 operation.Shift = workingShift;
                 operation.FiscalServerId = id;
                 operation.MAC = CreateMac(workingShift,operation);
                 result = await SaveDataBase(operation, products);
-                //PrintCheck(product, operation, id); 
+                _sessionService.Operation = operation;
             }
             return result;
         }

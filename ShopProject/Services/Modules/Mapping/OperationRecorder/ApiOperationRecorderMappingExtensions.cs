@@ -1,5 +1,6 @@
 ﻿using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.OperationRecorder;
+using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
 using System.Collections.Generic;
 
@@ -48,9 +49,9 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 LocalNumber = item.LocalNumber,
                 Name = item.Name, 
             };
-            if(item.ObjectOwner_ID != null && item.ObjectOwner_ID != string.Empty)
+            if(item.TaxObject != null)
             {
-                result.ObjectOwner = new ShopProject.Model.Domain.TaxObject.TaxObject() { ID = Guid.Parse(item.ObjectOwner_ID) };
+                result.TaxObject = item.TaxObject.ToTaxObject();
             }
             return result;
         }

@@ -17,10 +17,8 @@ namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject.Interface
 
         public OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.TaxObjectUser.TaxObjectUser>> GetTaxObjectsAssignedUser(Guid userId);
 
-        //public bool AddRange(string token, IEnumerable<CreateObjectOwnerDto> ObjectOwners);
-        //public bool Delete(string token, string id);
-
-        //public IEnumerable<ObjectOwnerListDto> GetAll(string token);
+        public Task<OperationResult<bool>> UpdateParameter(string id, string nameParameter, object value);
+        public Task<OperationResult<bool>> Update(TaxObjectModel taxObject);
 
     }
 }

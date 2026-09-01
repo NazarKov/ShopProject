@@ -1,0 +1,83 @@
+﻿<Window x:Class="ShopProject.View.AdminPage.PointOfSale.TaxObject.UpdateTaxObjectView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShopProject.View.AdminPage.PointOfSale.TaxObject"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="UpdateTaxObjectView" Width="400" Height="350" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Height="320">
+        <Grid VerticalAlignment="Center"  >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <TextBlock x:Name="textBlock"
+                   Visibility="{Binding ErrorTextBlockVisibiliti}"
+                   Style="{StaticResource ErrorTextBlock}"
+                   Grid.RowSpan="2" 
+                   Text="{Binding Error}"  
+                   Height="35"
+                   Padding="8" />
+                <TextBlock x:Name="textBlock1"
+                   Visibility="{Binding SuccessTextBlockVisibiliti}"
+                   Style="{StaticResource SuccessTextBlock}"
+                   Grid.RowSpan="2" 
+                   TextWrapping="Wrap"
+                   Text="{Binding Success}"  
+                   MinHeight="35"
+                   Padding="8" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,10,0,0" >
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="5" >
+                    <TextBlock Text="Назва Обєкта:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="200" Height="30"  Text="{Binding TaxObjectModel.NameObject}"  Padding="5" Style="{StaticResource GeneralTextBox}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Власник Обєкта:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="200" Height="30" Text="{Binding TaxObjectModel.NameOwner}"  Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Адреса:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="200" Height="30" Text="{Binding TaxObjectModel.Address}"  Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" >
+                    <TextBlock Text="Номер обєкта:" Width="100" VerticalAlignment="Center" Foreground="#444"/>
+                    <TextBox Width="200" Height="30" Text="{Binding TaxObjectModel.CodeObject}"  Padding="5"  Style="{StaticResource GeneralTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal"
+            HorizontalAlignment="Center" Margin="0,20,0,0"  >
+                <Button Content="Редагувати" Height="35" Margin="5" Width="92" Command="{Binding UpdateTaxObjectCommand}" Style="{StaticResource SuccessButton}"/> 
+
+                <Button Content="Вийти" Height="35" Margin="5"  Width="92" Command="{Binding ExitWindowCommand}" Style="{StaticResource ExitButton}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

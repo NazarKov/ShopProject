@@ -1,4 +1,5 @@
-﻿using ShopProject.Model.Domain.Product;
+﻿using ShopProject.Model.Domain.Operation;
+using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Domain.Setting;
@@ -43,7 +44,10 @@ namespace ShopProject.Services.Modules.Session
         public User UpdateUser { get; set; }
         public TaxObject BindingTaxObject { get; set; }
         #endregion
- 
+
+        #region TempResourse
+        public Operation Operation { get; set; }
+        #endregion
 
         public SessionService(ISettingService settingService)
         {
@@ -93,6 +97,10 @@ namespace ShopProject.Services.Modules.Session
         public bool CheckAndLoadWorkingShiftStatus()
         { 
             var setting = _settingService.GetSetting<WorkingShiftStatus>();
+            if(WorkingShiftStatus == null)
+            {
+                return false;
+            }
             if (WorkingShiftStatus.WorkingShift != null && WorkingShiftStatus.TaxObject != null && WorkingShiftStatus.OperationRecorder != null)
             { 
                 return true;

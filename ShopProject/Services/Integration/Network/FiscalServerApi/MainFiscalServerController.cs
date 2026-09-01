@@ -146,7 +146,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                         if (_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword))
                         {
                             result = _fiscalServerController.SendZReport(long.Parse(shift.EndAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(shift.TotalCheckForShift + 1), shift.FiscalNumberRRO, testMode); 
+                            Convert.ToInt32(shift.TotalCheckForShift + 1), "4001337633", testMode); 
                         }
                         break;
                     }

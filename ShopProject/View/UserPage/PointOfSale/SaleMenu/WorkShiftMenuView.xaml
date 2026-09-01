@@ -180,11 +180,12 @@
                                         <DataTrigger Binding="{Binding WorkingShiftStatus.IsTestMode}" Value="True">
                                             <Setter Property="Visibility"  Value="Visible"/>
                                         </DataTrigger>
-
+                                        <DataTrigger Binding="{Binding WorkingShiftStatus.IsTestMode}" Value="False">
+                                            <Setter Property="Visibility"  Value="Collapsed"/>
+                                        </DataTrigger>
                                     </Style.Triggers>
 
-                                </Style>
-
+                                </Style> 
                             </Border.Style>
 
                             <StackPanel Orientation="Horizontal">
@@ -901,6 +902,8 @@
                                 <TextBlock Text="Касир"  Foreground="Gray"/>
 
                                 <TextBlock Grid.Column="1"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,5,0"
                                            FontWeight="SemiBold"
                                            Text="{Binding UserName}"/> 
                             </Grid> 
@@ -913,15 +916,20 @@
                                 Padding="12"> 
                             <Grid> 
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition/> 
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/> 
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Каса"
-                                   Foreground="Gray"/> 
-                                <TextBlock Grid.Column="1"
-                                   FontWeight="SemiBold"
-                                   Text="{Binding WorkingShiftStatus.OperationRecorder.Name}"/>
+                                <TextBlock Text="Каса"   Foreground="Gray"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBlock FontWeight="SemiBold"
+                                               Margin="0,0,5,0"
+                                               Text="{Binding WorkingShiftStatus.OperationRecorder.Name}"/>
+                                    <TextBlock FontWeight="SemiBold"  
+                                               Margin="0,0,5,0"
+                                               Text="{Binding WorkingShiftStatus.OperationRecorder.FiscalNumber}"/>
+                                </StackPanel>
+                                
 
                             </Grid>
 
@@ -937,7 +945,9 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
+                                    <RowDefinition/>
                                     <RowDefinition Height="15"/>
+                                    <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
 
@@ -946,42 +956,50 @@
                                     <ColumnDefinition Width="160"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Продажів"/>
+                                <TextBlock Text="Чеків продажів"/>
                                 <TextBlock Grid.Column="1"
                                            HorizontalAlignment="Right"
                                            FontWeight="SemiBold"
-                                           Text="{Binding SalesCount}"/>
+                                           Text="{Binding OperationsInfo.TotalCheck}"/>
 
-                                <TextBlock Grid.Row="1" Text="Сума продажів"/>
+                                <TextBlock Text="Чеків повернень" Grid.Row="2"/>
+                                <TextBlock Grid.Column="1" 
+                                           Grid.Row="2"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="SemiBold"
+                                           Text="{Binding OperationsInfo.TotalReturnCheck}"/>
 
-                                <TextBlock Grid.Row="1"
+
+                                <TextBlock Grid.Row="3" Text="Сума отриманої готівки"/>
+
+                                <TextBlock Grid.Row="3"
                                            Grid.Column="1"
                                            HorizontalAlignment="Right"
                                            FontWeight="SemiBold"
-                                           Text="{Binding SalesAmount,StringFormat={}{0:N2} грн}"/>
+                                           Text="{Binding OperationsInfo.AmountOfFundsReceived,StringFormat={}{0:N2} грн}"/>
 
-                                <TextBlock Grid.Row="2" Text="Повернень"/>
-
-                                <TextBlock Grid.Row="2"
-                                           Grid.Column="1"
-                                           HorizontalAlignment="Right"
-                                           FontWeight="SemiBold"
-                                           Text="{Binding RefundAmount,StringFormat={}{0:N2} грн}"/>
-
-                                <Separator Grid.Row="3" Grid.ColumnSpan="2"/>
+                                <TextBlock Grid.Row="4" Text="Сума виданої готівки"/>
 
                                 <TextBlock Grid.Row="4"
+                                           Grid.Column="1"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="SemiBold" 
+                                           Text="{Binding OperationsInfo.AmountOfFundsIssued,StringFormat={}{0:N2} грн}"/>
+
+                                <Separator Grid.Row="5" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="6"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Text="Готівка в касі"/>
 
-                                <TextBlock Grid.Row="4"
+                                <TextBlock Grid.Row="6"
                                            Grid.Column="1"
                                            FontSize="16"
                                            FontWeight="Bold"
                                            Foreground="#27AE60"
                                            HorizontalAlignment="Right"
-                                           Text="{Binding CashAmount,StringFormat={}{0:N2} грн}"/>
+                                           Text="{Binding OperationsInfo.TotalCashInOperationRecorder,StringFormat={}{0:N2} грн}"/>
 
                             </Grid>
 
@@ -1067,6 +1085,178 @@
                             Style="{StaticResource SuccessButton}"
                             Command="{Binding CloseCloseShiftSuccessDialogWindowCommand}" />
                 </Grid>
+
+            </Border> 
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiFiscalCheckSuccessdialogWindow}" Panel.ZIndex="4">
+            <Border Width="420"
+                    Padding="20"
+                    Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DDDDDD"
+                    Grid.ColumnSpan="2"
+                    BorderThickness="1">
+
+                <StackPanel>
+ 
+                    <Border Width="70"
+                            Height="70"
+                            CornerRadius="35"
+                            Background="#4CAF50"
+                            HorizontalAlignment="Center">
+
+                        <TextBlock Text="✔"
+                                   FontSize="38"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                    </Border>
+ 
+                    <TextBlock Text="Чек успішно створено"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Margin="0,20,0,5"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="Чек успішно сформовано."
+                               Foreground="#666"
+                               HorizontalAlignment="Center"/>
+
+                    <Separator Margin="0,20,0,15"/>
+ 
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="№ чека"  Margin="8,8,0,0"/>
+                        <TextBlock Grid.Column="1"
+                                   Grid.Row="0"
+                                   Margin="0,8,8,0"
+                                   Text="{Binding Operation.NumberPayment}"
+                                   HorizontalAlignment="Right"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1"
+                                   Margin="8,8,0,0"
+                                   Text="Фіскальний № чека"/>
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.FiscalServerId}"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Grid.Row="2"
+                                   Margin="8,8,0,0"
+                                   Text="Дата"/>
+
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.CreatedAt ,StringFormat={}{0:dd.MM.yyyy HH:mm:ss}}"/>
+
+                        <TextBlock Grid.Row="3"
+                                   Margin="8,8,0,0"
+                                   Text="Тип оплати"/>
+
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.TypePaymentString}"/>
+
+                        <Separator Margin="0,10,0,0" Grid.Row="4" Grid.ColumnSpan="2"/>
+
+                        <TextBlock Grid.Row="5"
+                                   Margin="8,8,0,0"
+                                   FontSize="16" 
+                                   Text="Сума покупки"/>
+                        <TextBlock Grid.Row="5"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0" 
+                                   FontSize="16"
+                                   Foreground="#4CAF50"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.TotalPayment,StringFormat={}{0:N2} грн}"/>
+
+                    </Grid> 
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/> 
+                        </Grid.RowDefinitions>
+
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility"  Value="Collapsed"/>
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding Operation.TypePayment}" Value="Cash">
+                                        <Setter Property="Visibility"  Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Operation.TypePayment}" Value="Card">
+                                        <Setter Property="Visibility"  Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </Grid.Style> 
+                        
+                        <TextBlock Grid.Row="0"
+                                   Margin="8,8,0,0"
+                                   FontSize="16" 
+                                   Text="Отримано"/>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0" 
+                                   FontSize="16"
+                                   Foreground="#4CAF50"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.BuyersAmount,StringFormat={}{0:N2} грн}"/>
+                        <TextBlock Grid.Row="1"
+                                   Margin="8,8,0,0"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Text="Решта"/>
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0"
+                                   FontWeight="Bold"
+                                   FontSize="17"
+                                   Foreground="#4CAF50"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.RestPayment,StringFormat={}{0:N2} грн}"/>
+                    </Grid>
+                    <Separator Margin="0,15,0,15"/>
+ 
+                    <Button Content="Готово"
+                            Width="140"
+                            Height="38"
+                            HorizontalAlignment="Center" 
+                            Style="{StaticResource SuccessButton}"
+                            Command="{Binding CloseFisclaCheckSuccessDialogWindowCommand}"/>
+
+                </StackPanel>
 
             </Border>
         </Grid>

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.ProductUnit"
         mc:Ignorable="d"
         Title="CreateProductUnitView" Height="338" Width="400"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>

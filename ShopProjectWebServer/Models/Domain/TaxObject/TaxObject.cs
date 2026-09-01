@@ -19,6 +19,7 @@ namespace ShopProjectWebServer.Models.Domain.TaxObject
         public DateTimeOffset? D_LAST_CH { get; set; } 
         public string C_TERRIT { get; set; } = string.Empty; 
         public string? REG_NUM_OBJ { get; set; } 
-        public string KATOTTG { get; set; } = string.Empty;  
+        public string KATOTTG { get; set; } = string.Empty;
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:control="clr-namespace:ShopProject.Controls"
         mc:Ignorable="d"
-        Title="UpdateProductAll" Height="500" Width="1000"  Name="window" MinWidth="1000" MaxWidth="1000">
+        Title="UpdateProductAll" Height="500" Width="1000"  Name="window" MinWidth="1000" MaxWidth="1000" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

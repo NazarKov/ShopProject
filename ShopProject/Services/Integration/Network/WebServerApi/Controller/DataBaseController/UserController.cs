@@ -2,6 +2,7 @@
 using ShopProject.Model.Domain.User;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Exceptions;
+using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.Product;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.User;
 using ShopProject.Services.Integration.Network.WebServerApi.Common;
 using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.Paginator;
@@ -53,21 +54,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             var result = ApiResponse<PaginatorDto<UserDto, TypeStatusUser>>.Unpacking(responseBody);
             httpResponse.EnsureSuccessStatusCode();  
             return result;
-        }
-
-        public async Task<bool> DeleteUser(string token, string userId)
-        {   
-            HttpContent httpContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/User/DeleteUser?token={token}&id={userId}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-            httpResponse.EnsureSuccessStatusCode();
-
-            return result.Data;
-        }
+        } 
 
         public async Task<ApiResponse<bool>> UpdateUser(UpdateUserDto user)
         {
@@ -114,6 +101,19 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             httpResponse.EnsureSuccessStatusCode(); 
             var result = ApiResponse<UserDto>.Unpacking(responseBody);
             return result;
-        } 
+        }
+        public async Task<ApiResponse<bool>> UpdateParameter(string parameter, object value, UpdateUserDto user)
+        {
+            var content = JsonSerializer.Serialize(user);
+            HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/User/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent);
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            httpResponse.EnsureSuccessStatusCode();
+            var result = ApiResponse<bool>.Unpacking(responseBody);
+
+            return result;
+        }
     }
 }

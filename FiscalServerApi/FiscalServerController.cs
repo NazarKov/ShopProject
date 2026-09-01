@@ -34,7 +34,7 @@ namespace FiscalServerApi
                 api = _apiAddress;
             }
             
-            return SendMessageRecursive(api,message,types,10,0,5);
+            return SendMessageRecursive(api,message,types,100,0,5);
         }
         private CheckResponse SendMessageRecursive(string api, Messages message, TypeMessage types, double second, int depth, int maxDepth)
         {
@@ -48,11 +48,11 @@ namespace FiscalServerApi
                 using (var channel = GrpcChannel.ForAddress(api))
                 {
 
-                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
 
-                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel);
-
+                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel); 
                     ByteString CheckSign = ReadFile(_pathFile);
+
+                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
 
                     switch(types)
                     {
@@ -68,8 +68,9 @@ namespace FiscalServerApi
                 }
                 return null;
             }
-            catch(Grpc.Core.RpcException)
+            catch(Grpc.Core.RpcException ex)
             {
+                var temp = ex.ToString();
                 throw new Exception("Відсутьнє підключення до інтернету\nперевірте підключення до інтернету");
             }
             catch (Exception)

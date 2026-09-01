@@ -35,5 +35,7 @@ namespace ShopProject.Model.Domain.TaxObject
 
         [JsonIgnore]
         public string KATOTTG { get; set; } = string.Empty;
+        [JsonIgnore]
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

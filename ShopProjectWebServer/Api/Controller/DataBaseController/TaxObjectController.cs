@@ -161,6 +161,65 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("UpdateParameter")]
+        public async Task<IActionResult> UpdateParameter([FromQuery] string parameter, [FromQuery] string value, [FromBody] string id)
+        {
+            try
+            {
+                //var validation = _updateValidator.Validation(userDto);
+                //if (!validation.isValid)
+                //{
+                //    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                //}
+
+                var result = await _service.UpdateParameter(id, parameter, value);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update([FromBody] UpdateTaxObjectDto taxObject)
+        {
+            try
+            {
+                //var validation = _updateValidator.Validation(userDto);
+                //if (!validation.isValid)
+                //{
+                //    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                //}
+
+                var result = await _service.Update(taxObject.ToTaxObject());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
         [HttpGet("GetTaxObjectsAssignedUser")]
         public async Task<IActionResult> GetTaxObjectsAssignedUser(string iduser)
         {
@@ -182,39 +241,6 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
             }
-        }
-
-        [HttpPost("DeleteObjectsOwner")]
-        public async Task<IActionResult> DeleteObjectsOwner([FromQuery] string token, string id)
-        {
-            try
-            {
-                // var result = _servise.Delete(token, id); 
-                //  return Ok(ApiResponse<bool>.Ok(result, "Обєкт Власності видалено"));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
- 
- 
-
-
-        [HttpGet("GetObjectsOwners")]
-        public async Task<IActionResult> GetObjectsOwners(string token)
-        {
-            try
-            {
-                //var result = _servise.GetAll(token);  
-                //return Ok(ApiResponse<List<ObjectOwnerListDto>>.Ok(result.ToList())); 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        } 
+        }  
     }
 }

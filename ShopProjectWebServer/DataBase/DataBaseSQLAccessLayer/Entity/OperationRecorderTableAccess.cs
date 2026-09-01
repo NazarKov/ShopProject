@@ -60,7 +60,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         } 
         public IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status)
         {
-            IQueryable<OperationsRecorderEntity> query = _contextDataBase.OperationsRecorders.AsNoTracking();
+            IQueryable<OperationsRecorderEntity> query = _contextDataBase.OperationsRecorders.Include(t=>t.TaxObject).AsNoTracking();
 
             if (status != TypeStatusOperationRecorder.Unknown)
             {

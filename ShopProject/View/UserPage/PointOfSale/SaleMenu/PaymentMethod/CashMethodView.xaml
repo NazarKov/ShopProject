@@ -34,11 +34,11 @@
                     Text="Підсумок"
                     FontSize="17"
                     FontWeight="SemiBold"/>
-                <StackPanel Grid.Row="4" Margin="0,5,0,5">
+                <StackPanel Grid.Row="4" Margin="-3,5,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition> 
+                            <ColumnDefinition Width="Auto"></ColumnDefinition> 
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -88,47 +88,48 @@
                     Text="Швидке внесення"
                     FontSize="17"
                     FontWeight="SemiBold"/>
+                
                 <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Stretch" >
-                    <Button Grid.Column="3"  Content="1" VerticalAlignment="Top" Margin="2" Padding="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="1" VerticalAlignment="Top" Margin="2" Padding="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                             Style="{StaticResource GeneralButton}" />
-                    <Button Grid.Column="3"  Content="2" VerticalAlignment="Top" Margin="2" Padding="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="2" VerticalAlignment="Top" Margin="2" Padding="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                             Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="5" VerticalAlignment="Top" Margin="3" Padding="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="5" VerticalAlignment="Top" Margin="3" Padding="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                             Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="10" VerticalAlignment="Top" Margin="2" Padding="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="10" VerticalAlignment="Top" Margin="2" Padding="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="20" VerticalAlignment="Top" Margin="2" Padding="2"  Width="45" HorizontalAlignment="Center"
+                    <Button Grid.Column="3"  Content="20" VerticalAlignment="Top" Margin="2" Padding="2"  Width="55" HorizontalAlignment="Center"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>
 
                 </StackPanel>
                 <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Button Grid.Column="3"  Content="50" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="45" HorizontalAlignment="Center"
+                    <Button Grid.Column="3"  Content="50" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="55" HorizontalAlignment="Center"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                             Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="100" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="100" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="200" VerticalAlignment="Bottom" Padding="2" Margin="3"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="200" VerticalAlignment="Bottom" Padding="2" Margin="3"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="500" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="500" VerticalAlignment="Bottom" Padding="2" Margin="2"  Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>
-                    <Button Grid.Column="3"  Content="1000" VerticalAlignment="Bottom" Padding="2" Margin="2" Width="45" HorizontalAlignment="Right"
+                    <Button Grid.Column="3"  Content="1000" VerticalAlignment="Bottom" Padding="2" Margin="2" Width="55" HorizontalAlignment="Right"
                             Command="{Binding AddNumberToTextBoxCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}"
                              Style="{StaticResource GeneralButton}"/>

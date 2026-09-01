@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.WorkingShift
 {
-    internal class WorkingShiftModel
+    public class WorkingShiftModel
     {
         public int ID { get; set; }
         public string FiscalNumberRRO { get; set; } = string.Empty;

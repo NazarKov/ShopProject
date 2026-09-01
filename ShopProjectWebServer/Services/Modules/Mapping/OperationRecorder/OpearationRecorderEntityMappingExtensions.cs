@@ -1,5 +1,6 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Services.Modules.Mapping.TaxObject;
 
 namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
 {
@@ -7,7 +8,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
     {
         public static ShopProjectWebServer.Models.Domain.OperationRecorder.OperationRecorder ToOperationRecorder(this OperationsRecorderEntity item)
         {
-            return new Models.Domain.OperationRecorder.OperationRecorder()
+            var result = new Models.Domain.OperationRecorder.OperationRecorder()
             {
                 ID = item.ID,
                 D_REG = item.D_REG,
@@ -18,6 +19,11 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 Status = item.Status,
                 TypeStatus = (ShopProjectWebServer.Models.Domain.Enum.TypeStatusOperationRecorder)item.TypeStatus,
             };
+            if (item.TaxObject != null)
+            {
+                result.TaxObject = item.TaxObject.ToTaxObject();
+            }
+            return result;
         }
         public static IEnumerable<ShopProjectWebServer.Models.Domain.OperationRecorder.OperationRecorder> ToOperationRecorder(this IEnumerable<OperationsRecorderEntity> items)
         {

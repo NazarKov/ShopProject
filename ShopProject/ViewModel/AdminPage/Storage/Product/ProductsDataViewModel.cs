@@ -1,21 +1,22 @@
-﻿using ShopProject.Controls.Paginator;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Controls.Paginator;
 using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.Product;
-using ShopProject.Model.UI.ProductUnit;
+using ShopProject.Model.UI.Product; 
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common; 
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Mapping.Product; 
 using ShopProject.View.AdminPage.Storage.Product;
-using ShopProject.View.Integration.Printing;
-using ShopProject.View.StoragePage.ExcelPage.ExportExcelPage;
-using ShopProject.View.StoragePage.ExcelPage.ImportExcelPage;
-using ShopProject.View.ToolsPage;
+using ShopProject.View.AdminPage.Storage.Tools;
+using ShopProject.View.Integration.Excel.Export;
+using ShopProject.View.Integration.Excel.Import;
+using ShopProject.View.Integration.Printing; 
 using ShopProject.ViewModel.Integration.Printing;
 using System;
 using System.Collections;
@@ -31,8 +32,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 {
     internal class ProductsDataViewModel:ViewModel<ProductsDataViewModel> , IViewModelLoadResourse
     {
-        private ICommand _openCreateProductWindowCommand;
-        private ICommand _openFormationProductWindowCommand;
+        private ICommand _openCreateProductWindowCommand; 
         private ICommand _updateSizeGridCommand;
         private ICommand _updateProductDataGridViewCommand;
         private ICommand _openDeliveriOfProductCommand;
@@ -41,24 +41,25 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private ICommand _searchCommand;
 
         private readonly IProductServiсe _productService;
+        private readonly IMessageBoxControlService _messageBoxControlService;
         private bool _reloadField;
          
         private bool _isReadyUpdateDataGriedView;  
-        public ProductsDataViewModel(IProductServiсe productServiсe)
+        public ProductsDataViewModel(IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService)
         {
             _productService = productServiсe;
             _productslist = new List<ProductModel>(); 
             _statusProducts = new List<string>();
             _countShowList = new List<string>();
             _paginator = new PaginatorViewModel();
+            _messageBoxControlService = messageBoxControlService;
             _statusBarCountProduct = string.Empty;
             _isReadyUpdateDataGriedView = false; 
             _searchItem = string.Empty;
-            _shadowVisibility = Visibility.Collapsed;
+            _shadowVisibility = Visibility.Collapsed; 
             _reloadField = false;
 
-            _openCreateProductWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateProductView, CreateProductViewModel>().Show(); });
-            _openFormationProductWindowCommand = CreateCommand(() => { new FormationProductView().Show(); });
+            _openCreateProductWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateProductView, CreateProductViewModel>().Show(); }); 
             _openDeliveriOfProductCommand = CreateCommand(() => { new DeliveryProductView().Show(); });
             _openExportProductToExelCommand = CreateCommand(() => { new ExportExcelProductView().Show(); });
             _openImportProductWhichExelCommand = CreateCommand(() => { new ImportProductExcelView().Show(); });
@@ -69,6 +70,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             Paginator.Callback = async (int i) => { await UpdateDataGridView(i); };
 
             MediatorService.AddEventAsync(NavigationButton.ReloadProduct.ToString(), async () =>{ await SafeExecuteAsync(SetFieldPage); });
+           
         }
 
         public async Task LoadResourse()
@@ -159,7 +161,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         {
             get { return _shadowVisibility; }
             set { _shadowVisibility = value; OnPropertyChanged(nameof(ShadowVisibility)); }
-        }
+        } 
         private ICommand? _lostfocusCommand;
         public ICommand? LostFocusCommand
         {
@@ -340,67 +342,91 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                     _productService.SetProductOnSession(products[0]);
                 var windwow = App.Container.GetNewViewWithViewModel<UpdateProductView, UpdateProductViewModel>();
                 windwow.ShowDialog();
-            }
-            else
+            } 
+            else if (products.Count > 0)
             {
                 _productService.SetProductsOnSession(products.ToList());
                 var windwow = App.Container.GetNewViewWithViewModel<UpdateProductRangeView, UpdateProductRangeViewModel>();
                 windwow.ShowDialog();
             }
-            Paginator.IsUseSelectIndextButton = true;
-            await UpdateDataGridView(Paginator.SelectIndexButton,true);
+
+            if (products.Count == 0)
+            {
+                await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+            }
+            else
+            {
+                Paginator.IsUseSelectIndextButton = true;
+                await UpdateDataGridView(Paginator.SelectIndexButton, true);
+            } 
         }
 
         public ICommand AddProductArhiveCommand { get => CreateCommandParameterAsync<object>(AddProductArhive); }
         private async Task AddProductArhive(object parameter)
-        {
-            if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        {  
+            var products = new List<ShopProject.Model.Domain.Product.Product>();
+            if (parameter != null)
             {
-                var products = new List<ShopProject.Model.Domain.Product.Product>();
-                if (parameter != null)
+                products = _productService.ContertIListToList((IList)parameter);
+                if (products.Count == 1)
                 {
-                    products = _productService.ContertIListToList((IList)parameter);
-                    if (products.Count == 1)
+                    if (await _messageBoxControlService.Show("Перенести?.", "Informations", MessageBoxType.Question, "StorageSnadow"))
                     {
                         var item = products[0];
                         var result = await _productService.UpdateParameter(nameof(item.Status), TypeStatusProduct.Archived, item);
                         if (result.IsSuccess)
                         {
                             await SetFieldPage();
-                            MessageBox.Show("Товар перенесено в архів");
+                            await _messageBoxControlService.Show("Товар перенесено в архів.", "Informations", MessageBoxType.Success, "StorageSnadow"); 
                         }
                         else
                         {
-                            MessageBox.Show("Невдалося виконати операцію");
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "StorageSnadow"); 
                         } 
                     }
+                }
+                else if(products.Count > 1)
+                {
+                    // зробити можливість міняти статус на декількох елементах
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
                 }
             }
         }
 
         public ICommand AddOutOfStockProductCommand { get => new DelegateParameterCommandAsync<object>(AddOutOfStockProduct); }
         private async Task AddOutOfStockProduct(object parameter)
-        {
-            if (MessageBox.Show("перенести?", "informations", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        { 
+            var products = new List<ShopProject.Model.Domain.Product.Product>();
+            if (parameter != null)
             {
-                var products = new List<ShopProject.Model.Domain.Product.Product>();
-                if (parameter != null)
+                products = _productService.ContertIListToList((IList)parameter);
+                if (products.Count == 1)
                 {
-                    products = _productService.ContertIListToList((IList)parameter);
-                    if (products.Count == 1)
+                    if (await _messageBoxControlService.Show("Перенести?.", "Informations", MessageBoxType.Question, "StorageSnadow"))
                     {
                         var item = products[0];
                         var result = await _productService.UpdateParameter(nameof(item.Status), TypeStatusProduct.OutStock, item);
                         if (result.IsSuccess)
                         {
                             await SetFieldPage();
-                            MessageBox.Show("Товар перенесено в архів");
+                            await _messageBoxControlService.Show("Товар перенесено.", "Informations", MessageBoxType.Success, "StorageSnadow");
                         }
                         else
                         {
-                            MessageBox.Show("Невдалося виконати операцію");
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "StorageSnadow");
                         }
                     }
+                }
+                else if (products.Count > 1)
+                {
+                    // зробити можливість міняти статус на декількох елементах
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
                 }
             }
         }
@@ -417,6 +443,10 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 _productService.SetProductOnSession(products[0]);
                 App.Container.GetNewViewWithViewModel<StickerPrintView,StickerPrintViewModel>().Show();
             }
+            else
+            {
+                _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+            }
         }
 
         public ICommand UpdateSizeCommand => _updateSizeGridCommand;
@@ -426,8 +456,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             Heigth = (int)Application.Current.MainWindow.ActualHeight - 280;
         }  
         public ICommand UpdateProductDataGridView => _updateProductDataGridViewCommand;
-        public ICommand OpenCreateProductWindowCommand => _openCreateProductWindowCommand;
-        public ICommand OpenFormationProductWindowCommand => _openFormationProductWindowCommand;
+        public ICommand OpenCreateProductWindowCommand => _openCreateProductWindowCommand; 
         public ICommand OpenDeliveriOfProductCommand => _openDeliveriOfProductCommand;
         public ICommand OpenExportProductToExelCommand => _openExportProductToExelCommand;
         public ICommand OpenImportProductWhichExelCommand => _openImportProductWhichExelCommand;

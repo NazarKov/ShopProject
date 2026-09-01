@@ -7,7 +7,8 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:control="clr-namespace:ShopProject.Controls"
         mc:Ignorable="d"
-        Title="Редагування товару" Height="525" Width="455" ResizeMode="NoResize"
+        Title="Редагування товару" Height="525" Width="450" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
         x:Name="window">
     <Window.Resources>
         <ResourceDictionary>

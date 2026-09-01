@@ -1,5 +1,6 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper;
+using ShopProjectWebServer.Api.DtoModels.TaxObject;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema; 
 using System.Text.Json.Serialization; 
@@ -24,7 +25,7 @@ namespace ShopProjectWebServer.Api.DtoModels.OperationRecorder
         public DateTimeOffset D_REG { get; set; }
         [JsonPropertyName("Address")]
         public string Address { get; set; } = string.Empty;
-        [JsonPropertyName("ObjectOwner_ID")]
-        public string? ObjectOwner_ID { get; set; }  
+        [JsonPropertyName("TaxObject")]
+        public TaxObjectDto? TaxObject { get; set; }  
     }
 }

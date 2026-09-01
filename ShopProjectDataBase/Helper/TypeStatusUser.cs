@@ -10,6 +10,7 @@ namespace ShopProjectDataBase.Helper
     {
         Unknown,
         AvailableElectronicKey,
-        NotAvailableElectronicKey
+        NotAvailableElectronicKey,
+        ProfileIsDisabled,
     }
 }

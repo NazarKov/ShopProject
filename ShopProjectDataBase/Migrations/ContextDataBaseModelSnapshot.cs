@@ -440,6 +440,9 @@ namespace ShopProjectDataBase.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("LoadTaxServer")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NameObject")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -605,13 +608,7 @@ namespace ShopProjectDataBase.Migrations
                     b.Property<decimal>("AmountOfFundsReceived")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("AmountOfOfficialFundsIssuedCard")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("AmountOfOfficialFundsIssuedCash")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("AmountOfOfficialFundsReceivedCard")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("AmountOfOfficialFundsReceivedCash")
@@ -728,7 +725,7 @@ namespace ShopProjectDataBase.Migrations
             modelBuilder.Entity("ShopProjectDataBase.Entities.OperationsRecorderEntity", b =>
                 {
                     b.HasOne("ShopProjectDataBase.Entities.TaxObjectEntity", "TaxObject")
-                        .WithMany("OperationsRecorderEntitis")
+                        .WithMany("OperationsRecorder")
                         .HasForeignKey("TaxObjectID");
 
                     b.Navigation("TaxObject");
@@ -865,7 +862,7 @@ namespace ShopProjectDataBase.Migrations
 
             modelBuilder.Entity("ShopProjectDataBase.Entities.TaxObjectEntity", b =>
                 {
-                    b.Navigation("OperationsRecorderEntitis");
+                    b.Navigation("OperationsRecorder");
 
                     b.Navigation("Users");
                 });

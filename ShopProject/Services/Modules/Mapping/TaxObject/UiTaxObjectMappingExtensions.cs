@@ -30,6 +30,7 @@ namespace ShopProject.Services.Modules.Mapping.TaxObject
                 REG_NUM_OBJ = item.REG_NUM_OBJ,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 
@@ -55,6 +56,7 @@ namespace ShopProject.Services.Modules.Mapping.TaxObject
                 REG_NUM_OBJ = item.REG_NUM_OBJ,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 

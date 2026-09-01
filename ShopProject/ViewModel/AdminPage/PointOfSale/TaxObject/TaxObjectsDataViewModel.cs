@@ -1,10 +1,13 @@
-﻿using ShopProject.Controls.Paginator;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Controls.Paginator;
 using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Core.Mvvm.Command;
+using ShopProject.Infrastructure.CompositionRoot.Interface; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.TaxObject;
+using ShopProject.Model.UI.TaxObject; 
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.TaxObject;
 using ShopProject.View.AdminPage.PointOfSale.TaxObject;
@@ -15,7 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Input; 
 
 namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 {
@@ -29,15 +32,15 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 
 
         private bool _isReadyUpdateDataGriedView;
-        private bool _reloadField; 
- 
+        private bool _reloadField;
 
+        private readonly IMessageBoxControlService _messageBoxControlService;
         private ITaxObjectService _taxObjectService;
 
-        public TaxObjectsDataViewModel(ITaxObjectService taxObjectService)
+        public TaxObjectsDataViewModel(ITaxObjectService taxObjectService, IMessageBoxControlService messageBoxControlService)
         {
-            _taxObjectService = taxObjectService; 
-
+            _taxObjectService = taxObjectService;
+            _messageBoxControlService = messageBoxControlService;
             _paginator = new  PaginatorViewModel();
             _taxObjects = new List<TaxObjectModel>();
             _statusTaxObject = new List<string>(); 
@@ -260,19 +263,22 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
         {
             var taxObject = new TaxObjectModel();
             if (parameter != null)
-            {
+            { 
                 var items = (IList)parameter;
-                taxObject = (TaxObjectModel)items[0];
-                if (taxObject != null)
+                if(items.Count == 1)
                 {
-                    _taxObjectService.SetBindingTaxObjectTOSession(taxObject.ToTaxObject());
-                    App.Container.GetNewViewWithViewModel<BindingOperationRecorderToTaxObjectView, BindingOperationRecorderToTaxObjectViewModel>().Show();
+                    taxObject = (TaxObjectModel)items[0];
+                    if (taxObject != null)
+                    {
+                        _taxObjectService.SetBindingTaxObjectTOSession(taxObject.ToTaxObject());
+                        App.Container.GetNewViewWithViewModel<BindingOperationRecorderToTaxObjectView, BindingOperationRecorderToTaxObjectViewModel>().Show();
+                    }
                 }
-            }
-            else
-            {
-                MessageBox.Show("Невдалося вибрати обєкт");
-            }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
+            } 
         }
 
         public ICommand OpenBindingUserToTaxObjectWindwoCommand { get => CreateCommandParameterAsync<object>(OpenBindingUserToTaxObjectWindow); }
@@ -280,18 +286,105 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
         {
             var taxObject = new TaxObjectModel();
             if (parameter != null)
-            {
+            { 
                 var items = (IList)parameter;
-                taxObject = (TaxObjectModel)items[0];
-                if (taxObject != null)
+                if(items.Count == 1)
                 {
-                    _taxObjectService.SetBindingTaxObjectTOSession(taxObject.ToTaxObject());
-                    App.Container.GetNewViewWithViewModel<BindingUserToTaxObjectView, BindingUserToTaxObjectViewModel>().Show();
+                    taxObject = (TaxObjectModel)items[0];
+                    if (taxObject != null)
+                    {
+                        _taxObjectService.SetBindingTaxObjectTOSession(taxObject.ToTaxObject());
+                        App.Container.GetNewViewWithViewModel<BindingUserToTaxObjectView, BindingUserToTaxObjectViewModel>().Show();
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                } 
+            } 
+        }
+
+        public ICommand SetTaxObjectStatusDisableCommand { get => CreateCommandParameterAsync<object>(SetTaxObjectStatusDisable); }
+        private async Task SetTaxObjectStatusDisable(object parameter)
+        {
+            var taxobject = parameter as IList;
+            if (taxobject != null)
+            {
+                if (taxobject.Count == 1)
+                {
+                    if (await _messageBoxControlService.Show("Вимкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
+                    {
+                        var result = await _taxObjectService.UpdateParameter("Status", TypeStatusTaxObject.Closed, ((TaxObjectModel)taxobject[0]).ToTaxObject());
+                        if (result.IsSuccess)
+                        {
+                            await SetFieldPage();
+                            await _messageBoxControlService.Show("Обєкт вимкнено.", "Informations", MessageBoxType.Success, "PointOfSaleSnadow");
+                        }
+                        else
+                        {
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
+                        }
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
                 }
             }
-            else
+        }
+
+        public ICommand SetTaxObjectStatusEnableCommand { get => new DelegateParameterCommandAsync<object>(SetTaxObjectStatusEnable); }
+        private async Task SetTaxObjectStatusEnable(object parameter)
+        {
+            var taxobject = parameter as IList;
+            if (taxobject != null)
             {
-                MessageBox.Show("Невдалося вибрати обєкт");
+                if (taxobject.Count == 1)
+                {
+                    if (await _messageBoxControlService.Show("Вимкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
+                    {
+                        var result = await _taxObjectService.UpdateParameter("Status", TypeStatusTaxObject.Open, ((TaxObjectModel)taxobject[0]).ToTaxObject());
+                        if (result.IsSuccess)
+                        {
+                            await SetFieldPage();
+                            await _messageBoxControlService.Show("Обєкт вимкнено.", "Informations", MessageBoxType.Success, "PointOfSaleSnadow");
+                        }
+                        else
+                        {
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
+                        }
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
+            }
+        }
+
+        public ICommand UpdateTaxObjectCommand { get => new DelegateParameterCommandAsync<object>(UpdateTaxObject); }
+        private async Task UpdateTaxObject(object parameter)
+        {
+            var taxobjects = parameter as IList;
+            if (taxobjects != null)
+            {
+                if (taxobjects.Count == 1)
+                {
+                    var item = ((TaxObjectModel)taxobjects[0]);
+                    if (item!=null && !item.LoadTaxServer)
+                    {
+                        _taxObjectService.SetBindingTaxObjectTOSession(item.ToTaxObject());
+                        App.Container.GetNewViewWithViewModel<UpdateTaxObjectView, UpdateTaxObjectViewModel>().Show();
+                    }
+                    else
+                    {
+                        await _messageBoxControlService.Show("Цей обєкт завантажено з податкової його не можливо редагувата.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                    } 
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
             }
         }
 

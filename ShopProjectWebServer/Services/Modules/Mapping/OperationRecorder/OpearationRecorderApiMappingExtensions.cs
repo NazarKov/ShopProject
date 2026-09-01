@@ -3,6 +3,7 @@ using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
 using ShopProjectWebServer.Models.Domain.Enum;
 using ShopProjectWebServer.Models.Domain.Paginator;
+using ShopProjectWebServer.Services.Modules.Mapping.TaxObject;
 using OperationRecorderModel = ShopProjectWebServer.Models.Domain.OperationRecorder.OperationRecorder;
 
 namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
@@ -38,7 +39,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
 
         public static OperationRecorderDto ToOpeartionRecorderDto(this OperationRecorderModel item)
         {
-            return new OperationRecorderDto()
+            var result = new OperationRecorderDto()
             {
                 Status = item.Status,
                 D_REG = item.D_REG,
@@ -49,6 +50,11 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
             };
+            if(item.TaxObject != null)
+            {
+                result.TaxObject = item.TaxObject.ToTaxObjectDto();
+            }
+            return result;
         }
         public static IEnumerable<OperationRecorderDto> ToOperationRecorderDto(this IEnumerable<OperationRecorderModel> items)
         {

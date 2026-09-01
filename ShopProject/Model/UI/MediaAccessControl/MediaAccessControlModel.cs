@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.MediaAccessControl
 {
-    internal class MediaAccessControlModel
+    public class MediaAccessControlModel
     {
         public int ID { get; set; }
         public string Content { get; set; } = string.Empty;

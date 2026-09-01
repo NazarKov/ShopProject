@@ -4,6 +4,7 @@
     {
         Unknown,
         AvailableElectronicKey,
-        NotAvailableElectronicKey
+        NotAvailableElectronicKey,
+        ProfileIsDisabled,
     }
 }

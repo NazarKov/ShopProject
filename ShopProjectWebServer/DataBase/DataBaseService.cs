@@ -52,7 +52,8 @@ namespace ShopProjectWebServer.DataBase
                                 errorNumbersToAdd: null                
                                 ));
                             ContextDataBase contextDataBase = new ContextDataBase(optionsBuilder.Options);
-                            
+
+                            contextDataBase.Database.Migrate();
                             _dataBaseAccess = new DataBaseSQLAccess(contextDataBase);
                             _databaseInitializer = new DatabaseSqlInitializer(contextDataBase); 
                             _dataBaseOperation = new SqlOperationServise();

@@ -28,6 +28,7 @@ namespace ShopProject.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 NameOwner = item.NameOwner,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
         public static IEnumerable<CreateTaxObjectDto> ToCreateTaxObject(this IEnumerable<TaxObjectModel> items)
@@ -58,7 +59,8 @@ namespace ShopProject.Services.Modules.Mapping.TaxObject
                 REG_NUM_OBJ = item.REG_NUM_OBJ,
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
-                NameOwner = item.NameOwner
+                NameOwner = item.NameOwner,
+                LoadTaxServer = item.LoadTaxServer, 
             };
         }
         public static IEnumerable<TaxObjectModel> ToTaxObject(this IEnumerable<TaxObjectDto> items)
@@ -78,6 +80,30 @@ namespace ShopProject.Services.Modules.Mapping.TaxObject
                 result.Add(ToCreateTaxObject(item));
             }
             return result;
+        }
+
+        public static UpdateTaxObjectDto ToUpdateTaxObjectDto(this TaxObjectModel item)
+        {
+            return new UpdateTaxObjectDto()
+            {
+                ID = item.ID.ToString(),
+                Status = item.Status,
+                C_DISTR = item.C_DISTR,
+                D_ACC_START = item.D_ACC_START,
+                D_LAST_CH = item.D_LAST_CH,
+                TypeStatus = (int)item.TypeStatus,
+                Address = item.Address,
+                CodeObject = item.CodeObject,
+                C_TERRIT = item.C_TERRIT,
+                D_ACC_END = item.D_ACC_END,
+                KATOTTG = item.KATOTTG,
+                NameObject = item.NameObject,
+                REG_NUM_OBJ = item.REG_NUM_OBJ,
+                TypeObjectName = item.TypeObjectName,
+                TypeOfRights = item.TypeOfRights,
+                NameOwner = item.NameOwner,
+                LoadTaxServer = item.LoadTaxServer,
+            };
         }
     }
 }

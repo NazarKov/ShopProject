@@ -164,15 +164,23 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Тип Обєкта"  Binding="{Binding TypeObjectName}" Width="*">
+                    <DataGridTextColumn Header="Власник обєкта"  Binding="{Binding NameOwner}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="0,0,20,0"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Адреса"  Binding="{Binding Address}" Width="Auto" MinWidth="100">
+                    </DataGridTextColumn> 
+                    <DataGridTextColumn Header="Номер обєкта"  Binding="{Binding CodeObject}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="0,0,20,0"></Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn> 
+                    <DataGridTextColumn Header="Адреса"  Binding="{Binding Address}" Width="*" MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -233,6 +241,11 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
                         <MenuItem Header="Добавити Обєкт" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateTaxObjectWindow}"/>
+                        <MenuItem Header="Редагувати Обєкт"
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding UpdateTaxObjectCommand }" />
+                        <Separator></Separator>
                         <MenuItem Header="Добавити касу до Обєкта"
                               Style="{StaticResource ModernMenuItemStyle}"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
@@ -241,6 +254,15 @@
                               Style="{StaticResource ModernMenuItemStyle}"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                               Command="{Binding OpenBindingUserToTaxObjectWindwoCommand }" />
+                        <Separator></Separator>
+                        <MenuItem Header="Увімкнути обєкт"
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding SetTaxObjectStatusEnableCommand }" />
+                        <MenuItem Header="Вимкнути обєкт"
+                                  Style="{StaticResource ModernMenuItemStyle}"
+                                  CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                  Command="{Binding SetTaxObjectStatusDisableCommand }" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.OperationRecorder
 {
-    internal class OperationRecorderModel
+    public class OperationRecorderModel
     {
         public Guid ID { get; set; }
         public string FiscalNumber { get; set; } = string.Empty;
@@ -18,8 +18,21 @@ namespace ShopProject.Model.UI.OperationRecorder
         public TypeStatusOperationRecorder TypeStatus { get; set; }
         public DateTimeOffset D_REG { get; set; }
         public string Address { get; set; } = string.Empty; 
-        public TaxObjectModel? ObjectOwner { get; set; }
+        public TaxObjectModel? TaxObject { get; set; }
 
+        public string NameTaxObject { 
+            get 
+            {
+                if (TaxObject != null)
+                {
+                    return TaxObject.NameObject;
+                }
+                else 
+                {
+                    return "не привязаний";
+                }
+            }
+        }
         public string StatusString
         {
             get { return OperationRecorderStatusModel.GetTaxObjectStatus().ElementAt(System.Enum.GetValues<TypeStatusOperationRecorder>().ToList().IndexOf(TypeStatus)); }

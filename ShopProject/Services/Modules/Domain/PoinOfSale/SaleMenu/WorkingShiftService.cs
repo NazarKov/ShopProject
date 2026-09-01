@@ -10,16 +10,14 @@ using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Mapping.Operation;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
-using System;
-using System.Security.Policy;
+using System; 
 using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 {
     internal class WorkingShiftService : IWorkingShiftService
     {
-        private IPrintingFiscalCheckService _printingFiscalCheckService;
-        private MainFiscalServerController _fiscalOperationController;
+        private IPrintingFiscalCheckService _printingFiscalCheckService; 
         private IWorkingShfitOperationService _workingShfitOperationService;
 
         private ISessionService _sessionService; 
@@ -32,8 +30,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             _settingService = settingService;
             _printingFiscalCheckService = printingFiscalCheckService;
             _mainWebServerService = mainWebServerService;
-            _workingShfitOperationService = workingShfitOperationService;
-            _fiscalOperationController = new MainFiscalServerController(); 
+            _workingShfitOperationService = workingShfitOperationService; 
         }
 
         public void SetWorkingShiftStatusOnSession(WorkingShiftStatus item)
@@ -44,7 +41,11 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
         {
             if (_sessionService.WorkingShiftStatus.WorkingShift == null)
             {
-                _sessionService.WorkingShiftStatus = GetWorkingShiftStatusFromSetting();
+                var setting = GetWorkingShiftStatusFromSetting();
+                if(_sessionService.WorkingShiftStatus.OperationRecorder?.FiscalNumber == setting?.OperationRecorder?.FiscalNumber)
+                {
+                    _sessionService.WorkingShiftStatus = GetWorkingShiftStatusFromSetting();
+                }
             }
             return _sessionService.WorkingShiftStatus;
         }
@@ -215,21 +216,10 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             }
         }
 
-
-
-        //public async Task<WorkingShift> GetWorkingShift(string id)
-        //{
-        //    try
-        //    {
-        //        var result = await _mainWebServerService.DataBase.WorkingShiftContoller.GetWorkingShift(_token, id);
-        //        return result.ToWorkingShift();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw; 
-        //    }
-        //}
-
+        public Operation GetOperationSession()
+        {
+            return _sessionService.Operation;
+        } 
 
 
         //public async Task PrintLastCheck()
@@ -251,17 +241,6 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
         //    {
         //        throw;
         //    }
-        //}
-
-
-
-        //public void SetTabsOnSession(ObservableCollection<TabItem> items)
-        //{
-        //    _sessionService.Tabs = items;
-        //}
-        //public ObservableCollection<TabItem> GetTabsFromSession()
-        //{
-        //    return _sessionService.Tabs;
-        //}
+        //} 
     }
 }

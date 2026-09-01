@@ -2,7 +2,8 @@
 using ShopProjectDataBase.Context;
 using ShopProjectDataBase.Entities;
 using ShopProjectDataBase.Helper; 
-using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
+using ShopProjectWebServer.DataBase.Interface.EntityInterface;
+using System.Threading.Tasks;
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
     public class TaxObjectTableAccess : ITaxObjectTableAccess
@@ -63,9 +64,20 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             return result;
         }
 
-        public void Update(TaxObjectEntity item)
+        public async Task UpdateAsync(TaxObjectEntity item)
         {
-            throw new NotImplementedException();
+            var taxObject = _contextDataBase.TaxObject.Find(item.ID);
+            if (taxObject != null)
+            {
+                taxObject.NameOwner = item.NameOwner;
+                taxObject.NameObject = item.NameObject;
+                taxObject.CodeObject = item.CodeObject;
+                taxObject.Address = item.Address;
+
+                await _contextDataBase.SaveChangesAsync();
+            }
+
+
         }
         public async Task<bool> ExistsByName(string name)
         {
@@ -109,5 +121,23 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         { 
             return _contextDataBase.TaxObjectsUsers.Include(t=>t.TaxObject).Include(o=>o.TaxObject.OperationsRecorder).Where(i => i.User.ID == userID).ToList();
         }
+
+        public async Task UpdateParameterAsync(Guid id, string nameParameter, object valueParameter)
+        {
+            var user = _contextDataBase.TaxObject.Find(id);
+            if (user != null)
+            {
+                switch (nameParameter)
+                {
+                    case nameof(user.Status):
+                        {
+                            user.TypeStatus = Enum.Parse<TypeStatusTaxObject>(valueParameter.ToString());
+                            break;
+                        } 
+                }
+            }
+            await _contextDataBase.SaveChangesAsync();
+        }
+
     }
 }

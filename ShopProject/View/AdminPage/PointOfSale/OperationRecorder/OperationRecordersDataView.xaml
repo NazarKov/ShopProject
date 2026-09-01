@@ -165,18 +165,25 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Назва"  Binding="{Binding Name}" Width="*">
+                    <DataGridTextColumn Header="Локальний номер"  Binding="{Binding LocalNumber}" Width="Auto" MinWidth="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Назва"  Binding="{Binding Name}" MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="0,0,20,0"></Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Локальний номер"  Binding="{Binding LocalNumber}" Width="Auto" MinWidth="100">
+                    </DataGridTextColumn> 
+                    <DataGridTextColumn Header="Обєкт оподаткування"  Binding="{Binding NameTaxObject}" Width="*" MinWidth="100">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/> 
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

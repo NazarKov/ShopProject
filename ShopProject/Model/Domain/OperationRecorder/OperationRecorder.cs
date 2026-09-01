@@ -20,6 +20,6 @@ namespace ShopProject.Model.Domain.OperationRecorder
         public DateTimeOffset D_REG { get; set; }
         public string Address { get; set; } = string.Empty;
         [JsonIgnore]
-        public TaxObject.TaxObject? ObjectOwner { get; set; }
+        public TaxObject.TaxObject? TaxObject { get; set; }
     }
 }

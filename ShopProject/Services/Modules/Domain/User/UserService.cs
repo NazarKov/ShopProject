@@ -2,33 +2,26 @@
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.SignatureKey; 
 using ShopProject.Model.Enum;
-using ShopProject.Model.Exceptions;
-using ShopProject.Model.UI.OperationRecorder; 
+using ShopProject.Model.Exceptions; 
 using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi; 
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Common;
 using ShopProject.Services.Modules.Common.Enum;
-using ShopProject.Services.Modules.Domain.User.Interface;
-using ShopProject.Services.Modules.Mapping.OperationRecorder;
-using ShopProject.Services.Modules.Mapping.OperationRecorderAndUser; 
+using ShopProject.Services.Modules.Domain.User.Interface; 
 using ShopProject.Services.Modules.Mapping.User;
 using ShopProject.Services.Modules.Mapping.UserRole;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using SigningFileLib;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http; 
+using System; 
+using System.IO; 
 using System.Threading.Tasks; 
 using UserModel = ShopProject.Model.Domain.User.User;
 
 namespace ShopProject.Services.Modules.Domain.User
 {
     internal class UserService : IUserService
-    {
-         
+    { 
         private string? _token;
         private MainElectronicTaxAccountController _mainTaxAccauntController;
         private SigningFileContoller _mainSigningFileController;
@@ -249,7 +242,7 @@ namespace ShopProject.Services.Modules.Domain.User
             return item;
         }
 
-        public async Task<OperationResult<UserModel>> UpdateUser(UserModel user, string pathKey, string passwordKey)
+        public async Task<OperationResult<UserModel>> UpdateUser(UserModel user, string pathKey, string passwordKey , bool isdeleteKey = false)
         {
             var result = new OperationResult<UserModel>();
             result.Data = user;
@@ -270,14 +263,14 @@ namespace ShopProject.Services.Modules.Domain.User
                         CreateAt = DateTime.Now,
                         SignaturePassword = passwordKey,
                     };
-                    user.Status = TypeStatusUser.AvailableElectronicKey;
+                    user.Status = TypeStatusUser.AvailableElectronicKey; 
+                } 
 
-                }
-                else
+                if (isdeleteKey)
                 {
                     user.SignatureKey = null;
                     user.Status = TypeStatusUser.NotAvailableElectronicKey;
-                } 
+                }
 
                 var response = await _webServerService.DataBase.UserController.UpdateUser(user.ToUpdateUserDto());
                 result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
@@ -337,86 +330,18 @@ namespace ShopProject.Services.Modules.Domain.User
         }
 
 
-
-
-        public async Task<bool> DeleteUser(ShopProject.Model.Domain.User.User user)
+        public async Task<OperationResult<bool>> UpdateParameter(string parameter, object value, UserModel item)
         {
-            try
-            {
-                return await _webServerService.DataBase.UserController.DeleteUser(_token, user.ID.ToString());
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                return false;
-            }
+            var result = new OperationResult<bool>();
+            var response = await _webServerService.DataBase.UserController.UpdateParameter(parameter, value, item.ToUpdateUserDto());
 
-        }
-
-        //public async Task<List<OperationRecorderDialogWindowModel>> GetAllObject()
-        //{
-        //    try
-        //    {
-        //        List<OperationRecorderDialogWindowModel> result = new List<OperationRecorderDialogWindowModel>();
-        //        var response = (await _webServerService.DataBase.OperationRecorederController.GetOperationRecorders(_token)).ToOperationRecorder().ToList();
-
-        //        foreach (var item in response)
-        //        {
-        //            result.Add(new OperationRecorderDialogWindowModel(item));
-        //        }
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-
-        //}
-        //public async Task<bool> SaveBinding(ShopProject.Model.Domain.User.User user, List<OperationRecorderDialogWindowModel> objectOwnerHelpers)
-        //{
-        //    try
-        //    {
-        //        List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> result = new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
-        //        foreach (var item in objectOwnerHelpers)
-        //        {
-        //            if (item.isActive)
-        //            {
-        //                result.Add(item.OperationRecorder);
-        //            }
-        //        }
-        //        return await _webServerService.DataBase.OperationRecorderAndUserController.AddOperationRecordersAndUser(_token, user.ID, result.ToOperationRecordersEntity());
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return false;
-        //    }
-        //}
-        public async Task<ShopProject.Model.Domain.User.User>? GetUser()
-        {
-            // return await _webServerService.DataBase.UserController.GetUserById(_token, /*Session.UserItem.ID.ToString()*/"");
-            return new UserModel();
-        } 
-       
-         
-
-       
-
-       
-
-        //public async Task<List<UserRoleEntity>> GetUserRoles()
-        //{
-        //    try
-        //    {
-        //        return null;// (await MainWebServerController.MainDataBaseConntroller.UserRoleController.GetRoles(Session.Token)).ToList();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //MessageBox.Show(ex.Message);
-        //        return new List<UserRoleEntity>();
-        //    }
-        //}
-
+            result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+            result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+            result.ErrorMessage = response.Error;
+            result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+            result.ValidationErrors = response.Errors;
+            return result;
+        }  
         public ShopProject.Model.Domain.User.User GetUserFromSession()
         {
             return _sessionService.User;

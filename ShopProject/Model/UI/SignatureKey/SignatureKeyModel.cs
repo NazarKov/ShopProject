@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.SignatureKey
 {
-    internal class SignatureKeyModel
+    public class SignatureKeyModel
     {
         public Guid? ID { get; set; }
         public byte[]? Signature { get; set; }

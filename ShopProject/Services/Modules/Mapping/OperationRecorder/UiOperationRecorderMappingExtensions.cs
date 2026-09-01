@@ -23,9 +23,9 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
             };
-            if (item.ObjectOwner != null)
+            if (item.TaxObject != null)
             {
-                //result.ObjectOwner = item..ToObjectOwner();
+                result.TaxObject = item.TaxObject.ToTaxObject();
             }
             return result;
         }
@@ -43,9 +43,9 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
             };
-            if (item.ObjectOwner != null)
+            if (item.TaxObject != null)
             {
-                //result.ObjectOwner = item.ObjectOwner.ToObjectOwnerModel();
+                result.TaxObject = item.TaxObject.ToTaxObjectModel();
             }
             return result;
         }

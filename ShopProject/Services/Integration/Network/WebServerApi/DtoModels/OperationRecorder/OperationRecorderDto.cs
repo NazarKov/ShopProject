@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.TaxObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoMo
         public DateTimeOffset D_REG { get; set; }
         [JsonPropertyName("Address")]
         public string Address { get; set; } = string.Empty;
-        [JsonPropertyName("ObjectOwner_ID")]
-        public string? ObjectOwner_ID { get; set; }
+        [JsonPropertyName("TaxObject")]
+        public TaxObjectDto? TaxObject { get; set; }
     }
 }

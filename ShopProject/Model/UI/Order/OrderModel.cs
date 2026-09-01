@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.Order
 {
-    internal class OrderModel
+    public class OrderModel
     {
         public int ID { get; set; }
         public int Count { get; set; } = 0;

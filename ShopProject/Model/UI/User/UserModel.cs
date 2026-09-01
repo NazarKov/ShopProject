@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Model.UI.User
 {
-    internal class UserModel
+    public class UserModel
     {
         public Guid ID { get; set; }
         public string Login { get; set; } = string.Empty; 

@@ -16,6 +16,7 @@
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
+        <Rectangle x:Name="ShadowRect1" Visibility="{Binding GeneralShadowVisibility}" Fill="Black" Panel.ZIndex="4" Opacity="0.5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="3"></Rectangle>
         <Separator Margin="16,48,0,0" Width="358" VerticalAlignment="Top" HorizontalAlignment="Left"></Separator>
         <TabControl Background="Transparent"
                     ItemsSource="{Binding Tabs ,UpdateSourceTrigger=PropertyChanged}"

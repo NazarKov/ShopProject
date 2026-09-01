@@ -27,6 +27,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (int)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
         public static IEnumerable<TaxObjectDto> ToTaxObjectDto(this IEnumerable<ShopProjectWebServer.Models.Domain.TaxObject.TaxObject> items)
@@ -59,6 +60,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (TypeStatusTaxObject)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
         public static IEnumerable<ShopProjectWebServer.Models.Domain.TaxObject.TaxObject> ToTaxObject(this IEnumerable<TaxObjectDto> items)
@@ -116,6 +118,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (TypeStatusTaxObject)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 
@@ -127,6 +130,30 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 result.Add(ToTaxObject(item));
             }
             return result;
+        }
+
+        public static ShopProjectWebServer.Models.Domain.TaxObject.TaxObject ToTaxObject(this UpdateTaxObjectDto item)
+        {
+            return new ShopProjectWebServer.Models.Domain.TaxObject.TaxObject()
+            {
+                ID =Guid.Parse(item.ID),
+                D_ACC_END = item.D_ACC_END,
+                D_ACC_START = item.D_ACC_START,
+                D_LAST_CH = item.D_LAST_CH,
+                C_DISTR = item.C_DISTR,
+                Address = item.Address,
+                CodeObject = item.CodeObject,
+                C_TERRIT = item.C_TERRIT,
+                KATOTTG = item.KATOTTG,
+                NameObject = item.NameObject,
+                NameOwner = item.NameOwner,
+                REG_NUM_OBJ = item.REG_NUM_OBJ,
+                Status = item.Status,
+                TypeObjectName = item.TypeObjectName,
+                TypeOfRights = item.TypeOfRights,
+                TypeStatus = (TypeStatusTaxObject)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
+            };
         }
     }
 }

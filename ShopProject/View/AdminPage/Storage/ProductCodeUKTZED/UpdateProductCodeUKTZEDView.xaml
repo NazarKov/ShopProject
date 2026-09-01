@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.ProductCodeUKTZED"
         mc:Ignorable="d"
         Title="UpdateProductCodeUKTZEDView" Height="345" Width="400"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>

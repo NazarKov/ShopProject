@@ -26,7 +26,7 @@
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
@@ -50,6 +50,9 @@
     <Resource Include="Resource\Images\key.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resource\Images\shop.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resource\Images\reboot.png" />
     <Resource Include="Resource\Images\Search.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -58,6 +61,11 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModel\AdminPage\UserManagement\SignatureKey\" />
+    <Folder Include="View\AdminPage\UserManagement\SignatureKey\" />
   </ItemGroup>
  
  

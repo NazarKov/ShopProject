@@ -8,7 +8,7 @@
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:control="clr-namespace:ShopProject.Controls"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="800" 
       Title="ProductsDataView">
 
     <Page.Resources>
@@ -27,8 +27,7 @@
         <Grid x:Name="Grid"  Panel.ZIndex="0"  Background="Transparent">
             <Grid.ContextMenu>
                 <ContextMenu Name="context" Style="{StaticResource ModernContextMenuStyle}">
-                    <MenuItem Header="Добавити товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductWindowCommand}"/>
-                    <MenuItem Header="Сфомувати товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenFormationProductWindowCommand}"></MenuItem>
+                    <MenuItem Header="Добавити товар" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateProductWindowCommand}"/> 
                 </ContextMenu>
             </Grid.ContextMenu>
 
@@ -56,7 +55,7 @@
                         <i:InvokeCommandAction Command="{Binding LostFocusCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-            </Rectangle>
+            </Rectangle> 
             <Border BorderBrush="#BFBFBF" MinHeight="33" MinWidth="250" Margin="15,15,15,0"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Left"
@@ -148,14 +147,8 @@
                             VerticalAlignment="Center" 
                             Padding="5"
                             HorizontalAlignment="Right"
-                            Margin="5" Command="{Binding OpenCreateProductWindowCommand}"  />
-                    <Button Grid.Column="4" Height="35" Content="Сформувати товар" Style="{StaticResource StorageButton}" 
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Padding="5"
-                            Margin="5"
-                            Command="{Binding OpenFormationProductWindowCommand}" />
-                    <Button Grid.Column="5" Height="35" Content="Імпортувати товар"
+                            Margin="5" Command="{Binding OpenCreateProductWindowCommand}"  /> 
+                    <!--<Button Grid.Column="5" Height="35" Content="Імпортувати товар"
                             Style="{StaticResource StorageButton}"  
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
@@ -167,7 +160,7 @@
                             HorizontalAlignment="Right"
                             Padding="5"
                             Margin="5,0,0,0"
-                            Command="{Binding OpenExportProductToExelCommand}"/>
+                            Command="{Binding OpenExportProductToExelCommand}"/>-->
 
 
                 </StackPanel>
@@ -321,7 +314,7 @@
                                   CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                                   Command="{Binding OpenWindoiwCreateStikerCommand}" />
                         <Separator></Separator>
-                        <MenuItem Header="Поставка товару" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenDeliveriOfProductCommand}"></MenuItem>
+                        <!--<MenuItem Header="Поставка товару" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenDeliveriOfProductCommand}"></MenuItem>-->
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

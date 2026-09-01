@@ -34,7 +34,7 @@ namespace ShopProject.Services.Integration.PrintingService
             TemplatePrintingCheckBody body;
 
 
-            if (operationRecorder != null&& operationRecorder.ObjectOwner!=null && objectOwner!=null) 
+            if (operationRecorder != null&& operationRecorder.TaxObject!=null && objectOwner!=null) 
             {
 
                 _check.NameFop.Text = "ФОП " + objectOwner.NameOwner;

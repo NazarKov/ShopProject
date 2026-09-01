@@ -23,9 +23,25 @@ namespace ShopProject.Services.Modules.Mapping.WorkingShift
             {
                 result.TaxObject = item.TaxObject.ToTaxObjectModel();
             }
+            if (item.WorkingShift != null)
+            {
+                result.WorkingShift = item.WorkingShift.ToWorkingShiftModel();
+            }
             result.Status = item.Status;
             result.OpenShiftTime = item.OpenShiftTime; 
             return result;
+        }
+        public static WorkingShiftModel ToWorkingShiftModel(this ShopProject.Model.Domain.WorkingShift.WorkingShift item)
+        {
+            return new WorkingShiftModel()
+            {
+                ID = item.ID,
+                DataPacketIdentifier = item.DataPacketIdentifier,    
+                FactoryNumberRRO = item.FactoryNumberRRO,
+                FiscalNumberRRO = item.FiscalNumberRRO,
+                TotalReturnCheckForShift = item.TotalReturnCheckForShift,
+                TypeRRO = item.TypeRRO,
+            };
         }
     }
 }

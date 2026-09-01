@@ -26,6 +26,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (Models.Domain.Enum.TypeStatusTaxObject)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 
@@ -49,6 +50,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.TaxObject
                 TypeObjectName = item.TypeObjectName,
                 TypeOfRights = item.TypeOfRights,
                 TypeStatus = (ShopProjectDataBase.Helper.TypeStatusTaxObject)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 

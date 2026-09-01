@@ -1,12 +1,15 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
+using ShopProject.Model.UI.Operation;
 using ShopProject.Model.UI.WorkingShift;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Mapping.Operation;
 using ShopProject.Services.Modules.Mapping.WorkingShift;
 using ShopProject.View.UserPage.PointOfSale.SaleMenu;
 using System;
@@ -20,14 +23,14 @@ using System.Windows.Input;
 namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
 {
     internal class WorkShiftMenuViewModel : ViewModel<WorkShiftMenuViewModel>, IViewModelLoadResourse
-    {
-        private ICommand _openNewCheckCommand; 
-
+    { 
         private ICommand _openShiftCommand;
         private ICommand _openOpenShiftDialogWindowCommand;
         private ICommand _closeOpenShiftDialogWindowCommand;
         private ICommand _closeOpenShiftSuccessDialogWindowCommand;
 
+        private ICommand _openNewCheckCommand;
+        private ICommand _closeFisclaCheckSuccessDialogWindowCommand; 
         private ICommand _openOfficialDepositMoneyDialogWindowCommad;
         private ICommand _closeOfficialDepositMoneyDialogWindowCommad;
         private ICommand _officialDepositMoneyCommand;
@@ -87,6 +90,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _closeShiftCommand = CreateCommandAsync(CloseShift);
             _openCloseShiftDialogWindowCommand = CreateCommandAsync(async () => {
                 Cash = 0; VisibilitiCloseShiftDialogWindow = Visibility.Visible;
+                OperationsInfo = (await _workingShiftService.GetOperationInfo(_workingShiftStatus.WorkingShift.ID)).ToOperationInfoModel();
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible"); VisibilitiShadowPage = Visibility.Visible;
             });
             _closeCloseShiftDialogWindowCommand = CreateCommandAsync(async () => {
@@ -97,7 +101,20 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 VisibilitiCloseShiftSuccessDialogWindow = Visibility.Collapsed;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed;
             }); 
-            _openNewCheckCommand = CreateCommand(OpenCheck);  
+            _openNewCheckCommand = CreateCommand(OpenCheck);
+            _closeFisclaCheckSuccessDialogWindowCommand = CreateCommandAsync(async () => { await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); 
+                VisibilitiFiscalCheckSuccessdialogWindow = Visibility.Collapsed; 
+                VisibilitiShadowPage = Visibility.Collapsed;
+                Operation = new OperationModel();
+            });
+            MediatorService.AddEventAsync("FiscalCheckSuccess", async () => {
+                VisibilitiFiscalCheckSuccessdialogWindow = Visibility.Visible;
+                VisibilitiShadowPage = Visibility.Visible;
+                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible");
+                Operation = _workingShiftService.GetOperationSession().ToOperationModel();
+            });
+
+
             _exitWorkShiftMenuCommand = CreateCommand(ExitWorkShiftMenu);
 
             _printLastCheckCommand = CreateCommandAsync(PrintLastCheck);
@@ -121,7 +138,9 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
 
             _visibilitiCloseShiftDialogWindow = Visibility.Collapsed;
             _visibilitiCloseShiftSuccessDialogWindow = Visibility.Collapsed;
-
+            _visibilitiFiscalCheckSuccessdialogWindow = Visibility.Collapsed;
+            _operation = new OperationModel();
+            _operationsInfo = new OperationsInfoModel();
             Cash = 0;
         }
         public async Task LoadResourse()
@@ -134,7 +153,19 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             get { return _workingShiftStatus; } 
             set { _workingShiftStatus = value;OnPropertyChanged(nameof(WorkingShiftStatus)); } 
         }
+        private OperationModel _operation;
+        public OperationModel Operation
+        {
+            get { return _operation; }
+            set { _operation = value;OnPropertyChanged(nameof(Operation));}
+        }
 
+        private OperationsInfoModel _operationsInfo;
+        public OperationsInfoModel OperationsInfo
+        {
+            get { return _operationsInfo; }
+            set { _operationsInfo = value;OnPropertyChanged(nameof(OperationsInfo)); }
+        }
         private string _userName;
         public string UserName
         {
@@ -256,6 +287,13 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             set { _visibilitiCloseShiftSuccessDialogWindow = value; OnPropertyChanged(nameof(VisibilitiCloseShiftSuccessDialogWindow)); }
         }
 
+        private Visibility _visibilitiFiscalCheckSuccessdialogWindow;
+        public Visibility VisibilitiFiscalCheckSuccessdialogWindow
+        {
+            get { return _visibilitiFiscalCheckSuccessdialogWindow; }
+            set { _visibilitiFiscalCheckSuccessdialogWindow = value;OnPropertyChanged(nameof(VisibilitiFiscalCheckSuccessdialogWindow)); }
+        }
+
         private async Task SetFieldPage()
         { 
             SetTabsField();
@@ -286,10 +324,10 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
 
 
         private async Task SetHeaderLabelField()
-        { 
-            var workingShiftStatus = _workingShiftService.GetWorkingShiftStatusFromSession(); 
-            WorkingShiftStatus.IsTestMode = _workingShiftService.IsTestMode(); 
-            WorkingShiftStatus = new WorkingShiftDataModel(workingShiftStatus.ToWorkingShiftData());
+        {  
+            var workingShiftDataModel = _workingShiftService.GetWorkingShiftStatusFromSession().ToWorkingShiftData();
+            workingShiftDataModel.IsTestMode = _workingShiftService.IsTestMode();
+            WorkingShiftStatus = new WorkingShiftDataModel(workingShiftDataModel);
             OnPropertyChanged(nameof(WorkingShiftStatus));
         }
 
@@ -355,8 +393,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 VisibilitiExitButton = Visibility.Visible;
                 VisibilitiCloseShiftDialogWindow = Visibility.Collapsed;
                 VisibilitiCloseShiftSuccessDialogWindow = Visibility.Visible;
-                await ChangeHeaderLable(); 
-                //_model.Print(operation);
+                await ChangeHeaderLable();  
             }
             else
             {
@@ -379,9 +416,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 newTabItem.TabIndex = count;
                 newTabItem.Content = new Frame() { Content = App.Container.GetNewViewWithViewModel<SaleMenuView, SaleMenuViewModel>() };
 
-                Tabs.Add(newTabItem);
-
-                //_workingShiftService.SetTabsOnSession(Tabs);
+                Tabs.Add(newTabItem); 
                 OnPropertyChanged(nameof(Tabs));
 
             }
@@ -432,7 +467,9 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             {
                 MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-        } 
+        }
+
+        public ICommand CloseFisclaCheckSuccessDialogWindowCommand => _closeFisclaCheckSuccessDialogWindowCommand;
 
         public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
         private void ExitWorkShiftMenu()

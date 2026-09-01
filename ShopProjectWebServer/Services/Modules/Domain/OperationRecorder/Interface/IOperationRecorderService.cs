@@ -14,13 +14,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interfa
         public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int>>
             GetPageColumn(ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator);
 
-        public bool AddBindingOperationRecorder(string token, string idoperationrecoreder, string idobjectowner);  
-        public bool Delete(string token, string id); 
-        //public IEnumerable<OperationRecorderDto> GetOperationRecordersByNumberAndUser(string token, string number, Guid userId); 
-        //public IEnumerable<OperationRecorderDto> GetOperationRecordersByNameAndUser(string token, string name, Guid userId);
-        ////public PaginatorDto<OperationRecorderDto> GetOperationRecordersByNamePageColumn(string token, string name, int page, int countColumn, TypeStatusOperationRecorder status);
-        //public PaginatorDto<OperationRecorderDto> GetOperationRecordersPageColumn(string token, int page, int countColumn, TypeStatusOperationRecorder status);
-        //public IEnumerable<OperationRecorderDto> GetOperationRecorders(string token);
+        public bool AddBindingOperationRecorder(string token, string idoperationrecoreder, string idobjectowner);   
        
     }
 }
