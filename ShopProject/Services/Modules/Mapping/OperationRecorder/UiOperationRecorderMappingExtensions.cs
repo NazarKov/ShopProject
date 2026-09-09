@@ -22,6 +22,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 ID = item.ID,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
             if (item.TaxObject != null)
             {
@@ -42,6 +43,7 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 ID = item.ID,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
             if (item.TaxObject != null)
             {

@@ -1,7 +1,5 @@
-﻿using ShopProject.Model.Domain.Paginator;
-using ShopProject.Model.Domain.Setting; 
-using ShopProject.Model.Enum; 
-using ShopProject.Model.UI.TaxObject;
+﻿using ShopProject.Model.Domain.Paginator; 
+using ShopProject.Model.Enum;  
 using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi;
 using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi.Model;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
@@ -23,31 +21,23 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
     internal class OperationRecorderService : IOperationRecorderService
     {
         private SigningFileContoller _signingFileController;
-        private MainElectronicTaxAccountController _mainControllerHttp;
-
-        private List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> _softwareDeviceSettlementOperationsList;
-        private readonly string _token;
+        private MainElectronicTaxAccountController _mainControllerHttp; 
         private IMainWebServerService _webServerService;
-        private ISessionService _sessionService;
-        private ISettingService _settingService;
+        private ISessionService _sessionService; 
 
         public OperationRecorderService(IMainWebServerService mainWebServerService,ISessionService sessionService,ISettingService settingService)
         {
             _webServerService = mainWebServerService;
-            _sessionService = sessionService;
-            _settingService = settingService;
-            _token = _sessionService.User.Token;
-
-            _softwareDeviceSettlementOperationsList = new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
+            _sessionService = sessionService; 
             _signingFileController = new SigningFileContoller();
             _mainControllerHttp = new MainElectronicTaxAccountController();
             _signingFileController.Initialize(false);
         }
 
-        public async Task<OperationResult<OperationRecorderModel>> Add(OperationRecorderModel Item)
+        public async Task<OperationResult<OperationRecorderModel>> Add(OperationRecorderModel item)
         {
-            var result = new OperationResult<OperationRecorderModel>();
-            result.Data = Item;
+            var result = new OperationResult<OperationRecorderModel>(); 
+            result.Data = item;
             Validation(result);
             if (result.IsError)
             {
@@ -78,10 +68,10 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
 
         }
 
-        public async Task<OperationResult<IEnumerable<OperationRecorderModel>>> AddRange(IEnumerable<OperationRecorderModel> Items)
+        public async Task<OperationResult<IEnumerable<OperationRecorderModel>>> AddRange(IEnumerable<OperationRecorderModel> items)
         {
-            var result = new OperationResult<IEnumerable<OperationRecorderModel>>();
-            result.Data = Items;
+            var result = new OperationResult<IEnumerable<OperationRecorderModel>>(); 
+            result.Data = items;
 
             var response = await _webServerService.DataBase.OperationRecorederController.AddRange(result.Data.ToCreateOperationRecorderDto());
 
@@ -98,6 +88,38 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
             return result;  
         }
 
+        public async Task<OperationResult<OperationRecorderModel>> Update(OperationRecorderModel item)
+        {
+            var result = new OperationResult<OperationRecorderModel>();
+            result.Data = item;
+            Validation(result);
+            if (result.IsError)
+            {
+                return result;
+            }
+            if (result.IsSuccess)
+            {
+                var response = await _webServerService.DataBase.OperationRecorederController.Update(result.Data.ToUpdateOperationRecorderDto());
+
+                if (response.Data != null)
+                {
+                    result.Data = response.Data.ToOperationRecorder();
+                }
+                result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                result.ErrorMessage = response.Error;
+                result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                result.ValidationErrors = response.Errors;
+
+                return result;
+            }
+
+            return new OperationResult<OperationRecorderModel>()
+            {
+                ErrorMessage = "Невдалося викоанти операцію",
+                Status = ResultStatus.Error,
+            };
+        }
         private OperationResult<OperationRecorderModel> Validation(OperationResult<OperationRecorderModel> item)
         {
             if (item.Data == null)
@@ -210,7 +232,8 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
                 }
 
                 var operationRecorders = new List<OperationRecorderModel>();
-                if (_signingFileController.GetDataToFile(pathFile, passwordKey))
+                var resultOperation =_signingFileController.GetError(_signingFileController.GetDataToFile(pathFile, passwordKey));
+                if (resultOperation.IsSuccess)
                 {
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
                     var response = await _mainControllerHttp.Send();
@@ -258,11 +281,18 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
                     result.Status = ResultStatus.Success;
                     return result;
                 }
-                return new OperationResult<IEnumerable<OperationRecorderModel>>()
+                else if(resultOperation.IsError)
                 {
-                    ErrorMessage = "Невдалося викоанти операцію",
-                    Status = ResultStatus.Error,
-                };
+                    return OperationResult<IEnumerable<OperationRecorderModel>>.Fail(resultOperation.ErrorMessage);
+                }
+                else
+                {
+                    return new OperationResult<IEnumerable<OperationRecorderModel>>()
+                    {
+                        ErrorMessage = "Невдалося викоанти операцію",
+                        Status = ResultStatus.Error,
+                    };
+                } 
             }
             catch (Exception ex)
             {
@@ -301,127 +331,27 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
             };
         }
 
-       
-        
-        public List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder> GetListObjecyOwner()
+        public void SetOperationRecordeOnSession(OperationRecorderModel item)
         {
-            return _softwareDeviceSettlementOperationsList;
-        }
-        public void ClearListObjectOwner()
-        {
-            _softwareDeviceSettlementOperationsList.Clear();
+            _sessionService.UpdateOperationRecorder = item;
         }
 
-
-        public async Task<bool> DeleteItem(ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
+        public OperationRecorderModel GetOperationrecorderInSession()
         {
-            try
-            {
-                return await _webServerService.DataBase.OperationRecorederController.DeleteOperationsRecorder(_token, item);
-            }
-            catch (Exception ex)
-            {
-                /*MessageBox.Show(ex.Message)*/;
-                return false;
-            }
-        }
-        public async Task<List<TaxObjectSelectItemModel>> GetAllObjectOwner()
-        {
-            try
-            {
-                var result = new List<TaxObjectSelectItemModel>();
-                //var items = await _webServerService.DataBase.ObjectOwnerController.GetObjectsOwners(_token);
-
-                //foreach (var item in items.ToObjectOwner())
-                //{
-                //   // result.Add(new TaxObjectDialogWindowModel(item));
-                //}
-                return result;
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                return new List<TaxObjectSelectItemModel>();
-            }
-
-        }
-        public async Task<bool> SaveBinding(ShopProject.Model.Domain.OperationRecorder.OperationRecorder softwareDeviceSettlement, List<TaxObjectSelectItemModel> objectOwnerHelpers)
-        {
-            try
-            {
-                if (objectOwnerHelpers.Where(item => item.IsActive == true).ToList().Count() > 1)
-                {
-                    throw new Exception("Виберіть один обєкт");
-                }
-
-                return await _webServerService.DataBase.OperationRecorederController.AddBindingOperationRecorder(
-                        _token,
-                        softwareDeviceSettlement.ID.ToString(),
-                        objectOwnerHelpers.Where(item => item.IsActive).FirstOrDefault().TaxObject.ID.ToString());
-
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                return false;
-            }
+            return _sessionService.UpdateOperationRecorder;
         }
 
-        public async Task<List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>> GetAllOperationsRecorderOperationsUser()
+        public async Task<OperationResult<bool>> UpdateParameter(string parameter, object value, OperationRecorderModel item)
         {
-            try
-            {
-                var item = (await _webServerService.DataBase.OperationRecorderAndUserController.GetOperationRecordersAndUser(_token));
+            var result = new OperationResult<bool>();
+            var response = await _webServerService.DataBase.OperationRecorederController.UpdateParameter(parameter, value, item.ID.ToString());
 
-
-                var result = item.OpertionsRecorders.ToOperationRecorder();
-                return result.ToList();
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                return new List<ShopProject.Model.Domain.OperationRecorder.OperationRecorder>();
-            }
+            result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+            result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+            result.ErrorMessage = response.Error;
+            result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+            result.ValidationErrors = response.Errors;
+            return result;
         }
-
-        //public async Task<List<Model.Domain.OperationRecorder.OperationRecorder>> Search(string item)
-        //{
-        //    try
-        //    {
-        //        return (await MainWebServerController.MainDataBaseConntroller.OperationRecorederController.GetOperationRecordersByNumberAndUser(_token, item, Session.User.ID)).ToOperationRecorder().ToList();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //MessageBox.Show(ex.Message);
-        //        return new List<Model.Domain.OperationRecorder.OperationRecorder>();
-        //    }
-        //}
-
-        public void SetOperationRecorderOnWorkingShiftStatusInSession(ShopProject.Model.Domain.OperationRecorder.OperationRecorder operationRecorder)
-        {
-            if (_sessionService.WorkingShiftStatus == null)
-            {
-                _sessionService.WorkingShiftStatus = new ShopProject.Model.Domain.WorkingShift.WorkingShiftStatus();
-            }
-
-            _sessionService.WorkingShiftStatus.OperationRecorder = operationRecorder;
-        }
-        public ShopProject.Model.Domain.OperationRecorder.OperationRecorder GerOperationRecorderOnWorkingShiftStatusFromSession()
-        {
-            var result = _sessionService.WorkingShiftStatus;
-
-            if(result !=null&& result.OperationRecorder!= null)
-            {
-                return result.OperationRecorder;
-            }
-
-            throw new Exception("Невдалося завантажити ресурси");
-        }
-        public OperationRecorderSetting GetSetting()
-        {
-            return _settingService.GetSetting<OperationRecorderSetting>();
-        }
-
     }
 }

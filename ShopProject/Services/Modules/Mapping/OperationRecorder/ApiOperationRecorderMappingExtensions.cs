@@ -1,5 +1,6 @@
 ﻿using ShopProject.Model.Enum;
 using ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoModels.OperationRecorder;
+using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.OperationRecorder;
 using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,22 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
+            };
+        }
+        public static UpdateOperationRecorderDto ToUpdateOperationRecorderDto(this ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
+        {
+            return new UpdateOperationRecorderDto()
+            {
+                Status = item.Status,
+                TypeStatus = (int)item.TypeStatus,
+                Address = item.Address,
+                D_REG = item.D_REG,
+                FiscalNumber = item.FiscalNumber,
+                LocalNumber = item.LocalNumber,
+                Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
+                ID = item.ID.ToString(), 
             };
         }
         public static OperationRecorderDto ToOperationRecorderDto(this ShopProject.Model.Domain.OperationRecorder.OperationRecorder item)
@@ -32,7 +49,8 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
-                ID = item.ID.ToString(), 
+                ID = item.ID.ToString(),
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
 
@@ -47,7 +65,8 @@ namespace ShopProject.Services.Modules.Mapping.OperationRecorder
                 D_REG = item.D_REG,
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
-                Name = item.Name, 
+                Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
             if(item.TaxObject != null)
             {

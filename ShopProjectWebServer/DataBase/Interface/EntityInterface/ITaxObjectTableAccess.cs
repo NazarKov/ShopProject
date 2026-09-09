@@ -11,6 +11,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         IEnumerable<TaxObjectEntity> GetAll();
         IEnumerable<TaxObjectEntity> GetByNameAndStatus(string name, TypeStatusTaxObject status);
         public Task<bool> ExistsByName(string name);
+        public  Task<bool> ExistsByUserAndTaxObject(Guid userId, Guid taxObjectName);
         public Task AddBindingOperationRecorderToTaxObject(Guid idTaxObject, IEnumerable<OperationsRecorderEntity> operationsRecorders);
         public Task AddBindingUserToTaxObject(Guid idTaxObject, IEnumerable<UserEntity> users);
         public IEnumerable<TaxObjectUserEnitity> GetTaxObjectsAssignedUser(Guid userID);

@@ -1,10 +1,9 @@
 ﻿using ShopProject.Model.Domain.Discount;
 using ShopProject.Model.Domain.Operation;
-using ShopProject.Model.Enum;
-using ShopProject.Services.Integration.Network.FiscalServerApi;
-using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Model.Enum; 
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Integration.PrintingService;
+using ShopProject.Services.Modules.Common;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Session.Interface;
 using System;
@@ -34,7 +33,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
          
         
 
-        private void PrintCheck(List<ProductModel> products, Operation operation, string id,bool _isdrawingchek = true)
+        private void PrintCheck(List<ProductModel> products, Operation operation,bool _isdrawingchek = true)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -46,65 +45,86 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             });
         }
 
-        public async Task SendCheck(OperationSaleInfo operationSaleInfo)
+        public async Task<OperationResult<bool>> SendCheck(OperationSaleInfo operationSaleInfo)
         {
-            var workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
-
-        
-
-            var result = await _workingShfitOperationService.GetWorkingShiftResourse(workingShift.FiscalNumberRRO);
-            if (result.IsSuccess)
+            try
             {
-
-                var rest = (operationSaleInfo.SumaUser - operationSaleInfo.SumaOrder);
-                var discount = new Discount();
-
-                if (operationSaleInfo.DiscountPrecent != 0)
+                if(_sessionService.WorkingShiftStatus.Status != TypeStatusShift.Open)
                 {
-                    discount.TotalDiscount = operationSaleInfo.TotalSum * (operationSaleInfo.DiscountPrecent / 100);
-                    discount.TypeDiscount = 1;
-                    discount.CreateAt = DateTime.Now;
-                    discount.InterimAmount = operationSaleInfo.TotalSum;
-                    discount.Rebate = operationSaleInfo.DiscountPrecent;
+                    return OperationResult<bool>.Fail("Зміна не відкрита");
                 }
-                else if (operationSaleInfo.Discount != 0)
+
+
+                var workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
+                var result = await _workingShfitOperationService.GetWorkingShiftResourse(workingShift.FiscalNumberRRO);
+                if (result.IsSuccess)
                 {
-                    discount.TotalDiscount = operationSaleInfo.Discount;
-                    discount.TypeDiscount = 0;
-                    discount.CreateAt = DateTime.Now;
-                    discount.InterimAmount = operationSaleInfo.TotalSum;
-                    discount.Rebate = operationSaleInfo.Discount;
+
+                    var rest = (operationSaleInfo.SumaUser - operationSaleInfo.SumaOrder);
+                    var discount = new Discount();
+
+                    if (operationSaleInfo.DiscountPrecent != 0)
+                    {
+                        discount.TotalDiscount = operationSaleInfo.TotalSum * (operationSaleInfo.DiscountPrecent / 100);
+                        discount.TypeDiscount = 1;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = operationSaleInfo.TotalSum;
+                        discount.Rebate = operationSaleInfo.DiscountPrecent;
+                    }
+                    else if (operationSaleInfo.Discount != 0)
+                    {
+                        discount.TotalDiscount = operationSaleInfo.Discount;
+                        discount.TypeDiscount = 0;
+                        discount.CreateAt = DateTime.Now;
+                        discount.InterimAmount = operationSaleInfo.TotalSum;
+                        discount.Rebate = operationSaleInfo.Discount;
+                    }
+                    else
+                    {
+                        discount = null;
+                    }
+
+
+                    Operation operation = new Operation()
+                    {
+                        TypeOperation = TypeOperation.FiscalCheck,
+                        MAC = result.Data.MediaAccessControl,
+                        CreatedAt = DateTime.Now,
+                        NumberPayment = result.Data.OperationNumber,
+                        GoodsTax = "0",
+                        RestPayment = rest.Value,
+                        TotalPayment = operationSaleInfo.TotalSum,
+                        BuyersAmount = operationSaleInfo.SumaUser.Value,
+                        TypePayment = operationSaleInfo.TypePayment,
+                        Discount = discount,
+                    };
+
+                    var resultOperation = await _workingShfitOperationService.SendCheck(operationSaleInfo.Products, operation);
+                    if (resultOperation.IsSuccess)
+                    {
+                        PrintCheck(operationSaleInfo.Products.ToList(), operation, operationSaleInfo.DrawingCheck);
+                        return OperationResult<bool>.Success(true);
+                    }
+                    else
+                    {
+                        return OperationResult<bool>.Fail(resultOperation.ErrorMessage);
+                    }
+                }
+                else if(result.IsError)
+                {
+                    return OperationResult<bool>.Fail(result.ErrorMessage);
                 }
                 else
                 {
-                    discount = null;
-                }
-
-
-                Operation operation = new Operation()
-                {
-                    TypeOperation = TypeOperation.FiscalCheck,
-                    MAC = result.Data.MediaAccessControl,
-                    CreatedAt = DateTime.Now,
-                    NumberPayment = result.Data.OperationNumber,
-                    GoodsTax = "0",
-                    RestPayment = rest.Value,
-                    TotalPayment = operationSaleInfo.TotalSum,
-                    BuyersAmount = operationSaleInfo.SumaUser.Value,
-                    TypePayment = operationSaleInfo.TypePayment,
-                    Discount = discount,
-                };
-
-                await _workingShfitOperationService.SendCheck(operationSaleInfo.Products, operation);
-
-
-                PrintCheck(operationSaleInfo.Products.ToList(), operation, "", operationSaleInfo.DrawingCheck);
-            } 
-             
-        }
-
-       
-
+                    return OperationResult<bool>.Fail("Невдалося виконати операцію");
+                } 
+            }
+            catch (Exception ex) 
+            {
+                return OperationResult<bool>.Fail(ex.Message);
+            }
+           
+        }  
         
         public ShopProject.Model.Domain.User.User GetUserFromSession()
         {

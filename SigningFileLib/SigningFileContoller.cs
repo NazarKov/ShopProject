@@ -1,4 +1,5 @@
 ﻿using EUSignCP;
+using SigningFileLib.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,39 +21,21 @@ namespace SigningFileLib
             _error = IEUSignCP.Initialize();
             IEUSignCP.SetUIMode(modeUI);
             IEUSignCP.SetRuntimeParameter(IEUSignCP.EU_FP_RESET,true);
-            AuditError(_error);
+            GetError(_error);
 
         }
-        public bool AuditError(int error)
+        public OperationResult<string> GetError(int error)
         {
-            if (error != IEUSignCP.EU_ERROR_NONE)
+            if(error == IEUSignCP.EU_ERROR_NONE)
             {
-                throw new Exception(IEUSignCP.GetErrorDesc(error));
-            } 
-            return true;
-        }
-  
-        public bool SignFileToFileKey(string pathKey, string passordKey)
-        {
-            if (IEUSignCP.IsInitialized())
-            {
-                IEUSignCP.EU_CERT_OWNER_INFO info = new IEUSignCP.EU_CERT_OWNER_INFO();
-                _error = IEUSignCP.ReadPrivateKeyFile(pathKey, passordKey, out info);
-
-                if (_error == IEUSignCP.EU_ERROR_NONE)
-                {
-                    _error = IEUSignCP.SignFile(fileName, signedFileName, false);
-                    if (_error == IEUSignCP.EU_ERROR_NONE)
-                    {
-                        return true;
-                    }
-                }
+                return OperationResult<string>.Success("");
             }
-            return false;
-        }
 
-        public bool SignFileToByteKey(byte[] key , string password)
-        {
+            return OperationResult<string>.Fail(IEUSignCP.GetErrorDesc(error));
+        } 
+
+        public int SignFileToByteKey(byte[] key , string password)
+        { 
             if (IEUSignCP.IsInitialized())
             {
                 var info = new IEUSignCP.EU_CERT_OWNER_INFO();
@@ -61,20 +44,17 @@ namespace SigningFileLib
 
                 if (_error == IEUSignCP.EU_ERROR_NONE)
                 {
-                    _error = IEUSignCP.SignFile(fileName, signedFileName, false);
-                    if (_error == IEUSignCP.EU_ERROR_NONE)
-                    {
-                        return true;
-                    }
-                } 
+                    return IEUSignCP.SignFile(fileName, signedFileName, false); 
+                }
+                else
+                {
+                    return _error;
+                }
             }
-            return false;
-        }
+            return IEUSignCP.EU_ERROR_NOT_INITIALIZED;
+        } 
 
-
-
-
-        public bool GetDataToFile(string pathKey, string passwordKey)
+        public int GetDataToFile(string pathKey, string passwordKey)
         {
             if (IEUSignCP.IsInitialized())
             {
@@ -82,32 +62,36 @@ namespace SigningFileLib
                 IEUSignCP.EU_CERT_INFO eU_CERT_INFO = new IEUSignCP.EU_CERT_INFO();
 
                 _error = IEUSignCP.ReadPrivateKeyFile(pathKey, passwordKey, out info);
-                AuditError(_error);
+                if(_error != IEUSignCP.EU_ERROR_NONE)
+                {
+                    return _error;
+                } 
 
                 _error = IEUSignCP.GetCertificateInfo(info.issuer, info.serial, out eU_CERT_INFO);
-                AuditError(_error);
+                if (_error != IEUSignCP.EU_ERROR_NONE)
+                {
+                    return _error;
+                }
                 CreateFile(eU_CERT_INFO.subjDRFOCode);
 
 
-                _error = IEUSignCP.SignFile("C:\\ProgramData\\ShopProject\\Temp\\Key.txt", "C:\\ProgramData\\ShopProject\\Temp\\Key.txt.p7s", false);
-
-                return AuditError(_error);
+                return IEUSignCP.SignFile("C:\\ProgramData\\ShopProject\\Temp\\Key.txt", "C:\\ProgramData\\ShopProject\\Temp\\Key.txt.p7s", false); 
             }
-            return false;
+            return IEUSignCP.EU_ERROR_NOT_INITIALIZED;
         }
 
-        public IEUSignCP.EU_CERT_OWNER_INFO GetDataOwner(string pathKey, string passwordKey)
+        public OperationResult<IEUSignCP.EU_CERT_OWNER_INFO> GetDataOwner(string pathKey, string passwordKey)
         {
             if (IEUSignCP.IsInitialized())
             {
                 IEUSignCP.EU_CERT_OWNER_INFO info = new IEUSignCP.EU_CERT_OWNER_INFO(); 
                 _error = IEUSignCP.ReadPrivateKeyFile(pathKey, passwordKey, out info);
-                if (AuditError(_error))
+                if (_error == IEUSignCP.EU_ERROR_NONE)
                 {
-                    return info;
-                } 
+                    return OperationResult<IEUSignCP.EU_CERT_OWNER_INFO>.Success(info); 
+                }  
             }
-            throw new Exception("Невдалося відкрити ключ");
+            return OperationResult<IEUSignCP.EU_CERT_OWNER_INFO>.Fail(IEUSignCP.GetErrorDesc(_error)); 
         }
 
         public void Finalize() => IEUSignCP.Finalize();

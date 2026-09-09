@@ -19,7 +19,9 @@ namespace ShopProjectWebServer.Api.DtoModels.OperationRecorder
         [JsonPropertyName("D_REG")]
         public DateTimeOffset D_REG { get; set; }
         [JsonPropertyName("Address")]
-        public string Address { get; set; } = string.Empty; 
+        public string Address { get; set; } = string.Empty;
+        [JsonPropertyName("LoadTaxServer")]
+        public bool LoadTaxServer { get; set; } = false;
 
     }
 }

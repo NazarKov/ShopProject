@@ -110,6 +110,8 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 var temp = _contextDataBase.Users.Find(user.ID);
                 if (temp != null)
                 {
+                    
+
                     items.Add(new TaxObjectUserEnitity() { TaxObject = taxObject, User = temp }); 
                 }
             } 
@@ -137,6 +139,19 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
             }
             await _contextDataBase.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsByUserAndTaxObject(Guid userId , Guid taxObjectName)
+        { 
+            var items = _contextDataBase.TaxObjectsUsers.Where(i=>i.User.ID == userId).Where(i=>i.TaxObject.ID==taxObjectName);
+            if (items.Any()) 
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }

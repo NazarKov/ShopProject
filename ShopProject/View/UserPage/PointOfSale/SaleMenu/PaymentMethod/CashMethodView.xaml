@@ -55,11 +55,7 @@
                         <TextBox Grid.Row="0" Grid.Column="1" Height="28" Style="{StaticResource GeneralTextBox}"
                                  Text="{Binding OperationSaleInfo.Discount ,StringFormat='{}{0:0.00}',UpdateSourceTrigger=PropertyChanged}"
                                  VerticalContentAlignment="Center"
-                                 FontSize="15" Width="145" TextAlignment="Right" Margin="0,0,2,0" HorizontalAlignment="Right"/>
-
-                        <Label Grid.Row="1" Grid.Column="0" Content="Сума до оплати:"  FontWeight="SemiBold"/>
-                        <Label Grid.Row="1" Grid.Column="1" Content="{Binding OperationSaleInfo.SumaOrder, StringFormat='{}{0:0.00}'}" 
-                               FontSize="16" Foreground="#E53935" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,2,0"/>
+                                 FontSize="15" Width="145" TextAlignment="Right" Margin="0,0,2,0" HorizontalAlignment="Right"/> 
                         <Label Grid.Row="2" Grid.Column="0" Content="Одержана сума:"/>
                         <TextBox Grid.Row="2" Grid.Column="1" Height="28" Style="{StaticResource GeneralTextBox}"
                                  VerticalContentAlignment="Center"

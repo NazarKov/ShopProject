@@ -7,18 +7,18 @@ using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Common;
 using ShopProject.Services.Modules.Common.Enum;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
+using ShopProject.Services.Modules.Mapping.Discount;
 using ShopProject.Services.Modules.Mapping.Operation;
 using ShopProject.Services.Modules.Mapping.WorkingShift;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System; 
-using System.Threading.Tasks; 
-using WorkingShiftModel = ShopProject.Model.Domain.WorkingShift.WorkingShift;
-using ProductModel = ShopProject.Model.Domain.Product.Product;
-using OrderModel = ShopProject.Model.Domain.Order.Order; 
 using System.Collections.Generic;
-using ShopProject.Services.Modules.Mapping.Discount;
 using System.Linq;
+using System.Threading.Tasks; 
+using OrderModel = ShopProject.Model.Domain.Order.Order; 
+using ProductModel = ShopProject.Model.Domain.Product.Product;
+using WorkingShiftModel = ShopProject.Model.Domain.WorkingShift.WorkingShift;
 
 namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 {
@@ -31,107 +31,148 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
         public WorkingShiftOperationService(ISessionService sessionService  ,IMainWebServerService mainWebServerService , ISettingService settingService)
         {
             _sessionService = sessionService; 
-            _fiscalOperationController = new MainFiscalServerController();
             _mainWebServerService = mainWebServerService;
-            _settingService = settingService;
-            _fiscalOperationController.AddKey(_sessionService.User.SignatureKey); 
+            _settingService = settingService; 
+            _fiscalOperationController = new MainFiscalServerController(_sessionService.User.SignatureKey);
         } 
 
-        public async Task<OperationResult<bool>> OpenShift(WorkingShiftModel shift)
+        public async Task<OperationResult<string>> OpenShift(WorkingShiftModel shift)
         {
             try
             { 
-                var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.OpenShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
-                if (!string.IsNullOrEmpty(id))
-                { 
-                    shift.MACCreateAt = CreateMac(shift); 
-                    var response = await _mainWebServerService.DataBase.WorkingShiftContoller.AddWorkingShift(shift); 
-
-                    result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
-                    result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
-                    result.ErrorMessage = response.Error;
-                    result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
-                    result.ValidationErrors = response.Errors;
-
-                    if (result.IsSuccess)
-                    { 
-                        _sessionService.WorkingShiftStatus.WorkingShift = response.Data.ToWorkingShift();
-                        _sessionService.WorkingShiftStatus.OpenShiftTime = DateTime.Now;
-                        _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Open;
-                        _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
-                    }
-
-                    return result;
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
-            }
-        }
-        public async Task<OperationResult<bool>> CloseShift(WorkingShiftModel shift)
-        {
-            try
-            {
-                var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.CloseShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
-                if (!string.IsNullOrEmpty(id))
+                var result = _fiscalOperationController.OpenShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                if(result.IsError || result.ErrorType == ErrorType.ErrorKey)
                 {
-                    shift.MACEndAt = CreateMac(shift);
-                    var response = await _mainWebServerService.DataBase.WorkingShiftContoller.UpdateWorkingShift(shift);
-                    result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
-                    result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
-                    result.ErrorMessage = response.Error;
-                    result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
-                    result.ValidationErrors = response.Errors;
-                    if (result.IsSuccess)
+                    var key = _sessionService.User.SignatureKey;
+                    if(key!=null && key.Signature!=null && key.SignaturePassword != null)
                     {
-                        _sessionService.WorkingShiftStatus.WorkingShift = null;
-                        _sessionService.WorkingShiftStatus.OpenShiftTime = null;
-                        _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Close;
-                        _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
+                        _fiscalOperationController.AddKey(_sessionService.User.SignatureKey);
+                        result = _fiscalOperationController.OpenShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
                     }
+                    else
+                    {
+                        return result;
+                    } 
                 }
+
+                if (result.IsSuccess)
+                {
+                    if (!string.IsNullOrEmpty(result.Data))
+                    {
+                        shift.MACCreateAt = CreateMac(shift);
+                        var response = await _mainWebServerService.DataBase.WorkingShiftContoller.AddWorkingShift(shift);
+
+                        result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                        result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                        result.ErrorMessage = response.Error;
+                        result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                        result.ValidationErrors = response.Errors;
+
+                        if (result.IsSuccess)
+                        {
+                            _sessionService.WorkingShiftStatus.WorkingShift = response.Data.ToWorkingShift();
+                            _sessionService.WorkingShiftStatus.OpenShiftTime = DateTime.Now;
+                            _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Open;
+                            _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
+                        } 
+                    }
+                } 
                 return result;
             }
             catch (Exception ex)
             {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
+                return OperationResult<string>.Fail(ex.Message);
             }
         }
-
-        public async Task<OperationResult<bool>> DepositAndWithdrawalMoney(WorkingShiftModel shift, Operation operation)
+        public async Task<OperationResult<string>> CloseShift(WorkingShiftModel shift)
         {
             try
             {
-                var result = new OperationResult<bool>();
-                var id = _fiscalOperationController.DepositAndWithdrawalMoney(shift, operation, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
-                if (!string.IsNullOrEmpty(id))
+                var result =  _fiscalOperationController.CloseShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                if (result.IsError || result.ErrorType == ErrorType.ErrorKey)
                 {
-                    operation.FiscalServerId = id;
-                    operation.MAC = CreateMac(shift); 
-                    operation.Shift = shift; 
-
-                    var response =  await _mainWebServerService.DataBase.OperationController.Add(operation.ToCreateOperationDto());
-                    result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
-                    result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
-                    result.ErrorMessage = response.Error;
-                    result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
-                    result.ValidationErrors = response.Errors; 
+                    var key = _sessionService.User.SignatureKey;
+                    if (key != null && key.Signature != null && key.SignaturePassword != null)
+                    {
+                        _fiscalOperationController.AddKey(_sessionService.User.SignatureKey);
+                        result = _fiscalOperationController.CloseShift(shift, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
 
+
+                if (result.IsSuccess)
+                {
+                    if (!string.IsNullOrEmpty(result.Data))
+                    {
+                        shift.MACEndAt = CreateMac(shift);
+                        var response = await _mainWebServerService.DataBase.WorkingShiftContoller.UpdateWorkingShift(shift);
+                        result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                        result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                        result.ErrorMessage = response.Error;
+                        result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                        result.ValidationErrors = response.Errors;
+                        if (result.IsSuccess)
+                        {
+                            _sessionService.WorkingShiftStatus.WorkingShift = null;
+                            _sessionService.WorkingShiftStatus.OpenShiftTime = null;
+                            _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Close;
+                            _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
+                        }
+                    }
+                } 
                 return result;
             }
             catch (Exception ex)
             {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
+                return OperationResult<string>.Fail(ex.Message);
             }
         }
 
+        public async Task<OperationResult<string>> DepositAndWithdrawalMoney(WorkingShiftModel shift, Operation operation)
+        {
+            try
+            {
+                var result   = _fiscalOperationController.DepositAndWithdrawalMoney(shift, operation, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                if (result.IsError || result.ErrorType == ErrorType.ErrorKey)
+                {
+                    var key = _sessionService.User.SignatureKey;
+                    if (key != null && key.Signature != null && key.SignaturePassword != null)
+                    {
+                        _fiscalOperationController.AddKey(_sessionService.User.SignatureKey);
+                        result = _fiscalOperationController.DepositAndWithdrawalMoney(shift, operation, (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
+                if (result.IsSuccess)
+                {
+                    if (!string.IsNullOrEmpty(result.Data))
+                    {
+                        operation.FiscalServerId = result.Data;
+                        operation.MAC = CreateMac(shift);
+                        operation.Shift = shift;
 
-
+                        var response = await _mainWebServerService.DataBase.OperationController.Add(operation.ToCreateOperationDto());
+                        result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                        result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                        result.ErrorMessage = response.Error;
+                        result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                        result.ValidationErrors = response.Errors;
+                    }
+                }  
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<string>.Fail(ex.Message);
+            }
+        } 
 
         private MediaAccessControl CreateMac(WorkingShiftModel workingShift, Operation? operation = null)
         {
@@ -142,11 +183,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                 WorkingShifts = workingShift,
                 Operation = operation
             };
-        }
-
-
-
-
+        } 
         public async Task<OperationResult<WorkingShiftResourse>> GetWorkingShiftResourse(string fiscalNumberRRo)
         {
             var result = new OperationResult<WorkingShiftResourse>();
@@ -174,34 +211,58 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                 result.Data = data;
             }
             return result; 
-        }
+        }  
+        public async Task<OperationResult<string>> SendCheck(IEnumerable<ProductModel> products, Operation operation)
+        {
+            try
+            { 
+                var workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
+
+                if (workingShift == null)
+                {
+                    return OperationResult<string>.Fail("Невдалося завантажити зміну");
+                }
 
 
+                var result = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, products.ToList(), (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                if (result.IsError || result.ErrorType == ErrorType.ErrorKey)
+                { 
+                    var key = _sessionService.User.SignatureKey;
+                    if (key != null && key.Signature != null && key.SignaturePassword != null)
+                    {
+                        _fiscalOperationController.AddKey(_sessionService.User.SignatureKey);
+                        result = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, products.ToList(), (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
 
+                if (result.IsSuccess)
+                {
+                    if (!string.IsNullOrEmpty(result.Data))
+                    {
+                        operation.Shift = workingShift;
+                        operation.FiscalServerId = result.Data;
+                        operation.MAC = CreateMac(workingShift, operation);
+                        var resultOperation = await SaveDataBase(operation, products);
 
-        public async Task<OperationResult<bool>> SendCheck(IEnumerable<ProductModel> products, Operation operation)
-        { 
-            var result = new OperationResult<bool>();
-            var workingShift = _sessionService.WorkingShiftStatus.WorkingShift;
-
-            if (workingShift == null)
-            {
-                return OperationResult<bool>.Fail("Невдалося завантажити зміну");
+                        if (resultOperation.IsSuccess) 
+                        {
+                            _sessionService.Operation = operation;
+                            return result;
+                        } 
+                    }
+                } 
+                return result;
             }
-
-
-            var id = _fiscalOperationController.SendReturnFiscalCheck(workingShift, operation, products.ToList(), (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
-            if (id != string.Empty)
+            catch (Exception ex) 
             {
-                operation.Shift = workingShift;
-                operation.FiscalServerId = id;
-                operation.MAC = CreateMac(workingShift,operation);
-                result = await SaveDataBase(operation, products);
-                _sessionService.Operation = operation;
+                return OperationResult<string>.Fail(ex.Message);
             }
-            return result;
-        }
-
+            
+        } 
         private async Task<OperationResult<bool>> SaveDataBase(Operation operation, IEnumerable<ProductModel> products)
         {
             try
@@ -231,7 +292,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             }
             catch (Exception ex)
             {
-                throw;
+                return OperationResult<bool>.Fail(ex.Message);
             }
         }
     }

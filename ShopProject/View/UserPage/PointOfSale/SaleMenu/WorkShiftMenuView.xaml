@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </Page.Resources>  
     
-    <Grid Name="Grid" >
+    <Grid Name="Grid" > 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -34,7 +34,7 @@
                 Background="White"
                 BorderBrush="#D9D9D9"
                 BorderThickness="1"
-                Margin="5"
+                Margin="15,10,0,15"
                 CornerRadius="6" 
                 Padding="5">
 
@@ -61,10 +61,10 @@
                         VerticalAlignment="Stretch" 
                         Style="{StaticResource MenuButtonStyle}"
                         Command="{Binding PrintLastCheckCommand}"/>
-                <Button x:Name="button8" Content="Видати сертифікат" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
+                <!--<Button x:Name="button8" Content="Видати сертифікат" HorizontalAlignment="Stretch" Margin="10,10,10,10" 
                         VerticalAlignment="Stretch" 
                         Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding PublishCertificateCommand}"/>
+                        Command="{Binding PublishCertificateCommand}"/>-->
                 <Button x:Name="button3" Content="Службове внесення" HorizontalAlignment="Stretch"  Margin="10,10,10,10"
                         VerticalAlignment="Stretch" 
                         Style="{StaticResource MenuButtonStyle}"
@@ -88,7 +88,7 @@
         </Border>
 
         <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Top" 
-                Margin="5"
+                Margin="10,10,15,15"
                 Padding="15"
                 Height="100"
                 CornerRadius="6"
@@ -255,7 +255,7 @@
                            FontSize="12"
                            Foreground="#808080"/>
 
-                        <TextBlock Text="{Binding WorkingShiftStatus.OpenShiftTime}"
+                        <TextBlock Text="{Binding WorkingShiftStatus.OpenShiftTime , StringFormat= HH.mm dd.MM.yyyy}"
                            FontSize="16"
                            FontWeight="SemiBold"/>
 
@@ -270,7 +270,7 @@
         <Border Grid.Row="1"
                 Grid.Column="1"
                 Grid.RowSpan="2"
-                Margin="5"
+                Margin="10,10,15,15"
                 CornerRadius="6"
                 Padding="5"
                 Background="#FAFAFA"
@@ -552,64 +552,7 @@
 
             </Border>
         </Grid>
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiOpenShiftSuccessDialogWindow}" Panel.ZIndex="4">
-            <Border Width="420"
-                    Background="#FAFAFA"
-                    CornerRadius="10"
-                    BorderBrush="#D9D9D9"
-                    BorderThickness="1"
-                    Padding="25">
-
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
- 
-                    <StackPanel HorizontalAlignment="Center">
- 
-                        <Border Width="72"
-                                Height="72"
-                                Background="#27AE60"
-                                CornerRadius="36"
-                                Margin="0,0,0,20">
-
-                            <Viewbox Margin="18">
-                                <Path Stroke="White"
-                                      StrokeThickness="3"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Data="M 2 10 L 8 16 L 18 4"/>
-                            </Viewbox>
-
-                        </Border>
- 
-                        <TextBlock Text="Зміну відкрито"
-                                   FontSize="24"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
- 
-                        <TextBlock Margin="0,12,0,0"
-                                   Text="Робочу зміну успішно відкрито.&#10;Можна розпочинати роботу."
-                                   TextAlignment="Center"
-                                   Foreground="#666666"
-                                   FontSize="15"/>
-
-                    </StackPanel>
- 
-                    <Button Grid.Row="1"
-                            Width="140"
-                            Height="42"
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Center" 
-                            Content="OK"
-                            Style="{StaticResource SuccessButton}"
-                            Command="{Binding CloseOpenShiftSuccessDialogWindowCommand}" /> 
-                </Grid>
-
-            </Border>
-        </Grid>
+        
 
         <Grid x:Name="InputBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" Panel.ZIndex="4" 
               HorizontalAlignment="Center"
@@ -658,77 +601,8 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-        </Grid>
-
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiSuccessOfficialDepositMoneyDialogWindow}" Panel.ZIndex="4">
-            <Border Width="420"
-                    Background="#FAFAFA"
-                    CornerRadius="10"
-                    BorderBrush="#D9D9D9"
-                    BorderThickness="1"
-                    Padding="25">
-
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel HorizontalAlignment="Center">
-
-                        <Border Width="72"
-                                Height="72"
-                                Background="#27AE60"
-                                CornerRadius="36"
-                                Margin="0,0,0,20">
-
-                            <Viewbox Margin="18">
-                                <Path Stroke="White"
-                                      StrokeThickness="3"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Data="M 2 10 L 8 16 L 18 4"/>
-                            </Viewbox>
-
-                        </Border>
-
-                        <TextBlock Text="Кошти успішно внесено"
-                                   FontSize="24"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
-
-                        <StackPanel>
-                            <TextBlock Margin="0,12,0,0"
-                                       Text="Сума внесення:"
-                                       TextAlignment="Center"
-                                       Foreground="#666666"
-                                       FontSize="15"/>
-                            <TextBlock Margin="10"  
-                                       Foreground="#666666"
-                                       TextAlignment="Right" 
-                                       HorizontalAlignment="Center" 
-                                       Text="{Binding Cash, StringFormat=0.00}"/>
-                        </StackPanel>
-                      
-
-                    </StackPanel> 
-                    <Button Grid.Row="1"
-                            Width="140"
-                            Height="42"
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Center" 
-                            Content="OK"
-                            Style="{StaticResource SuccessButton}"
-                            Command="{Binding CloseSuccessOfficialDepositMoneyDialogWindowCommad}" />
-                </Grid>
-
-            </Border>
-        </Grid>
-
-
-
-
+        </Grid> 
+        
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" Panel.ZIndex="4" 
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
@@ -770,73 +644,7 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-        </Grid>
-
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiSuccessOfficialWithdrawalMoneyDialogWindow}" Panel.ZIndex="4">
-            <Border Width="420"
-                    Background="#FAFAFA"
-                    CornerRadius="10"
-                    BorderBrush="#D9D9D9"
-                    BorderThickness="1"
-                    Padding="25">
-
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel HorizontalAlignment="Center">
-
-                        <Border Width="72"
-                                Height="72"
-                                Background="#27AE60"
-                                CornerRadius="36"
-                                Margin="0,0,0,20">
-
-                            <Viewbox Margin="18">
-                                <Path Stroke="White"
-                                      StrokeThickness="3"
-                                      StrokeStartLineCap="Round"
-                                      StrokeEndLineCap="Round"
-                                      Data="M 2 10 L 8 16 L 18 4"/>
-                            </Viewbox>
-
-                        </Border>
-
-                        <TextBlock Text="Кошти успішно видано"
-                                   FontSize="24"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
-
-                        <StackPanel>
-                            <TextBlock Margin="0,12,0,0"
-                                       Text="Сума виданих коштів:"
-                                       TextAlignment="Center"
-                                       Foreground="#666666"
-                                       FontSize="15"/>
-                            <TextBlock Margin="10"  
-                                       Foreground="#666666"
-                                       TextAlignment="Right" 
-                                       HorizontalAlignment="Center" 
-                                       Text="{Binding Cash, StringFormat=0.00}"/>
-                        </StackPanel>
-
-
-                    </StackPanel>
-                    <Button Grid.Row="1"
-                            Width="140"
-                            Height="42"
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Center" 
-                            Content="OK"
-                            Style="{StaticResource SuccessButton}"
-                            Command="{Binding CloseSuccessOfficialWithdrawalMoneyDialogWindowCommad}" />
-                </Grid>
-
-            </Border>
-        </Grid>
+        </Grid> 
 
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiCloseShiftDialogWindow}" Panel.ZIndex="4">
             <Border Background="#FAFAFA"
@@ -1028,66 +836,7 @@
 
                 </Grid>
             </Border>
-        </Grid>
-
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiCloseShiftSuccessDialogWindow}" Panel.ZIndex="4">
-            <Border Width="420"
-                    Background="#FAFAFA"
-                    CornerRadius="10"
-                    BorderBrush="#D9D9D9"
-                    BorderThickness="1"
-                    Padding="25">
-
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel HorizontalAlignment="Center">
-
-                        <Border Width="72"
-                         Height="72"
-                         Background="#27AE60"
-                         CornerRadius="36"
-                         Margin="0,0,0,20">
-
-                            <Viewbox Margin="18">
-                                <Path Stroke="White"
-                               StrokeThickness="3"
-                               StrokeStartLineCap="Round"
-                               StrokeEndLineCap="Round"
-                               Data="M 2 10 L 8 16 L 18 4"/>
-                            </Viewbox>
-
-                        </Border>
-
-                        <TextBlock Text="Зміну закрито"
-                            FontSize="24"
-                            FontWeight="SemiBold"
-                            HorizontalAlignment="Center"/>
-
-                        <TextBlock Margin="0,12,0,0"
-                            Text="Робочу зміну успішно закрито."
-                            TextAlignment="Center"
-                            Foreground="#666666"
-                            FontSize="15"/>
-
-                    </StackPanel>
-
-                    <Button Grid.Row="1"
-                            Width="140"
-                            Height="42"
-                            Margin="0,25,0,0"
-                            HorizontalAlignment="Center" 
-                            Content="OK"
-                            Style="{StaticResource SuccessButton}"
-                            Command="{Binding CloseCloseShiftSuccessDialogWindowCommand}" />
-                </Grid>
-
-            </Border> 
-        </Grid>
+        </Grid> 
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding VisibilitiFiscalCheckSuccessdialogWindow}" Panel.ZIndex="4">
             <Border Width="420"
                     Padding="20"

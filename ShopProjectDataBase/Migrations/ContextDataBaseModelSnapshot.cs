@@ -247,6 +247,9 @@ namespace ShopProjectDataBase.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("LoadTaxServer")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LocalNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

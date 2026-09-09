@@ -38,7 +38,10 @@ namespace ShopProjectDataBase.Entities
         /// Адреса господарської одиниці, де використовується ПРРО
         /// </summary>
         public string Address { get; set; } = string.Empty;
-
+        /// <summary>
+        /// Перевірка чи завантажено обєкт з серверу
+        /// </summary>
+        public bool LoadTaxServer { get; set; } = false;
         public TaxObjectEntity? TaxObject { get; set; }
         /// <summary>
         /// Список MAC яких видав ПРРО

@@ -22,7 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary> 
     </Page.Resources> 
-    <Grid x:Name="Grid" Margin="0">
+    <Grid x:Name="Grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="360"/>
@@ -35,24 +35,24 @@
 
         <Border CornerRadius="10" 
                 BorderBrush="LightGray" 
-                BorderThickness="1" 
+                BorderThickness="1"  
                 SnapsToDevicePixels="True" 
                 ClipToBounds="True">
 
             <DataGrid x:Name="dataGrid" 
-                  ItemsSource="{Binding OperationSaleInfo.Products, UpdateSourceTrigger=PropertyChanged}"
-                  AutoGenerateColumns="False"
-                  ColumnWidth="*"
-                  HeadersVisibility="Column"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  FontSize="16"
-                  Margin="10"
-                  RowHeight="40"  
-                  Style="{StaticResource DataGrid}"
-                  ColumnHeaderStyle="{StaticResource DataGridColumnHeader}" 
-                  RowStyle="{StaticResource DataGridRow}"
-                  CellStyle="{StaticResource RectangleCellStyle}" >
+                      ItemsSource="{Binding OperationSaleInfo.Products, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False"
+                      ColumnWidth="*"
+                      HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      FontSize="16"
+                      Margin="10"
+                      RowHeight="40"  
+                      Style="{StaticResource DataGrid}"
+                      ColumnHeaderStyle="{StaticResource DataGridColumnHeader}" 
+                      RowStyle="{StaticResource DataGridRow}"
+                      CellStyle="{StaticResource RectangleCellStyle}" >
                 <DataGrid.Resources>
                     <Style TargetType="DataGridCell">
                         <Setter Property="Background" Value="Transparent"/>
@@ -109,123 +109,137 @@
                     <DataGridTextColumn Width="20"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </Border>
-        <Border Grid.Column="1" Margin="10,0,0,0" CornerRadius="10" Background="White" BorderBrush="#DDD" BorderThickness="1">
-            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                <Grid VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="328"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Border
-                        Grid.Row="0"
-                        Margin="0,0,0,8"
-                        Padding="15"
-                        Background="White"
-                        BorderBrush="#DDDDDD"
-                        BorderThickness="1"
-                        CornerRadius="8">
-
-                        <StackPanel>
-
-                            <TextBlock Text="Пошук товару"
-                                       FontSize="17"
-                                       FontWeight="SemiBold"/>
-
-                            <TextBlock Margin="0,12,0,4"
-                                       Text="Штрихкод:"/>
-
-                            <TextBox VerticalContentAlignment="Center"
-                                     Style="{StaticResource GeneralTextBox}"
-                                     Text="{Binding BarCodeSearch, UpdateSourceTrigger=PropertyChanged}" >
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="TextChanged">
-                                        <i:InvokeCommandAction Command="{Binding SearchBarCodeCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBox>
-                        </StackPanel>
-
-                    </Border>
-                    <Border 
-                        Grid.Row="1"
-                        Margin="0,0,0,8"
-                        Padding="15"
-                        Background="White"
-                        BorderBrush="#DDDDDD"
-                        BorderThickness="1"
-                        CornerRadius="8"> 
-                        <StackPanel>
-                            <TextBlock Text="Оплата"
-                                       FontSize="17"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock Margin="0,5,0,4" Text="Тип оплати:"/> 
-                            <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Готівка" Style="{StaticResource GeneralButton}" Command="{Binding SetCashPaymetnMethod}" Margin="0" Height="25" Width="143"></Button>
-                                    <Button Content="Карта" Style="{StaticResource GeneralButton}" Command="{Binding SetCardPaymentMethod}" Margin="10,0,0,0" Height="25" Width="143"></Button>
-                                </StackPanel> 
-                            </StackPanel>
-                        </StackPanel>
-
-                    </Border>
-                    <ContentControl Grid.Row="2" Content="{Binding PaymentMenthod}"></ContentControl>
-                    <Border 
-                        Grid.Row="3"
-                        Margin="0,0,0,8"
-                        Padding="15"
-                        Background="White"
-                        BorderBrush="#DDDDDD"
-                        BorderThickness="1"
-                        Visibility="{Binding VisibilitiCheckMenu}"
-                        CornerRadius="8"> 
-                        <StackPanel>
-                            <TextBlock Text="Налаштування чека"
-                                       FontSize="17"
-                                       FontWeight="SemiBold"/>
-                                <StackPanel>
-                                    <CheckBox Content="Друкувати чек" 
-                                              IsChecked="{Binding OperationSaleInfo.DrawingCheck}" Margin="0,12,0,5"/>
-                                    <CheckBox Content="Фіскальний чек" 
-                                              IsChecked="{Binding OperationSaleInfo.IsFiscalCheck}"/>
-                                   </StackPanel>
-                            <Button Content="Очистити чек" VerticalAlignment="Top" Height="25" Width="125" HorizontalAlignment="Right"
-                                    Command="{Binding ClearFieldDataGid}" 
-                                    Style="{StaticResource GeneralButton}"/>
-                        </StackPanel> 
-                    </Border>
-                    <Border 
-                        Grid.Row="4"
-                        Margin="0,0,0,8"
-                        Padding="15"
-                        Background="White"
-                        BorderBrush="#DDDDDD"
-                        BorderThickness="1"
-                        Visibility="{Binding VisibilitiCheckMenu}"
-                        CornerRadius="8">
-                        <StackPanel>
-                            <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                                <Button Content="Оплатити" Command="{Binding PrintingCheckCommand}" 
-                                        IsEnabled="{Binding IsEnableSendCheckButton}" Style="{StaticResource SuccessButton}"
-                                        Width="120" Height="40"  FontWeight="Bold"/> 
-                            </StackPanel> 
-                        </StackPanel>
-                    </Border> 
-                </Grid>
-                        
-            </ScrollViewer>
         </Border> 
+        <ScrollViewer Grid.Column="1" Margin="10,0,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="328"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Margin="0,0,0,8"
+                    Padding="15"
+                    Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Пошук товару"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Margin="0,12,0,4"
+                                   Text="Штрихкод:"/>
+
+                        <TextBox VerticalContentAlignment="Center"
+                                 Style="{StaticResource GeneralTextBox}"
+                                 Text="{Binding BarCodeSearch, UpdateSourceTrigger=PropertyChanged}" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="TextChanged">
+                                    <i:InvokeCommandAction Command="{Binding SearchBarCodeCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                    </StackPanel>
+
+                </Border>
+                <Border 
+                    Grid.Row="1"
+                    Margin="0,0,0,8"
+                    Padding="15"
+                    Background="White"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"> 
+                    <StackPanel>
+                        <TextBlock Text="Тип оплати"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton Content="Готівка" IsChecked="{Binding SelectPaymentMethodCash}" Margin="0,0,5,0" Grid.Column="0" HorizontalAlignment="Stretch" GroupName="PaymentMethod" Style="{StaticResource SaleMenuButtonStyle}" Command="{Binding SetCashPaymetnMethod}"/>
+                            <RadioButton Content="Карта"   IsChecked="{Binding SelectPaymentMethodCard}" Margin="5,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch" GroupName="PaymentMethod" Style="{StaticResource SaleMenuButtonStyle}" Command="{Binding SetCardPaymentMethod}"></RadioButton>
+                        </Grid>
+                    </StackPanel>
+
+                </Border>
+                <Border Grid.Row="2"
+                        Margin="0,0,0,8"
+                        Padding="15"
+                        Background="White"
+                        BorderBrush="#DDDDDD"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock Text="До оплати"
+                            FontSize="17"
+                            FontWeight="SemiBold"/>
+                        <Grid Margin="0,5,0,0">
+                            <Label Content="Сума:" FontSize="16"  FontWeight="SemiBold"/>
+                            <Label Content="{Binding OperationSaleInfo.SumaOrder, StringFormat='{}{0:0.00}'}" 
+                                   FontSize="16" Foreground="#E53935" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,30,0"/>
+                            <Label HorizontalAlignment="Right" FontWeight="SemiBold" FontSize="16" Content="грн"></Label>
+                        </Grid>
+                    </StackPanel> 
+                </Border>
+                <ContentControl Grid.Row="3" Content="{Binding PaymentMenthod}"></ContentControl>
+                <Border  Grid.Row="4"
+                         Margin="0,0,0,8"
+                         Padding="15"
+                         Background="White"
+                         BorderBrush="#DDDDDD"
+                         BorderThickness="1"
+                         Visibility="{Binding VisibilitiCheckMenu}"
+                         CornerRadius="8">
+                    <StackPanel>
+                        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button Content="Оплатити" Command="{Binding PrintingCheckCommand}" 
+                                    IsEnabled="{Binding IsEnableSendCheckButton}" Style="{StaticResource SuccessButton}"
+                                    Width="120" Height="40"  FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border  Grid.Row="5"
+                         Margin="0,0,0,8"
+                         Padding="15"
+                         Background="White"
+                         BorderBrush="#DDDDDD"
+                         BorderThickness="1"
+                         Visibility="{Binding VisibilitiCheckMenu}"
+                         CornerRadius="8"> 
+                    <StackPanel>
+                        <TextBlock Text="Налаштування чека"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"/>
+                            <StackPanel>
+                                <CheckBox Content="Друкувати чек" 
+                                          IsChecked="{Binding OperationSaleInfo.DrawingCheck}" Margin="0,12,0,5"/> 
+                               </StackPanel>
+                        <Button Content="Очистити чек" VerticalAlignment="Top" Height="25" Width="125" HorizontalAlignment="Right"
+                                Command="{Binding ClearFieldDataGid}" 
+                                Style="{StaticResource GeneralButton}"/>
+                    </StackPanel> 
+                </Border> 
+            </Grid> 
+        </ScrollViewer> 
     </Grid>
 </Page>

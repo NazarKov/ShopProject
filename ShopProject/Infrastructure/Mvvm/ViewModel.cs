@@ -48,8 +48,7 @@ namespace ShopProject.Core.Mvvm
                 catch (System.Exception ex)
                 {
                     Task.Run(async () =>
-                    {
-
+                    { 
                         await _exceptionService.HandleAsync(ex, externalErrorHandel);
                     });
                 }

@@ -12,7 +12,7 @@ namespace ShopProjectWebServer.Models.Domain.OperationRecorder
         public TypeStatusOperationRecorder TypeStatus { get; set; } 
         public DateTimeOffset D_REG { get; set; } 
         public string Address { get; set; } = string.Empty;
-
+        public bool LoadTaxServer { get; set; } = false;
         public ShopProjectWebServer.Models.Domain.TaxObject.TaxObject? TaxObject;
     }
 }

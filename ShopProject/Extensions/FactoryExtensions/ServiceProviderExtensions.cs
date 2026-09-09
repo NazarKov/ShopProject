@@ -115,6 +115,7 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.RegisterTransient<CreateTaxObjectViewModel, CreateTaxObjectViewModel>();
             factory.RegisterTransient<CreateTaxObjectFromKeyViewModel, CreateTaxObjectFromKeyViewModel>();
+            factory.RegisterTransient<UpdateOperationRecorderViewModel, UpdateOperationRecorderViewModel>();
             factory.RegisterTransient<BindingOperationRecorderToTaxObjectViewModel, BindingOperationRecorderToTaxObjectViewModel>();
             factory.RegisterTransient<BindingUserToTaxObjectViewModel, BindingUserToTaxObjectViewModel>();
 

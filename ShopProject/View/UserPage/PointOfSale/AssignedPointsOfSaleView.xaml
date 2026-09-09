@@ -16,7 +16,8 @@
             </ResourceDictionary.MergedDictionaries> 
         </ResourceDictionary>
     </Page.Resources>
-    <Grid> 
+    <Grid>
+        <Rectangle x:Name="ShadowRect1" Visibility="{Binding GeneralShadowVisibility}" Fill="Black" Panel.ZIndex="10" Opacity="0.5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="3"></Rectangle>
         <ScrollViewer >
             <ItemsControl ItemsSource="{Binding PointsOfSale}" x:Name="PointsOfSale">
                 <ItemsControl.ItemTemplate>

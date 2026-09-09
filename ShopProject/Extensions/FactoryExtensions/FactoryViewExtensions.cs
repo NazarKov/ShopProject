@@ -78,6 +78,7 @@ namespace ShopProject.Extensions.FactoryExtensions
 
             factory.Register<CreateOperationRecorederView>(()=>new CreateOperationRecorederView());
             factory.Register<CreateOperationRecorderFromKeyView>(()=>new CreateOperationRecorderFromKeyView());
+            factory.Register<UpdateOperationRecorderView>(()=>new UpdateOperationRecorderView());
             factory.Register<BindingOperationRecorderToTaxObjectView>(()=> new BindingOperationRecorderToTaxObjectView());
             factory.Register<BindingUserToTaxObjectView>(() => new BindingUserToTaxObjectView());
 

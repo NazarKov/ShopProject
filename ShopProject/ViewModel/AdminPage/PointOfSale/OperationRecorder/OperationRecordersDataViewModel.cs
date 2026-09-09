@@ -1,14 +1,20 @@
-﻿using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm; 
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Controls.Paginator;
+using ShopProject.Core.Mvvm;
+using ShopProject.Core.Mvvm.Command;
 using ShopProject.Infrastructure.CompositionRoot.Interface; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.OperationRecorder;
+using ShopProject.Model.UI.OperationRecorder; 
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface; 
 using ShopProject.Services.Modules.Mapping.OperationRecorder;
 using ShopProject.View.AdminPage.PointOfSale.OperationRecorder;
+using ShopProject.View.AdminPage.PointOfSale.TaxObject;
+using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq; 
 using System.Threading;
@@ -27,12 +33,12 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
 
         private bool _isReadyUpdateDataGriedView;
         private bool _reloadField;
-
+        private readonly IMessageBoxControlService _messageBoxControlService;
         private IOperationRecorderService _operationRecorderService;
-        public OperationRecordersDataViewModel(IOperationRecorderService operationRecorderService)
+        public OperationRecordersDataViewModel(IOperationRecorderService operationRecorderService, IMessageBoxControlService messageBoxControlService)
         {  
             _operationRecorderService = operationRecorderService;
-
+            _messageBoxControlService = messageBoxControlService;
             _operationRecorders = new List<OperationRecorderModel>();
             _paginator = new PaginatorViewModel();
             _statusOperationRecorder = new List<string>();
@@ -256,5 +262,88 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
         public ICommand UpdateFieldPageCommand => _updateGridViewCommad;
         public ICommand OpenCreateOperationRecorderWindowCommand => _openCreateOperationRecorderWindowCommand;
         public ICommand OpenCreateOperationRecorderFromKeyWindowCommand => _openCreateOperationRecorderFromKeyWindowCommand;
+
+        public ICommand UpdateOperationRecorderCommand { get => new DelegateParameterCommandAsync<object>(UpdateOperationRecorder); }
+        private async Task UpdateOperationRecorder(object parameter)
+        {
+            var operationRecorders = parameter as IList;
+            if (operationRecorders != null)
+            {
+                if (operationRecorders.Count == 1)
+                {
+                    var item = ((OperationRecorderModel)operationRecorders[0]);
+                    if (item != null && !item.LoadTaxServer)
+                    {
+                        _operationRecorderService.SetOperationRecordeOnSession(item.ToOperationRecorder());
+                        App.Container.GetNewViewWithViewModel<UpdateOperationRecorderView, UpdateOperationRecorderViewModel>().Show();
+                    }
+                    else
+                    {
+                        await _messageBoxControlService.Show("Цей обєкт завантажено з податкової його не можливо редагувата.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
+            }
+        }
+        public ICommand SetOperaionRecorderStatusDisableCommand { get => CreateCommandParameterAsync<object>(SetOperaionRecorderStatusDisable); }
+        private async Task SetOperaionRecorderStatusDisable(object parameter)
+        {
+            var operationRecorders = parameter as IList;
+            if (operationRecorders != null)
+            {
+                if (operationRecorders.Count == 1)
+                {
+                    if (await _messageBoxControlService.Show("Вимкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
+                    {
+                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.Closed, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
+                        if (result.IsSuccess)
+                        {
+                            await SetFieldPage();
+                            await _messageBoxControlService.Show("Обєкт вимкнено.", "Informations", MessageBoxType.Success, "PointOfSaleSnadow");
+                        }
+                        else
+                        {
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
+                        }
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
+            }
+        }
+
+        public ICommand SetOperaionRecorderStatusEnableCommand { get => new DelegateParameterCommandAsync<object>(SetOperaionRecorderStatusEnable); }
+        private async Task SetOperaionRecorderStatusEnable(object parameter)
+        {
+            var operationRecorders = parameter as IList;
+            if (operationRecorders != null)
+            {
+                if (operationRecorders.Count == 1)
+                {
+                    if (await _messageBoxControlService.Show("Увімкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
+                    {
+                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.Open, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
+                        if (result.IsSuccess)
+                        {
+                            await SetFieldPage();
+                            await _messageBoxControlService.Show("Обєкт вимкнено.", "Informations", MessageBoxType.Success, "PointOfSaleSnadow");
+                        }
+                        else
+                        {
+                            await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
+                        }
+                    }
+                }
+                else
+                {
+                    await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "PointOfSaleSnadow");
+                }
+            }
+        }
     }
 }

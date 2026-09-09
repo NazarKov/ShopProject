@@ -1,9 +1,11 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.OperationRecorder;
 using ShopProject.Model.UI.PointOfSale;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.OperationRecorder;
 using ShopProject.Services.Modules.Mapping.TaxObject;
@@ -19,11 +21,21 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale
     internal class AssignedPointsOfSaleViewModel : ViewModel<AssignedPointsOfSaleViewModel>, IViewModelLoadResourse
     {
         private ITaxObjectService _taxObjectService;
-
-        public AssignedPointsOfSaleViewModel(ITaxObjectService taxObjectService)
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        public AssignedPointsOfSaleViewModel(ITaxObjectService taxObjectService,IMessageBoxControlService messageBoxControlService)
         {
             _taxObjectService = taxObjectService;
+            _messageBoxControlService = messageBoxControlService;
             _pointsOfSale = new List<TaxObjectAndOperationRecorderModel>();
+            _generalShadowVisibility = Visibility.Collapsed;
+            MediatorService.AddEventAsync("PointOfSaleSnadowUserSetVissible", async () => { GeneralShadowVisibility = Visibility.Visible; });
+            MediatorService.AddEventAsync("PointOfSaleSnadowUserSetCollapsed", async () => { GeneralShadowVisibility = Visibility.Collapsed; });
+        }
+        private Visibility _generalShadowVisibility;
+        public Visibility GeneralShadowVisibility
+        {
+            get { return _generalShadowVisibility; }
+            set { _generalShadowVisibility = value; OnPropertyChanged(nameof(GeneralShadowVisibility)); }
         }
 
         private List<TaxObjectAndOperationRecorderModel> _pointsOfSale;
@@ -53,16 +65,28 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale
             {
                 var operationRecorder = parameter as OperationRecorderModel;
                 if (operationRecorder != null) 
-                {
-                    var taxObject = PointsOfSale.Where(p=>p.OperationRecorders.Where(o => o.FiscalNumber.Equals(operationRecorder.FiscalNumber)).Any()).First().TaxObject;
+                { 
+                    if (operationRecorder.TypeStatus != TypeStatusOperationRecorder.Open)
+                    {
+                        _messageBoxControlService.Show("Касовий апарат недоступний для використання", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
+                        return;
+                    }
+                    else
+                    {
+                        var taxObject = PointsOfSale.Where(p => p.OperationRecorders.Where(o => o.FiscalNumber.Equals(operationRecorder.FiscalNumber)).Any()).First().TaxObject;
+                        if(taxObject.TypeStatus != TypeStatusTaxObject.Open)
+                        {
+                            _messageBoxControlService.Show("Обєкт з касами недоступний для використання", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
+                            return;
+                        }
 
-
-                    _taxObjectService.SetPoinOfSaleOnSession(taxObject.ToTaxObject(), operationRecorder.ToOperationRecorder());
-                    MediatorService.ExecuteNavigation(NavigationButton.RedirectToWorkShiftMenuPage); 
+                        _taxObjectService.SetPoinOfSaleOnSession(taxObject.ToTaxObject(), operationRecorder.ToOperationRecorder());
+                        MediatorService.ExecuteNavigation(NavigationButton.RedirectToWorkShiftMenuPage);
+                    } 
                 }
                 else
                 {
-                    MessageBox.Show("Невдалося відкрити зміну");
+                    _messageBoxControlService.Show("Невдалося відкрити касовий апарат", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
                 }
             }
         }

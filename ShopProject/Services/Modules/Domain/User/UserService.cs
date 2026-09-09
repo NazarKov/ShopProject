@@ -155,9 +155,15 @@ namespace ShopProject.Services.Modules.Domain.User
                         SignaturePassword = passwordKey,
                     };
                     var infoOwner = _mainSigningFileController.GetDataOwner(pathKey, passwordKey);
-                    nameOwnerWithKey = infoOwner.subjFullName;
-                    tinOwnerWithKey = infoOwner.subjDRFOCode; 
-
+                    if (infoOwner.IsSuccess)
+                    {
+                        nameOwnerWithKey = infoOwner.Data.subjFullName;
+                        tinOwnerWithKey = infoOwner.Data.subjDRFOCode;
+                    }
+                    else
+                    {
+                        return OperationResult<UserModel>.Fail(infoOwner.ErrorMessage);
+                    }
                 }
                 else
                 {

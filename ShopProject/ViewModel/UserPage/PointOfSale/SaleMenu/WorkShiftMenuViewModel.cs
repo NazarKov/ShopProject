@@ -1,11 +1,12 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Operation;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm;
+using ShopProject.Infrastructure.CompositionRoot.Interface; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Operation;
 using ShopProject.Model.UI.WorkingShift;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
@@ -26,52 +27,47 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
     { 
         private ICommand _openShiftCommand;
         private ICommand _openOpenShiftDialogWindowCommand;
-        private ICommand _closeOpenShiftDialogWindowCommand;
-        private ICommand _closeOpenShiftSuccessDialogWindowCommand;
+        private ICommand _closeOpenShiftDialogWindowCommand; 
 
         private ICommand _openNewCheckCommand;
         private ICommand _closeFisclaCheckSuccessDialogWindowCommand; 
         private ICommand _openOfficialDepositMoneyDialogWindowCommad;
         private ICommand _closeOfficialDepositMoneyDialogWindowCommad;
-        private ICommand _officialDepositMoneyCommand;
-        private ICommand _closeSuccessOfficialDepositMoneyDialogWindowCommad;
+        private ICommand _officialDepositMoneyCommand; 
 
         private ICommand _openOfficialWithdrawalMoneyDialogWindowCommad;
         private ICommand _closeOfficialWithdrawalMoneyDialogWindowCommad;
-        private ICommand _officialWithdrawalMoneyCommand;
-        private ICommand _closeSuccessOfficialWithdrawalMoneyDialogWindowCommad;
+        private ICommand _officialWithdrawalMoneyCommand; 
         
         private ICommand _closeShiftCommand;
         private ICommand _openCloseShiftDialogWindowCommand;
-        private ICommand _closeCloseShiftDialogWindowCommand;
-        private ICommand _closeCloseShiftSuccessDialogWindowCommand;
+        private ICommand _closeCloseShiftDialogWindowCommand; 
 
         private ICommand _exitWorkShiftMenuCommand;
         private ICommand _printLastCheckCommand;
         private ICommand _publishCertificateCommand;
-         
+        private readonly IMessageBoxControlService _messageBoxControlService;
         private IWorkingShiftService _workingShiftService; 
          
-        public WorkShiftMenuViewModel(IUserService userServise, IWorkingShiftService workingShiftService, IOperationRecorderService operationRecorderServise)
+        public WorkShiftMenuViewModel(IUserService userServise, IWorkingShiftService workingShiftService, IOperationRecorderService operationRecorderServise, IMessageBoxControlService messageBoxControlService)
         {
             _userName = userServise.GetUserFromSession().FullName;
             _workingShiftService = workingShiftService;
+            _messageBoxControlService = messageBoxControlService;
 
             _openShiftCommand = CreateCommandAsync(OpenShift);
             _openOpenShiftDialogWindowCommand = CreateCommandAsync(async () => {  Cash = 0; VisibilitiOpenShiftDialogWindow = Visibility.Visible;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible"); VisibilitiShadowPage = Visibility.Visible; });
             _closeOpenShiftDialogWindowCommand = CreateCommandAsync(async () => { VisibilitiOpenShiftDialogWindow = Visibility.Collapsed;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed; });
-            _closeOpenShiftSuccessDialogWindowCommand = CreateCommandAsync(async () => { VisibilitiOpenShiftSuccessDialogWindow = Visibility.Collapsed;
-                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed; });
+         
 
             _openOfficialDepositMoneyDialogWindowCommad = CreateCommandAsync(async () => { Cash = 0; VisibilitiOfficialDepositMoneyDialogWindow = Visibility.Visible;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible"); VisibilitiShadowPage = Visibility.Visible; });
             _closeOfficialDepositMoneyDialogWindowCommad = CreateCommandAsync(async () => { VisibilitiOfficialDepositMoneyDialogWindow = Visibility.Collapsed;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed; });
             _officialDepositMoneyCommand = CreateCommandAsync(OfficialDepositMoney);
-            _closeSuccessOfficialDepositMoneyDialogWindowCommad = CreateCommandAsync(async () => { VisibilitiSuccessOfficialDepositMoneyDialogWindow = Visibility.Collapsed;
-                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed; });
+            
 
             _openOfficialWithdrawalMoneyDialogWindowCommad = CreateCommandAsync(async () => {
                 Cash = 0; VisibilitiOfficialWithdrawalMoneyDialogWindow = Visibility.Visible;
@@ -81,11 +77,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 VisibilitiOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed;
             });
-            _officialWithdrawalMoneyCommand = CreateCommandAsync(OfficialWithdrawalMoney);
-            _closeSuccessOfficialWithdrawalMoneyDialogWindowCommad = CreateCommandAsync(async () => {
-                VisibilitiSuccessOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed;
-                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed;
-            });
+            _officialWithdrawalMoneyCommand = CreateCommandAsync(OfficialWithdrawalMoney); 
 
             _closeShiftCommand = CreateCommandAsync(CloseShift);
             _openCloseShiftDialogWindowCommand = CreateCommandAsync(async () => {
@@ -96,11 +88,8 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _closeCloseShiftDialogWindowCommand = CreateCommandAsync(async () => {
                 VisibilitiCloseShiftDialogWindow = Visibility.Collapsed;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed;
-            });
-            _closeCloseShiftSuccessDialogWindowCommand = CreateCommandAsync(async () => {
-                VisibilitiCloseShiftSuccessDialogWindow = Visibility.Collapsed;
-                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); VisibilitiShadowPage = Visibility.Collapsed;
             }); 
+
             _openNewCheckCommand = CreateCommand(OpenCheck);
             _closeFisclaCheckSuccessDialogWindowCommand = CreateCommandAsync(async () => { await MediatorService.ExecuteEventAsync("VisibilitiShadowSetHidden"); 
                 VisibilitiFiscalCheckSuccessdialogWindow = Visibility.Collapsed; 
@@ -123,25 +112,25 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _tabs = new ObservableCollection<TabItem>(); 
             _isEnableCloseShiftButton = true;
             _isEnableOpenShiftButton = true;
-            _visibilitiOpenShiftDialogWindow = Visibility.Collapsed;
-            _visibilitiOpenShiftSuccessDialogWindow = Visibility.Collapsed;
+            _visibilitiOpenShiftDialogWindow = Visibility.Collapsed; 
             _visibilitiShadowPage = Visibility.Collapsed;
             _visibilitiOpenShift = Visibility.Visible;
             _visibilitiCloseShift = Visibility.Visible;
             _visibilitiExitButton = Visibility.Visible;
             _workingShiftStatus = new WorkingShiftDataModel();
 
-            _visibilitiOfficialDepositMoneyDialogWindow = Visibility.Collapsed;
-            _visibilitiSuccessOfficialDepositMoneyDialogWindow = Visibility.Collapsed;
-            _visibilitiOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed;
-            _visibilitiSuccessOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed;
+            _visibilitiOfficialDepositMoneyDialogWindow = Visibility.Collapsed; 
+            _visibilitiOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed; 
 
-            _visibilitiCloseShiftDialogWindow = Visibility.Collapsed;
-            _visibilitiCloseShiftSuccessDialogWindow = Visibility.Collapsed;
+            _visibilitiCloseShiftDialogWindow = Visibility.Collapsed; 
             _visibilitiFiscalCheckSuccessdialogWindow = Visibility.Collapsed;
             _operation = new OperationModel();
             _operationsInfo = new OperationsInfoModel();
             Cash = 0;
+
+            MediatorService.AddEventAsync("WorkingShiftMenuSetVissible", async () => { VisibilitiShadowPage = Visibility.Visible; });
+            MediatorService.AddEventAsync("WorkingShiftMenuSetCollapsed", async () => { VisibilitiShadowPage = Visibility.Collapsed; });
+
         }
         public async Task LoadResourse()
         {
@@ -235,13 +224,6 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         {
             get { return _visibilitiOpenShiftDialogWindow; }
             set { _visibilitiOpenShiftDialogWindow = value; OnPropertyChanged(nameof(VisibilitiOpenShiftDialogWindow)); }
-        }
-
-        private Visibility _visibilitiOpenShiftSuccessDialogWindow;
-        public Visibility VisibilitiOpenShiftSuccessDialogWindow
-        {
-            get { return _visibilitiOpenShiftSuccessDialogWindow; }
-            set { _visibilitiOpenShiftSuccessDialogWindow = value; OnPropertyChanged(nameof(VisibilitiOpenShiftSuccessDialogWindow)); }
         } 
 
         private Visibility _visibilitiOfficialDepositMoneyDialogWindow;
@@ -249,51 +231,26 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         {
             get { return _visibilitiOfficialDepositMoneyDialogWindow; }
             set { _visibilitiOfficialDepositMoneyDialogWindow = value; OnPropertyChanged(nameof(VisibilitiOfficialDepositMoneyDialogWindow)); }
-        }
-
-        private Visibility _visibilitiSuccessOfficialDepositMoneyDialogWindow;
-        public Visibility VisibilitiSuccessOfficialDepositMoneyDialogWindow
-        {
-            get { return _visibilitiSuccessOfficialDepositMoneyDialogWindow; }
-            set { _visibilitiSuccessOfficialDepositMoneyDialogWindow = value; OnPropertyChanged(nameof(VisibilitiSuccessOfficialDepositMoneyDialogWindow)); }
-        }
-
-
+        } 
         private Visibility _visibilitiOfficialWithdrawalMoneyDialogWindow;
         public Visibility VisibilitiOfficialWithdrawalMoneyDialogWindow
         {
             get { return _visibilitiOfficialWithdrawalMoneyDialogWindow; }
             set { _visibilitiOfficialWithdrawalMoneyDialogWindow = value; OnPropertyChanged(nameof(VisibilitiOfficialWithdrawalMoneyDialogWindow)); }
-        }
-
-        private Visibility _visibilitiSuccessOfficialWithdrawalMoneyDialogWindow;
-        public Visibility VisibilitiSuccessOfficialWithdrawalMoneyDialogWindow
-        {
-            get { return _visibilitiSuccessOfficialWithdrawalMoneyDialogWindow; }
-            set { _visibilitiSuccessOfficialWithdrawalMoneyDialogWindow = value; OnPropertyChanged(nameof(VisibilitiSuccessOfficialWithdrawalMoneyDialogWindow)); }
-        }
+        } 
 
         private Visibility _visibilitiCloseShiftDialogWindow;
         public Visibility VisibilitiCloseShiftDialogWindow
         {
             get { return _visibilitiCloseShiftDialogWindow; }
             set { _visibilitiCloseShiftDialogWindow = value; OnPropertyChanged(nameof(VisibilitiCloseShiftDialogWindow)); }
-        }
-
-        private Visibility _visibilitiCloseShiftSuccessDialogWindow;
-        public Visibility VisibilitiCloseShiftSuccessDialogWindow
-        {
-            get { return _visibilitiCloseShiftSuccessDialogWindow; }
-            set { _visibilitiCloseShiftSuccessDialogWindow = value; OnPropertyChanged(nameof(VisibilitiCloseShiftSuccessDialogWindow)); }
-        }
-
+        } 
         private Visibility _visibilitiFiscalCheckSuccessdialogWindow;
         public Visibility VisibilitiFiscalCheckSuccessdialogWindow
         {
             get { return _visibilitiFiscalCheckSuccessdialogWindow; }
             set { _visibilitiFiscalCheckSuccessdialogWindow = value;OnPropertyChanged(nameof(VisibilitiFiscalCheckSuccessdialogWindow)); }
-        }
-
+        } 
         private async Task SetFieldPage()
         { 
             SetTabsField();
@@ -346,8 +303,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         }
 
         public ICommand OpenOpenShiftDialogWindowCommand => _openOpenShiftDialogWindowCommand;
-        public ICommand CloseOpenShiftDialogWindowCommand => _closeOpenShiftDialogWindowCommand;
-        public ICommand CloseOpenShiftSuccessDialogWindowCommand => _closeOpenShiftSuccessDialogWindowCommand;
+        public ICommand CloseOpenShiftDialogWindowCommand => _closeOpenShiftDialogWindowCommand; 
         public ICommand OpenShiftCommand => _openShiftCommand;
         private async Task OpenShift()
         {
@@ -367,20 +323,17 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 VisibilitiExitButton = Visibility.Collapsed;
                 VisibilitiCloseShift = Visibility.Visible;
                 VisibilitiOpenShiftDialogWindow = Visibility.Collapsed;
-                VisibilitiOpenShiftSuccessDialogWindow = Visibility.Visible;
-
-               
+                await _messageBoxControlService.Show("Зміна успішно Відкрита", "Success", MessageBoxType.Success, "WorkingShiftMenu"); 
             }
             else
             {
-                MessageBox.Show(result.ErrorMessage); 
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
             }
             IsEnableOpenShiftButton = true;
         }
 
         public ICommand OpenCloseShiftDialogWindowCommand => _openCloseShiftDialogWindowCommand;
-        public ICommand CloseCloseShiftDialogWindowCommand => _closeCloseShiftDialogWindowCommand;
-        public ICommand CloseCloseShiftSuccessDialogWindowCommand => _closeCloseShiftSuccessDialogWindowCommand;  
+        public ICommand CloseCloseShiftDialogWindowCommand => _closeCloseShiftDialogWindowCommand; 
         public ICommand CloseShiftCommand => _closeShiftCommand;
         private async Task CloseShift()
         {
@@ -392,12 +345,12 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 VisibilitiOpenShift = Visibility.Visible;
                 VisibilitiExitButton = Visibility.Visible;
                 VisibilitiCloseShiftDialogWindow = Visibility.Collapsed;
-                VisibilitiCloseShiftSuccessDialogWindow = Visibility.Visible;
+                await _messageBoxControlService.Show("Зміна успішно завершена", "Success", MessageBoxType.Success, "WorkingShiftMenu");
                 await ChangeHeaderLable();  
             }
             else
             {
-                MessageBox.Show(result.ErrorMessage);
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
             } 
             IsEnableCloseShiftButton = true; 
         }
@@ -431,8 +384,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
         }
         public ICommand OpenOfficialDepositMoneyDialogWindowCommad => _openOfficialDepositMoneyDialogWindowCommad;
-        public ICommand CloseOfficialDepositMoneyDialogWindowCommad => _closeOfficialDepositMoneyDialogWindowCommad;
-        public ICommand CloseSuccessOfficialDepositMoneyDialogWindowCommad => _closeSuccessOfficialDepositMoneyDialogWindowCommad;
+        public ICommand CloseOfficialDepositMoneyDialogWindowCommad => _closeOfficialDepositMoneyDialogWindowCommad; 
         public ICommand OfficialDepositMoneyCommand => _officialDepositMoneyCommand;
         private async Task OfficialDepositMoney()
         {
@@ -441,17 +393,16 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             if (result.IsSuccess)
             {
                 VisibilitiOfficialDepositMoneyDialogWindow = Visibility.Collapsed;
-                VisibilitiSuccessOfficialDepositMoneyDialogWindow = Visibility.Visible; 
+                await _messageBoxControlService.Show("Кошти успішно внесено\nсума: "+Cash, "Success", MessageBoxType.Success, "WorkingShiftMenu"); 
             }
             else
             {
-                MessageBox.Show("Невдалося внести кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information); 
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
             } 
         }
 
         public ICommand OpenOfficialWithdrawalMoneyDialogWindowCommad => _openOfficialWithdrawalMoneyDialogWindowCommad;
-        public ICommand CloseOfficialWithdrawalMoneyDialogWindowCommad => _closeOfficialWithdrawalMoneyDialogWindowCommad;
-        public ICommand CloseSuccessOfficialWithdrawalMoneyDialogWindowCommad => _closeSuccessOfficialWithdrawalMoneyDialogWindowCommad;
+        public ICommand CloseOfficialWithdrawalMoneyDialogWindowCommad => _closeOfficialWithdrawalMoneyDialogWindowCommad; 
         public ICommand OfficialWithdrawalMoneyCommand => _officialWithdrawalMoneyCommand;
 
         private async Task OfficialWithdrawalMoney()
@@ -461,16 +412,15 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             if (result.IsSuccess)
             {
                 VisibilitiOfficialWithdrawalMoneyDialogWindow = Visibility.Collapsed;
-                VisibilitiSuccessOfficialWithdrawalMoneyDialogWindow = Visibility.Visible;
+                await _messageBoxControlService.Show("Кошти успішно видано\nсума: " + Cash, "Success", MessageBoxType.Success, "WorkingShiftMenu"); 
             }
             else
             {
-                MessageBox.Show("Невдалося видати кошти:" + Cash, "inform", MessageBoxButton.OK, MessageBoxImage.Information);
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
             }
         }
 
-        public ICommand CloseFisclaCheckSuccessDialogWindowCommand => _closeFisclaCheckSuccessDialogWindowCommand;
-
+        public ICommand CloseFisclaCheckSuccessDialogWindowCommand => _closeFisclaCheckSuccessDialogWindowCommand; 
         public ICommand ExitWorkShiftMenuCommand => _exitWorkShiftMenuCommand;
         private void ExitWorkShiftMenu()
         {
@@ -480,7 +430,15 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         public ICommand PrintLastCheckCommand => _printLastCheckCommand;
         private async Task PrintLastCheck()
         {
-           // await _workingShiftService.PrintLastCheck();
+            var result = await _workingShiftService.PrintLastCheck();
+            if (result.IsSuccess)
+            {
+                await _messageBoxControlService.Show("Чек завантажено очікуйте друк", "Success", MessageBoxType.Success, "WorkingShiftMenu");
+            }
+            if (result.IsError)
+            {
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+            }
         }
 
         public ICommand PublishCertificateCommand => _publishCertificateCommand;

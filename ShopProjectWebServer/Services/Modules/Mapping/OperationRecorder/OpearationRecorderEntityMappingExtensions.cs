@@ -18,6 +18,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 Name = item.Name,
                 Status = item.Status,
                 TypeStatus = (ShopProjectWebServer.Models.Domain.Enum.TypeStatusOperationRecorder)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
             if (item.TaxObject != null)
             {
@@ -47,6 +48,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 Name = item.Name,
                 Status = item.Status,
                 TypeStatus = (TypeStatusOperationRecorder)item.TypeStatus,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
         public static IEnumerable<OperationsRecorderEntity> ToOperationRecorderEntity(this IEnumerable<ShopProjectWebServer.Models.Domain.OperationRecorder.OperationRecorder> items)

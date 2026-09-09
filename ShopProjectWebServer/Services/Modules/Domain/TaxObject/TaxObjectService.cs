@@ -1,5 +1,6 @@
 ﻿using ShopProjectDataBase.Entities;
 using ShopProjectWebServer.DataBase.Interface;
+using ShopProjectWebServer.Models.Domain.TaxObject;
 using ShopProjectWebServer.Services.Common;
 using ShopProjectWebServer.Services.Common.Enum;
 using ShopProjectWebServer.Services.Modules.Domain.TaxObject.Interface;
@@ -160,6 +161,22 @@ namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject
         {
             try
             {
+                var valid = await BindingUserValidation(idTaxObject, users);
+
+                var objcets = new List<Models.Domain.User.User>();
+                for (int i = 0; i < valid.Count; i++)
+                {
+                    if (valid.ElementAt(i).IsSuccess)
+                    {
+                        objcets.Add(users.ElementAt(i));
+                    }
+                }
+
+                if (objcets.Count == 0)
+                {
+                    return OperationResult<bool>.Fail("Всі обрані користувачі вже добавлено", ErrorType.ObjectExists, ErrorSource.Database);
+                } 
+
                 await _dataBaseService.DataBaseAccess.TaxObjectTable.AddBindingUserToTaxObject(idTaxObject, users.ToUserEntity());
 
                 return OperationResult<bool>.Success(true);
@@ -168,6 +185,33 @@ namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject
             {
                 return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
             }
+        }
+
+        private async Task<List<OperationResult<bool>>> BindingUserValidation(Guid idTaxObject,IEnumerable<Models.Domain.User.User> items)
+        {
+            var result = new List<OperationResult<bool>>();
+
+            foreach (var item in items) 
+            {
+                if (await _dataBaseService.DataBaseAccess.TaxObjectTable.ExistsByUserAndTaxObject(item.ID, idTaxObject))
+                {
+                    result.Add(new OperationResult<bool>()
+                    {
+                        Status = ResultStatus.Error,
+                        ErrorType = ErrorType.ObjectExists,
+                        Source = ErrorSource.Database,
+                        ErrorMessage = "Обєкт існує"
+                    });
+                }
+                else
+                {
+                    result.Add(new OperationResult<bool>()
+                    {
+                        Status = ResultStatus.Success
+                    });
+                }
+            }
+            return result; 
         }
 
         public OperationResult<IEnumerable<Models.Domain.TaxObjectUser.TaxObjectUser>> GetTaxObjectsAssignedUser(Guid userId)

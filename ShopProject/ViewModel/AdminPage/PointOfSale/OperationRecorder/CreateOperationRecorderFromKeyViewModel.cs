@@ -1,4 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
@@ -101,6 +102,10 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
 
         public async Task CreateOperationRecorder()
         {
+            foreach (var item in OperationRecorders)
+            {
+                item.OperationRecorder.LoadTaxServer = true;
+            }
             var result = await _operationRecorderService.AddRange(OperationRecorders.Where(i => i.IsActive == true).ToOperationRecorderModel());
             if (result.IsSuccess)
             {

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Mvc; 
 using ShopProjectWebServer.Api.Common; 
-using ShopProjectWebServer.Api.DtoModels.OperationRecorder;
-using ShopProjectWebServer.Api.Mappings;
-using ShopProjectWebServer.Models.Domain.OperationRecorder;
-using ShopProjectWebServer.Models.Domain.TaxObject;
+using ShopProjectWebServer.Api.DtoModels.OperationRecorder; 
 using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder; 
 
@@ -69,6 +66,60 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         }
 
         [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(UpdateOperationRecorderDto operationsRecorder)
+        {
+            try
+            {
+
+                var result = await _service.Update(operationsRecorder.ToOperationRecorder());
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<OperationRecorderDto>.Ok(result.Data.ToOpeartionRecorderDto()));
+                }
+                else
+                {
+                    return Ok(ApiResponse<OperationRecorderDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message, ErrorType.Server));
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpPost("UpdateParameter")]
+        public async Task<IActionResult> UpdateParameter([FromQuery] string parameter, [FromQuery] string value, [FromBody] string id)
+        {
+            try
+            {
+                //var validation = _updateValidator.Validation(userDto);
+                //if (!validation.isValid)
+                //{
+                //    return Ok(ApiResponse<bool>.Fail(validation.Errors, ErrorType.Validation, ErrorSource.Client));
+                //}
+
+                var result = await _service.UpdateParameter(id, parameter, value);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<bool>.Ok(true));
+                }
+                else
+                {
+                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
         [HttpPost("GetPageColumn")]
         public IActionResult GetPageColumn([FromBody] PaginatorDto<OperationRecorderDto, int> paginator)
         {
@@ -109,38 +160,6 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
-        }
-
-        //[HttpGet("GetOperationRecorders")]
-        //public async Task<IActionResult> GetOperationRecorders(string token)
-        //{
-        //    try
-        //    {
-        //        var result = _servise.GetOperationRecorders(token); 
-        //        return Ok(ApiResponse<IEnumerable<OperationRecorderDto>>.Ok(result));  
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ApiResponse<string>.Fail(ex.Message));
-        //    }
-        //}
-
-         
-
-        
-        [HttpPost("AddBindingOperationRecorder")]
-        public async Task<IActionResult> AddBindingOperationRecorder(string token, string idoperationrecoreder , string idobjectowner)
-        {
-            try
-            {
-                //var result = _servise.AddBindingOperationRecorder(token, idoperationrecoreder, idobjectowner); 
-                //return Ok(ApiResponse<bool>.Ok(result));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
+        } 
     }
 }

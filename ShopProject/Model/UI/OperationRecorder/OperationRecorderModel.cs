@@ -1,10 +1,7 @@
 ﻿using ShopProject.Model.Enum;
 using ShopProject.Model.UI.TaxObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System; 
+using System.Linq; 
 
 namespace ShopProject.Model.UI.OperationRecorder
 {
@@ -19,7 +16,7 @@ namespace ShopProject.Model.UI.OperationRecorder
         public DateTimeOffset D_REG { get; set; }
         public string Address { get; set; } = string.Empty; 
         public TaxObjectModel? TaxObject { get; set; }
-
+        public bool LoadTaxServer { get; set; } = false;
         public string NameTaxObject { 
             get 
             {

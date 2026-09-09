@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Common.Enum
 {
-    internal enum ResultStatus
+    public enum ResultStatus
     {
         None,
         Success,

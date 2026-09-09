@@ -240,11 +240,20 @@
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
-                        <MenuItem Header="Добавити Обєкт" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateTaxObjectWindow}"/>
-                        <MenuItem Header="Редагувати користувача"
+                        <MenuItem Header="Добавити Обєкт" Style="{StaticResource ModernMenuItemStyle}" Command="{Binding OpenCreateOperationRecorderWindowCommand}"/>
+                        <MenuItem Header="Редагувати Обєкт"
                               Style="{StaticResource ModernMenuItemStyle}"
                               CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
-                              Command="{Binding UpdateUserCommand }" />
+                              Command="{Binding UpdateOperationRecorderCommand }" />
+                        <Separator></Separator>
+                        <MenuItem Header="Увімкнути обєкт"
+                              Style="{StaticResource ModernMenuItemStyle}"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding SetOperaionRecorderStatusEnableCommand }" />
+                        <MenuItem Header="Вимкнути обєкт"
+                              Style="{StaticResource ModernMenuItemStyle}"
+                              CommandParameter="{Binding Path=PlacementTarget.SelectedItems,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                              Command="{Binding SetOperaionRecorderStatusDisableCommand }" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>

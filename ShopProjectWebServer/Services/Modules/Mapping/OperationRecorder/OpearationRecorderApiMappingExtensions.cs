@@ -21,6 +21,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
 
             Enum.TryParse(item.TypeStatus.ToString(), out TypeStatusOperationRecorder type);
@@ -37,6 +38,26 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
             return result;
         }
 
+        public static OperationRecorderModel ToOperationRecorder(this UpdateOperationRecorderDto item)
+        {
+            var result = new OperationRecorderModel()
+            {
+                Status = item.Status,
+                Address = item.Address,
+                D_REG = item.D_REG,
+                FiscalNumber = item.FiscalNumber,
+                LocalNumber = item.LocalNumber,
+                Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
+                TypeStatus =  (TypeStatusOperationRecorder)item.TypeStatus,
+                ID = Guid.Parse(item.ID), 
+            };
+
+            Enum.TryParse(item.TypeStatus.ToString(), out TypeStatusOperationRecorder type);
+            result.TypeStatus = type;
+            return result;
+        }
+
         public static OperationRecorderDto ToOpeartionRecorderDto(this OperationRecorderModel item)
         {
             var result = new OperationRecorderDto()
@@ -49,6 +70,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
             if(item.TaxObject != null)
             {
@@ -104,6 +126,7 @@ namespace ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder
                 FiscalNumber = item.FiscalNumber,
                 LocalNumber = item.LocalNumber,
                 Name = item.Name,
+                LoadTaxServer = item.LoadTaxServer,
             };
         }
         public static IEnumerable<OperationRecorderModel> ToOpeartionRecorder(this IEnumerable<OperationRecorderDto> items)

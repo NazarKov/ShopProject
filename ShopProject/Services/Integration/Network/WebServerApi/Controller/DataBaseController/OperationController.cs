@@ -36,17 +36,17 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         }
 
 
-        public async Task<OperationІnformationDto> GetOperationsІnformation(string token, int shiftId)
+        public async Task<ApiResponse<OperationІnformationDto>> GetLastNumberOperation(int shiftId)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsІnformation?token={token}&shiftId={shiftId}");
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetLastNumberOperation?shiftId={shiftId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
 
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<OperationІnformationDto>.Unpacking(responseBody);
 
-            return result.Data;
+            return result;
         }
-        public async Task<OperationInfoDto> GetOperationsInfo(int shiftId)
+        public async Task<ApiResponse<OperationInfoDto>> GetOperationsInfo(int shiftId)
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperationsInfo?shiftId={shiftId}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
@@ -54,30 +54,8 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             httpResponse.EnsureSuccessStatusCode();
             var result = ApiResponse<OperationInfoDto>.Unpacking(responseBody);
 
-            return result.Data;
-        } 
-        public async Task<string> GetLastNumberOperation(string token,int shiftId)
-        {   
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetLastNumberOperation?token={token}&shiftId={shiftId}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<string>.Unpacking(responseBody);
-
-            return result.Data; 
-        }
-
-        //public async Task<IEnumerable<OperationEntity>> GetOperations(string token)
-        //{ 
-        //    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/Operation/GetOperations?token={token}");
-        //    string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-        //    httpResponse.EnsureSuccessStatusCode();
-        //    var result = ApiResponse<IEnumerable<OperationEntity>>.Unpacking(responseBody);
-
-        //    return result.Data; 
-        //}
-
+            return result;
+        }   
       
     }
 }

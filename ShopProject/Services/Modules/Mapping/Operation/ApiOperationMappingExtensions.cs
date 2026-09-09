@@ -57,7 +57,7 @@ namespace ShopProject.Services.Modules.Mapping.Operation
             {
                 result.MAC = operation.MAC.ToMediaAccessControl();
             }  
-            result.TypePayment = (TypePayment)operation.TypeOperation;
+            result.TypePayment = (TypePayment)operation.TypePayment;
             result.TypeOperation = (TypeOperation)operation.TypeOperation;
             return result;
         }

@@ -74,15 +74,40 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 
             var result = query.ToList();
             return result;
-        }   
-        public void Update(OperationsRecorderEntity item)
+        }
+        public async Task<OperationsRecorderEntity> Update(OperationsRecorderEntity item)
         {
-            throw new NotImplementedException();
+            var operationRecorder = _contextDataBase.OperationsRecorders.Find(item.ID);
+            if (operationRecorder != null)
+            {
+                operationRecorder.Name = item.Name;
+                operationRecorder.FiscalNumber = item.FiscalNumber;
+                operationRecorder.Address = item.Address; 
+            }
+            await _contextDataBase.SaveChangesAsync();
+            return operationRecorder;
         }
 
         public async Task<bool> ExistsByName(string name)
         {
             return await _contextDataBase.OperationsRecorders.AnyAsync(p => p.Name == name);
+        }
+
+        public async Task UpdateParameterAsync(Guid id, string nameParameter, object valueParameter)
+        {
+            var user = _contextDataBase.OperationsRecorders.Find(id);
+            if (user != null)
+            {
+                switch (nameParameter)
+                {
+                    case nameof(user.Status):
+                        {
+                            user.TypeStatus = Enum.Parse<TypeStatusOperationRecorder>(valueParameter.ToString());
+                            break;
+                        }
+                }
+            }
+            await _contextDataBase.SaveChangesAsync();
         }
     }
 }

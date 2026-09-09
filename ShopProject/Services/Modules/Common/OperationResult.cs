@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Common
 {
-    internal class OperationResult<TData>
+    public class OperationResult<TData>
     {
         public ResultStatus Status { get; set; }
         public TData? Data { get; set; } 

@@ -217,7 +217,8 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
                 }
 
                 var taxObjects = new List<TaxObjectModel>();
-                if (_signingFileController.GetDataToFile(pathFile, passwordKey))
+                var resultOperation = _signingFileController.GetError(_signingFileController.GetDataToFile(pathFile, passwordKey));
+                if (resultOperation.IsSuccess)
                 {
 
                     DataJsonHttpResponse data = new DataJsonHttpResponse();
@@ -287,11 +288,17 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject
                     result.Status = ResultStatus.Success;
                     return result; 
                 }
-                return new OperationResult<IEnumerable<TaxObjectModel>>()
+                else if(resultOperation.IsError)
                 {
-                    ErrorMessage = "Невдалося викоанти операцію",
-                    Status = ResultStatus.Error,
-                };
+                    return OperationResult<IEnumerable<TaxObjectModel>>.Fail(resultOperation.ErrorMessage);
+                }
+                else { 
+                    return new OperationResult<IEnumerable<TaxObjectModel>>()
+                    {
+                        ErrorMessage = "Невдалося викоанти операцію",
+                        Status = ResultStatus.Error,
+                    };
+                }
             }
             catch (Exception ex)
             {

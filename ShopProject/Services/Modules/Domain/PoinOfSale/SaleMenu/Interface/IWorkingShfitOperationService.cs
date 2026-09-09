@@ -10,10 +10,10 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface
 {
     internal interface IWorkingShfitOperationService
     {
-        public Task<OperationResult<bool>> OpenShift(WorkingShiftModel shift);
-        public Task<OperationResult<bool>> DepositAndWithdrawalMoney(WorkingShiftModel shift, Operation operation);
-        public Task<OperationResult<bool>> CloseShift(WorkingShiftModel shift);
+        public Task<OperationResult<string>> OpenShift(WorkingShiftModel shift);
+        public Task<OperationResult<string>> DepositAndWithdrawalMoney(WorkingShiftModel shift, Operation operation);
+        public Task<OperationResult<string>> CloseShift(WorkingShiftModel shift);
         public Task<OperationResult<WorkingShiftResourse>> GetWorkingShiftResourse(string fiscalNumberRRo);
-        public Task<OperationResult<bool>> SendCheck(IEnumerable<ProductModel> products, Operation operation);
+        public Task<OperationResult<string>> SendCheck(IEnumerable<ProductModel> products, Operation operation);
     }
 }

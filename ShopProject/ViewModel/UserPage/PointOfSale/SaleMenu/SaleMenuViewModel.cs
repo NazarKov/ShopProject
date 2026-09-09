@@ -1,12 +1,12 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Setting;
-using ShopProject.Model.Domain.User;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm;
+using ShopProject.Infrastructure.CompositionRoot.Interface; 
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Operation;
 using ShopProject.Model.UI.Product;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Mapping.Operation;
@@ -30,20 +30,21 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
 
         private ICommand _setCashPaymentMethod;
         private ICommand _setCardPaymentMethod;
-
-
+         
         private ICommand _printingCheckCommand;
       
         private ICommand _sendReturnCheckCommand;
         private Guid _idChannel;  
 
         private ISaleMenuService _saleMenuService;
-        private IProductServiсe _productServiсe; 
-         
-        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe)
+        private IProductServiсe _productServiсe;
+        private readonly IMessageBoxControlService _messageBoxControlService;
+
+        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService)
         {
             _saleMenuService = saleMenuService;
             _productServiсe = productServiсe;
+            _messageBoxControlService = messageBoxControlService;
             _searchBarCodeCommand = CreateCommandAsync(DebounceSearch);
             _clearFieldDataGrid = CreateCommand(ClearField);
             _setCashPaymentMethod = CreateCommand(() => { PaymentMenthod = new CashMethodView(); OperationSaleInfo.TypePayment = TypePayment.Cash; VisibilitiCheckMenu = Visibility.Visible; });
@@ -55,6 +56,8 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _operationSaleInfo = new OperationSaleInfoModel(); 
             _barCodeSearch = string.Empty;   
             _isEnableSendCheckButton = false;
+            _selectPaymentMethodCash = false;
+            _selectPaymentMethodCard = false;
             _paymentMenthod = new UserControl();
             _visibilitiCheckMenu = Visibility.Collapsed; 
         }
@@ -94,6 +97,19 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             get { return _visibilitiCheckMenu; }
             set { _visibilitiCheckMenu = value; OnPropertyChanged(nameof(VisibilitiCheckMenu)); }
         }
+
+        private bool _selectPaymentMethodCash;
+        public bool SelectPaymentMethodCash
+        {
+            get { return _selectPaymentMethodCash; }
+            set { _selectPaymentMethodCash = value; OnPropertyChanged(nameof(SelectPaymentMethodCash)); }
+        }
+        private bool _selectPaymentMethodCard;
+        public bool SelectPaymentMethodCard
+        {
+            get { return _selectPaymentMethodCard; }
+            set { _selectPaymentMethodCard = value; OnPropertyChanged(nameof(SelectPaymentMethodCard)); }
+        }
         public ICommand ClearFieldDataGid => _clearFieldDataGrid;
         private void ClearField()
         {
@@ -103,6 +119,8 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             _idChannel = Guid.NewGuid();
             MediatorService.AddEvent(NavigationButton.CountingSumaOrder.ToString() + "" + _idChannel, CountingSumaOrder);
             MediatorService.AddEvent<object>(NavigationButton.RemoveProduct.ToString() + "" + _idChannel, RemoveItem);
+            SelectPaymentMethodCash = false;
+            SelectPaymentMethodCard = false;
             EnableButton();
         }  
 
@@ -246,27 +264,26 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         public ICommand PrintingCheckCommand => _printingCheckCommand;
         private async Task PrintingCheck()
         {
-            try
+
+            IsEnableSendCheckButton = false;
+            if (!(OperationSaleInfo.SumaUser >= OperationSaleInfo.SumaOrder))
             {
-                IsEnableSendCheckButton = false;  
-                if (!(OperationSaleInfo.SumaUser >= OperationSaleInfo.SumaOrder))
+                await _messageBoxControlService.Show("Сума внеску не може бути менша ніж сума чеку", "Warninng", MessageBoxType.Warning, "WorkingShiftMenu");
+            }
+            else
+            {
+                var result = await _saleMenuService.SendCheck(OperationSaleInfo.ToOperationInfoSale());
+                if (result.IsSuccess)
                 {
-                    throw new Exception("Сума внеску не може бути менша ніж сума чеку");
+                    await MediatorService.ExecuteEventAsync("FiscalCheckSuccess");
+                    ClearField();
                 }
                 else
                 {
-                    await _saleMenuService.SendCheck(OperationSaleInfo.ToOperationInfoSale());
-
-                    await MediatorService.ExecuteEventAsync("FiscalCheckSuccess");
-                    IsEnableSendCheckButton = true;
-                    ClearField();
-                }
+                    await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+                } 
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                IsEnableSendCheckButton = true;
-            }
+            IsEnableSendCheckButton = true; 
         }
 
 

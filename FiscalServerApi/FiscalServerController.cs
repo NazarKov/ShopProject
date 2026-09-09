@@ -1,9 +1,11 @@
 ﻿using FiscalServerApi.ExceptionServer;
 using FiscalServerApi.Helpers;
+using FiscalServerApi.Services.Common;
 using Google.Protobuf;
 using GreetClient;
 using Grpc.Core;
 using Grpc.Net.Client;
+using System.Threading.Channels;
 using static GreetClient.ChkIncomeService;
 
 namespace FiscalServerApi
@@ -12,72 +14,49 @@ namespace FiscalServerApi
     {
 
         private string _apiAddress = "https://prro.tax.gov.ua:443";
-        private string _apiTestAddress = "https://cabinet.tax.gov.ua:9443";
-
-        private string _pathFile = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml.p7s";
-
-        private CallOptions _callOptions;
-
-        public FiscalServerController() 
-        {
-
+        private string _apiTestAddress = "https://cabinet.tax.gov.ua:9443"; 
+        private string _pathFile = "C:\\ProgramData\\ShopProject\\Temp\\Chek.xml.p7s"; 
+        private CallOptions _callOptions; 
+        private readonly Dictionary<string, ChkIncomeService.ChkIncomeServiceClient> _clients = new(); 
+        public FiscalServerController()  
+        { 
+            _clients.Add("clientTest", new ChkIncomeService.ChkIncomeServiceClient(GrpcChannel.ForAddress(_apiTestAddress)));
+            _clients.Add("clientProd", new ChkIncomeService.ChkIncomeServiceClient(GrpcChannel.ForAddress(_apiAddress)));
         }
 
-        private CheckResponse SendMessage(Messages message,TypeMessage types, string api = "")
-        {
-            if(message.test)
-            {
-                api = _apiTestAddress;
-            }
-            else
-            {
-                api = _apiAddress;
-            }
-            
-            return SendMessageRecursive(api,message,types,100,0,5);
-        }
-        private CheckResponse SendMessageRecursive(string api, Messages message, TypeMessage types, double second, int depth, int maxDepth)
-        {
+
+        private OperationResult<string> SendMessage(Messages message,TypeMessage types,double second = 100)
+        { 
             try
-            {
-                if (depth >= maxDepth)
+            {  
+                var result = new CheckResponse();
+
+                var client = message.test ? _clients["clientTest"] : _clients["clientProd"];
+
+                ByteString CheckSign = ReadFile(_pathFile);
+                _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
+
+                switch (types)
                 {
-                    return new CheckResponse();
+                    case TypeMessage.sendChk2:
+                        {
+                            result = sendChkV2(message, client, CheckSign);
+                            break;
+                        }
+                    case TypeMessage.ping:
+                        {
+                            result = ping(message, client, CheckSign);
+                            break;
+                        }
                 }
-
-                using (var channel = GrpcChannel.ForAddress(api))
-                {
-
-
-                    var client = new ChkIncomeService.ChkIncomeServiceClient(channel); 
-                    ByteString CheckSign = ReadFile(_pathFile);
-
-                    _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
-
-                    switch(types)
-                    {
-                        case TypeMessage.sendChk2:
-                            {
-                                return sendChkV2(message, client, CheckSign);
-                            }
-                        case TypeMessage.ping:
-                            {
-                                return ping(message, client, CheckSign);
-                            }
-                    }
-                }
-                return null;
-            }
-            catch(Grpc.Core.RpcException ex)
-            {
-                var temp = ex.ToString();
-                throw new Exception("Відсутьнє підключення до інтернету\nперевірте підключення до інтернету");
-            }
-            catch (Exception)
-            {
-                return SendMessageRecursive(api,message,types,second + 5,depth + 1,5);
+                return AuditErrorServer(result);
+            } 
+            catch (Exception exeption)
+            { 
+                return OperationResult<string>.Fail(exeption.Message);
             }
         }
+        
         private CheckResponse sendChkV2(Messages message, ChkIncomeServiceClient client, ByteString CheckSign)
         {
             var reply = client.sendChkV2(new Check()
@@ -104,64 +83,56 @@ namespace FiscalServerApi
         }
 
 
-        public string SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
+        public OperationResult<string> SendFiscalCheck(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessage(new Messages() 
+            return SendMessage(new Messages() 
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Chk
-            },TypeMessage.sendChk2);
-
-            return AuditErrorServer(response);
+            },TypeMessage.sendChk2); 
         }
 
-        public string SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
+        public OperationResult<string> SendServiceCheck(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessage(new Messages()
+            return SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Servicechk,
-            }, TypeMessage.sendChk2);
-
-            return AuditErrorServer(response);
+            }, TypeMessage.sendChk2); 
 
         }
         
-        public string SendZReport(long date, int localNumber, string rroFN , bool test = true)
+        public OperationResult<string> SendZReport(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessage(new Messages()
+            return SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Zreport,
-            }, TypeMessage.sendChk2);
-
-            return AuditErrorServer(response);
+            }, TypeMessage.sendChk2); 
         }
         
-        public string Ping(long date, int localNumber, string rroFN , bool test = true)
+        public OperationResult<string> Ping(long date, int localNumber, string rroFN , bool test = true)
         {
-            CheckResponse response = SendMessage(new Messages()
+            return SendMessage(new Messages()
             {
                 date = date,
                 localNumber = localNumber,
                 rroFn = rroFN,
                 test = test,
                 type = Check.Types.Type.Zreport,
-            }, TypeMessage.ping);
-
-            return AuditErrorServer(response);
+            }, TypeMessage.ping); 
         }
 
-        private string AuditErrorServer(CheckResponse response)
+        private OperationResult<string> AuditErrorServer(CheckResponse response)
         {
             if (response != null)
             {
@@ -169,15 +140,15 @@ namespace FiscalServerApi
                 {
                     case CheckResponse.Types.Status.Unknown:
                         {
-                            throw new Exception("Не вдалося відправити чек");
+                            return OperationResult<string>.Fail("Не вдалося відправити чек"); 
                         }
                     case CheckResponse.Types.Status.Ok:
                         {
-                            return response.Id;
+                            return OperationResult<string>.Success(response.Id); 
                         }
                     case CheckResponse.Types.Status.ErrorVerefy:
                         {
-                            throw new Exception("Помилка перевірки підпису,перевірте наявність встановленого ключа ФОП");
+                            return OperationResult<string>.Fail("Помилка перевірки підпису,перевірте наявність встановленого ключа ФОП"); 
                         }
                     case CheckResponse.Types.Status.ErrorCheck:
                         {
@@ -185,96 +156,98 @@ namespace FiscalServerApi
                             {
                                 case ExceptionCheckShiftIsArlreadyOpen.ShiftIsAlreadyOpen:
                                     {
-                                        throw new ExceptionCheckShiftIsArlreadyOpen("Зміна вже відкрита");
+                                        return OperationResult<string>.Fail("Зміна вже відкрита"); 
                                     }
                                 case ExceptionCheck.ThereCanBeOnlyOneSignatoryWithinAShift:
                                     {
-                                        throw new ExceptionCheck("У зміні може бути лише один підписант");
+                                        return OperationResult<string>.Fail("У зміні може бути лише один підписант"); 
                                     }
                                 case ExceptionCheck.ThereCanBeOnlyOneSignatoryWithinAShiftClosingCanBeASenior:
                                     {
-                                        throw new ExceptionCheck("У зміні може бути лише один підписант,\n закриття зміни може бути здійснене старшим касиром");
+                                        return OperationResult<string>.Fail("У зміні може бути лише один підписант,\n закриття зміни може бути здійснене старшим касиром"); 
                                     }
                                 case ExceptionCheck.ThisKeyOpensAShiftOnAnotherDeviceFn:
                                     {
-                                        throw new ExceptionCheck("Цим підписом відкрита зміна на іншому ПРРО");
+                                        return OperationResult<string>.Fail("Цим підписом відкрита зміна на іншому ПРРО"); 
                                     }
                                 case ExceptionCheck.PermittedToUseOnlyAfter:
                                     {
-                                        throw new ExceptionCheck("можливо використовувати тільки з 01.10. 2021");
+                                        return OperationResult<string>.Fail("можливо використовувати тільки з 01.10. 2021"); 
                                     }
                             }
-                            throw new ExceptionCheck("Помилка перевірки РРО");
+                            return OperationResult<string>.Fail("Помилка перевірки РРО"); 
                         }
                     case CheckResponse.Types.Status.ErrorSave:
                         {
                             if (response.ErrorMessage.Equals(ExceptionSave.IncorrectHash))
                             {
-                                throw new ExceptionSave("Невірний хеш попереднього чеку,\n або дубль чека", response.ErrorMessage);
+                                var result = OperationResult<string>.Fail("Невірний хеш попереднього чеку,\n або дубль чека",Services.Common.Enum.ErrorType.IncorrectHash);
+                                result.Data = response.ErrorMessage;
+                                return result;
                             }
-                            throw new Exception("Помилка запису");
+                            return OperationResult<string>.Fail("Помилка запису"); 
                         }
                     case CheckResponse.Types.Status.ErrorUnknown:
                         {
-                            throw new Exception("Загальна помилка");
+                            return OperationResult<string>.Fail("Загальна помилка"); 
                         }
                     case CheckResponse.Types.Status.ErrorType:
                         {
-                            throw new Exception("Помилка типу посилки");
+                            return OperationResult<string>.Fail("Помилка типу посилки"); 
                         }
                     case CheckResponse.Types.Status.ErrorNotPrevZreport:
                         {
-                            throw new Exception("Нема Z-звіту за попередній день");
+                            return OperationResult<string>.Fail("Нема Z-звіту за попередній день"); 
                         }
                     case CheckResponse.Types.Status.ErrorXml:
                         {
-                            throw new Exception("Невірний формат XML ( структура , фіскальний номер)");
+                            return OperationResult<string>.Fail("Невірний формат XML ( структура , фіскальний номер)"); 
                         }
                     case CheckResponse.Types.Status.ErrorXmlDate:
                         {
-                            throw new Exception("Невірний формат XML дата не відповідає Check.date \nПеревірте чи підключений ключ ФОП до програми");
+                            return OperationResult<string>.Fail("Невірний формат XML дата не відповідає Check.date \nПеревірте чи підключений ключ ФОП до програми"); 
                         }
                     case CheckResponse.Types.Status.ErrorXmlChk:
                         {
-                            throw new Exception("Невірний формат XML чеку");
+                            return OperationResult<string>.Fail("Невірний формат XML чеку"); 
                         }
                     case CheckResponse.Types.Status.ErrorXmlZreport:
                         {
-                            throw new Exception("Невірний формат Z-звіту");
+                            return OperationResult<string>.Fail("Невірний формат Z-звіту"); 
                         }
                     case CheckResponse.Types.Status.ErrorOffline168:
                         {
-                            throw new Exception("РРО заблокований, перевищено ліміт 168 годин офлайну");
+                            return OperationResult<string>.Fail("РРО заблокований, перевищено ліміт 168 годин офлайну"); 
                         }
                     case CheckResponse.Types.Status.ErrorBadHashPrev:
                         {
-
-                            throw new ExceptionBadHashPrev("Невірний хеш попереднього чеку", response.ErrorMessage);
+                            var result = OperationResult<string>.Fail("Невірний хеш попереднього чеку",Services.Common.Enum.ErrorType.ErrorBadHashPrev);
+                            result.Data = response.ErrorMessage;
+                            return result; 
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredRro:
                         {
-                            throw new Exception("Не зареєстровано ПРРО");
+                            return OperationResult<string>.Fail("Не зареєстровано ПРРО"); 
                         }
                     case CheckResponse.Types.Status.ErrorNotRegisteredSigner:
                         {
-                            throw new Exception("Не зареєстрований підписант");
+                            return OperationResult<string>.Fail("Не зареєстрований підписант"); 
                         }
                     case CheckResponse.Types.Status.ErrorNotOpenShift:
                         {
-                            throw new ExceptionCheckShiftIsNotOpen("Не відкрита зміна");
+                            return OperationResult<string>.Fail("Не відкрита зміна"); 
                         }
                     case CheckResponse.Types.Status.ErrorOfflineId:
                         {
-                            throw new Exception("Невірний офлайн ID");
+                            return OperationResult<string>.Fail("Невірний офлайн ID"); 
                         }
                     default:
                         {
-                            return string.Empty;
-                            break;
+                            return OperationResult<string>.Fail("Невдалося зберегти фіксальний чек");  
                         }
-                }
+                } 
             }
-            return string.Empty;
+            return OperationResult<string>.Fail("Невдалося зберегти фіксальний чек");
         }
         private ByteString ReadFile(string path)
         {

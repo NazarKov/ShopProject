@@ -39,6 +39,7 @@ namespace ShopProject.Services.Infrastructure.Exception
 
         public async Task HandleAsync(System.Exception ex , Action<string>? externalErrorHandel = null)
         {
+            _loggerService.WriteLog("[Data:" + DateTime.Now + "] " + "[Where]" + ex.StackTrace + "\n[Error] " + ex.Message);
             if (ex is IException exeption)
             {
                 if (externalErrorHandel != null) 
@@ -54,8 +55,7 @@ namespace ShopProject.Services.Infrastructure.Exception
                     externalErrorHandel.Invoke("Невдалося виконати операцію");
                 }
                 await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(new BaseNotification() { Title = "Error", Content = ex.Message }));
-            }
-            _loggerService.WriteLog("[Data:" + DateTime.Now + "] " + "[Where]" + ex.StackTrace + "\n[Error] " + ex.Message);
+            } 
         }
     }
 }

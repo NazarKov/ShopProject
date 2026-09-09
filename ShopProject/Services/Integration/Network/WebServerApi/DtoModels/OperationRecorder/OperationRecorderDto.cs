@@ -28,5 +28,7 @@ namespace ShopProject.Services.Integration.Network.ShopProjectWebServerApi.DtoMo
         public string Address { get; set; } = string.Empty;
         [JsonPropertyName("TaxObject")]
         public TaxObjectDto? TaxObject { get; set; }
+        [JsonPropertyName("LoadTaxServer")]
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

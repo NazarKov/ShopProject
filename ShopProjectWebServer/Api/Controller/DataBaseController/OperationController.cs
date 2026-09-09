@@ -47,58 +47,41 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
         {
             try
             {
-                var result = _service.GetInfo(shiftId);
-                return Ok(ApiResponse<OperaiontStatisticsDto>.Ok(result)); 
+                var result = await _service.GetInfo(shiftId);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<OperaiontStatisticsDto>.Ok(result.Data));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(result.ErrorMessage));
+                } 
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
         }
-        [HttpGet("GetOperationsІnformation")]
-        public async Task<IActionResult> GetOperationsІnformation(string token, int shiftId)
-        {
-            try
-            {
-                //var result = _service.GetInformation(token, shiftId);
-                //return Ok(ApiResponse<OperationІnformationDto>.Ok(result));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message));
-            }
-        }
-
-        [HttpGet("GetOperations")]
-        public async Task<IActionResult> GetOperations(string token)
-        {
-            try
-            {
-                //var result = _service.GetAll(token); 
-                //return Ok(ApiResponse<IEnumerable<OperationDto>>.Ok(result));
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
-            }
-        }
-
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
         [HttpGet("GetLastNumberOperation")]
-        public async Task<IActionResult> GetLastNumberOperation(string token,int shiftId)
+        public async Task<IActionResult> GetLastNumberOperation(int shiftId)
         {
             try
             {
-                //var result = _service.GetLast(token,shiftId); 
-                //return Ok(ApiResponse<string>.Ok(result.NumberPayment)); 
-                return Ok();
-
+                var result = await _service.GetInformation(shiftId);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<OperationІnformationDto>.Ok(result.Data));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(result.ErrorMessage));
+                } 
             }
             catch (Exception ex)
-            { 
-                return BadRequest(ApiResponse<string>.Fail(ex.Message)); 
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
             }
-        }
+        } 
     }
 }

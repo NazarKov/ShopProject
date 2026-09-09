@@ -1,4 +1,5 @@
 ﻿using ShopProject.Model.Domain.Operation;
+using ShopProject.Model.Domain.OperationRecorder;
 using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.ProductCodeUKTZED;
 using ShopProject.Model.Domain.ProductUnit;
@@ -29,7 +30,7 @@ namespace ShopProject.Services.Modules.Session.Interface
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
         public User UpdateUser { get; set; } 
         public TaxObject BindingTaxObject { get; set; }
-
+        public OperationRecorder UpdateOperationRecorder { get; set; }
         public Operation Operation { get; set; }
 
         public bool CheckingSession();

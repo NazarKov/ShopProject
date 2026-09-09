@@ -1,35 +1,40 @@
-﻿using ShopProject.Model.Domain.Operation; 
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ShopProject.Model.Domain.Operation; 
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.WorkingShift;
-using ShopProject.Model.Enum;
-using ShopProject.Services.Integration.Network.FiscalServerApi;
-using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Model.Enum; 
+using ShopProject.Services.Integration.Network.WebServerApi.Interface; 
 using ShopProject.Services.Integration.Printing.Interface;
+using ShopProject.Services.Integration.PrintingService;
 using ShopProject.Services.Modules.Common; 
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
+using ShopProject.Services.Modules.Mapping.Discount;
+using ShopProject.Services.Modules.Mapping.OperaionResult;
 using ShopProject.Services.Modules.Mapping.Operation;
+using ShopProject.Services.Modules.Mapping.Product;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
-using System; 
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 {
     internal class WorkingShiftService : IWorkingShiftService
-    {
-        private IPrintingFiscalCheckService _printingFiscalCheckService; 
+    { 
         private IWorkingShfitOperationService _workingShfitOperationService;
 
         private ISessionService _sessionService; 
         private ISettingService _settingService;
         private IMainWebServerService _mainWebServerService;
+        private IPrintingFiscalCheckService _printingFiscalCheckService;
         public WorkingShiftService(ISessionService sessionService , IPrintingFiscalCheckService printingFiscalCheckService,
             ISettingService settingService , IMainWebServerService mainWebServerService,IWorkingShfitOperationService workingShfitOperationService)
         {
             _sessionService = sessionService; 
-            _settingService = settingService;
-            _printingFiscalCheckService = printingFiscalCheckService;
+            _settingService = settingService; 
             _mainWebServerService = mainWebServerService;
+            _printingFiscalCheckService = printingFiscalCheckService;
             _workingShfitOperationService = workingShfitOperationService; 
         }
 
@@ -59,11 +64,10 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             return _settingService.GetSetting<WorkingShiftStatus>();
         }
 
-        public async Task<OperationResult<bool>> OpenShift()
+        public async Task<OperationResult<string>> OpenShift()
         {
             try
-            {
-                var result = new OperationResult<bool>();
+            { 
                 var operationRecorder = _sessionService.WorkingShiftStatus.OperationRecorder;
 
                 var response = await _workingShfitOperationService.GetWorkingShiftResourse(operationRecorder.FiscalNumber);
@@ -89,33 +93,24 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                         shift.MACCreateAt = response.Data.MediaAccessControl;
                     }
 
-                    result = await _workingShfitOperationService.OpenShift(shift);
-                }
-                else
-                {
-                    result.Source = response.Source;
-                    result.Status = response.Status;
-                    result.ErrorMessage = response.ErrorMessage;
-                    result.ErrorType = response.ErrorType;
-                    result.ValidationErrors = response.ValidationErrors;
-                }
-                return result;
+                    return await _workingShfitOperationService.OpenShift(shift);
+                } 
+                return OperationResult<string>.Fail("Невдалося виконати операцію");
 
 
             }
             catch (Exception ex) 
             {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
+                return OperationResult<string>.Fail(ex.Message);
             }
         }
 
-        public async Task<OperationResult<bool>> CloseShift()
+        public async Task<OperationResult<string>> CloseShift()
         {
             try
             {
                 _sessionService.CheckAndLoadWorkingShiftStatus();
-
-                var result = new OperationResult<bool>();
+                 
                 var operationRecorder = _sessionService.WorkingShiftStatus.OperationRecorder;
 
                 var response = await _workingShfitOperationService.GetWorkingShiftResourse(operationRecorder.FiscalNumber);
@@ -138,23 +133,13 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                     shift.MACEndAt = response.Data.MediaAccessControl;
                     shift.TypeShiftEndAt = ShopProject.Model.Enum.TypeWorkingShift.CloseShift;
                      
-                    result = await _workingShfitOperationService.CloseShift(shift);
-                }
-                else
-                {
-                    result.Source = response.Source;
-                    result.Status = response.Status;
-                    result.ErrorMessage = response.ErrorMessage;
-                    result.ErrorType = response.ErrorType;
-                    result.ValidationErrors = response.ValidationErrors;
-                }
-                return result;
-
-
+                    return await _workingShfitOperationService.CloseShift(shift);
+                } 
+                return OperationResult<string>.Fail("Невдалося виконати операцію");
             }
             catch (Exception ex)
             {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
+                return OperationResult<string>.Fail(ex.Message);
             }
         }
 
@@ -163,7 +148,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             try
             {
                 var result = await _mainWebServerService.DataBase.OperationController.GetOperationsInfo(id);
-                return result.ToOperationInfo();
+                return result.Data.ToOperationInfo();
             }
             catch (Exception ex)
             {
@@ -176,11 +161,10 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             return _settingService.GetSetting<OperationRecorderSetting>().IsTestMode;
         }
 
-        public async Task<OperationResult<bool>> DepositAndWithdrawalMoney(decimal cash,TypeOperation typeOperation)
+        public async Task<OperationResult<string>> DepositAndWithdrawalMoney(decimal cash,TypeOperation typeOperation)
         {
             try
-            {
-                var result = new OperationResult<bool>();
+            { 
                 _sessionService.CheckAndLoadWorkingShiftStatus();
                 var operationRecorder = _sessionService.WorkingShiftStatus.OperationRecorder;
                 var response = await _workingShfitOperationService.GetWorkingShiftResourse(operationRecorder.FiscalNumber);
@@ -197,50 +181,51 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                         GoodsTax = 0.ToString(),
                     };
 
-                    result = await _workingShfitOperationService.DepositAndWithdrawalMoney(_sessionService.WorkingShiftStatus.WorkingShift, operation);
+                    return await _workingShfitOperationService.DepositAndWithdrawalMoney(_sessionService.WorkingShiftStatus.WorkingShift, operation);
                      
                 }
-                else
-                {
-                    result.Source = response.Source;
-                    result.Status = response.Status;
-                    result.ErrorMessage = response.ErrorMessage;
-                    result.ErrorType = response.ErrorType;
-                    result.ValidationErrors = response.ValidationErrors;
-                } 
-                return result; 
+                return OperationResult<string>.Fail("Невдалося виконати операцію");
             }
             catch(Exception ex)
             {
-                return new OperationResult<bool>() { ErrorMessage = ex.Message, Status = Common.Enum.ResultStatus.Error };
+                return OperationResult<string>.Fail(ex.Message);
             }
         }
 
         public Operation GetOperationSession()
         {
             return _sessionService.Operation;
-        } 
+        }
 
 
-        //public async Task PrintLastCheck()
-        //{
-        //    try
-        //    {
-        //        var items = await _mainWebServerService.DataBase.OperationController.GetOperationsІnformation(_token, _sessionService.WorkingShiftStatus.WorkingShift.ID);
-        //        FiscalCheck fiscalCheck = new FiscalCheck();
+        public async Task<OperationResult<bool>> PrintLastCheck()
+        {
+            try
+            {
+                var result = (await _mainWebServerService.DataBase.OperationController.GetLastNumberOperation(_sessionService.WorkingShiftStatus.WorkingShift.ID)).ToOperationResult();
+                if (result.IsSuccess)
+                {
+                    FiscalCheck fiscalCheck = new FiscalCheck();
 
-        //        var operation = items.Operation.ToOperation();
-        //        if (items.Discount != null)
-        //        {
-        //            operation.Discount = items.Discount.ToDicount();
-        //        }
-        //        fiscalCheck.CreateFisckalCheck(items.Products.ToProduct(_sessionService.ProductCodesUKTZED,_sessionService.ProductUnits).ToList(), operation, _sessionService.User, _sessionService.WorkingShiftStatus.OperationRecorder, _sessionService.WorkingShiftStatus.ObjectOwner);
-        //        _printingFiscalCheckService.PrintCheck(fiscalCheck.GetCheck());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //} 
+                    var operation = result.Data.Operation.ToOperation();
+                    if (result.Data.Discount != null)
+                    {
+                        operation.Discount = result.Data.Discount.ToDicount();
+                    }
+                    fiscalCheck.CreateFisckalCheck(result.Data.Products.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits).ToList(), operation, _sessionService.User, _sessionService.WorkingShiftStatus.OperationRecorder, _sessionService.WorkingShiftStatus.TaxObject);
+                    _printingFiscalCheckService.PrintCheck(fiscalCheck.GetCheck());
+
+                    return OperationResult<bool>.Success(true);
+                }
+                else
+                {
+                    return OperationResult<bool>.Fail("невдлося виконати операцію");
+                }
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message);
+            }
+        }
     }
 }

@@ -21,5 +21,6 @@ namespace ShopProject.Model.Domain.OperationRecorder
         public string Address { get; set; } = string.Empty;
         [JsonIgnore]
         public TaxObject.TaxObject? TaxObject { get; set; }
+        public bool LoadTaxServer { get; set; } = false;
     }
 }

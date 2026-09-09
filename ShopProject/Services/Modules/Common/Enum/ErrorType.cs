@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Common.Enum
 {
-    internal enum ErrorType
+    public enum ErrorType
     {
         None,
         Validation,
@@ -15,5 +15,8 @@ namespace ShopProject.Services.Modules.Common.Enum
         Conflict,
         Server,
         DeleteBarCode,
+        ErrorBadHashPrev,
+        IncorrectHash,
+        ErrorKey,
     }
 }

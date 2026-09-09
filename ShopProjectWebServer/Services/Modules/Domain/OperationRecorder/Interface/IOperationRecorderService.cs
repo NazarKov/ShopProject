@@ -8,13 +8,12 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interfa
     {
         public Task<OperationResult<OperationRecorderModel>> Add(OperationRecorderModel operationsRecorder);
         public Task<OperationResult<IEnumerable<OperationRecorderModel>>> AddRange(IEnumerable<OperationRecorderModel> operationsRecorder);
-
+        public Task<OperationResult<OperationRecorderModel>> Update(OperationRecorderModel operationsRecorder);
+        public Task<OperationResult<bool>> UpdateParameter(string id, string nameParameter, object value);
         public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int>> GetByNamePageColumn(string name,
                   ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator);
         public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int>>
             GetPageColumn(ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator);
-
-        public bool AddBindingOperationRecorder(string token, string idoperationrecoreder, string idobjectowner);   
-       
+         
     }
 }

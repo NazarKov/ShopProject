@@ -1,8 +1,5 @@
-﻿
-using ShopProjectDataBase.Entities; 
-using ShopProjectWebServer.Api.DtoModels.OperationRecorder;  
-using ShopProjectWebServer.DataBase.Interface;
-using ShopProjectWebServer.Models.Domain.TaxObject;
+﻿using ShopProjectDataBase.Entities;  
+using ShopProjectWebServer.DataBase.Interface; 
 using ShopProjectWebServer.Services.Common;
 using ShopProjectWebServer.Services.Common.Enum;
 using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interface;
@@ -98,12 +95,30 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder
         public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int>> GetPageColumn(ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator)
            => GetByNamePageColumn(string.Empty, paginator);
 
-        
+        public async Task<OperationResult<OperationRecorderModel>> Update(OperationRecorderModel operationsRecorder)
+        {
+            try
+            {  
+                var result = await _dataBaseService.DataBaseAccess.OperationRecorderTable.Update(operationsRecorder.ToOperationRecorderEntity());
+                return OperationResult<OperationRecorderModel>.Success(result.ToOperationRecorder());
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<OperationRecorderModel>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+        }
 
-        public bool AddBindingOperationRecorder(string token, string idoperationrecoreder, string idobjectowner)
-        { 
-           // _controller.DataBaseAccess.OperationRecorderTable.AddBinding(Guid.Parse(idoperationrecoreder),Guid.Parse(idobjectowner));
-            return true;
-        } 
+        public async Task<OperationResult<bool>> UpdateParameter(string id, string nameParameter, object value)
+        {
+            try
+            {
+                await _dataBaseService.DataBaseAccess.OperationRecorderTable.UpdateParameterAsync(new Guid(id), nameParameter, value);
+                return OperationResult<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+        }
     }
 }
