@@ -1,16 +1,12 @@
 ﻿using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Exceptions;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
-using ShopProject.Services.Modules.NetworkUrlManager;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System; 
 using System.Threading.Tasks;
 
-namespace ShopProject.Services.Modules.NetworkUrlScanner
+namespace ShopProject.Services.Modules.NetworkUrlManager
 {
     internal class NetworkUrlManagerService : INetworkUrlManagerService
     {

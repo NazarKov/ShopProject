@@ -7,6 +7,8 @@ using ShopProject.Services.Integration.Directory;
 using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.File.BaseFile;
 using ShopProject.Services.Integration.File.BaseFile.Interface;
+using ShopProject.Services.Integration.Network.Network;
+using ShopProject.Services.Integration.Network.Network.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Integration.Printing;
@@ -34,7 +36,7 @@ using ShopProject.Services.Modules.Domain.UserRole;
 using ShopProject.Services.Modules.Domain.UserRole.Interface;
 using ShopProject.Services.Modules.Main;
 using ShopProject.Services.Modules.Main.Interface;
-using ShopProject.Services.Modules.NetworkUrlScanner;
+using ShopProject.Services.Modules.NetworkUrlManager;
 using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
 using ShopProject.Services.Modules.Resourse;
 using ShopProject.Services.Modules.Resourse.Interface;
@@ -50,7 +52,7 @@ using ShopProject.ViewModel.AdminPage.Storage.Product;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
 using ShopProject.ViewModel.AdminPage.UserManagement;
 using ShopProject.ViewModel.AdminPage.UserManagement.User;
-using ShopProject.ViewModel.Authorization;
+using ShopProject.ViewModel.Common.Authorization;
 using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Main;
 using ShopProject.ViewModel.Common.Setting;
@@ -166,6 +168,7 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<IUserRoleService, UserRoleService>();
             factory.RegisterScoped<IWorkingShfitOperationService,WorkingShiftOperationService>();
             factory.RegisterScoped<IMessageBoxControlService, MessageBoxControlService>();
+            factory.RegisterScoped<INetworkService, NetworkService>();
         }
     }
 }

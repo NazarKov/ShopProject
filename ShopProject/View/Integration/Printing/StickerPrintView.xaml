@@ -5,50 +5,421 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.View.Integration.Printing"
         mc:Ignorable="d"
-        Title="Створення наліпок"  Height="370" Width="800"  Name="window" ResizeMode="NoResize">
-    <Grid>
+        Title="Створення наліпок" Name="window" Width="1000" ResizeMode="NoResize">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="#F4F6FA" HorizontalAlignment="Stretch">
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="150"></RowDefinition>
-            <RowDefinition Height="150*"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
 
+ 
 
-        <CheckBox x:Name="NameCompanycheckBox" IsChecked="{Binding IsShowNameCompany}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0"/>
-        <Label x:Name="NameLable" Content="Назва компанії" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="NameTextBox" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Margin="0,22,0,0" TextWrapping="Wrap" Text="{Binding NameCompany }" VerticalAlignment="Top" Width="180"/>
+        <Border Grid.Column="0"
+            Margin="15"
+            Background="White"
+            CornerRadius="10"
+            BorderBrush="#E2E6ED"
+            BorderThickness="1">
 
-        <CheckBox x:Name="BarCodecheckBox" IsChecked="{Binding IsShowProductBarCode}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1"/>
-        <Label x:Name="label" Content="Шрихкод" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Margin="0,22,0,0" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Top" Width="180" />
+            <Grid>
 
-        <CheckBox x:Name="NamecheckBox" IsChecked="{Binding IsShowProductName}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="2"/>
-        <Label x:Name="label1" Content="Назва товару" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="top"/>
-        <TextBox x:Name="textBox1" Grid.Column="0" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Margin="0,22,0,0" Text="{Binding NameProduct}" VerticalAlignment="Top" Width="180"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <CheckBox x:Name="DisckriptioncheckBox" IsChecked="{Binding IsShowProductDescription}" HorizontalAlignment="Left" Margin="15,22,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="3"/>
-        <Label x:Name="label2" Content="Опис товару" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" Margin="36,0,0,0" VerticalAlignment="top"/>
-        <TextBox x:Name="textBox2" HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Margin="0,22,0,0" Text="{Binding Description}" VerticalAlignment="Top" Width="180" Height="78"/>
+
+                <Border BorderBrush="#E8EBF0" HorizontalAlignment="Stretch"
+                        Height="55"
+                        Padding="20,9,20,9"
+                        BorderThickness="0,0,0,1">
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Налаштування етикетки"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"/>
+    
+                        <TextBlock Text="Оберіть інформацію, яка буде відображатися" 
+                               FontSize="12"
+                               Foreground="#7A8494"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="2" 
+                        Margin="20,0,20,12" 
+                        Padding="12"
+                        Background="#F8F9FC"
+                        CornerRadius="7"
+                        BorderBrush="#E2E6ED"
+                        BorderThickness="1">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0"
+                              VerticalAlignment="Top"
+                              Margin="0,3,0,0"
+                              IsChecked="{Binding IsShowNameCompany}"/>
+
+                        <StackPanel Grid.Column="1">
+
+                            <TextBlock Text="Назва компанії"
+                                   FontWeight="Medium"
+                                   Foreground="#303846"/>
+                            <Border BorderBrush="#E2E6ED"
+                                    Margin="0,7,0,0"
+                                    BorderThickness="1">
+                                <TextBox Style="{StaticResource GeneralTextBox}"
+                                         Text="{Binding NameCompany}"
+                                         VerticalContentAlignment="Center"/>
+                            </Border> 
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+ 
+                <Border Grid.Row="3"
+                        Margin="20,0,20,12" 
+                        Padding="12"
+                        Background="#F8F9FC"
+                        CornerRadius="7"
+                        BorderBrush="#E2E6ED"
+                        BorderThickness="1">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0"
+                                  VerticalAlignment="Top"
+                                  Margin="0,3,0,0"
+                                  IsChecked="{Binding IsShowProductBarCode}"/>
+
+                        <StackPanel Grid.Column="1">
+
+                            <TextBlock Text="Штрихкод"
+                                       FontWeight="Medium"
+                                       Foreground="#303846"/>
+                            <Border BorderBrush="#E2E6ED"
+                                    Margin="0,7,0,0"
+                                    BorderThickness="1">
+                                    <TextBox  Style="{StaticResource GeneralTextBox}"
+                                              Text="{Binding Code}"
+                                              VerticalContentAlignment="Center"/>
+                            </Border>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+ 
+
+                <Border Grid.Row="4"
+                        Margin="20,0,20,12" 
+                        Padding="12"
+                        Background="#F8F9FC"
+                        CornerRadius="7"
+                        BorderBrush="#E2E6ED"
+                        BorderThickness="1">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0"
+                              VerticalAlignment="Top"
+                              Margin="0,3,0,0"
+                              IsChecked="{Binding IsShowProductName}"/>
+
+                        <StackPanel Grid.Column="1">
+
+                            <TextBlock Text="Назва товару"
+                                   FontWeight="Medium"
+                                   Foreground="#303846"/>
+                            <Border BorderBrush="#E2E6ED"
+                                    Margin="0,7,0,0"
+                                    BorderThickness="1">
+                                    <TextBox  Text="{Binding NameProduct}"
+                                              Style="{StaticResource GeneralTextBox}"
+                                              VerticalContentAlignment="Center"/>
+                            </Border>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+ 
+
+                <Border Grid.Row="5"
+                        Margin="20,0,20,12" 
+                        Padding="12"
+                        Background="#F8F9FC"
+                        CornerRadius="7"
+                        BorderBrush="#E2E6ED"
+                        BorderThickness="1">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0"
+                              VerticalAlignment="Top"
+                              Margin="0,3,0,0"
+                              IsChecked="{Binding IsShowProductDescription}"/>
+
+                        <StackPanel Grid.Column="1">
+
+                            <TextBlock Text="Опис товару"
+                                   FontWeight="Medium"
+                                   Foreground="#303846"/>
+                            <Border BorderBrush="#E2E6ED"
+                                    Margin="0,7,0,0"
+                                    BorderThickness="1">
+                                <TextBox Style="{StaticResource GeneralTextBox}"
+                                         Height="75"
+                                         Text="{Binding Description}"
+                                         TextWrapping="Wrap"
+                                         VerticalContentAlignment="Top"/>
+                            </Border>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+
+        </Border>
 
 
+        <Border Grid.Column="1"
+            Margin="0,15,15,15"
+            Background="White"
+            CornerRadius="10"
+            BorderBrush="#E2E6ED"
+            BorderThickness="1">
 
-        <Button x:Name="button" Content="Створити етикетку" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="4" Width="180" Command="{Binding CreateStikerComman}" VerticalAlignment="Top"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="55"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
-        <Button x:Name="button1" Grid.Column="4" Content="Роздрукувати" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="80" Command="{Binding PrintStikerCommand}" />
-        <Button x:Name="button2" Grid.Column="5" Content="Вийти" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="80" Command="{Binding ExitWindow}" CommandParameter="{Binding ElementName=window, Mode=OneWay}" />
-        <Button x:Name="button3" Grid.Column="3" Content="Очистити" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="80" Command="{Binding ClearStikerCommand}" />
+                <Border Grid.Row="0"
+                        Height="55"
+                        BorderBrush="#E8EBF0"
+                        BorderThickness="0,0,0,1">
 
-        <Image x:Name="image" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="0" Grid.RowSpan="4" HorizontalAlignment="Stretch" Source="{Binding BarCode}"  VerticalAlignment="Stretch"/>
+                    <Grid Margin="20,0">
+
+                        <TextBlock Text="Попередній перегляд"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#303846"/>
+
+                    </Grid>
+
+                </Border>
+
+
+                <!-- Рулон -->
+                <Border Grid.Row="1"
+                        Width="400"
+                        Height="330"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="#B9BDC3"
+                        BorderBrush="#747981"
+                        BorderThickness="2">
+
+                    <Grid>
+
+                        <!-- Верхня частина рулону -->
+                        <Border Width="370"
+                                Height="40"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Background="White"
+                                BorderBrush="#555A60"
+                                BorderThickness="1"
+                                CornerRadius="0,0,6,6" Padding="1">
+
+                        </Border>
+
+
+                        <Border Width="370"
+                                Height="40"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Background="White"
+                                BorderBrush="#555A60"
+                                BorderThickness="1"
+                                CornerRadius="6,6,0,0" Padding="1">
+
+                        </Border>
+
+
+                        <!-- Сама етикетка -->
+                        <Border Width="370"
+                                Height="225"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="White"
+                                BorderBrush="#555A60"
+                                BorderThickness="1"
+                                CornerRadius="6" Padding="1">
+
+                            <Grid>  
+                                <Image Source="{Binding BarCode}" 
+                                       Stretch="UniformToFill" />
+
+                            </Grid> 
+                        </Border> 
+                    </Grid>
+
+                </Border>
+                <Border BorderBrush="#E8EBF0"
+                        HorizontalAlignment="Stretch" Grid.Row="2" 
+                        Padding="20,9,20,9"
+                        BorderThickness="0,1,0,0">
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Параметри друку"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1F2937"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Принер:" 
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                            <TextBlock Text="{Binding NamePrinter}" 
+                                       Margin=" 5,0,0,0"
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Розмір друку:" 
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                            <TextBlock Text="{Binding SizeSticker}"
+                                       Margin=" 5,0,0,0"
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Кількісь етикеток:" 
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                            <TextBlock Text="1" 
+                                       Margin=" 5,0,0,0"
+                                       FontSize="12"
+                                       Foreground="#7A8494"/>
+                        </StackPanel> 
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+        </Border> 
+
+        <Border Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Background="White"
+            BorderBrush="#E2E6ED"
+            BorderThickness="0,1,0,0">
+
+            <Grid Margin="20,10">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- Create -->
+
+                <Button Grid.Column="0"
+                    Width="180"
+                    Height="40"
+                    HorizontalAlignment="Left"
+                    Content="Створити етикетку"
+                    Command="{Binding CreateStikerComman}"
+                    Style="{StaticResource SuccessButton}"/>
+
+ 
+                <Button Grid.Column="1"
+                    Width="100"
+                    Height="40"
+                    Margin="10,0,0,0"
+                    Content="Очистити"
+                    Style="{StaticResource GeneralButton}"
+                    Command="{Binding ClearStikerCommand}"/>
+ 
+
+                <Button Grid.Column="2"
+                    Width="120"
+                    Height="40"
+                    Margin="10,0,0,0"
+                    Content="Роздрукувати"
+                    Command="{Binding PrintStikerCommand}"
+                    Style="{StaticResource SuccessButton}"/>
+
+ 
+
+                <Button Grid.Column="3"
+                    Width="100"
+                    Height="40"
+                    Margin="10,0,0,0"
+                    Content="Вийти"
+                    Command="{Binding ExitWindow}"
+                    Style="{StaticResource ExitButton}"
+                    CommandParameter="{Binding ElementName=window, Mode=OneWay}"/>
+
+            </Grid>
+
+        </Border>
+
     </Grid>
 </Window>

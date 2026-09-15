@@ -1,14 +1,13 @@
 ﻿using ShopProject.Model.Integration.Monitoring.WebServer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ShopProject.Services.Modules.Common;
 using System.Threading.Tasks;
 
 namespace ShopProject.Services.Infrastructure.Monitoring.WebServerStatus.Interface
 {
     internal interface IWebServerStatusService
     {
-        public Task<ControlWebServer> IsAvailableAsync();
+        public Task<OperationResult<ControlWebServer>> IsAvailableAsync();
+
+        public Task<bool> HasInternetAsync();
     }
 }

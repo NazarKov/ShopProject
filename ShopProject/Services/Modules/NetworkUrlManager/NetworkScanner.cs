@@ -60,7 +60,7 @@ namespace ShopProject.Services.Modules.NetworkUrlManager
             }
             catch (Exception ex)
             {
-                throw new AggregateException("Усі завдання завершилися з помилкою.", tasks.Select(t => t.Exception).Where(e => e != null));
+                throw new AggregateException("Не вдалося знайти сервер змініть url", tasks.Select(t => t.Exception).Where(e => e != null));
             }
         }
 

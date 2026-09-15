@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.StatisticsPage
+namespace ShopProject.View.Common.Authorization
 {
     /// <summary>
-    /// Interaction logic for StatisticsView.xaml
+    /// Interaction logic for ResetPasswordView.xaml
     /// </summary>
-    public partial class StatisticsView : Page
+    public partial class ResetPasswordView : Page
     {
-        public StatisticsView()
+        public ResetPasswordView()
         {
             InitializeComponent();
         }

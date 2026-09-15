@@ -206,23 +206,38 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         private void CountingSumaOrder()
         {
             OperationSaleInfo.SumaOrder = 0;
-            foreach (ProductForSaleModel orderProduct in OperationSaleInfo.Products)
+            if (OperationSaleInfo.DiscountPrecent <= 100)
             {
-                OperationSaleInfo.SumaOrder += (orderProduct.Product.Price * orderProduct.Count);
+                if(OperationSaleInfo.DiscountPrecent != 0)
+                {
+                    if(OperationSaleInfo.Discount != 0)
+                    {
+                        OperationSaleInfo.DiscountPrecent = 0;
+                        OperationSaleInfo.Discount = 0;
+                    }
+                }
+                foreach (ProductForSaleModel orderProduct in OperationSaleInfo.Products)
+                {
+                    OperationSaleInfo.SumaOrder += (orderProduct.Product.Price * orderProduct.Count);
+                }
+                OperationSaleInfo.TotalSum = OperationSaleInfo.SumaOrder.Value;
+                if (OperationSaleInfo.DiscountPrecent != 0)
+                {
+                    OperationSaleInfo.SumaOrder = OperationSaleInfo.SumaOrder - (OperationSaleInfo.SumaOrder * (OperationSaleInfo.DiscountPrecent / 100));
+                }
+                if (OperationSaleInfo.Discount != 0)
+                {
+                    OperationSaleInfo.SumaOrder = OperationSaleInfo.SumaOrder - OperationSaleInfo.Discount;
+                }
+                if (OperationSaleInfo.SumaOrder < 0)
+                {
+                    OperationSaleInfo.SumaOrder = OperationSaleInfo.TotalSum;
+                    OperationSaleInfo.Discount = 0;
+                    OperationSaleInfo.DiscountPrecent = 0;
+                }
             }
-            OperationSaleInfo.TotalSum = OperationSaleInfo.SumaOrder.Value;
-            if (OperationSaleInfo.DiscountPrecent != 0)
+            else
             {
-                OperationSaleInfo.SumaOrder = OperationSaleInfo.SumaOrder - (OperationSaleInfo.SumaOrder * (OperationSaleInfo.DiscountPrecent / 100));
-            }
-            if (OperationSaleInfo.Discount != 0)
-            {
-                OperationSaleInfo.SumaOrder = OperationSaleInfo.SumaOrder - OperationSaleInfo.Discount;
-            }
-            if (OperationSaleInfo.SumaOrder < 0)
-            {
-                OperationSaleInfo.SumaOrder = OperationSaleInfo.TotalSum;
-                OperationSaleInfo.Discount = 0;
                 OperationSaleInfo.DiscountPrecent = 0;
             }
             EnableButton();

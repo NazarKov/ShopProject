@@ -889,6 +889,8 @@
                             <RowDefinition/>
                             <RowDefinition/>
                             <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
 
                         <TextBlock Text="№ чека"  Margin="8,8,0,0"/>
@@ -940,10 +942,59 @@
                                    FontSize="16"
                                    Foreground="#4CAF50"
                                    HorizontalAlignment="Right"
-                                   Text="{Binding Operation.TotalPayment,StringFormat={}{0:N2} грн}"/>
+                                   Text="{Binding Operation.TotalPayment,StringFormat={}{0:N2} грн}"/>  
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    </Grid> 
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility"  Value="Collapsed"/>
+                                <Style.Triggers>
 
+                                    <DataTrigger Binding="{Binding Operation.Discount}" Value="null">
+                                        <Setter Property="Visibility"  Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Operation.Discount.TypeDiscount}" Value="0">
+                                        <Setter Property="Visibility"  Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Operation.Discount.TypeDiscount}" Value="1">
+                                        <Setter Property="Visibility"  Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </Grid.Style>
+
+                        <TextBlock Margin="8,8,0,0"
+                                   FontSize="16" 
+                                   Text="Знижка"/>
+                        <TextBlock
+                                   Grid.Column="1"
+                                   Margin="0,8,8,0" 
+                                   FontSize="16"
+                                   Foreground="#4CAF50"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.Discount.StringDiscount,StringFormat={}{0:N2} грн}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="8,8,0,0"
+                                   FontSize="16" 
+                                   Text="До оплати"/>
+                        <TextBlock Grid.Column="1"
+                                   Margin="0,8,8,0" 
+                                   FontSize="16"
+                                   Foreground="#4CAF50"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding Operation.TotalSumCheck,StringFormat={}{0:N2} грн}"/>
+                    </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -970,7 +1021,6 @@
 
                             </Style>
                         </Grid.Style> 
-                        
                         <TextBlock Grid.Row="0"
                                    Margin="8,8,0,0"
                                    FontSize="16" 
@@ -984,14 +1034,14 @@
                                    Text="{Binding Operation.BuyersAmount,StringFormat={}{0:N2} грн}"/>
                         <TextBlock Grid.Row="1"
                                    Margin="8,8,0,0"
-                                   FontSize="17"
+                                   FontSize="18"
                                    FontWeight="Bold"
                                    Text="Решта"/>
                         <TextBlock Grid.Row="1"
                                    Grid.Column="1"
                                    Margin="0,8,8,0"
                                    FontWeight="Bold"
-                                   FontSize="17"
+                                   FontSize="18"
                                    Foreground="#4CAF50"
                                    HorizontalAlignment="Right"
                                    Text="{Binding Operation.RestPayment,StringFormat={}{0:N2} грн}"/>

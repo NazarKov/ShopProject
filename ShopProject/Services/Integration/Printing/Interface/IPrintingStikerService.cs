@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopProject.Model.Domain.Setting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace ShopProject.Services.Integration.Printing.Interface
         public BitmapImage Clear();
         public void Print();
         public string GetNameCompany();
+
+        public PrinterStickerSetting GetPrinterSettings();
     }
 }

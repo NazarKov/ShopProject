@@ -248,5 +248,10 @@ namespace ShopProject.Services.Integration.PrintingService
 
             return setting.NameCompany;
         }
+
+        public PrinterStickerSetting GetPrinterSettings()
+        {
+            return _settingService.GetSetting<PrinterStickerSetting>(); 
+        }
     }
 }

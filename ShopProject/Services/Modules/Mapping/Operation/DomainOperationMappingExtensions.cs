@@ -1,5 +1,6 @@
 ﻿using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.UI.Operation;
+using ShopProject.Services.Modules.Mapping.Discount;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace ShopProject.Services.Modules.Mapping.Operation
 
         public static OperationModel ToOperationModel(this ShopProject.Model.Domain.Operation.Operation item)
         {
-            return new OperationModel()
+            var result = new OperationModel()
             {
                 ID = item.ID,
                 BuyersAmount = item.BuyersAmount,
@@ -48,6 +49,11 @@ namespace ShopProject.Services.Modules.Mapping.Operation
                 TypeOperation = item.TypeOperation,
                 TypePayment = item.TypePayment
             };
+            if (item.Discount != null)
+            {
+                result.Discount = item.Discount.ToDiscountModel();
+            }
+            return result;
         }
         public static OperationsInfoModel ToOperationInfoModel(this OperationInfo item)
         {

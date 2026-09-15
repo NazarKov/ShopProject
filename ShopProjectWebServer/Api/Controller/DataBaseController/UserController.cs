@@ -121,7 +121,7 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
                 }
                 else
                 {
-                    return Ok(ApiResponse<bool>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
+                    return Ok(ApiResponse<AuthorizationUserDto>.Fail(result.ErrorMessage, Enum.Parse<ErrorType>(result.ErrorType.ToString()), Enum.Parse<ErrorSource>(result.Source.ToString())));
                 } 
             }
             catch (Exception ex)

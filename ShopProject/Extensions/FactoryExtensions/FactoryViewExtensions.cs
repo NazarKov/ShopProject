@@ -10,7 +10,7 @@ using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.View.AdminPage.Storage.ProductUnit; 
 using ShopProject.View.AdminPage.UserManagement;
 using ShopProject.View.AdminPage.UserManagement.User;
-using ShopProject.View.Authorization;
+using ShopProject.View.Common.Authorization;
 using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Main;
 using ShopProject.View.Common.Setting;

@@ -5,6 +5,7 @@
         None,
         Validation,
         NotFound,
+        Authorized,
         Unauthorized,
         Conflict,
         Server,

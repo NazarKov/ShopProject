@@ -1,23 +1,14 @@
-﻿using Azure;
-using ShopProject.Helpers;
-using ShopProject.Model.Exceptions;
-using ShopProject.Services.Integration.Directory.Interface;
+﻿using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Common.Enum;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
-using ShopProject.Services.Modules.Mapping.ProductUnit;
-using ShopProject.Services.Modules.Mapping.SignatureKey;
+using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using ShopProject.Services.Modules.Mapping.User;
 using ShopProject.Services.Modules.Mapping.UserRole;
 using ShopProject.Services.Modules.Resourse.Interface;
-using ShopProject.Services.Modules.Session.Interface;
-using ShopProject.Services.Modules.Setting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZXing.Aztec.Internal;
+using ShopProject.Services.Modules.Session.Interface; 
+using System; 
+using System.Threading.Tasks; 
 
 namespace ShopProject.Services.Modules.Resourse
 {
@@ -71,10 +62,6 @@ namespace ShopProject.Services.Modules.Resourse
             {
                 throw new Exception("Невдалося заватажити ресурси");
             }
-        }
-
-
-
-
+        }  
     }
 }

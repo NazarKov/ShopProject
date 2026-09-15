@@ -36,6 +36,8 @@ namespace ShopProject.ViewModel.Integration.Printing
             _code = string.Empty;
             _description = string.Empty;
             _barCode = new BitmapImage();
+            _namePrinter = "Не вказано";
+            _sizeSticker = "Не вказано";
 
             IsShowNameCompany = true;
             IsShowProductBarCode = true;
@@ -76,7 +78,13 @@ namespace ShopProject.ViewModel.Integration.Printing
                             Description += splitName[i] + " ";
                     }
                 }
-            } 
+            }
+
+            var setting = _printingStikerService.GetPrinterSettings();
+            if (setting != null)
+            {
+                NamePrinter = setting.Printer; 
+            }
 
         }
 
@@ -142,11 +150,24 @@ namespace ShopProject.ViewModel.Integration.Printing
             set { _isShowProductDescription = value; OnPropertyChanged(nameof(IsShowProductDescription)); }
         }
 
+        private string _namePrinter;
+        public string NamePrinter
+        {
+            get { return _namePrinter; }
+            set { _namePrinter =  value; OnPropertyChanged(nameof(NamePrinter));}
+        }
+        private string _sizeSticker;
+        public string SizeSticker
+        {
+            get { return _sizeSticker; }
+            set { _sizeSticker = value;OnPropertyChanged(nameof(SizeSticker)); }
+        }
+
         public ICommand CreateStikerComman => _createStikerCommand;
 
         private void CreateStiker()
         {
-            _printingStikerService.SetShowTextInImage(_isShowNameCompany, _isShowProductBarCode, _isShowProductName, _isShowProductDescription);
+            _printingStikerService.SetShowTextInImage(_isShowNameCompany, _isShowProductBarCode, _isShowProductName, _isShowProductDescription); 
             BarCode = _printingStikerService.CreateBarCode(_nameCompany, _nameProduct, _description, _code);
         }
 

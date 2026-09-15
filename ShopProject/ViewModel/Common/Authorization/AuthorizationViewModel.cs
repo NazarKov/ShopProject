@@ -2,33 +2,24 @@
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Navigation;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Domain.User.Interface;
-using ShopProject.Services.Modules.Session;
-using ShopProject.Services.Modules.Session.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ShopProject.Services.Modules.Domain.User.Interface; 
+using ShopProject.Services.Modules.Session.Interface; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.Authorization
+namespace ShopProject.ViewModel.Common.Authorization
 {
     internal class AuthorizationViewModel : ViewModel<AuthorizationViewModel>, IViewModelLoadResourse
     {
         private ICommand _logInCommnad;
         private ICommand _openChangePassowordCommand;
-        private ICommand _exitCommand;
+        private ICommand _exitCommand; 
+        private IUserService _userServise; 
 
-        private IUserService _userServise;
-        private ISessionService _sessionService;
-
-        public AuthorizationViewModel(IUserService userServise , ISessionService sessionService)
+        public AuthorizationViewModel(IUserService userServise)
         {
-            _userServise = userServise;
-            _sessionService = sessionService;
-            
+            _userServise = userServise;  
             _logInCommnad = CreateCommandAsync(LogIn,SetError);
             _openChangePassowordCommand = CreateCommand(OpenChangePassword);
             _exitCommand = CreateCommand(Exit);
@@ -119,6 +110,10 @@ namespace ShopProject.ViewModel.Authorization
                 MessegeBlockVisibiliti = Visibility.Visible;
                 await MediatorService.ExecuteEventAsync("SetHidenPage");
                 await MediatorService.ExecuteEventAsync("StartApp"); 
+            }
+            else if (result.IsError)
+            {
+                SetError(result.ErrorMessage);
             }
             else
             {

@@ -9,14 +9,21 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ConnectionLostView">
 
-    <Grid> 
- 
-        <Border Width="320"
-            Padding="20"
-            Background="#1E1E1E"
-            CornerRadius="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+    <Grid>
+        <Rectangle x:Name="ShadowRect1"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="2"
+                   Fill="Black"
+                   Opacity="0.5" 
+                   Panel.ZIndex="0"/>
+        <Border Width="320" 
+                Padding="20"
+                Background="#1E1E1E"
+                CornerRadius="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
             <StackPanel HorizontalAlignment="Center">
  

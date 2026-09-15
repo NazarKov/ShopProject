@@ -298,40 +298,49 @@ namespace ShopProject.Services.Modules.Domain.User
 
         public async Task<OperationResult<bool>> LogIn(string login, string password)
         {
-            if (login == string.Empty)
+            try
             {
-                throw new ExceptionStringEmpty("Заповніть поле Логін");
+                if (login == string.Empty)
+                {
+                    return OperationResult<bool>.Fail("Заповніть поле Логін");
+                }
+
+                if (password == string.Empty)
+                {
+                    return OperationResult<bool>.Fail("Заповніть поле Пароль");
+                }
+
+                var result = new OperationResult<bool>();
+
+                var response = await _webServerService.DataBase.UserController.Authorization(login, password);
+
+                result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                result.ErrorMessage = response.Error;
+                result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                result.ValidationErrors = response.Errors;
+
+
+                if (result.IsSuccess)
+                {
+                    _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+                    _settingService.SetSetting<SessionSetting>(new SessionSetting() { User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto()) });
+                    _webServerService.SetToken(response.Data.Token);
+
+                    return result;
+                }
+                else if (result.IsError)
+                {
+                    return result;
+                }
+
+                return OperationResult<bool>.Fail("Невдалося виконaти операцію");
             }
-
-            if (password == string.Empty)
+            catch(Exception ex)
             {
-                throw new ExceptionStringEmpty("Заповніть поле Пароль");
+                return OperationResult<bool>.Fail(ex.Message);
             }
-
-            var result = new OperationResult<bool>();
-
-            var response = await _webServerService.DataBase.UserController.Authorization(login, password);
-
-            result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
-            result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
-            result.ErrorMessage = response.Error;
-            result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
-            result.ValidationErrors = response.Errors;
-
-
-            if (result.IsSuccess)
-            {
-                _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
-                _settingService.SetSetting<SessionSetting>(new SessionSetting() { User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto()) });
-                _webServerService.SetToken(response.Data.Token);
-
-                return result;
-            }
-            return new OperationResult<bool>()
-            {
-                ErrorMessage = "Невдалося викоанти операцію",
-                Status = ResultStatus.Error,
-            };
+            
 
         }
 

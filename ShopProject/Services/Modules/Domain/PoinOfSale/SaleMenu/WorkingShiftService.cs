@@ -202,25 +202,30 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
         {
             try
             {
-                var result = (await _mainWebServerService.DataBase.OperationController.GetLastNumberOperation(_sessionService.WorkingShiftStatus.WorkingShift.ID)).ToOperationResult();
-                if (result.IsSuccess)
+                if(_sessionService.WorkingShiftStatus.Status== TypeStatusShift.Open)
                 {
-                    FiscalCheck fiscalCheck = new FiscalCheck();
-
-                    var operation = result.Data.Operation.ToOperation();
-                    if (result.Data.Discount != null)
+                    var result = (await _mainWebServerService.DataBase.OperationController.GetLastNumberOperation(_sessionService.WorkingShiftStatus.WorkingShift.ID)).ToOperationResult();
+                    if (result.IsSuccess)
                     {
-                        operation.Discount = result.Data.Discount.ToDicount();
-                    }
-                    fiscalCheck.CreateFisckalCheck(result.Data.Products.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits).ToList(), operation, _sessionService.User, _sessionService.WorkingShiftStatus.OperationRecorder, _sessionService.WorkingShiftStatus.TaxObject);
-                    _printingFiscalCheckService.PrintCheck(fiscalCheck.GetCheck());
+                        FiscalCheck fiscalCheck = new FiscalCheck();
 
-                    return OperationResult<bool>.Success(true);
+                        var operation = result.Data.Operation.ToOperation();
+                        if (result.Data.Discount != null)
+                        {
+                            operation.Discount = result.Data.Discount.ToDicount();
+                        }
+                        fiscalCheck.CreateFisckalCheck(result.Data.Products.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits).ToList(), operation, _sessionService.User, _sessionService.WorkingShiftStatus.OperationRecorder, _sessionService.WorkingShiftStatus.TaxObject);
+                        _printingFiscalCheckService.PrintCheck(fiscalCheck.GetCheck());
+
+                        return OperationResult<bool>.Success(true);
+                    }
                 }
-                else
+                else if(_sessionService.WorkingShiftStatus.Status == TypeStatusShift.Close)
                 {
-                    return OperationResult<bool>.Fail("невдлося виконати операцію");
+                    return OperationResult<bool>.Fail("Зміна не відкрита");
                 }
+
+                return OperationResult<bool>.Fail("невдалося виконати операцію");
             }
             catch (Exception ex)
             {

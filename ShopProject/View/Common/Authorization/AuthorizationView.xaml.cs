@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.Authorization
+namespace ShopProject.View.Common.Authorization
 {
     /// <summary>
     /// Interaction logic for AuthorizationView.xaml

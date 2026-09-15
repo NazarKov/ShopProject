@@ -9,7 +9,7 @@ using ShopProject.View.AdminPage.PointOfSale;
 using ShopProject.View.AdminPage.Storage;
 using ShopProject.View.AdminPage.Storage.Tools; 
 using ShopProject.View.AdminPage.UserManagement;
-using ShopProject.View.Authorization;
+using ShopProject.View.Common.Authorization;
 using ShopProject.View.Common.ConnectionLost;
 using ShopProject.View.Common.Setting;
 using ShopProject.View.Common.Start;
@@ -19,15 +19,14 @@ using ShopProject.View.Integration.DeviceStatus;
 using ShopProject.View.Integration.Excel.Export;
 using ShopProject.View.Integration.Excel.Import;
 using ShopProject.View.Integration.Printing;
-using ShopProject.View.Integration.Windows.Service;
-using ShopProject.View.StatisticsPage; 
+using ShopProject.View.Integration.Windows.Service; 
 using ShopProject.View.TemplatePage; 
 using ShopProject.View.UserPage.PointOfSale;
 using ShopProject.View.UserPage.PointOfSale.SaleMenu;
 using ShopProject.ViewModel.AdminPage.Dashboard;
 using ShopProject.ViewModel.AdminPage.PointOfSale; 
 using ShopProject.ViewModel.AdminPage.UserManagement;
-using ShopProject.ViewModel.Authorization;
+using ShopProject.ViewModel.Common.Authorization;
 using ShopProject.ViewModel.Common.ConnectionLost;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
@@ -90,8 +89,7 @@ namespace ShopProject.ViewModel.Common.Main
             _openExportProductCommand = CreateCommand(() => { new ExportExcelProductView().Show(); });
             _openImportProductCommand = CreateCommand(() => { new ImportProductExcelView().Show(); });
             _openAssignedPointOfSaleCommand = CreateCommand(OpenAssignedPointOfSale);
-            _openDeliveryOfGoodsCommand = CreateCommand(() => { new DeliveryProductView().Show(); });
-            _openStatisticsPageCommand = CreateCommand(() => { Page = new StatisticsView(); }); 
+            _openDeliveryOfGoodsCommand = CreateCommand(() => { new DeliveryProductView().Show(); }); 
             _exitUserCommand = CreateCommandAsync(RemoveSession); 
             _openGiftCertificatesPageCommand = CreateCommand(() => { Page = new GiftCertificatesView(); });
             _openNotificationPanelCommand = CreateCommandAsync(OpenNotificationPanel);
@@ -231,8 +229,8 @@ namespace ShopProject.ViewModel.Common.Main
             InitNavigationButton();
             MediatorService.AddEventAsync("VisibilitiNotification", async () => await ShowNotificationPanel());
             MediatorService.AddEventAsync<int>("AddNotificationCount", async count => await ShowNotificationCount(count)); 
-            MediatorService.AddEventAsync("LostConnectSetVisible", async () => { VisibilitiLostConnectionPage = Visibility.Visible; IsEnableMenuButton = false; });
-            MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
+            MediatorService.AddEventAsync("LostConnectSetVisible", async () => { VisibilitiShadowPage = Visibility.Visible; VisibilitiLostConnectionPage = Visibility.Visible; IsEnableMenuButton = false; });
+            MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiShadowPage = Visibility.Collapsed; VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
             MediatorService.AddEventAsync("VisibilitiShadowSetVisible", async () => { VisibilitiShadowPage = Visibility.Visible; });
             MediatorService.AddEventAsync("VisibilitiShadowSetHidden", async () => { VisibilitiShadowPage = Visibility.Collapsed; });
 
@@ -240,6 +238,7 @@ namespace ShopProject.ViewModel.Common.Main
             {
                 Page = new LoadingView();
                 PageVisibiliti = Visibility.Visible;
+                await _mainAppServise.LoadStartData();
                 await _mainAppServise.LoadUserData();
                 await SetFieldWindow();
             });

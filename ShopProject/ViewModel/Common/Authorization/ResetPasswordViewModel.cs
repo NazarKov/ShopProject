@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopProject.ViewModel.Authorization
+namespace ShopProject.ViewModel.Common.Authorization
 {
     internal class ResetPasswordViewModel
     {

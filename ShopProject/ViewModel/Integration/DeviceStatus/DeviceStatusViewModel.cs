@@ -3,6 +3,7 @@ using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.UI.Monitoring;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Monitoring.WebServerStatus.Interface;
+using ShopProject.Services.Integration.Network.Network.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace ShopProject.ViewModel.Integration.DeviceStatus
     internal class DeviceStatusViewModel : ViewModel<DeviceStatusViewModel>, IViewModelLoadResourse
     {
         private DispatcherTimer _timer;
-        private IWebServerStatusService _webServerStatusService;
+        private IWebServerStatusService _webServerStatusService; 
         private bool _isChecking;
         private bool isFristLoad;
         public DeviceStatusViewModel(IWebServerStatusService webServerStatusService)
@@ -69,23 +70,43 @@ namespace ShopProject.ViewModel.Integration.DeviceStatus
             try
             {
                 var result = new ShopProject.Model.UI.Monitoring.DeviceStatus();
-                var availableWebServer = await _webServerStatusService.IsAvailableAsync();
-                if (availableWebServer.IsEnabled)
+                var availableInternet = await _webServerStatusService.HasInternetAsync();
+                if (availableInternet) 
                 {
-                    result.ServerStatusColor = Brushes.LightGreen; 
-                }
-                else
-                {
-                    result.ServerStatusColor = Brushes.IndianRed; 
-                }
-                if (availableWebServer.IsEnableDataBase)
-                {
-                    result.DataBaseStatusColor = Brushes.LightGreen; 
+                    result.InternetStatusColor = Brushes.LightGreen;
 
+                    var availableWebServer = await _webServerStatusService.IsAvailableAsync();
+                    if (availableWebServer.IsSuccess)
+                    {
+                        if (availableWebServer.Data.IsEnabled)
+                        {
+                            result.ServerStatusColor = Brushes.LightGreen;
+                        }
+                        else
+                        {
+                            result.ServerStatusColor = Brushes.IndianRed;
+                        }
+                        if (availableWebServer.Data.IsEnableDataBase)
+                        {
+                            result.DataBaseStatusColor = Brushes.LightGreen;
+
+                        }
+                        else
+                        {
+                            result.DataBaseStatusColor = Brushes.IndianRed;
+                        }
+                    }
+                    else
+                    {
+                        result.ServerStatusColor = Brushes.IndianRed;
+                        result.DataBaseStatusColor = Brushes.IndianRed;
+                    } 
                 }
                 else
                 {
-                    result.DataBaseStatusColor = Brushes.IndianRed; 
+                    result.InternetStatusColor = Brushes.IndianRed;
+                    result.ServerStatusColor = Brushes.IndianRed;
+                    result.DataBaseStatusColor = Brushes.IndianRed;
                 }
                 return result;
             }
@@ -101,7 +122,7 @@ namespace ShopProject.ViewModel.Integration.DeviceStatus
         }
         private async Task CheckedDevises(ShopProject.Model.UI.Monitoring.DeviceStatus device)
         {
-            if (device.DataBaseStatusColor == Brushes.LightGreen && device.ServerStatusColor == Brushes.LightGreen)
+            if (device.InternetStatusColor== Brushes.LightGreen && device.DataBaseStatusColor == Brushes.LightGreen && device.ServerStatusColor == Brushes.LightGreen)
             {
                 await MediatorService.ExecuteEventAsync("LostConnectSetHidden");
                 if (isFristLoad)

@@ -32,5 +32,20 @@ namespace ShopProject.Model.UI.Operation
         public DiscountModel? Discount { get; set; }
         public WorkingShiftModel? Shift { get; set; }
         public ICollection<OrderModel>? Order { get; set; }
+
+        public string TotalSumCheck
+        {
+            get
+            {
+                if (Discount != null)
+                {
+                    return (TotalPayment - Discount.TotalDiscount).ToString();
+                }
+                else
+                {
+                    return TotalPayment.ToString();
+                }
+            }
+        }
     }
 }

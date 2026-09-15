@@ -18,8 +18,10 @@ namespace ShopProject.Model.UI.Monitoring
         private Brush _serverStatusColor = Brushes.IndianRed;
         public Brush ServerStatusColor { get { return _serverStatusColor; } set { _serverStatusColor = value;OnPropertyChanged(nameof(ServerStatusColor)); } }
 
+        private Brush _dataBaseStatusColor = Brushes.IndianRed;
+        public Brush DataBaseStatusColor { get { return _dataBaseStatusColor; } set { _dataBaseStatusColor = value; OnPropertyChanged(nameof(DataBaseStatusColor)); } }
         private Brush _internetStatusColor = Brushes.IndianRed;
-        public Brush DataBaseStatusColor { get { return _internetStatusColor; } set { _internetStatusColor = value; OnPropertyChanged(nameof(DataBaseStatusColor)); } }
+        public Brush InternetStatusColor { get { return _internetStatusColor; } set { _internetStatusColor = value; OnPropertyChanged(nameof(InternetStatusColor)); } }
 
         public string PrinterTooltip { get; set; } = "Принтер підключений";
         public string ScannerTooltip { get; set; } = "Сканер активний";
