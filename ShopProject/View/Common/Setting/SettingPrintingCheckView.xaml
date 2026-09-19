@@ -7,20 +7,26 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPrintingCheckView">
-
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
     <Grid>
         <Border Background="White"
-      Padding="15"
-      CornerRadius="6">
+                Padding="15"
+                CornerRadius="6">
 
             <Grid>
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <!-- Заголовок -->
+                </Grid.RowDefinitions> 
+                
                 <StackPanel>
                     <TextBlock Text="Налаштування друку чеків"
                      FontSize="18"
@@ -30,86 +36,169 @@
                     <Separator Margin="0,10,0,15"/>
                 </StackPanel>
 
-                <!-- Контент -->
-                <Border Grid.Row="1"
-              Background="White"
-              Padding="15"
-              CornerRadius="6"
-              BorderBrush="#E0E0E0"
-              BorderThickness="1">
+                <Grid Grid.Row="1" Margin="0,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions> 
+                    
+                    <Border Grid.Column="0"
+                            Background="White"
+                            Padding="15"
+                            CornerRadius="6"
+                            Margin="0,0,10,0"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="1">
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
+                            </Grid.RowDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                            <TextBlock Text="Налаштування"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333"/>
+                            <Separator Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Center" Margin="0,15,0,0"></Separator>
+                            
+                            <TextBlock Text="Принтер для друку чеків"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"/>
 
-                        <!-- Принтер -->
-                        <TextBlock Text="Принтер для друку чеків"
-                         Grid.Row="2"
-                         Grid.Column="0"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Left"
-                         Margin="5,0,15,0"/>
+                            <ComboBox Grid.Row="1"
+                                      Width="200"
+                                      HorizontalAlignment="Right"
+                                      VerticalContentAlignment="Center"
+                                      Grid.Column="1"
+                                      ItemsSource="{Binding Printer}"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectedItem="{Binding SelectedPrinter}"
+                                      Height="30"/>
+  
 
-                        <ComboBox Grid.Row="2"
-                        Grid.Column="1"
-                        ItemsSource="{Binding Printer}"
-                        SelectedItem="{Binding SelectedPrinter}"
-                        Height="30"/>
-
-                        <!-- Кнопка -->
-                        <Button Grid.Row="5"
-                      Grid.Column="1"
-                      Command="{Binding PrintTestCheck}"
-                      Margin="0,15,0,15"
-                      Height="34"
-                      Content="Друк пробної сторінки"
-                      Background="CadetBlue"
-                      Foreground="White"
-                              VerticalAlignment="Top"
-                      BorderThickness="0"
-                      Cursor="Hand"/>
-
-                        <Label x:Name="label" Content="Ширина друку принтера" HorizontalAlignment="Left"  Margin="0,15,0,15"  Grid.Row="0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="textBox" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Grid.Row="0"   Margin="0,15,0,15"  TextWrapping="Wrap" Text="{Binding Width , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
-
-
-                        <Label x:Name="label1" Content="Маштаб чеку" HorizontalAlignment="Left" Grid.Row="1" Margin="0,15,0,15" VerticalAlignment="Top"/>
-                        <TextBox x:Name="textBox1" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="1" TextWrapping="Wrap" Text="{Binding Slcale,StringFormat={}{0:0.00}}" VerticalAlignment="Top"/>
-
-                        <Label x:Name="label2" Content="Розмір  QR-code" HorizontalAlignment="Left" Grid.Row="3" Margin="0,15,0,15" VerticalAlignment="Top"/>
-                        <TextBox x:Name="textBox2" Height="30" Grid.Column="1" HorizontalAlignment="Stretch"  Margin="0,15,0,15"   Grid.Row="3" TextWrapping="Wrap" Text="{Binding SizeQrCode,StringFormat={}{0:0.00}}" VerticalAlignment="Top"/>
-
-
-                        <Button x:Name="button"  Grid.Column="1"
-                              Grid.Row="4"
-                              Command="{Binding SaveSettingCommand}"
-                              Margin="0,15,0,15"
-                              Height="34"
-                              Content="Зберегти налаштування"
-                              Background="CadetBlue"
-                              Foreground="White"
-                              VerticalAlignment="Top"
-                              BorderThickness="0"
-                              Cursor="Hand"/>
+                            <Label x:Name="label"
+                                   Content="Ширина друку принтера" 
+                                   HorizontalAlignment="Left" 
+                                   Grid.Row="2" 
+                                   Grid.Column="0"
+                                   Padding="0"
+                                   VerticalAlignment="Center"/>
+                            <TextBox x:Name="textBox" 
+                                     Width="200"
+                                     Height="30" 
+                                     HorizontalAlignment="Right"
+                                     Grid.Row="2" Grid.Column="1" 
+                                     TextWrapping="Wrap"
+                                     HorizontalContentAlignment="Right"
+                                     VerticalContentAlignment="Center"
+                                     Style="{StaticResource GeneralTextBox}"
+                                     Text="{Binding Width , UpdateSourceTrigger=PropertyChanged}"
+                                     VerticalAlignment="Center"/>
 
 
+                            <Label x:Name="label1"
+                                   Content="Маштаб чеку" 
+                                   HorizontalAlignment="Left" 
+                                   Grid.Row="3"
+                                   Padding="0"
+                                   Grid.Column="0"
+                                   VerticalAlignment="Center"/>
+                            <TextBox x:Name="textBox1"
+                                     Height="30" 
+                                     Width="200"
+                                     HorizontalAlignment="Right" 
+                                     Grid.Row="3"  
+                                     Grid.Column="1" 
+                                     Style="{StaticResource GeneralTextBox}"
+                                     Text="{Binding Slcale,StringFormat={}{0:0.00}}"
+                                     HorizontalContentAlignment="Right"
+                                     VerticalContentAlignment="Center"
+                                     VerticalAlignment="Center"/>
 
-                    </Grid>
-                </Border>
+                            <Label x:Name="label2"
+                                   Content="Розмір  QR-code" 
+                                   HorizontalAlignment="Left"
+                                   Grid.Row="4"
+                                   Padding="0"
+                                   Grid.Column="0"
+                                   VerticalAlignment="Center"/>
+                            <TextBox x:Name="textBox2" 
+                                     Height="30"
+                                     Width="200"
+                                     HorizontalAlignment="Right" 
+                                     Grid.Row="4"
+                                     Grid.Column="1"
+                                     TextWrapping="Wrap"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Right"
+                                     Style="{StaticResource GeneralTextBox}"
+                                     Text="{Binding SizeQrCode,StringFormat={}{0:0}}"
+                                     VerticalAlignment="Top"/>
+
+                            <Separator Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Bottom" Margin="0,15,0,0"></Separator>
+                            <Button x:Name="button" 
+                                    Width="200"
+                                    Grid.Column="1"
+                                    Grid.Row="5"
+                                    Style="{StaticResource StorageButton}"
+                                    Command="{Binding SaveSettingCommand}" 
+                                    Height="34"
+                                    Content="Зберегти налаштування" HorizontalAlignment="Right"/>
+
+
+                            <Button Grid.Row="6"
+                                    Width="200"
+                                    Grid.Column="1"
+                                    Style="{StaticResource StorageButton}"
+                                    Command="{Binding PrintTestCheck}" 
+                                    Height="34"
+                                    Content="Друк пробної сторінки" 
+                                    HorizontalAlignment="Right"  />
+
+                        </Grid>
+                    </Border>
+                    <Border  Grid.Column="1"
+                             BorderBrush="#E0E0E0"
+                             Margin="10,0,0,0"
+                             CornerRadius="6"
+                             Padding="15"
+                             BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Попередній перегляд"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333"/>
+                            <Separator Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Center" Margin="0,15,0,0"></Separator>
+                            <StackPanel Grid.Row="1"  >
+                                <Border Width="400" 
+                                    Height="700" 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Stretch"
+                                    Background="#B9BDC3"
+                                    BorderBrush="#747981"
+                                    BorderThickness="2">
+                                <UserControl Width="300" Background="White" BorderBrush="#555A60" BorderThickness="1,0,1,1" Content="{Binding TemplatePrintingCheck}" HorizontalAlignment="Stretch" VerticalAlignment="Top"></UserControl>
+                            </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>  
             </Grid>
         </Border>
     </Grid>

@@ -25,8 +25,8 @@ namespace ShopProject.ViewModel.Common.Setting
             _openSettingUserCommand = CreateCommand(() =>{ PageSetting = App.Container.GetViewWithViewModel<SettingProfileView, SettingProfileViewModel>(); });
             _openSettingPrintingCheckCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingPrintingCheckView,SettingPrintingCheckViewModel>(); });
             _openSettingPintingStickerCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingPrintingStickerView, SettingPrintingStickerViewModel>(); }); 
-            _openSettingOperationRecorderCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingOperationRecorderView, SettingOperationRecorderViewModel>(); });
-            _openSettingStorageCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingStorageView, SettingStorageViewModel>(); }); 
+            _openSettingOperationRecorderCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingPointOfSaleView, SettingPointOfSaleViewModel>(); });
+            _openSettingStorageCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingDirectoriesView, SettingDirectoriesViewModel>(); }); 
             _pageSetting = new Page(); 
         }
 

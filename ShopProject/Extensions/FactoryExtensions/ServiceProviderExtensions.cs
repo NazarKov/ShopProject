@@ -105,10 +105,10 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<UserManagementViewModel, UserManagementViewModel>();
 
             factory.RegisterScoped<SettingProfileViewModel, SettingProfileViewModel>();
-            factory.RegisterScoped<SettingStorageViewModel, SettingStorageViewModel>();
+            factory.RegisterScoped<SettingDirectoriesViewModel, SettingDirectoriesViewModel>();
             factory.RegisterScoped<SettingPrintingStickerViewModel, SettingPrintingStickerViewModel>();
             factory.RegisterScoped<SettingPrintingCheckViewModel, SettingPrintingCheckViewModel>();
-            factory.RegisterScoped<SettingOperationRecorderViewModel, SettingOperationRecorderViewModel>();
+            factory.RegisterScoped<SettingPointOfSaleViewModel, SettingPointOfSaleViewModel>();
 
             factory.RegisterScoped<SettingViewModel, SettingViewModel>();
 

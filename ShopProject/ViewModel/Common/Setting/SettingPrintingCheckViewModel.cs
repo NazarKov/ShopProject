@@ -1,16 +1,15 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
+﻿using ShopProject.Core.Mvvm; 
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Setting;
+using ShopProject.Model.Domain.Setting; 
 using ShopProject.Services.Integration.Printing.Interface;
+using ShopProject.Services.Integration.PrintingService;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
+using System.Drawing.Printing; 
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.SettingPage
@@ -60,6 +59,26 @@ namespace ShopProject.ViewModel.SettingPage
             Slcale = setting.Slcale;
             SelectedPrinter = setting.Printer;
             SizeQrCode = setting.SizeQrCode;
+
+            FiscalCheck fiscalCheck = new FiscalCheck();
+            fiscalCheck.CreateFisckalCheck(
+                new List<ShopProject.Model.Domain.Product.Product>() 
+                {
+                    new ShopProject.Model.Domain.Product.Product()
+                    {
+                        NameProduct ="Товар 1",
+                        Price = 100,
+                        Count =10 ,  
+                        Articule = "1234",
+                        Code = "1234567891234", 
+                    }
+                },
+                new ShopProject.Model.Domain.Operation.Operation() { }, 
+                new ShopProject.Model.Domain.User.User() { }, 
+                new ShopProject.Model.Domain.OperationRecorder.OperationRecorder() { });
+
+
+            TemplatePrintingCheck = fiscalCheck.GetCheck();
         }
         private List<string> _printer;
         public List<string> Printer
@@ -93,6 +112,14 @@ namespace ShopProject.ViewModel.SettingPage
             get { return _sizeQrCode; }
             set { _sizeQrCode = value; OnPropertyChanged(nameof(SizeQrCode)); }
         }
+
+        private UserControl _templatePrintingCheck { get; set; }
+        public UserControl TemplatePrintingCheck 
+        {
+            get { return _templatePrintingCheck; }
+            set { _templatePrintingCheck = value; OnPropertyChanged(nameof(TemplatePrintingCheck)); }
+        }
+
 
         public ICommand SaveSettingCommand => _saveSettingCommand;
 

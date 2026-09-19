@@ -298,21 +298,21 @@
                  Command="{Binding OpenNotificationPanelCommand}"
                  ToolTip="Сповіщення">
 
-                    <Grid>
-
+                    <Grid> 
                         <TextBlock Text="🔔"
+                                   Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"
                             FontSize="17"/>
 
-                        <Border Background="CadetBlue"
+                        <Border Background="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"
                                 Width="15"
                                 Height="15"
                                 CornerRadius="8"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Margin="7,-5,-5,0">
+                                VerticalAlignment="Top" 
+                                Margin="7,-5,-4,0">
 
                             <TextBlock Text="{Binding NotificationValue}"
-                                Foreground="White"
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=BorderBrush}"
                                 FontSize="8"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
@@ -330,7 +330,7 @@
                 <!-- ========================== -->
 
                 <Button Style="{StaticResource UserButton}"
-                        Height="40"
+                        Height="40" 
                         contextMenuHelper:ContextMenuHelper.OpenOnLeftClick="True"
                         IsEnabled="{Binding IsEnableMenuButton}">
 
@@ -338,7 +338,7 @@
 
                         <Border Width="32"
                          Height="32"
-                         CornerRadius="16"
+                         CornerRadius="16" 
                          Background="#DCE6F9">
 
                             <TextBlock Text="👤"
@@ -354,11 +354,14 @@
                             <TextBlock Text="{Binding UserName}"
                                 FontSize="12"
                                 FontWeight="SemiBold"
-                                Foreground="#30343A"/>
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button},
+                                Path=Foreground}"/>
 
                             <TextBlock Text="Користувач"
-                                FontSize="9"
-                                Foreground="#8A9099"/>
+                                       FontSize="9"
+                                       Opacity="0.6"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button},
+                                       Path=Foreground}"/>
 
                         </StackPanel>
 
@@ -381,7 +384,7 @@
                         </ContextMenu>
 
                     </Button.ContextMenu>
-
+ 
                 </Button>
 
             </StackPanel>
@@ -451,6 +454,15 @@
                    Opacity="0.5"
                    Visibility="{Binding VisibilitiShadowPage}"
                    Panel.ZIndex="100"/>
+        <Rectangle x:Name="ShadowRect2"
+              Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Grid.RowSpan="2"
+              Fill="Black"
+              Opacity="0.5"
+              Visibility="{Binding VisibilitiShadowLostConnectionPage}"
+              Panel.ZIndex="100"/>
 
     </Grid> 
 </Window>

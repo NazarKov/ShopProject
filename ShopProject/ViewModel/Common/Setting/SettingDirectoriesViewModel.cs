@@ -13,13 +13,13 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.Common.Setting
 {
-    internal class SettingStorageViewModel : ViewModel<SettingStorageViewModel> , IViewModelLoadResourse
+    internal class SettingDirectoriesViewModel : ViewModel<SettingDirectoriesViewModel> , IViewModelLoadResourse
     { 
         private ICommand _saveSettingCommand;
 
         private ISettingService _settingService;
 
-        public SettingStorageViewModel(ISettingService settingService)
+        public SettingDirectoriesViewModel(ISettingService settingService)
         {
             _settingService = settingService;  
             _saveSettingCommand = CreateCommand(SaveSetting); 

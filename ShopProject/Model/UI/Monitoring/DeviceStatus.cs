@@ -10,11 +10,7 @@ using System.Windows.Media;
 namespace ShopProject.Model.UI.Monitoring
 {
     internal class DeviceStatus : Model<DeviceStatus>
-    {
-       
-        public Brush PrinterStatusColor { get; set; } = Brushes.LightGreen;
-        public Brush ScannerStatusColor { get; set; } = Brushes.LightGreen;
-
+    { 
         private Brush _serverStatusColor = Brushes.IndianRed;
         public Brush ServerStatusColor { get { return _serverStatusColor; } set { _serverStatusColor = value;OnPropertyChanged(nameof(ServerStatusColor)); } }
 
@@ -22,10 +18,9 @@ namespace ShopProject.Model.UI.Monitoring
         public Brush DataBaseStatusColor { get { return _dataBaseStatusColor; } set { _dataBaseStatusColor = value; OnPropertyChanged(nameof(DataBaseStatusColor)); } }
         private Brush _internetStatusColor = Brushes.IndianRed;
         public Brush InternetStatusColor { get { return _internetStatusColor; } set { _internetStatusColor = value; OnPropertyChanged(nameof(InternetStatusColor)); } }
-
-        public string PrinterTooltip { get; set; } = "Принтер підключений";
-        public string ScannerTooltip { get; set; } = "Сканер активний";
+         
         public string ServerTooltip { get; set; } = "Сервер доступний";
         public string InternetTooltip { get; set; } = "Інтернет працює";
+        public string DataBaseTooltip { get; set; } = "База даних підключена";
     }
 }

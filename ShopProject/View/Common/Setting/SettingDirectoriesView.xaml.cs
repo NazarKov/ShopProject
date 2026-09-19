@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ShopProject.View.Common.Setting
 {
     /// <summary>
-    /// Interaction logic for SettingOperationRecorderView.xaml
+    /// Interaction logic for SettingDirectoriesView.xaml
     /// </summary>
-    public partial class SettingOperationRecorderView : Page
+    public partial class SettingDirectoriesView : Page
     {
-        public SettingOperationRecorderView()
+        public SettingDirectoriesView()
         {
             InitializeComponent();
         }

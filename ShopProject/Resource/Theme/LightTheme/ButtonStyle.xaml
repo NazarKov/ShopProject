@@ -398,7 +398,8 @@
                     Value="Transparent"/>
 
         <Setter Property="Foreground"
-                    Value="#454A52"/>
+                    Value="CadetBlue"/>
+        <Setter Property="BorderBrush" Value="White"></Setter>
 
         <Setter Property="BorderThickness"
                     Value="0"/>
@@ -430,6 +431,9 @@
                             <Setter TargetName="ButtonBorder"
                                         Property="Background"
                                         Value="CadetBlue"/>
+                            <Setter  Property="Foreground" 
+                                     Value="White"/>
+                            <Setter Property="BorderBrush" Value="CadetBlue"> </Setter>
 
                         </Trigger>
 
@@ -467,7 +471,7 @@
                     Value="#30343A"/>
 
         <Setter Property="BorderThickness"
-                    Value="0"/>
+                    Value="0"/> 
 
         <Setter Property="Padding"
                     Value="6,4"/>
@@ -491,8 +495,9 @@
 
                         <ContentPresenter
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-
+                                VerticalAlignment="Center"> 
+                        </ContentPresenter>
+                         
                     </Border>
 
                     <ControlTemplate.Triggers>
@@ -503,7 +508,7 @@
                             <Setter TargetName="ButtonBorder"
                                         Property="Background"
                                         Value="CadetBlue"/>
-                            <Setter Property="Foreground"
+                            <Setter  Property="Foreground"
                                     Value="White"/>
 
                         </Trigger>

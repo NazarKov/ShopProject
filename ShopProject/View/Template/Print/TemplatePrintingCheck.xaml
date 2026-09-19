@@ -15,12 +15,12 @@
                 <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" Width="264">
-                <TextBlock x:Name="NameFop" Text="КОРНІЙЧУК СЕРГІЙ ВОЛОДИМИРОВИЧ" TextAlignment="Center"></TextBlock>
-                <TextBlock x:Name="NameShop" Text="Магазин Дім Рибалки" TextAlignment="Center"></TextBlock>
-                <TextBlock x:Name="RegionDistrictCiti" Text="Волинська область, Луцький район, м.Рожище," TextAlignment="Center"></TextBlock>
-                <TextBlock x:Name="StreetHouse" Text="вул.Героїв Упа, 2а, підвал" TextAlignment="Center"></TextBlock>
+                <TextBlock x:Name="NameFop" Text="Петрович Петро Петровичович" TextAlignment="Center"></TextBlock>
+                <TextBlock x:Name="NameShop" Text="Магазин Петра" TextAlignment="Center"></TextBlock>
+                <TextBlock x:Name="RegionDistrictCiti" Text="область, район, місто," TextAlignment="Center"></TextBlock>
+                <TextBlock x:Name="StreetHouse" Text="вулиця, ф5" TextAlignment="Center"></TextBlock>
                 <TextBlock x:Name="Id" Text="ІД 132 " TextAlignment="Center"></TextBlock>
-                <TextBlock x:Name="Seller" Text="Касир КОРНІЙЧУК С. В." TextAlignment="Center"></TextBlock>
+                <TextBlock x:Name="Seller" Text="Касир Петро П. П." TextAlignment="Center"></TextBlock>
 
                 <Separator Margin="0,15,0,0"></Separator>
 

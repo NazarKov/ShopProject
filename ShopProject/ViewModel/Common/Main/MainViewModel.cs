@@ -96,6 +96,7 @@ namespace ShopProject.ViewModel.Common.Main
 
             _pageVisibiliti = Visibility.Visible;
             _visibilitiLostConnectionPage = Visibility.Collapsed;
+            _visibilitiShadowLostConnectionPage = Visibility.Collapsed;
             _visibilitiShadowPage = Visibility.Collapsed;
             _isEnableMenuButton = false;
             _visibilitiMenu = Visibility.Collapsed;
@@ -155,6 +156,12 @@ namespace ShopProject.ViewModel.Common.Main
         {
             get { return _visibilitiShadowPage; }
             set { _visibilitiShadowPage = value; OnPropertyChanged(nameof(VisibilitiShadowPage)); }
+        }
+        private Visibility _visibilitiShadowLostConnectionPage;
+        public Visibility VisibilitiShadowLostConnectionPage
+        {
+            get { return _visibilitiShadowLostConnectionPage; }
+            set { _visibilitiShadowLostConnectionPage = value; OnPropertyChanged(nameof(VisibilitiShadowLostConnectionPage)); }
         }
         private bool _isEnableMenuButton;
         public bool IsEnableMenuButton
@@ -229,8 +236,8 @@ namespace ShopProject.ViewModel.Common.Main
             InitNavigationButton();
             MediatorService.AddEventAsync("VisibilitiNotification", async () => await ShowNotificationPanel());
             MediatorService.AddEventAsync<int>("AddNotificationCount", async count => await ShowNotificationCount(count)); 
-            MediatorService.AddEventAsync("LostConnectSetVisible", async () => { VisibilitiShadowPage = Visibility.Visible; VisibilitiLostConnectionPage = Visibility.Visible; IsEnableMenuButton = false; });
-            MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiShadowPage = Visibility.Collapsed; VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
+            MediatorService.AddEventAsync("LostConnectSetVisible", async () => { VisibilitiShadowLostConnectionPage = Visibility.Visible; VisibilitiLostConnectionPage = Visibility.Visible; IsEnableMenuButton = false; });
+            MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiShadowLostConnectionPage = Visibility.Collapsed; VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
             MediatorService.AddEventAsync("VisibilitiShadowSetVisible", async () => { VisibilitiShadowPage = Visibility.Visible; });
             MediatorService.AddEventAsync("VisibilitiShadowSetHidden", async () => { VisibilitiShadowPage = Visibility.Collapsed; });
 

@@ -6,92 +6,55 @@
              xmlns:local="clr-namespace:ShopProject.View.Integration.DeviceStatus"
              mc:Ignorable="d" 
              Height="Auto" Width="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/Theme/LightTheme/DeviceStatusStyle.xaml"/> 
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <StackPanel Orientation="Horizontal" Margin="2"> 
+        <StackPanel Orientation="Horizontal" Margin="2">   
 
-            <!-- 🖨️ Принтер -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
-                <TextBlock Text="🖨️" 
-                           FontSize="13"
-                           FontWeight="Bold"
-                           Foreground="#444"
-                           HorizontalAlignment="Center"/>
-                <Ellipse Width="12" Height="12"
-                           Margin="0,2,0,0"
-                           Fill="{Binding DeviceStatus.PrinterStatusColor}"
-                           Stroke="Gray" StrokeThickness="0.6">
+            <StackPanel Style="{StaticResource DeviceStatusIconStyle}"  >
+
+                <TextBlock Text="🌐" Style="{StaticResource DeviceStatusIconTextStyle}"/>
+
+                <Ellipse Style="{StaticResource DeviceStatusEllipseStyle}"  Fill="{Binding DeviceStatus.InternetStatusColor}">
+
                     <Ellipse.ToolTip>
-                        <TextBlock Text="{Binding DeviceStatus.PrinterTooltip}" FontSize="12"/>
+                        <TextBlock Text="{Binding DeviceStatus.InternetTooltip}"
+                       FontSize="12"/>
                     </Ellipse.ToolTip>
+
                 </Ellipse>
             </StackPanel>
 
-            <!-- 📠 Сканер -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
-                <TextBlock Text="📠" 
-                           FontSize="13"
-                           FontWeight="Bold"
-                           Foreground="#444"
-                           HorizontalAlignment="Center"/>
-                <Ellipse Width="12" Height="12"
-                         Margin="0,2,0,0"
-                         Fill="{Binding DeviceStatus.ScannerStatusColor}"
-                         Stroke="Gray" StrokeThickness="0.6">
+            <StackPanel Style="{StaticResource DeviceStatusIconStyle}"  >
+
+                <TextBlock Text="💻" Style="{StaticResource DeviceStatusIconTextStyle}"/>
+
+                <Ellipse Style="{StaticResource DeviceStatusEllipseStyle}"  Fill="{Binding DeviceStatus.ServerStatusColor}">
+
                     <Ellipse.ToolTip>
-                        <TextBlock Text="{Binding DeviceStatus.ScannerTooltip}" FontSize="12"/>
+                        <TextBlock Text="{Binding DeviceStatus.ServerTooltip}"  FontSize="12"/>
                     </Ellipse.ToolTip>
-                </Ellipse>
-            </StackPanel>
-            <!-- 🌐 Інтернет -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="🌐" 
-                FontSize="12"
-                FontWeight="Bold"
-                Foreground="#444"
-                HorizontalAlignment="Center"/>
-                <Ellipse Width="12" Height="12"
-                Margin="0,2,0,0"
-                Fill="{Binding DeviceStatus.InternetStatusColor}"
-                Stroke="Gray" StrokeThickness="0.6">
-                    <Ellipse.ToolTip>
-                        <TextBlock Text="{Binding DeviceStatus.InternetTooltip}" FontSize="12"/>
-                    </Ellipse.ToolTip>
+
                 </Ellipse>
             </StackPanel>
 
-            <!-- 🌐 Сервер -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="💻" 
-                           FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="#444"
-                           HorizontalAlignment="Center"/>
-                <Ellipse Width="12" Height="12"
-                           Margin="0,2,0,0"
-                           Fill="{Binding DeviceStatus.ServerStatusColor}"
-                           Stroke="Gray" StrokeThickness="0.6">
-                    <Ellipse.ToolTip>
-                        <TextBlock Text="{Binding DeviceStatus.ServerTooltip}" FontSize="12"/>
-                    </Ellipse.ToolTip>
-                </Ellipse>
-            </StackPanel>
+            <StackPanel Style="{StaticResource DeviceStatusIconStyle}"  >
 
-            <!-- 🌍 База даних -->
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="🗄️" 
-                           FontSize="12"
-                           FontWeight="Bold"
-                           Foreground="#444"
-                           HorizontalAlignment="Center"/>
-                <Ellipse Width="12" Height="12"
-                           Margin="0,2,0,0"
-                           Fill="{Binding DeviceStatus.DataBaseStatusColor}"
-                           Stroke="Gray" StrokeThickness="0.6">
+                <TextBlock Text="🗄️" Style="{StaticResource DeviceStatusIconTextStyle}"/>
+
+                <Ellipse Style="{StaticResource DeviceStatusEllipseStyle}"  Fill="{Binding DeviceStatus.DataBaseStatusColor}">
+
                     <Ellipse.ToolTip>
-                        <TextBlock Text="{Binding DeviceStatus.InternetTooltip}" FontSize="12"/>
+                        <TextBlock Text="{Binding DeviceStatus.DataBaseTooltip}"  FontSize="12"/>
                     </Ellipse.ToolTip>
+
                 </Ellipse>
-            </StackPanel>
+            </StackPanel> 
         </StackPanel>
     </Grid>
 </UserControl>

@@ -61,10 +61,10 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.Register<UserManagementView>(()=>new UserManagementView());
 
             factory.Register<SettingProfileView>(()=>new SettingProfileView());
-            factory.Register<SettingStorageView>(()=>new SettingStorageView());
+            factory.Register<SettingDirectoriesView>(()=>new SettingDirectoriesView());
             factory.Register<SettingPrintingCheckView>(()=>new SettingPrintingCheckView());
             factory.Register<SettingPrintingStickerView>(()=>new SettingPrintingStickerView());
-            factory.Register<SettingOperationRecorderView>(()=>new SettingOperationRecorderView());
+            factory.Register<SettingPointOfSaleView>(()=>new SettingPointOfSaleView());
 
             factory.Register<SettingView>(()=>new SettingView());
             

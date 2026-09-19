@@ -74,7 +74,10 @@ namespace ShopProject.Services.Integration.PrintingService
 
                 Height += 80;
                 body.Height = 80;
-                body.codeUKTZED.Text = "УКТ ЗЕД: " + products[i].CodeUKTZED.Code.ToString();
+                if (products[i].CodeUKTZED != null)
+                {
+                    body.codeUKTZED.Text = "УКТ ЗЕД: " + products[i].CodeUKTZED.Code.ToString();
+                }
                 body.codeGoods.Text = "Штрих-код: " + products[i].Code.ToString();
                 body.nameGodos.Text = products[i].NameProduct.ToString();
                 body.countGoods.Text = ((decimal)products[i].Count).ToString("0.00") + " X " + ((decimal)products[i].Price).ToString("0.00");

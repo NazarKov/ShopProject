@@ -13,14 +13,14 @@ using System.Windows.Input;
 
 namespace ShopProject.ViewModel.Common.Setting
 {
-    internal class SettingOperationRecorderViewModel : ViewModel<SettingOperationRecorderViewModel> , IViewModelLoadResourse
+    internal class SettingPointOfSaleViewModel : ViewModel<SettingPointOfSaleViewModel> , IViewModelLoadResourse
     { 
 
         private ICommand _saveSettingCommand;
 
         private ISettingService _settingService;
 
-        public SettingOperationRecorderViewModel(ISettingService settingService)
+        public SettingPointOfSaleViewModel(ISettingService settingService)
         {
             _settingService = settingService;
             _isTestMode = true;

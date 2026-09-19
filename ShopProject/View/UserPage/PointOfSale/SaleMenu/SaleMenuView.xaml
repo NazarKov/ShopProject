@@ -223,8 +223,7 @@
                          Padding="15"
                          Background="White"
                          BorderBrush="#DDDDDD"
-                         BorderThickness="1"
-                         Visibility="{Binding VisibilitiCheckMenu}"
+                         BorderThickness="1" 
                          CornerRadius="8"> 
                     <StackPanel>
                         <TextBlock Text="Налаштування чека"
