@@ -23,6 +23,10 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
             _contextDataBase.SaveChanges();
         }
+        public TokenEntity? GetTokenByUserAndDevice(Guid id , string device)
+        {
+            return _contextDataBase.UserTokens.Where(t => t.User.ID == id).Where(d => d.Device == device).FirstOrDefault();
+        }
 
         public void Delete(TokenEntity item)
         {

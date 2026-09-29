@@ -1,9 +1,13 @@
 ﻿using ShopProjectWebServer.Models.Domain.BootStrap;
 using ShopProjectWebServer.Services.Common;
 using ShopProjectWebServer.Services.Modules.BootStrap.Interface;
+using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProjectWebServer.Services.Modules.Domain.TaxObject.Interface;
 using ShopProjectWebServer.Services.Modules.Domain.UserRole.Interface;
+using ShopProjectWebServer.Services.Modules.Domain.WorkingShift.Interface;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.Services.Modules.BootStrap
 {
@@ -12,12 +16,18 @@ namespace ShopProjectWebServer.Services.Modules.BootStrap
         private readonly IUserRoleServiсe _userRoleServiсe;
         private readonly IProductUnitService _productUnitService;
         private readonly IProductCodeUKTZEDService _productCodeUKTZEDService;
+        private readonly IWorkingShiftService _workingShiftService;
+        private readonly IOperationRecorderService _operationRecorderService; 
 
-        public BootStrapService(IUserRoleServiсe userRoleServiсe, IProductUnitService productUnitService, IProductCodeUKTZEDService productCodeUKTZEDService)
+        public BootStrapService(IUserRoleServiсe userRoleServiсe, IProductUnitService productUnitService,
+            IProductCodeUKTZEDService productCodeUKTZEDService, IWorkingShiftService workingShiftService,
+            IOperationRecorderService operationRecorderService)
         {
             _userRoleServiсe = userRoleServiсe;
             _productUnitService = productUnitService;
             _productCodeUKTZEDService = productCodeUKTZEDService;
+            _workingShiftService = workingShiftService;
+            _operationRecorderService = operationRecorderService; 
         }
 
         public OperationResult<StartData> GetStartData()
@@ -48,5 +58,27 @@ namespace ShopProjectWebServer.Services.Modules.BootStrap
             return result;  
         }
 
+        public async Task<OperationResult<WorkingShiftStatus>> GetWrokingShiftData(Guid userID)
+        {
+            var workingShift = await _workingShiftService.GetByUserId(userID);
+            if (workingShift.IsSuccess)
+            {
+                var operationRecoreder = _operationRecorderService.GetByFiscalNumber(workingShift.Data.FiscalNumberRRO);
+                return OperationResult<WorkingShiftStatus>.Success(new WorkingShiftStatus()
+                {
+                    WorkingShift = workingShift.Data,
+                    OperationRecorder = operationRecoreder.Data,
+                    TaxObject = operationRecoreder.Data.TaxObject,
+                    OpenShiftTime = DateTime.Parse(workingShift.Data.CreateAt.ToString()),
+                    Status = Models.Domain.Enum.TypeStatusShift.Open,
+                    UserID = userID,
+                    
+                });
+            }
+            else
+            {
+                return OperationResult<WorkingShiftStatus>.Success(new WorkingShiftStatus());
+            }
+        }
     }
 }

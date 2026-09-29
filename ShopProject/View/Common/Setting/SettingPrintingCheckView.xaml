@@ -63,6 +63,7 @@
                                 <RowDefinition Height="50"></RowDefinition>
                                 <RowDefinition Height="50"></RowDefinition>
                                 <RowDefinition Height="50"></RowDefinition>
+                                <RowDefinition Height="50"></RowDefinition>
                             </Grid.RowDefinitions>
 
                             <TextBlock Text="Налаштування"
@@ -82,9 +83,9 @@
                                       HorizontalAlignment="Right"
                                       VerticalContentAlignment="Center"
                                       Grid.Column="1"
-                                      ItemsSource="{Binding Printer}"
+                                      ItemsSource="{Binding Printers}"
                                       Style="{StaticResource ModernComboBox}"
-                                      SelectedItem="{Binding SelectedPrinter}"
+                                      SelectedItem="{Binding PrinterFiscalChekSetting.Printer}"
                                       Height="30"/>
   
 
@@ -104,7 +105,7 @@
                                      HorizontalContentAlignment="Right"
                                      VerticalContentAlignment="Center"
                                      Style="{StaticResource GeneralTextBox}"
-                                     Text="{Binding Width , UpdateSourceTrigger=PropertyChanged}"
+                                     Text="{Binding PrinterFiscalChekSetting.Width , UpdateSourceTrigger=PropertyChanged}"
                                      VerticalAlignment="Center"/>
 
 
@@ -122,7 +123,7 @@
                                      Grid.Row="3"  
                                      Grid.Column="1" 
                                      Style="{StaticResource GeneralTextBox}"
-                                     Text="{Binding Slcale,StringFormat={}{0:0.00}}"
+                                     Text="{Binding PrinterFiscalChekSetting.Slcale,StringFormat={}{0:0.00}}"
                                      HorizontalContentAlignment="Right"
                                      VerticalContentAlignment="Center"
                                      VerticalAlignment="Center"/>
@@ -144,21 +145,41 @@
                                      VerticalContentAlignment="Center"
                                      HorizontalContentAlignment="Right"
                                      Style="{StaticResource GeneralTextBox}"
-                                     Text="{Binding SizeQrCode,StringFormat={}{0:0}}"
+                                     Text="{Binding PrinterFiscalChekSetting.SizeQrCode,StringFormat={}{0:0}}"
                                      VerticalAlignment="Top"/>
 
-                            <Separator Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Bottom" Margin="0,15,0,0"></Separator>
+                            <Label x:Name="label4"
+                                   Content="Приставка др назви" 
+                                   HorizontalAlignment="Left"
+                                   Grid.Row="5"
+                                   Padding="0"
+                                   Grid.Column="0"
+                                   VerticalAlignment="Center"/>
+                            <TextBox x:Name="textBox4" 
+                                     Height="30"
+                                     Width="200"
+                                     HorizontalAlignment="Right" 
+                                     Grid.Row="5"
+                                     Grid.Column="1"
+                                     TextWrapping="Wrap"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Right"
+                                     Style="{StaticResource GeneralTextBox}"
+                                     Text="{Binding PrinterFiscalChekSetting.PrefixTaxObjectOwner,StringFormat={}{0:0}}"
+                                     VerticalAlignment="Top"/>
+
+                            <Separator Grid.ColumnSpan="2" Grid.Row="6" VerticalAlignment="Bottom" Margin="0,15,0,0"></Separator>
                             <Button x:Name="button" 
                                     Width="200"
                                     Grid.Column="1"
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Style="{StaticResource StorageButton}"
                                     Command="{Binding SaveSettingCommand}" 
                                     Height="34"
                                     Content="Зберегти налаштування" HorizontalAlignment="Right"/>
 
 
-                            <Button Grid.Row="6"
+                            <Button Grid.Row="7"
                                     Width="200"
                                     Grid.Column="1"
                                     Style="{StaticResource StorageButton}"

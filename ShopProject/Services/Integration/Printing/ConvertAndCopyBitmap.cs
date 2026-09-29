@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace ShopProject.Services.Integration.PrintingService
+namespace ShopProject.Services.Integration.Printing
 {
     internal static class ConvertAndCopyBitmap
     {

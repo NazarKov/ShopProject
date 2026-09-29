@@ -30,6 +30,8 @@ using ShopProject.Services.Modules.Domain.ProductCodeUKTZED;
 using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Domain.Storage;
+using ShopProject.Services.Modules.Domain.Storage.Interface;
 using ShopProject.Services.Modules.Domain.User;
 using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Domain.UserRole;
@@ -154,9 +156,10 @@ namespace ShopProject.Extensions.FactoryExtensions
             factory.RegisterScoped<IProductServiсe,ProductServiсe>();
             factory.RegisterScoped<IProductUnitServiсe, ProductUnitServiсe>();
             factory.RegisterScoped<IProductCodeUKTZEDServiсe, ProductCodeUKTZEDServiсe>();
+            factory.RegisterScoped<IStorageService, StorageService>();
 
             factory.RegisterTransient<IPrintingStikerService, PrintingSticker>();
-            factory.RegisterTransient<IPrintingFiscalCheckService,PrintingFiscalCheckServise>();
+            factory.RegisterTransient<IPrintingFiscalCheckService,PrintingFiscalCheckService>();
 
             factory.RegisterScoped<ITaxObjectService,TaxObjectService>();
             factory.RegisterScoped<IOperationRecorderService, OperationRecorderService>();

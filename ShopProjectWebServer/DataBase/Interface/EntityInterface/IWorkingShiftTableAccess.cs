@@ -10,7 +10,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Delete(WorkingShiftEntity item);
         IEnumerable<WorkingShiftEntity> GetAll();  
         WorkingShiftEntity GetById(int id);
-
+        public WorkingShiftEntity? GetByUserId(Guid id);
         public int GetLastId(string fisclaNumberRRo);
 
 

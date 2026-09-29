@@ -16,7 +16,7 @@ namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject.Interface
         public Task<OperationResult<bool>> AddBindingUserToTaxObject(Guid idTaxObject, IEnumerable<ShopProjectWebServer.Models.Domain.User.User> users);
 
         public OperationResult<IEnumerable<ShopProjectWebServer.Models.Domain.TaxObjectUser.TaxObjectUser>> GetTaxObjectsAssignedUser(Guid userId);
-
+        public Task<OperationResult<TaxObjectModel>> GetById(Guid id);
         public Task<OperationResult<bool>> UpdateParameter(string id, string nameParameter, object value);
         public Task<OperationResult<bool>> Update(TaxObjectModel taxObject);
 

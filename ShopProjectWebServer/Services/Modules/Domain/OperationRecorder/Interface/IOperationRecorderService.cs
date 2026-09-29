@@ -14,6 +14,6 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interfa
                   ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator);
         public OperationResult<ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int>>
             GetPageColumn(ShopProjectWebServer.Models.Domain.Paginator.Paginator<OperationRecorderModel, int> paginator);
-         
+        public OperationResult<OperationRecorderModel> GetByFiscalNumber(string fiscalNumber);
     }
 }

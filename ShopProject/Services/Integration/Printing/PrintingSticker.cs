@@ -1,6 +1,7 @@
 ﻿
 using ShopProject.Helpers;
 using ShopProject.Model.Domain.Setting;
+using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Modules.Setting;
 using ShopProject.Services.Modules.Setting.Interface;

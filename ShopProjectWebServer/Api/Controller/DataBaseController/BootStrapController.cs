@@ -5,6 +5,7 @@ using ShopProjectWebServer.Api.Common;
 using ShopProjectWebServer.Api.DtoModels.BootStrap;
 using ShopProjectWebServer.Services.Modules.BootStrap.Interface;
 using ShopProjectWebServer.Services.Modules.Mapping.BootStrap;
+using System.Threading.Tasks;
 
 namespace ShopProjectWebServer.Api.Controller.DataBaseController
 {
@@ -29,6 +30,28 @@ namespace ShopProjectWebServer.Api.Controller.DataBaseController
                 if (result.IsSuccess)
                 {
                     return Ok(ApiResponse<StartDataDto>.Ok(result.Data.ToStartDataDto()));
+                }
+                else
+                {
+                    return BadRequest(ApiResponse<string>.Fail(result.ErrorMessage));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<string>.Fail(ex.Message));
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "ApiAuthorization")]
+        [HttpGet("GetWorkingShiftData")]
+        public async Task<IActionResult> GetWorkingShiftData(Guid userID)
+        {
+            try
+            {
+                var result = await _bootStrapService.GetWrokingShiftData(userID);
+                if (result.IsSuccess)
+                {
+                    return Ok(ApiResponse<WorkingShiftStatusDto>.Ok(result.Data.ToWorkingShiftStatusDto()));
                 }
                 else
                 {

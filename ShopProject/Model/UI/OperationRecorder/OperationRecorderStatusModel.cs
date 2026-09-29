@@ -15,6 +15,7 @@ namespace ShopProject.Model.UI.OperationRecorder
                 "Не визначений",
                 "Доступний для використання",
                 "Не доступний для використання",
+                "Зміна вже відкрита",
             };
         }
         public static List<string> GetTaxObjectStatusForStorage()

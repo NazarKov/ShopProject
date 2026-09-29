@@ -2,6 +2,7 @@
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.OperationRecorder;
 using ShopProject.Model.Domain.Product;
+using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.TaxObject;
 using ShopProject.Model.Domain.User;
 using ShopProject.Resource.template;
@@ -14,7 +15,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ShopProject.Services.Integration.PrintingService
+namespace ShopProject.Services.Integration.Printing
 {
     internal class FiscalCheck
     { 
@@ -28,43 +29,46 @@ namespace ShopProject.Services.Integration.PrintingService
             return _check;
         }
 
-        public void CreateFisckalCheck(List<Product> products, Operation operation, User seller, OperationRecorder operationRecorder , TaxObject objectOwner = null)
+        public void CreateFisckalCheck(List<Product> products, Operation operation, User seller, OperationRecorder operationRecorder , TaxObject objectOwner , PrinterFiscalChekSetting setting)
         { 
             _check = new TemplatePrintingCheck();
             TemplatePrintingCheckBody body;
 
 
-            if (objectOwner!=null) 
+            if(setting.PrefixTaxObjectOwner != string.Empty && setting.PrefixTaxObjectOwner!=" ")
             {
-
-                _check.NameFop.Text = "ФОП " + objectOwner.NameOwner;
-                _check.NameShop.Text = objectOwner.NameObject;
-                _check.Seller.Text = "Касир " + seller.FullName;
-
-                List<string> address = objectOwner.Address.Split(',').ToList();
-                if(address.Count > 0)
-                {
-                    var count = address.Count / 2;
-                    _check.RegionDistrictCiti.Text = "";
-                    for (int i = 0; i < count; i++)
-                    { 
-                        _check.RegionDistrictCiti.Text += address.ElementAt(i) + ", ";
-                    }
-                    _check.StreetHouse.Text = "";
-                    for (int i = count; i < address.Count; i++)
-                    {
-                        if (i == address.Count-1)
-                        {
-                            _check.StreetHouse.Text += address.ElementAt(i);
-                        }
-                        else
-                        {
-                            _check.StreetHouse.Text += address.ElementAt(i) + ", ";
-                        }
-                    }
-                    _check.Id.Text = "ID " + operation.FiscalServerId; 
-                }
+                _check.NameFop.Text = setting.PrefixTaxObjectOwner+" " + objectOwner.NameOwner;
+            }
+            else
+            {
+                _check.NameFop.Text = objectOwner.NameOwner;
             } 
+            _check.NameShop.Text = objectOwner.NameObject;
+            _check.Seller.Text = "Касир " + seller.FullName;
+
+            List<string> address = objectOwner.Address.Split(',').ToList();
+            if (address.Count > 0)
+            {
+                var count = address.Count / 2;
+                _check.RegionDistrictCiti.Text = "";
+                for (int i = 0; i < count; i++)
+                {
+                    _check.RegionDistrictCiti.Text += address.ElementAt(i) + ", ";
+                }
+                _check.StreetHouse.Text = "";
+                for (int i = count; i < address.Count; i++)
+                {
+                    if (i == address.Count - 1)
+                    {
+                        _check.StreetHouse.Text += address.ElementAt(i);
+                    }
+                    else
+                    {
+                        _check.StreetHouse.Text += address.ElementAt(i) + ", ";
+                    }
+                }
+                _check.Id.Text = "ID " + operation.FiscalServerId;
+            }
 
             double Height = 0;
             for (int i = 0; i < products.Count; i++)
@@ -122,14 +126,14 @@ namespace ShopProject.Services.Integration.PrintingService
             if (operation.TypePayment == 0)
             {
                 _check.buyersAmountCash.Text = operation.BuyersAmount.ToString("0.00");
-                _check.nameBuyersAmountCard.Visibility = Visibility.Hidden;
-                _check.buyersAmountCard.Visibility = Visibility.Hidden;
+                _check.nameBuyersAmountCard.Visibility = Visibility.Collapsed;
+                _check.buyersAmountCard.Visibility = Visibility.Collapsed;
             }
             else
             {
                 _check.buyersAmountCard.Text = operation.BuyersAmount.ToString("0.00");
-                _check.nameBuyersAmountCash.Visibility = Visibility.Hidden;
-                _check.buyersAmountCash.Visibility = Visibility.Hidden;
+                _check.nameBuyersAmountCash.Visibility = Visibility.Collapsed;
+                _check.buyersAmountCash.Visibility = Visibility.Collapsed;
             }
 
 

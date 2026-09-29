@@ -8,8 +8,7 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi.Helpers
 {
     public enum TypeChek
     {
-        FiscalCheck ,
-        ReturnCheck  ,
+        FiscalAndReturnCheck , 
         OpenShift ,
         CloseShift,
         DepositAndWithdrawalMoney,

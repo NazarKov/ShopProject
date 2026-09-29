@@ -1,12 +1,10 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm; 
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Setting;
-using ShopProject.Services.Modules.Setting.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ShopProject.Services.Modules.Control;
+using ShopProject.Services.Modules.Control.Interface;
+using ShopProject.Services.Modules.Setting.Interface; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -18,11 +16,15 @@ namespace ShopProject.ViewModel.Common.Setting
         private ICommand _saveSettingCommand;
 
         private ISettingService _settingService;
+        private readonly IMessageBoxControlService _messageBoxControlService;
 
-        public SettingDirectoriesViewModel(ISettingService settingService)
+        public SettingDirectoriesViewModel(ISettingService settingService, IMessageBoxControlService messageBoxControlService)
         {
             _settingService = settingService;  
+            _messageBoxControlService = messageBoxControlService;
             _saveSettingCommand = CreateCommand(SaveSetting); 
+            
+            _storageSetting = new StorageSetting();
         }
         public Task LoadResourse()
         {
@@ -31,19 +33,8 @@ namespace ShopProject.ViewModel.Common.Setting
             return Task.CompletedTask;
         }
 
-        private int _productBarCodeLength;
-        public int ProductBarCodeLength
-        {
-            get { return _productBarCodeLength; }
-            set { _productBarCodeLength = value; OnPropertyChanged(nameof(ProductBarCodeLength)); }
-        }
-
-        private int _sertificateBarCodeLength;
-        public int SertificateBarCodeLength
-        {
-            get { return _sertificateBarCodeLength; }
-            set { _sertificateBarCodeLength = value; OnPropertyChanged(nameof(SertificateBarCodeLength)); }
-        }
+        private StorageSetting _storageSetting;
+        public StorageSetting StorageSetting { get { return _storageSetting; }  set { _storageSetting = value; OnPropertyChanged(nameof(StorageSetting)); } }
 
         private void SetFieldPage()
         {
@@ -52,15 +43,14 @@ namespace ShopProject.ViewModel.Common.Setting
             {
                 setting = new StorageSetting();
             }
-            ProductBarCodeLength = setting.ProductBarCodeLength;
-            SertificateBarCodeLength = setting.SertificateBarCodeLength;
+            StorageSetting = setting; 
         }
 
         public ICommand SaveSettingCommand => _saveSettingCommand;
         private void SaveSetting()
         {
-            _settingService.SetSetting<StorageSetting>(new StorageSetting() { ProductBarCodeLength = ProductBarCodeLength,SertificateBarCodeLength = SertificateBarCodeLength });
-            MessageBox.Show("Налаштування збережено"); 
+            _settingService.SetSetting<StorageSetting>(StorageSetting);
+            _messageBoxControlService.Show("Налаштування збережено","Успішно",MessageBoxType.Success, "SettingSnadow"); 
         } 
     }
 }

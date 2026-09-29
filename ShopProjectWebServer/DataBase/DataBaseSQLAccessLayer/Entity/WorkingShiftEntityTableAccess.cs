@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShopProjectDataBase.Context;
-using ShopProjectDataBase.Entities;
-using ShopProjectWebServer.DataBase.Helpers;
-using ShopProjectWebServer.DataBase.Interface.EntityInterface;
-using System.Threading.Tasks;
+﻿using ShopProjectDataBase.Context;
+using ShopProjectDataBase.Entities; 
+using ShopProjectWebServer.DataBase.Interface.EntityInterface; 
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
@@ -99,6 +96,18 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
         public WorkingShiftEntity GetById(int id)
         {
             return _contextDataBase.WorkingShift.Where(w => w.ID == id).FirstOrDefault();
+        }
+        public  WorkingShiftEntity? GetByUserId(Guid id)
+        {
+            var shift = _contextDataBase.WorkingShift.OrderBy(w=>w.ID).Where(w => w.UserOpenShift.ID == id).Last();
+            if(shift!=null && shift.TypeShiftCrateAt == ShopProjectDataBase.Helper.TypeWorkingShift.OpenShift)
+            {
+                if(shift.TypeShiftEndAt == ShopProjectDataBase.Helper.TypeWorkingShift.None)
+                {
+                    return shift;
+                }
+            }
+            return null;
         }
 
         public int GetLastId(string fiscalNumberRRO)

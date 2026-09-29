@@ -108,13 +108,12 @@
                                                                 <Setter Property="Background" Value="#6B7280"/>
                                                             </DataTrigger>
 
-                                                            <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Closed">
+                                                            <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Close">
                                                                 <Setter Property="Background" Value="OrangeRed"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding TaxObject.TypeStatus}" Value="Open">
                                                                 <Setter Property="Background" Value="#10B981"/>
-                                                            </DataTrigger>
-
+                                                            </DataTrigger>   
                                                         </Style.Triggers>
 
                                                     </Style>
@@ -205,14 +204,17 @@
                                                                                     <Setter Property="Background" Value="#6B7280"/>
                                                                                 </DataTrigger>
 
-                                                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Closed">
-                                                                                    <Setter Property="Background" Value="OrangeRed"/>
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Open">
-                                                                                    <Setter Property="Background" Value="#10B981"/>
-                                                                                </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding TypeStatus}" Value="NotAvailableForUse">
+                                                                                        <Setter Property="Background" Value="OrangeRed"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding TypeStatus}" Value="AvailableForUse">
+                                                                                        <Setter Property="Background" Value="#10B981"/>
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding TypeStatus}" Value="ShiftIsOpen">
+                                                                                        <Setter Property="Background" Value="Orange"/>
+                                                                                    </DataTrigger>
 
-                                                                            </Style.Triggers>
+                                                                                </Style.Triggers>
 
                                                                         </Style>
 

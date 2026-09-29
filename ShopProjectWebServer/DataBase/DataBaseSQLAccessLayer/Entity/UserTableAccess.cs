@@ -39,7 +39,7 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 user.Email = item.Email;
                 user.FullName = item.FullName;
                 user.TIN = item.TIN;
-               
+                user.AutomaticLogin = item.AutomaticLogin;
 
 
                 if (item.SignatureKey != null && user.Status == TypeStatusUser.NotAvailableElectronicKey)

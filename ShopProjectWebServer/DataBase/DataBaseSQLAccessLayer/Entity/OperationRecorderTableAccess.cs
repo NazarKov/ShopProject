@@ -7,7 +7,7 @@ using ShopProjectWebServer.DataBase.Interface.EntityInterface;
 
 namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
 {
-    public class OperationRecorderTableAccess : IOperationRecorderTableAccess 
+    public class OperationRecorderTableAccess : IOperationRecorderTableAccess
     {
 
         private readonly ContextDataBase _contextDataBase;
@@ -108,6 +108,11 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
                 }
             }
             await _contextDataBase.SaveChangesAsync();
+        }
+
+        public OperationsRecorderEntity? GetByFiscalNumber(string fiscalNumber)
+        {
+            return _contextDataBase.OperationsRecorders.Include(t=>t.TaxObject).FirstOrDefault(f => f.FiscalNumber == fiscalNumber);
         }
     }
 }

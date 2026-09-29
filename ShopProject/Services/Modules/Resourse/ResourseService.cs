@@ -1,6 +1,11 @@
-﻿using ShopProject.Services.Integration.Directory.Interface;
+﻿using ShopProject.Model.Domain.User;
+using ShopProject.Model.Domain.WorkingShift;
+using ShopProject.Services.Integration.Directory.Interface;
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
+using ShopProject.Services.Modules.Common;
 using ShopProject.Services.Modules.Common.Enum;
+using ShopProject.Services.Modules.Mapping.BootStrap;
+using ShopProject.Services.Modules.Mapping.OperaionResult;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
 using ShopProject.Services.Modules.Mapping.ProductUnit; 
 using ShopProject.Services.Modules.Mapping.User;
@@ -49,19 +54,18 @@ namespace ShopProject.Services.Modules.Resourse
             {
                 throw new Exception("Невдалося заватажити ресурси");
             }
-        } 
-
-        public async Task LoadUserData()
+        }  
+        public async Task<OperationResult<WorkingShiftStatus>> LoadWorkingShift()
         {
-            var response = await _mainWebServerService.DataBase.UserController.GetUser(_sessionService.User.Token);
-            if((ResultStatus)response.Status == ResultStatus.Success)
+            var response = (await _mainWebServerService.DataBase.BootStrapController.GetWorkingShiftData(_sessionService.User.ID)).ToOperationResult();
+            if (response.IsSuccess)
             {
-                _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+                return OperationResult<WorkingShiftStatus>.Success(response.Data.ToWorkingShiftStatusDto());
             }
             else
             {
-                throw new Exception("Невдалося заватажити ресурси");
+                return OperationResult<WorkingShiftStatus>.Fail(response.ErrorMessage); 
             }
-        }  
+        }
     }
 }

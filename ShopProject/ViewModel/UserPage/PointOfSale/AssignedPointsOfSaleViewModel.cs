@@ -66,22 +66,27 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale
                 var operationRecorder = parameter as OperationRecorderModel;
                 if (operationRecorder != null) 
                 { 
-                    if (operationRecorder.TypeStatus != TypeStatusOperationRecorder.Open)
-                    {
-                        _messageBoxControlService.Show("Касовий апарат недоступний для використання", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
-                        return;
-                    }
-                    else
+                    if (operationRecorder.TypeStatus == TypeStatusOperationRecorder.AvailableForUse)
                     {
                         var taxObject = PointsOfSale.Where(p => p.OperationRecorders.Where(o => o.FiscalNumber.Equals(operationRecorder.FiscalNumber)).Any()).First().TaxObject;
-                        if(taxObject.TypeStatus != TypeStatusTaxObject.Open)
+                        if (taxObject.TypeStatus != TypeStatusTaxObject.Open)
                         {
                             _messageBoxControlService.Show("Обєкт з касами недоступний для використання", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
                             return;
                         }
 
                         _taxObjectService.SetPoinOfSaleOnSession(taxObject.ToTaxObject(), operationRecorder.ToOperationRecorder());
-                        MediatorService.ExecuteNavigation(NavigationButton.RedirectToWorkShiftMenuPage);
+                        MediatorService.ExecuteNavigation(NavigationButton.RedirectToWorkShiftMenuPage); 
+                    }
+                    else if (operationRecorder.TypeStatus == TypeStatusOperationRecorder.ShiftIsOpen)
+                    {
+                        _messageBoxControlService.Show("Зміна вже відкрита іншим користувачем", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
+                        return;
+                    }
+                    else
+                    {
+                        _messageBoxControlService.Show("Касовий апарат недоступний для використання", "Warning", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Warning, "PointOfSaleSnadowUser");
+                        return;
                     } 
                 }
                 else

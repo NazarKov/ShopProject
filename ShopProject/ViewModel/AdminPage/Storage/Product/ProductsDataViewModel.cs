@@ -11,6 +11,7 @@ using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Common; 
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Domain.Storage.Interface;
 using ShopProject.Services.Modules.Mapping.Product; 
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.Tools;
@@ -41,13 +42,15 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private ICommand _searchCommand;
 
         private readonly IProductServiсe _productService;
+        private readonly IStorageService _storageService;
         private readonly IMessageBoxControlService _messageBoxControlService;
         private bool _reloadField;
          
         private bool _isReadyUpdateDataGriedView;  
-        public ProductsDataViewModel(IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService)
+        public ProductsDataViewModel(IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService , IStorageService storageService)
         {
             _productService = productServiсe;
+            _storageService = storageService;
             _productslist = new List<ProductModel>(); 
             _statusProducts = new List<string>();
             _countShowList = new List<string>();
@@ -180,17 +183,12 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 
         private void SetComboBox()
         {
+            var setting = _storageService.GetSetting();
             if (CountShowList.Count == 0)
             {
-                CountShowList.Add("10");
-                CountShowList.Add("25");
-                CountShowList.Add("50");
-                CountShowList.Add("100");
-                CountShowList.Add("250");
-                CountShowList.Add("500");
-                CountShowList.Add("1000");
+                CountShowList = setting.CountShowList;
             }
-            SelectIndexCountShowList = 0;
+            SelectIndexCountShowList = setting.SelectIndexCountShowList;
         }
 
         private void SetFielComboBoxTypeStatusProduct()

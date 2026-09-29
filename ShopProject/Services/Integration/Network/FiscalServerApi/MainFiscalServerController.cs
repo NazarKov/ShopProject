@@ -1,5 +1,4 @@
-﻿using FiscalServerApi;
-using FiscalServerApi.ExceptionServer; 
+﻿using FiscalServerApi; 
 using ShopProject.Model.Domain.Operation;
 using ShopProject.Model.Domain.Order;
 using ShopProject.Model.Domain.Product; 
@@ -12,8 +11,7 @@ using ShopProject.Services.Modules.Common;
 using SigningFileLib;
 using System;
 using ShopProject.Services.Modules.Mapping.OperaionResult;
-using System.Collections.Generic; 
-using System.Windows;
+using System.Collections.Generic;  
 
 namespace ShopProject.Services.Integration.Network.FiscalServerApi
 {
@@ -41,56 +39,71 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
         }
 
         private OperationResult<string> ChoseTypeOperationRecursive(WorkingShift shift, int depth, int maxDepth, bool testMode, Operation? operation = null, List<Order>? orders = null, List<Product>? products = null)
-        {
-            try
+        { 
+            if (depth >= maxDepth)
             {
-                if (depth >= maxDepth)
-                {
-                    return OperationResult<string>.Fail("Невдалося виконати операцію"); 
-                }
-                var result = SendCheck(shift, operation, orders, products, testMode);
-
-                if (result.IsSuccess)
-                {
-                    return result;
-                }
-                else if(result.IsError && result.ErrorType == Modules.Common.Enum.ErrorType.ErrorBadHashPrev)
-                {
-                    switch (_typeChek)
-                    {
-                        case TypeChek.OpenShift:
-                            {
-                                shift.MACCreateAt.Content = result.Data.Split(" ")[3];
-                                break;
-                            }
-                        case TypeChek.CloseShift:
-                            {
-                                shift.MACEndAt.Content = result.Data.Split(" ")[3];
-                                break;
-                            }
-                        default:
-                            {
-                                operation.MAC.Content = result.Data.Split(" ")[3];
-                                break;
-                            }
-                    }
-                    return ChoseTypeOperationRecursive(shift, depth, maxDepth, testMode, operation, orders, products);
-                }
-                else if( result.IsError && result.ErrorType == Modules.Common.Enum.ErrorType.IncorrectHash)
-                {
-
-                }
-                else
-                {
-                    return result;
-                } 
-
-                return OperationResult<string>.Fail("Невдалося виконати операцію");
-            }  
-            catch(Exception ex)
-            {
-                return OperationResult<string>.Fail(ex.Message); 
+                return OperationResult<string>.Fail("Невдалося виконати операцію"); 
             }
+            var result = SendCheck(shift, operation, orders, products, testMode);
+
+            if (result.IsSuccess)
+            {
+                return result;
+            }
+            else if(result.IsError && result.ErrorType == Modules.Common.Enum.ErrorType.ErrorBadHashPrev)
+            {
+                switch (_typeChek)
+                {
+                    case TypeChek.OpenShift:
+                        {
+                            shift.MACCreateAt.Content = result.Data.Split(" ")[3];
+                            break;
+                        }
+                    case TypeChek.CloseShift:
+                        {
+                            shift.MACEndAt.Content = result.Data.Split(" ")[3];
+                            break;
+                        }
+                    default:
+                        {
+                            operation.MAC.Content = result.Data.Split(" ")[3];
+                            break;
+                        }
+                }
+                return ChoseTypeOperationRecursive(shift, depth, maxDepth, testMode, operation, orders, products);
+            }
+            else if( result.IsError && result.ErrorType == Modules.Common.Enum.ErrorType.IncorrectHash)
+            {
+                switch (_typeChek)
+                {
+                    case TypeChek.OpenShift:
+                        {
+                            shift.MACCreateAt.Content = operation.MAC.Content = string.Empty;
+                            break;
+                        }
+                    case TypeChek.CloseShift:
+                        {
+                            shift.MACEndAt.Content = operation.MAC.Content = string.Empty;
+                            break;
+                        }
+                    default:
+                        {
+                            operation.MAC.Content = string.Empty;
+                            break;
+                        }
+                }
+                return SendCheck(shift, operation, orders, products, testMode);
+            }
+            else if(result.IsError && result.ErrorType == Modules.Common.Enum.ErrorType.ErrorTime)
+            {
+                return SendCheck(shift, operation, orders, products, testMode);
+            }
+            else
+            {
+                return result;
+            } 
+
+            return OperationResult<string>.Fail("Невдалося виконати операцію"); 
         }
         public OperationResult<string> OpenShift(WorkingShift shift,bool testMode = true)
         {
@@ -108,17 +121,11 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
             _typeChek = TypeChek.DepositAndWithdrawalMoney;
             return ChoseTypeOperationRecursive(shift, Depth, MaxDepth , testMode, operation);
 
-        }
+        } 
 
-        public OperationResult<string> SendFiscalCheck(WorkingShift shift, Operation operation, List<Product> products, bool testMode = true)
+        public OperationResult<string> SendReturnAndFiscalCheck(WorkingShift shift, Operation operation, List<Product> products, bool testMode = true)
         {
-            _typeChek = TypeChek.FiscalCheck;
-            return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode, operation, null, products);
-
-        }
-        public OperationResult<string> SendReturnFiscalCheck(WorkingShift shift, Operation operation, List<Product> products, bool testMode = true)
-        {
-            _typeChek = TypeChek.ReturnCheck;
+            _typeChek = TypeChek.FiscalAndReturnCheck;
             return ChoseTypeOperationRecursive(shift, Depth, MaxDepth, testMode, operation, null, products);
 
         } 
@@ -189,29 +196,13 @@ namespace ShopProject.Services.Integration.Network.FiscalServerApi
                             return OperationResult<string>.Fail(resultOperation.ErrorMessage);
                         }
                         break;
-                    }
-                case TypeChek.FiscalCheck:
-                    {
-
+                    } 
+                case TypeChek.FiscalAndReturnCheck:
+                    { 
                         _xmlServise.CreateXMLFileFiscalCheck(shift, operation, products);
                         var resultOperation = _signFileContoller.GetError(_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword));
                         if (resultOperation.IsSuccess)
-                        {
-                            result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
-                            Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, testMode).ToOperationResult();
-                        }
-                        else
-                        {
-                            return OperationResult<string>.Fail(resultOperation.ErrorMessage);
-                        }
-                        break;
-                    }
-                case TypeChek.ReturnCheck:
-                    {
-                        _xmlServise.CreateXMLFileFiscalCheck(shift, operation, products);
-                        var resultOperation = _signFileContoller.GetError(_signFileContoller.SignFileToByteKey(_key.Signature, _key.SignaturePassword));
-                        if (resultOperation.IsSuccess)
-                        {
+                        { 
                             result = _fiscalServerController.SendFiscalCheck(long.Parse(operation.CreatedAt.ToString("yyyyMMddHHmmss")),
                             Convert.ToInt32(operation.NumberPayment), shift.FiscalNumberRRO, testMode).ToOperationResult();
                         }

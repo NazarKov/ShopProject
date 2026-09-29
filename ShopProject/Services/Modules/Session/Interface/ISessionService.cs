@@ -9,7 +9,8 @@ using ShopProject.Model.Domain.UserRole;
 using ShopProject.Model.Domain.WorkingShift;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel; 
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace ShopProject.Services.Modules.Session.Interface
@@ -28,14 +29,15 @@ namespace ShopProject.Services.Modules.Session.Interface
         public IEnumerable<Product>? UpdateProductRange { get; set; }
         public ProductUnit? UpdateProductUnit { get; set; }
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
-        public User UpdateUser { get; set; } 
-        public TaxObject BindingTaxObject { get; set; }
-        public OperationRecorder UpdateOperationRecorder { get; set; }
+        public User? UpdateUser { get; set; } 
+        public TaxObject? BindingTaxObject { get; set; }
+        public OperationRecorder? UpdateOperationRecorder { get; set; }
         public Operation Operation { get; set; }
-
-        public bool CheckingSession();
+        public Task<bool> CheckingSession();
         public bool CheckAndLoadWorkingShiftStatus();
         public bool CheckIsOpenShift();
-        public bool RemoveSession();
+        public bool CheckShiftSetting();
+        public void SaveSession();
+        public void RemoveSession();
     }
 }

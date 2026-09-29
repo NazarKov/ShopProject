@@ -16,6 +16,7 @@ namespace FiscalServerApi.Services.Common.Enum
         Server,
         DeleteBarCode,
         ErrorBadHashPrev,
-        IncorrectHash,
+        IncorrectHash, 
+        ErrorTime
     }
 }

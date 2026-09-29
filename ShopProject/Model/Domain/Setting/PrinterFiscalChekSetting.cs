@@ -11,8 +11,10 @@ namespace ShopProject.Model.Domain.Setting
     internal class PrinterFiscalChekSetting
     {
         public string Printer { get; set; } = "Microsoft Print to PDF";
-        public double Width { get; set; } = 0; 
-        public double Slcale { get; set; } = 0; 
-        public double SizeQrCode {  get; set; } = 0; 
-    }
+        public double Width { get; set; } = 0;
+        public double Slcale { get; set; } = 0;
+        public double SizeQrCode { get; set; } = 0;
+
+        public string PrefixTaxObjectOwner { get; set; } = string.Empty;
+    } 
 }

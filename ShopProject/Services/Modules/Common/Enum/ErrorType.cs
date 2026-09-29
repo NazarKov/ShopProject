@@ -17,6 +17,7 @@ namespace ShopProject.Services.Modules.Common.Enum
         DeleteBarCode,
         ErrorBadHashPrev,
         IncorrectHash,
+        ErrorTime,
         ErrorKey,
     }
 }

@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace ShopProject.Services.Integration.PrintingService
+namespace ShopProject.Services.Integration.Printing
 {
     internal class PrintingDayReport
     {

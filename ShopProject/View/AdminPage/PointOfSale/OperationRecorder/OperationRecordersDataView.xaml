@@ -221,11 +221,14 @@
                                                     <Setter Property="Background" Value="#6B7280"/>
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Closed">
+                                                <DataTrigger Binding="{Binding TypeStatus}" Value="NotAvailableForUse">
                                                     <Setter Property="Background" Value="OrangeRed"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding TypeStatus}" Value="Open">
+                                                <DataTrigger Binding="{Binding TypeStatus}" Value="AvailableForUse">
                                                     <Setter Property="Background" Value="#10B981"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TypeStatus}" Value="ShiftIsOpen">
+                                                    <Setter Property="Background" Value="Orange"/>
                                                 </DataTrigger>
 
                                             </Style.Triggers>

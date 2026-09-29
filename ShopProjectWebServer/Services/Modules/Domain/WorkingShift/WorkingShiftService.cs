@@ -97,5 +97,28 @@ namespace ShopProjectWebServer.Services.Modules.Domain.WorkingShift
                 return OperationResult<WorkingShiftResourse>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
             }
         }
+
+        public async Task<OperationResult<WorkingShiftModel>> GetByUserId(Guid id)
+        {
+            try
+            {
+                var result = _dataBaseService.DataBaseAccess.WorkingShiftTable.GetByUserId(id);
+
+                if (result == null)
+                {
+                    return OperationResult<WorkingShiftModel>.Fail("Невдалося завантажити зміну", ErrorType.Server, ErrorSource.Database);
+                    throw new Exception("Невдалося завантажити зміну");
+                }
+                return OperationResult<WorkingShiftModel>.Success(result.ToWorkicingShift());
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                return OperationResult<WorkingShiftModel>.Fail(invalidOperationException.Message, ErrorType.NotFound, ErrorSource.Database);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<WorkingShiftModel>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+        }
     }
 }

@@ -26,35 +26,28 @@ namespace FiscalServerApi
 
 
         private OperationResult<string> SendMessage(Messages message,TypeMessage types,double second = 100)
-        { 
-            try
-            {  
-                var result = new CheckResponse();
+        {
+            var result = new CheckResponse();
 
-                var client = message.test ? _clients["clientTest"] : _clients["clientProd"];
+            var client = message.test ? _clients["clientTest"] : _clients["clientProd"];
 
-                ByteString CheckSign = ReadFile(_pathFile);
-                _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
+            ByteString CheckSign = ReadFile(_pathFile);
+            _callOptions = new CallOptions().WithDeadline(DateTime.UtcNow.AddSeconds(second));
 
-                switch (types)
-                {
-                    case TypeMessage.sendChk2:
-                        {
-                            result = sendChkV2(message, client, CheckSign);
-                            break;
-                        }
-                    case TypeMessage.ping:
-                        {
-                            result = ping(message, client, CheckSign);
-                            break;
-                        }
-                }
-                return AuditErrorServer(result);
-            } 
-            catch (Exception exeption)
-            { 
-                return OperationResult<string>.Fail(exeption.Message);
+            switch (types)
+            {
+                case TypeMessage.sendChk2:
+                    {
+                        result = sendChkV2(message, client, CheckSign);
+                        break;
+                    }
+                case TypeMessage.ping:
+                    {
+                        result = ping(message, client, CheckSign);
+                        break;
+                    }
             }
+            return AuditErrorServer(result);
         }
         
         private CheckResponse sendChkV2(Messages message, ChkIncomeServiceClient client, ByteString CheckSign)
@@ -205,7 +198,7 @@ namespace FiscalServerApi
                         }
                     case CheckResponse.Types.Status.ErrorXmlDate:
                         {
-                            return OperationResult<string>.Fail("Невірний формат XML дата не відповідає Check.date \nПеревірте чи підключений ключ ФОП до програми"); 
+                            return OperationResult<string>.Fail("Невірний формат XML дата не відповідає Check.date \nПеревірте чи підключений ключ ФОП до програми" , Services.Common.Enum.ErrorType.ErrorTime); 
                         }
                     case CheckResponse.Types.Status.ErrorXmlChk:
                         {

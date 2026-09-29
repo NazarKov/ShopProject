@@ -298,7 +298,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                 {
                     if (await _messageBoxControlService.Show("Вимкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
                     {
-                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.Closed, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
+                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.NotAvailableForUse, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
                         if (result.IsSuccess)
                         {
                             await SetFieldPage();
@@ -327,7 +327,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                 {
                     if (await _messageBoxControlService.Show("Увімкнути?.", "Informations", MessageBoxType.Question, "PointOfSaleSnadow"))
                     {
-                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.Open, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
+                        var result = await _operationRecorderService.UpdateParameter("Status", TypeStatusOperationRecorder.AvailableForUse, ((OperationRecorderModel)operationRecorders[0]).ToOperationRecorder());
                         if (result.IsSuccess)
                         {
                             await SetFieldPage();

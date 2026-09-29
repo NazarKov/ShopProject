@@ -1,11 +1,13 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using ShopProject.Core.Mvvm;
+﻿using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
-using System.Threading.Tasks;
+using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.View.Common.Setting;
 using ShopProject.ViewModel.SettingPage;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ShopProject.ViewModel.Common.Setting
 {
@@ -27,7 +29,11 @@ namespace ShopProject.ViewModel.Common.Setting
             _openSettingPintingStickerCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingPrintingStickerView, SettingPrintingStickerViewModel>(); }); 
             _openSettingOperationRecorderCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingPointOfSaleView, SettingPointOfSaleViewModel>(); });
             _openSettingStorageCommand = CreateCommand(() => { PageSetting = App.Container.GetViewWithViewModel<SettingDirectoriesView, SettingDirectoriesViewModel>(); }); 
-            _pageSetting = new Page(); 
+            _pageSetting = new Page();
+
+            _generalShadowVisibility = Visibility.Collapsed;
+            MediatorService.AddEventAsync("SettingSnadowSetVissible", async () => { GeneralShadowVisibility = Visibility.Visible; });
+            MediatorService.AddEventAsync("SettingSnadowSetCollapsed", async () => { GeneralShadowVisibility = Visibility.Collapsed; });
         }
 
         private Page _pageSetting;
@@ -35,6 +41,12 @@ namespace ShopProject.ViewModel.Common.Setting
         {
             get { return _pageSetting; }
             set { _pageSetting = value; OnPropertyChanged(nameof(PageSetting)); }
+        } 
+        private Visibility _generalShadowVisibility;
+        public Visibility GeneralShadowVisibility
+        {
+            get { return _generalShadowVisibility; }
+            set { _generalShadowVisibility = value; OnPropertyChanged(nameof(GeneralShadowVisibility)); }
         }
 
         public ICommand GeneralSettingOpenCommand => _openGeneralSettingOpenCommand;  

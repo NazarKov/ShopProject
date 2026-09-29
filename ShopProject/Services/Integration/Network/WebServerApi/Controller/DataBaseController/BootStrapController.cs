@@ -1,14 +1,9 @@
 ﻿using ShopProject.Services.Integration.Network.WebServerApi.Common;
 using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.BootStrap;
-using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.Paginator;
-using ShopProject.Services.Integration.Network.WebServerApi.DtoModels.TaxObject;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
+using System.Net.Http; 
 using System.Threading.Tasks;
+using ZXing.Aztec.Internal;
 
 namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataBaseController
 {
@@ -27,6 +22,16 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             httpResponse.EnsureSuccessStatusCode();
 
             var result = ApiResponse<StartDataDto>.Unpacking(responseBody);
+
+            return result;
+        }
+        public async Task<ApiResponse<WorkingShiftStatusDto>> GetWorkingShiftData(Guid userId)
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/BootStrap/GetWorkingShiftData?userID={userId}");
+            string responseBody = await httpResponse.Content.ReadAsStringAsync();
+            httpResponse.EnsureSuccessStatusCode();
+
+            var result = ApiResponse<WorkingShiftStatusDto>.Unpacking(responseBody);
 
             return result;
         }

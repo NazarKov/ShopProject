@@ -11,5 +11,6 @@ namespace ShopProjectWebServer.Services.Modules.Domain.WorkingShift.Interface
         public Task<OperationResult<WorkingShiftModel>> Update(WorkingShiftModel item); 
         public Task<OperationResult<WorkingShiftModel>> GetById(int id);
         public Task<OperationResult<WorkingShiftResourse>> GetResourseByWorkingShift(string fisclaNumberRRo);
+        public Task<OperationResult<WorkingShiftModel>> GetByUserId(Guid id);
     }
 }

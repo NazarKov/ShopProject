@@ -98,7 +98,11 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         {
             HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/User/GetByToken?token={token}");
             string responseBody = await httpResponse.Content.ReadAsStringAsync();
-            httpResponse.EnsureSuccessStatusCode(); 
+             var code = httpResponse.StatusCode;
+            if (code == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return new ApiResponse<UserDto>() { Status = 2, Error = "Unauthorized" };
+            }
             var result = ApiResponse<UserDto>.Unpacking(responseBody);
             return result;
         }

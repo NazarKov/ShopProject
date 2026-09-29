@@ -154,5 +154,9 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Entity
             }
         }
 
+        public TaxObjectEntity? GetById(Guid id)
+        {
+            return _contextDataBase.TaxObject.FirstOrDefault(t => t.ID == id);
+        }
     }
 }

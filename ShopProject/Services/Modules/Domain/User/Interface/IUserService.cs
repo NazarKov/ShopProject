@@ -19,5 +19,6 @@ namespace ShopProject.Services.Modules.Domain.User.Interface
         public void SetUpdateUserInSession(UserModel user);
         public UserModel GetUpdateUserFromSession();
         public UserModel GetUserFromSession();
+        public Task<OperationResult<UserModel>> GetCurrentUserFromServer();
     }
 }

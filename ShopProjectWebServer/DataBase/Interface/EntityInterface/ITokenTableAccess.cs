@@ -8,5 +8,6 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Update(TokenEntity item);
         void Delete(TokenEntity item);
         IEnumerable<TokenEntity> GetAll();
+        public TokenEntity? GetTokenByUserAndDevice(Guid id, string device);
     }
 }

@@ -6,5 +6,6 @@ namespace ShopProjectWebServer.Services.Modules.BootStrap.Interface
     public interface IBootStrapService
     {
         public OperationResult<StartData> GetStartData();
+        public Task<OperationResult<WorkingShiftStatus>> GetWrokingShiftData(Guid userID);
     }
 }

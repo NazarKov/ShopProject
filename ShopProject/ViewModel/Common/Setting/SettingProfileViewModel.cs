@@ -1,33 +1,44 @@
 ﻿using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Setting;
-using ShopProject.Services.Modules.Setting.Interface;
-using System;
+using ShopProject.Model.Domain.Notification;
+using ShopProject.Model.Navigation;
+using ShopProject.Model.UI.User;
+using ShopProject.Model.UI.UserRole;
+using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Mediator.Notifications; 
+using ShopProject.Services.Modules.Control.Interface;
+using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Domain.UserRole.Interface;
+using ShopProject.Services.Modules.Mapping.User;
+using ShopProject.Services.Modules.Mapping.UserRole; 
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.Common.Setting
 {
     internal class SettingProfileViewModel : ViewModel<SettingProfileViewModel>, IViewModelLoadResourse
     {
-        private ICommand _changePasswordCommand;
-        private ISettingService _settingService;
-        public SettingProfileViewModel(ISettingService settingService)
+        //private ICommand _changePasswordCommand; 
+        private ICommand _updateUserCommand;
+        private ICommand _saveUserCommand;
+        private IUserService _userService;
+        private readonly IUserRoleService _userRoleService;
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        public SettingProfileViewModel(IUserService userService, IUserRoleService userRoleService, IMessageBoxControlService messageBoxControlService)
         {
 
-            _settingService = settingService;
-
-            _login = string.Empty;
-            _fullName = string.Empty;
-            _tin = string.Empty;
-            _nameKey = string.Empty;
-            _status = string.Empty;
-            _create_at = new DateTime();
-            _autoLogin = false;
-             
+            _updateUserCommand = CreateCommand(UpdateUser);
+            _saveUserCommand = CreateCommandAsync(SaveUser);
+            _userService = userService;
+            _userRoleService = userRoleService;
+            _messageBoxControlService = messageBoxControlService;
+            _user = new UserModel();
+            _userRoles = new List<UserRoleModel>();
+            _isEnableUpdateField = false;
+            _saveButtonVisibiliti = Visibility.Collapsed;
+            _selectUserRole = 0;
         }
 
         public Task LoadResourse()
@@ -36,99 +47,83 @@ namespace ShopProject.ViewModel.Common.Setting
             return Task.CompletedTask;
         }
 
+        private UserModel _user;
+        public UserModel User
+        {
+            get { return _user; }
+            set { _user = value; OnPropertyChanged(nameof(User)); }
+        }
 
-        private string _login;
-        public string Login
+        private List<UserRoleModel> _userRoles;
+        public List<UserRoleModel> UserRoles
         {
-            get { return _login; }
-            set { _login = value; OnPropertyChanged(nameof(Login)); }
+            get { return _userRoles; }
+            set { _userRoles = value; OnPropertyChanged(nameof(UserRoles)); }
         }
-        private string _fullName;
-        public string FullName
+
+        private int _selectUserRole;
+        public int SelectUserRole
         {
-            get { return _fullName; }
-            set { _fullName = value; OnPropertyChanged(nameof(FullName)); }
+            get { return _selectUserRole; }
+            set { _selectUserRole = value; OnPropertyChanged(nameof(SelectUserRole)); }
         }
-        private string _tin;
-        public string TIN
+
+        private bool _isEnableUpdateField;
+        public bool IsEnabelUpdateField
         {
-            get { return _tin; }
-            set { _tin = value; OnPropertyChanged(nameof(TIN)); }
+            get { return _isEnableUpdateField; }
+            set { _isEnableUpdateField = value;OnPropertyChanged(nameof(IsEnabelUpdateField)); }
         }
-        private string _nameKey;
-        public string NameKey
+
+        private Visibility _saveButtonVisibiliti;
+        public Visibility SaveButtonVisibiliti
         {
-            get { return _nameKey; }
-            set { _nameKey = value; OnPropertyChanged(nameof(NameKey)); }
-        }
-        private string _status;
-        public string Status
-        {
-            get { return _status; }
-            set { _status = value; OnPropertyChanged(nameof(Status)); }
-        }
-        private DateTime _create_at;
-        public DateTime Create_At
-        {
-            get { return _create_at; }
-            set { _create_at = value; OnPropertyChanged(nameof(Create_At)); }
-        }
-        private bool _autoLogin;
-        public bool AutoLogin
-        {
-            get { return _autoLogin; }
-            set { _autoLogin = value; OnPropertyChanged(nameof(AutoLogin)); }
+            get { return _saveButtonVisibiliti; }
+            set { _saveButtonVisibiliti = value;OnPropertyChanged(nameof(SaveButtonVisibiliti)); }
         }
 
 
         private void SetFieldPage()
         {
-            var item = _settingService.GetSetting<SessionSetting>().User;
-            if (item != null)
+            User = _userService.GetUserFromSession().ToUserModel();
+            SetFielComboBoxRole();
+        }
+
+        private void SetFielComboBoxRole()
+        {
+            UserRoles = new List<UserRoleModel>(_userRoleService.GetFromSession().ToUserRoleModel());
+            SelectUserRole = 0;
+        }
+
+        public ICommand UpdateUserCommand => _updateUserCommand;
+        private void UpdateUser()
+        {
+            IsEnabelUpdateField = true;
+            SaveButtonVisibiliti = Visibility.Visible;
+        }
+        public ICommand SaveUserCommand => _saveUserCommand;
+        private async Task SaveUser()
+        {
+            var result = await _userService.UpdateUser(User.ToUser(), string.Empty,string.Empty);
+
+            if (result.IsSuccess)
             {
-                if (item.Login != string.Empty)
-                {
-                    Login = item.Login;
-                }
-                if (item.FullName != string.Empty)
-                {
-                    FullName = item.FullName;
-                }
-                else
-                {
-                    FullName = "Користувач не вказав";
-                }
-                if (item.TIN != string.Empty)
-                {
-                    TIN = item.TIN;
-                }
-                else
-                {
-                    TIN = "Користувач не вказав";
-                }
-                if (false)
-                {
-                    //var temp = item.KeyPath.Split("\\");
-                    //NameKey = temp.ElementAt(temp.Length - 1);
-                }
-                else
-                {
-                    NameKey = "Ключ відсутній";
-                }
-                if (item.Status == 0)
-                {
-                    Status = "Користувач без ключа ЕЦП";
-                }
-                else
-                {
-                    Status = "ОК";
-                }
-                if (item.CreatedAt != null)
-                {
-                    Create_At = item.CreatedAt.Value.Date;
-                }
-                AutoLogin = item.AutomaticLogin;
+                await _messageBoxControlService.Show($"Користувач {result.Data.FullName} редаговано", "Success", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Success, "SettingSnadow");
+                await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Користувач", "Користувач успішно створений в базі даних")));
+                await MediatorService.ExecuteEventAsync(NavigationButton.ReloadUser.ToString());
+                await _userService.GetCurrentUserFromServer();
             }
+            else if (result.IsError)
+            {
+                await _messageBoxControlService.Show(result.ErrorMessage, "Error", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Error, "SettingSnadow");
+ 
+            }
+            else
+            {
+                await _messageBoxControlService.Show("Невдалося виконати операцію", "Error", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Error, "SettingSnadow");
+            } 
+            IsEnabelUpdateField = false;
+            SaveButtonVisibiliti = Visibility.Collapsed;
         }
 
         //public ICommand ChangePasswordCommand => _changePasswordCommand;

@@ -15,11 +15,11 @@ namespace ShopProject.ViewModel.Common.Authorization
         private ICommand _logInCommnad;
         private ICommand _openChangePassowordCommand;
         private ICommand _exitCommand; 
-        private IUserService _userServise; 
+        private IUserService _userService; 
 
-        public AuthorizationViewModel(IUserService userServise)
+        public AuthorizationViewModel(IUserService userService)
         {
-            _userServise = userServise;  
+            _userService = userService;  
             _logInCommnad = CreateCommandAsync(LogIn,SetError);
             _openChangePassowordCommand = CreateCommand(OpenChangePassword);
             _exitCommand = CreateCommand(Exit);
@@ -100,7 +100,7 @@ namespace ShopProject.ViewModel.Common.Authorization
         public ICommand LogInCommnad => _logInCommnad;
         private async Task LogIn()
         {
-            var result = await _userServise.LogIn(Login, Password);
+            var result = await _userService.LogIn(Login, Password);
 
             if (result.IsSuccess)
             {

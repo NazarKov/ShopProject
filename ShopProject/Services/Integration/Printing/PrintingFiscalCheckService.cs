@@ -9,11 +9,11 @@ using System.Windows.Media;
 
 namespace ShopProject.Services.Integration.Printing
 {
-    internal class PrintingFiscalCheckServise :IPrintingFiscalCheckService
+    internal class PrintingFiscalCheckService :IPrintingFiscalCheckService
     {
         private ISettingService _settingService;
 
-        public PrintingFiscalCheckServise(ISettingService settingService)
+        public PrintingFiscalCheckService(ISettingService settingService)
         {
             _settingService = settingService;
         } 

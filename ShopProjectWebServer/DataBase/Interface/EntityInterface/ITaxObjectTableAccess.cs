@@ -10,6 +10,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Delete(TaxObjectEntity item);
         IEnumerable<TaxObjectEntity> GetAll();
         IEnumerable<TaxObjectEntity> GetByNameAndStatus(string name, TypeStatusTaxObject status);
+        public TaxObjectEntity? GetById(Guid id);
         public Task<bool> ExistsByName(string name);
         public  Task<bool> ExistsByUserAndTaxObject(Guid userId, Guid taxObjectName);
         public Task AddBindingOperationRecorderToTaxObject(Guid idTaxObject, IEnumerable<OperationsRecorderEntity> operationsRecorders);

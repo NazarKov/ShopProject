@@ -38,7 +38,7 @@
             <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        <Rectangle x:Name="ShadowRect1" Visibility="{Binding GeneralShadowVisibility}" Fill="Black" Panel.ZIndex="4" Opacity="0.5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="3"></Rectangle>
         <!-- ===== ЛІВЕ МЕНЮ ===== -->
         <Border Grid.Column="0"
          Background="White"

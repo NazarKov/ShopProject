@@ -1,7 +1,10 @@
-﻿using ShopProject.Core.Mvvm;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Setting;
+using ShopProject.Services.Integration.Printing.Interface;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;
 using System.Collections.Generic;
@@ -19,10 +22,11 @@ namespace ShopProject.ViewModel.Common.Setting
         private ICommand _saveSettingCommand;
 
         private ISettingService _settingService;
-
-        public SettingPointOfSaleViewModel(ISettingService settingService)
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        public SettingPointOfSaleViewModel(ISettingService settingService, IMessageBoxControlService messageBoxControlService)
         {
             _settingService = settingService;
+            _messageBoxControlService = messageBoxControlService;
             _isTestMode = true;
             _deleteBarCode = string.Empty;
 
@@ -68,7 +72,7 @@ namespace ShopProject.ViewModel.Common.Setting
                 IsTestMode = _isTestMode 
             });
 
-            MessageBox.Show("Налаштування збережено");
+            _messageBoxControlService.Show("Налаштування збережено", "Успішно", MessageBoxType.Success, "SettingSnadow");
         } 
     }
 }

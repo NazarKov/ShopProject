@@ -5,10 +5,8 @@ using ShopProject.Model.Domain.Product;
 using ShopProject.Model.Domain.WorkingShift;
 using ShopProject.Model.Enum;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic; 
+using System.Text; 
 using System.Xml;
 
 namespace ShopProject.Services.Integration.File.Xml

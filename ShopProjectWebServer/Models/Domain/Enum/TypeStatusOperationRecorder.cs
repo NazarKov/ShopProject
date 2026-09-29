@@ -3,7 +3,8 @@
     public enum TypeStatusOperationRecorder
     {
         Unknown,
-        Open,
-        Closed
+        AvailableForUse,
+        NotAvailableForUse,
+        ShiftIsOpen,
     }
 }

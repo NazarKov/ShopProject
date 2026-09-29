@@ -166,7 +166,7 @@
                       RowStyle="{StaticResource DataGridRow}"
                       CellStyle="{StaticResource RectangleCellStyle}" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Назва"  Binding="{Binding NameCode}" Width="Auto">
+                    <DataGridTextColumn Header="Назва"  Binding="{Binding NameCode}" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -174,7 +174,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Код"  Binding="{Binding Code}" Width="*">
+                    <DataGridTextColumn Header="Код"  Binding="{Binding Code}" Width="Auto">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center"/>

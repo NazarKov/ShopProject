@@ -12,24 +12,25 @@ using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface; 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Windows.Controls; 
 
 namespace ShopProject.Services.Modules.Session
 {
     internal class SessionService : ISessionService
     { 
-        private readonly ISettingService _settingService;
+        private readonly ISettingService _settingService; 
 
         #region SessionResourse
         [Required]
         public User User { get; set; } = new User();
         [Required]
-        public IEnumerable<ProductCodeUKTZED> ProductCodesUKTZED { get; set; }
-        [Required] 
-        public IEnumerable<ProductUnit> ProductUnits { get; set; } 
+        public IEnumerable<ProductCodeUKTZED> ProductCodesUKTZED { get; set; } = new List<ProductCodeUKTZED>();
         [Required]
-        public IEnumerable<UserRole> Roles { get; set; }
+        public IEnumerable<ProductUnit> ProductUnits { get; set; } = new List<ProductUnit>();
+        [Required]
+        public IEnumerable<UserRole> Roles { get; set; } = new List<UserRole>();
         [Required]
         public WorkingShiftStatus WorkingShiftStatus { get; set; } = new WorkingShiftStatus();
 
@@ -38,63 +39,51 @@ namespace ShopProject.Services.Modules.Session
 
 
         #region UpdateItemResourse
-        public Product? UpdateProduct { get; set; }
+        public Product? UpdateProduct { get; set; } 
         public IEnumerable<Product>? UpdateProductRange { get; set; } 
         public ProductUnit? UpdateProductUnit { get; set; } 
         public ProductCodeUKTZED? UpdateProductCodeUKTZED { get; set; }
-        public User UpdateUser { get; set; }
-        public TaxObject BindingTaxObject { get; set; }
-        public OperationRecorder UpdateOperationRecorder { get; set; }
+        public User? UpdateUser { get; set; }
+        public TaxObject? BindingTaxObject { get; set; }
+        public OperationRecorder? UpdateOperationRecorder { get; set; }
         #endregion
 
         #region TempResourse
-        public Operation Operation { get; set; }
+        /// <summary>
+        /// success OperationMessageWorkingShiftMenu
+        /// </summary>
+        public Operation Operation { get; set; } = new Operation();
         #endregion
 
-        public SessionService(ISettingService settingService)
+        public SessionService(ISettingService settingService )
         {
-            _settingService = settingService; 
-            
-            var setting = _settingService.GetSetting<SessionSetting>();
-            if(setting != null && setting.User!=null)
-            {
-                User = setting.User;
-            }
+            _settingService = settingService;  
+
         }
 
-        public bool CheckingSession()
+        public async Task<bool> CheckingSession()
         {
             var setting = _settingService.GetSetting<SessionSetting>();
-            if(User.Token == string.Empty)
+            if (setting.User!=null && setting.User.Token != string.Empty)
             {
-                if (setting.User == null)
-                {
-                    return false;
-                }
-
-                if (setting.User.Token == string.Empty)
-                {
-                    return false;
-                }
-
-                if(setting.User.AutomaticLogin == false)
-                {
-                    return false;
-                }
-                 
-                User = setting.User;
+                this.User = setting.User;
                 return true;
             }
             else
             {
-                return true;
-            }
+                return false;
+            } 
         } 
-        public bool RemoveSession()
+        public void SaveSession()
         {
-            User = new User(); 
-             _settingService.SetSetting<SessionSetting>(new SessionSetting()); 
-            return true;
+            _settingService.SetSetting<SessionSetting>(new SessionSetting()
+            {
+                User = this.User
+            });
+        }
+        public void RemoveSession()
+        { 
+            _settingService.SetSetting<WorkingShiftStatus>(new WorkingShiftStatus());  
         }
         public bool CheckAndLoadWorkingShiftStatus()
         { 
@@ -119,9 +108,21 @@ namespace ShopProject.Services.Modules.Session
         }
         public bool CheckIsOpenShift()
         {
+            if (WorkingShiftStatus.Status == ShopProject.Model.Enum.TypeStatusShift.Open)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            } 
+        }
+
+        public bool CheckShiftSetting()
+        {
             if (CheckAndLoadWorkingShiftStatus())
             {
-                if(WorkingShiftStatus.Status == ShopProject.Model.Enum.TypeStatusShift.Open)
+                if (User.ID == WorkingShiftStatus.UserID)
                 {
                     return true;
                 }
@@ -132,6 +133,5 @@ namespace ShopProject.Services.Modules.Session
             }
             return false;
         }
-      
     }
 }

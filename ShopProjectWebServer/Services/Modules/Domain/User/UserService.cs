@@ -108,18 +108,29 @@ namespace ShopProjectWebServer.Services.Modules.Domain.User
                 if(!user.Password.Equals(password))
                 {
                     return OperationResult<UserModel>.Fail("Невірний пароль", ErrorType.Authorized, ErrorSource.Client); 
-                } 
+                }
 
-                var tokenbody = GenerationToken.Generate(16);
-
-                var token = new TokenEntity()
+                var usertoken = _dataBaseService.DataBaseAccess.TokenTable.GetTokenByUserAndDevice(user.ID, devise);
+                TokenEntity token;
+                if (usertoken == null)
                 {
-                    Device = devise,
-                    Token = tokenbody,
-                    User = user,
-                    CreateAt = DateTime.Now,
-                };
-                _dataBaseService.DataBaseAccess.TokenTable.Add(token); 
+
+                    var tokenbody = GenerationToken.Generate(16);
+
+                    token = new TokenEntity()
+                    {
+                        Device = devise,
+                        Token = tokenbody,
+                        User = user,
+                        CreateAt = DateTime.Now,
+                    };
+                    _dataBaseService.DataBaseAccess.TokenTable.Add(token);
+                }
+                else
+                {
+                    token = usertoken;
+                    token.CreateAt = DateTime.Now;
+                }
 
                 var result = new UserModel()
                 {

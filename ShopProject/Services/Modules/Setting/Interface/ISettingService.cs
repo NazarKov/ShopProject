@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Setting.Interface
 {
-    internal interface ISettingService
+    public interface ISettingService
     {
         public TSetting GetSetting<TSetting>();
         public void SetSetting<TSetting>(TSetting value);

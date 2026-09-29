@@ -1,12 +1,14 @@
-﻿using ShopProject.Core.Mvvm; 
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Setting; 
+using ShopProject.Model.Domain.Setting;
+using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;
-using ShopProject.Services.Integration.PrintingService;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing; 
+using System.Drawing.Printing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,22 +19,20 @@ namespace ShopProject.ViewModel.SettingPage
     internal class SettingPrintingCheckViewModel : ViewModel<SettingPrintingCheckViewModel> , IViewModelLoadResourse
     { 
         private ICommand _saveSettingCommand;
-        private ICommand _printTestCheckCommand;
-
+        private ICommand _printTestCheckCommand; 
         private ISettingService _settingService;
         private IPrintingFiscalCheckService _printingFiscalCheckService;
-
-        public SettingPrintingCheckViewModel(ISettingService settingService , IPrintingFiscalCheckService printingFiscalCheckService)
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        public SettingPrintingCheckViewModel(ISettingService settingService , IPrintingFiscalCheckService printingFiscalCheckService, IMessageBoxControlService messageBoxControlService)
         {
             _printingFiscalCheckService = printingFiscalCheckService;
             _settingService = settingService;
+            _messageBoxControlService = messageBoxControlService;
             _saveSettingCommand = CreateCommand(SaveSetting);
             _printTestCheckCommand = CreateCommand(PrintTest);
 
-            _printer = new List<string>();
-            _width = 302;
-            _slcale = 0.65;
-            _selectedPrinter = string.Empty; 
+            _printerFiscalChekSetting = new PrinterFiscalChekSetting();
+            _printers = new List<string>(); 
         }
 
         public Task LoadResourse()
@@ -44,7 +44,7 @@ namespace ShopProject.ViewModel.SettingPage
         {
             foreach (string printer in PrinterSettings.InstalledPrinters)
             {
-                _printer.Add(printer);
+                _printers.Add(printer);
             }
 
             var setting = _settingService.GetSetting<PrinterFiscalChekSetting>();
@@ -54,11 +54,7 @@ namespace ShopProject.ViewModel.SettingPage
                 setting = new PrinterFiscalChekSetting();
                 return;
             }
-
-            Width = setting.Width;
-            Slcale = setting.Slcale;
-            SelectedPrinter = setting.Printer;
-            SizeQrCode = setting.SizeQrCode;
+            PrinterFiscalChekSetting = setting; 
 
             FiscalCheck fiscalCheck = new FiscalCheck();
             fiscalCheck.CreateFisckalCheck(
@@ -75,42 +71,24 @@ namespace ShopProject.ViewModel.SettingPage
                 },
                 new ShopProject.Model.Domain.Operation.Operation() { }, 
                 new ShopProject.Model.Domain.User.User() { }, 
-                new ShopProject.Model.Domain.OperationRecorder.OperationRecorder() { });
+                new ShopProject.Model.Domain.OperationRecorder.OperationRecorder() { } , new ShopProject.Model.Domain.TaxObject.TaxObject(), PrinterFiscalChekSetting);
 
 
             TemplatePrintingCheck = fiscalCheck.GetCheck();
         }
-        private List<string> _printer;
-        public List<string> Printer
+        private List<string> _printers;
+        public List<string> Printers
         {
-            get { return _printer; }
-            set { _printer = value; OnPropertyChanged(nameof(Printer)); }
-        }
-        private string _selectedPrinter;
-        public string SelectedPrinter
-        {
-            get { return _selectedPrinter; }
-            set { _selectedPrinter = value; OnPropertyChanged(nameof(SelectedPrinter)); }
+            get { return _printers; }
+            set { _printers = value; OnPropertyChanged(nameof(Printers)); }
         }
 
-        private double _width;
-        public double Width
-        {
-            get { return _width; }
-            set { _width = value; OnPropertyChanged(nameof(Width)); }
-        }
-        private double _slcale;
-        public double Slcale
-        {
-            get { return _slcale; }
-            set { _slcale = value; OnPropertyChanged(nameof(Width)); }
-        }
 
-        private double _sizeQrCode;
-        public double SizeQrCode
+        private PrinterFiscalChekSetting _printerFiscalChekSetting;
+        public PrinterFiscalChekSetting PrinterFiscalChekSetting
         {
-            get { return _sizeQrCode; }
-            set { _sizeQrCode = value; OnPropertyChanged(nameof(SizeQrCode)); }
+            get { return _printerFiscalChekSetting; }
+            set { _printerFiscalChekSetting = value; OnPropertyChanged(nameof(PrinterFiscalChekSetting));  }
         }
 
         private UserControl _templatePrintingCheck { get; set; }
@@ -125,14 +103,8 @@ namespace ShopProject.ViewModel.SettingPage
 
         private void SaveSetting()
         {
-            _settingService.SetSetting<PrinterFiscalChekSetting>(new PrinterFiscalChekSetting()
-            {
-                Printer = SelectedPrinter,
-                SizeQrCode = SizeQrCode,
-                Slcale = Slcale,
-                Width = Width,
-            });
-            MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            _settingService.SetSetting<PrinterFiscalChekSetting>(PrinterFiscalChekSetting);
+            _messageBoxControlService.Show("Налаштування збережено", "Успішно", MessageBoxType.Success, "SettingSnadow");
         } 
         public ICommand PrintTestCheck => _printTestCheckCommand;
         private void PrintTest()

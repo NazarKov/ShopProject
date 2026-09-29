@@ -102,7 +102,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 
         private async Task SetFiledPage()
         {
-            var result =await _operationRecorderService.GetPageColumn(0, 100, ShopProject.Model.Enum.TypeStatusOperationRecorder.Open);
+            var result =await _operationRecorderService.GetPageColumn(0, 100, ShopProject.Model.Enum.TypeStatusOperationRecorder.AvailableForUse);
             if (result.IsSuccess)
             {
                 OperationRecorders = new List<OperationRecorderSelectItemModel>(result.Data.Data.ToOperationRecorderSelectItemModel());

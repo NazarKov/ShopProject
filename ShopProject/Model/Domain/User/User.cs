@@ -9,14 +9,19 @@ namespace ShopProject.Model.Domain.User
 {
     public class User
     {
-        [JsonIgnore]
+        [JsonIgnore] 
         public Guid ID { get; set; }
+        [JsonIgnore]
         public string Login { get; set; } = string.Empty;
         [JsonIgnore]
         public string Password { get; set; } = string.Empty;
+        [JsonIgnore]
         public string FullName { get; set; } = string.Empty;
+        [JsonIgnore]
         public string Email { get; set; } = string.Empty;
+        [JsonIgnore]
         public string TIN { get; set; } = string.Empty;
+        [JsonIgnore]
         public bool AutomaticLogin { get; set; }
         [JsonIgnore]
         public TypeStatusUser Status { get; set; }

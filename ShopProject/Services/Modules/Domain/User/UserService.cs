@@ -1,15 +1,14 @@
 ﻿using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Model.Domain.SignatureKey; 
-using ShopProject.Model.Enum;
-using ShopProject.Model.Exceptions; 
-using ShopProject.Services.Integration.Network.ElectronicTaxAccountPublicApi; 
+using ShopProject.Model.Enum; 
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
 using ShopProject.Services.Modules.Common;
 using ShopProject.Services.Modules.Common.Enum;
-using ShopProject.Services.Modules.Domain.User.Interface; 
+using ShopProject.Services.Modules.Domain.User.Interface;
+using ShopProject.Services.Modules.Mapping.OperaionResult;
 using ShopProject.Services.Modules.Mapping.User;
-using ShopProject.Services.Modules.Mapping.UserRole;
+using ShopProject.Services.Modules.Mapping.UserRole; 
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using SigningFileLib;
@@ -21,20 +20,17 @@ using UserModel = ShopProject.Model.Domain.User.User;
 namespace ShopProject.Services.Modules.Domain.User
 {
     internal class UserService : IUserService
-    { 
-        private string? _token;
-        private MainElectronicTaxAccountController _mainTaxAccauntController;
-        private SigningFileContoller _mainSigningFileController;
-        private IMainWebServerService _webServerService;
-        private ISessionService _sessionService;
-        private ISettingService _settingService;
+    {   
+        private readonly SigningFileContoller _mainSigningFileController;
+        private readonly IMainWebServerService _webServerService;
+        private readonly ISessionService _sessionService;
+        private readonly ISettingService _settingService; 
         public UserService(IMainWebServerService webServerService, ISessionService sessionService , ISettingService settingService)
         {
             _webServerService = webServerService;
             _sessionService = sessionService;
             _settingService = settingService;  
-
-            _mainTaxAccauntController = new MainElectronicTaxAccountController();
+             
             _mainSigningFileController = new SigningFileContoller();
             _mainSigningFileController.Initialize(false);
         }
@@ -286,7 +282,7 @@ namespace ShopProject.Services.Modules.Domain.User
                 result.ValidationErrors = response.Errors;
 
                 return result;
-            }
+            } 
 
             return new OperationResult<UserModel>()
             {
@@ -324,6 +320,7 @@ namespace ShopProject.Services.Modules.Domain.User
                 if (result.IsSuccess)
                 {
                     _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+                    _sessionService.SaveSession();
                     _settingService.SetSetting<SessionSetting>(new SessionSetting() { User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto()) });
                     _webServerService.SetToken(response.Data.Token);
 
@@ -368,6 +365,23 @@ namespace ShopProject.Services.Modules.Domain.User
         public UserModel GetUpdateUserFromSession()
         {
             return _sessionService.UpdateUser;
+        }
+
+        public async Task<OperationResult<UserModel>> GetCurrentUserFromServer()
+        {
+            var token = _sessionService.User.Token;
+            var response = (await _webServerService.DataBase.UserController.GetUser(token)).ToOperationResult();
+
+            if (response.IsSuccess)
+            { 
+                _sessionService.User = response.Data.ToUser(_sessionService.Roles.ToUserRoleDto());
+                _sessionService.User.Token = token;
+                return OperationResult<UserModel>.Success(_sessionService.User);
+            }
+            else
+            {
+                return OperationResult<UserModel>.Fail(response.ErrorMessage);
+            } 
         }
     }
 }

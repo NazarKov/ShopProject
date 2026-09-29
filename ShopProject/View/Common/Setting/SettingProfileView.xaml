@@ -52,6 +52,9 @@
                             <RowDefinition Height="50"></RowDefinition>
                             <RowDefinition Height="50"></RowDefinition>
                             <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
                             <RowDefinition Height="20"></RowDefinition>
                             <RowDefinition Height="70"></RowDefinition>
                             <RowDefinition Height="20"></RowDefinition>
@@ -64,52 +67,131 @@
                                FontWeight="SemiBold"
                                Foreground="#333"/>
                         <Separator Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Center" Margin="0,15,0,0"></Separator>
-                        
-                        <TextBlock Text="ПІБ" 
+                        <TextBlock Text="Статус" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
                                    Grid.Row="1"
                                    Grid.Column="0"/>
-                        <TextBox   Text="{Binding FullName}"
-                                   IsEnabled="False"
+
+                        <Border Grid.Column="1"
+                                Height="34"
+                                Width="400"
+                                Grid.Row="1"
+                                Padding="8,3" 
+                                CornerRadius="2"
+                                HorizontalAlignment="Right">
+
+                            <StackPanel Orientation="Horizontal">
+
+                                <Ellipse Width="8"
+                                         Height="8"
+                                         Margin="0,0,5,0"
+                                         Fill="White"/>
+
+                                <TextBlock Text="{Binding User.StatusString}"
+                                           FontWeight="SemiBold"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"/>
+
+                            </StackPanel>
+
+                            <Border.Style>
+
+                                <Style TargetType="Border">
+
+                                    <Setter Property="Background" Value="Gray"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding User.Status}" Value="Unknown">
+                                            <Setter Property="Background" Value="#6B7280"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding User.Status}" Value="NotAvailableElectronicKey">
+                                            <Setter Property="Background" Value="#3B82F6"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding User.Status}" Value="AvailableElectronicKey">
+                                            <Setter Property="Background" Value="#10B981"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding User.Status}" Value="ProfileIsDisabled">
+                                            <Setter Property="Background" Value="Orange"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+
+                                </Style>
+
+                            </Border.Style>
+                        </Border>
+
+                        <TextBlock Text="ПІБ" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="2"
+                                   Grid.Column="0"/>
+                        <TextBox   Text="{Binding User.FullName}"
+                                   IsEnabled="{Binding IsEnabelUpdateField}"
                                    Style="{StaticResource GeneralTextBox}"
                                    VerticalContentAlignment="Center" 
                                    Width="400"
                                    HorizontalAlignment="Right" 
-                                   Grid.Row="1"
+                                   Grid.Row="2"
                                    Grid.Column="1"/>
 
                         <TextBlock Text="Логін"
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold" 
-                                   Grid.Row="2" 
+                                   Grid.Row="3" 
                                    Grid.Column="0"/>
-                        <TextBox Text="{Binding Login}" 
+                        <TextBox Text="{Binding User.Login}" 
                                  VerticalContentAlignment="Center"
                                  Width="400"
-                                 IsEnabled="False"
+                                 IsEnabled="{Binding IsEnabelUpdateField}"
                                  Style="{StaticResource GeneralTextBox}" 
                                  HorizontalAlignment="Right"
-                                 Grid.Row="2" Grid.Column="1"/>
+                                 Grid.Row="3" Grid.Column="1"/>
 
+                        <TextBlock Text="Email"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Grid.Row="4" 
+                                   Grid.Column="0"/>
+                        <TextBox Text="{Binding User.Email}" 
+                                  IsEnabled="{Binding IsEnabelUpdateField}"
+                                 VerticalContentAlignment="Center"
+                                 Width="400"
+                                 Style="{StaticResource GeneralTextBox}" 
+                                 HorizontalAlignment="Right"
+                                 Grid.Row="4"
+                                 Grid.Column="1"/>
                         <TextBlock Text="Податковий номер"
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   Grid.Row="3" 
+                                   Grid.Row="5" 
                                    Grid.Column="0"/>
-                        <TextBox Text="{Binding TIN}" 
-                                 IsEnabled="False"
+                        <TextBox Text="{Binding User.TIN}" 
+                                  IsEnabled="{Binding IsEnabelUpdateField}"
                                  VerticalContentAlignment="Center"
                                  Width="400"
                                  Style="{StaticResource GeneralTextBox}" 
                                  HorizontalAlignment="Right"
-                                 Grid.Row="3"
+                                 Grid.Row="5"
                                  Grid.Column="1"/>
+                        <TextBlock Text="Роль" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold" 
+                                   Grid.Row="6" Grid.Column="0"/>
+                        <ComboBox Width="400" Height="34"
+                                  Grid.Column="1"
+                                  Grid.Row="6"
+                                  IsEnabled="False"
+                                  HorizontalAlignment="Right"
+                                  ItemsSource="{Binding UserRoles}" SelectedIndex="{Binding SelectUserRole}"
+                                  DisplayMemberPath="NameRole" Style="{StaticResource GeneralComboBox}" /> 
                         <TextBlock Text="Дата створення" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold" 
-                                   Grid.Row="4" Grid.Column="0"/>
-                        <TextBox Text="{Binding Create_At}" 
+                                   Grid.Row="7" Grid.Column="0"/>
+                        <TextBox Text="{Binding User.CreatedAt}" 
                                    VerticalAlignment="Center"
                                    Foreground="Gray"
                                    IsEnabled="False"
@@ -117,17 +199,17 @@
                                    Width="400"
                                    Style="{StaticResource GeneralTextBox}" 
                                    HorizontalAlignment="Right"
-                                   Grid.Row="4"
+                                   Grid.Row="7"
                                    Grid.Column="1"/>
 
-                        <Separator Grid.ColumnSpan="2" Grid.Row="5" VerticalAlignment="Center"></Separator>
+                        <Separator Grid.ColumnSpan="2" Grid.Row="8" VerticalAlignment="Center"></Separator>
 
                         <TextBlock Text="Ключ ЕЦП"
                                    FontWeight="SemiBold"
-                                   Grid.Row="6"
+                                   Grid.Row="9"
                                    VerticalAlignment="Top"
                                    Grid.Column="0"/>
-                        <TextBox Text="{Binding NameKey}"
+                        <TextBox Text="{Binding User.SignatureKeyIsCreate,Mode=OneWay}"
                                  IsEnabled="False"
                                  VerticalAlignment="Top"
                                  VerticalContentAlignment="Center"
@@ -135,11 +217,10 @@
                                  Style="{StaticResource GeneralTextBox}" 
                                  HorizontalAlignment="Right"
                                  Foreground="Gray"
-                                 Grid.Row="6"
-                                 Grid.Column="1"/>
-
+                                 Grid.Row="9"
+                                 Grid.Column="1"/> 
                         <Button Content="Переглянути дані"
-                                Grid.Row="6"
+                                Grid.Row="9"
                                 Grid.Column="1"
                                 Margin="0,5,0,0"
                                 HorizontalAlignment="Right" 
@@ -148,21 +229,22 @@
                                 FontSize="14"
                                 Width="200"
                                 Style="{StaticResource StorageButton}"/>
-                        <Separator Grid.ColumnSpan="2" Grid.Row="7" VerticalAlignment="Center"></Separator>
+                        <Separator Grid.ColumnSpan="2" Grid.Row="10" VerticalAlignment="Center"></Separator>
                         <TextBlock Text="Безпека" 
                                    FontWeight="SemiBold"
-                                   Grid.Row="8"
+                                   Grid.Row="11"
                                    Grid.Column="0"/>
                         <CheckBox Content="Автоматичний вхід"
                                   Width="200"
-                                  IsChecked="{Binding AutoLogin}"
-                                  Grid.Row="8"
+                                  IsChecked="{Binding User.AutomaticLogin}"
+                                  IsEnabled="{Binding IsEnabelUpdateField}"
+                                  Grid.Row="11"
                                   Grid.Column="1"
                                   HorizontalAlignment="Right"
                                   Margin="0,5,0,0"/>
 
                         <Button Content="Змінити пароль" 
-                                Grid.Row="8"
+                                Grid.Row="11"
                                 Grid.Column="1"
                                 HorizontalAlignment="Right" 
                                 Height="25"
@@ -170,14 +252,24 @@
                                 Width="200"
                                 VerticalAlignment="Bottom"
                                 Style="{StaticResource StorageButton}" /> 
-                        <Separator Grid.ColumnSpan="2" Grid.Row="9" VerticalAlignment="Center"></Separator>
+                        <Separator Grid.ColumnSpan="2" Grid.Row="10" VerticalAlignment="Center"></Separator>
                         <Button Grid.Column="1"
                                 Width="200"
-                                Grid.Row="10"
+                                Grid.Row="12"
                                 Content="Редагувати" 
                                 Height="34" 
+                                Command="{Binding UpdateUserCommand}"
                                 Style="{StaticResource StorageButton}"
                                 HorizontalAlignment="Right"/>
+                        <Button Grid.Column="1"
+                                Width="200"
+                                Visibility="{Binding SaveButtonVisibiliti}"
+                                Grid.Row="12"
+                                Content="Зберегти" 
+                                Height="34" 
+                                Command="{Binding SaveUserCommand}"
+                                Style="{StaticResource StorageButton}"
+                                HorizontalAlignment="Center"/>
                     </Grid>
                 </Border> 
             </Grid>

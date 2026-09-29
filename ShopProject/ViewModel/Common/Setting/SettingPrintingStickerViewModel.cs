@@ -1,8 +1,10 @@
-﻿using ShopProject.Core.Mvvm;
+﻿using ShopProject.Controls.MessegeBox.Enum;
+using ShopProject.Core.Mvvm;
 using ShopProject.Core.Mvvm.Command;
 using ShopProject.Infrastructure.CompositionRoot.Interface;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Services.Integration.Printing.Interface;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Setting.Interface;
 using System;
 using System.Collections.Generic;
@@ -20,12 +22,12 @@ namespace ShopProject.ViewModel.SettingPage
 
         private ISettingService _settingService;
         private IPrintingStikerService _printingStikerService;
-
-        public SettingPrintingStickerViewModel(ISettingService settingService,IPrintingStikerService printingStikerService)
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        public SettingPrintingStickerViewModel(ISettingService settingService,IPrintingStikerService printingStikerService, IMessageBoxControlService messageBoxControlService)
         {
             _settingService  = settingService;
             _printingStikerService = printingStikerService;
-
+            _messageBoxControlService = messageBoxControlService;
             _saveSettingCommand = CreateCommand(SaveSetting);
             _printTestCheckCommand = CreateCommand(PrintTest);
 
@@ -79,7 +81,7 @@ namespace ShopProject.ViewModel.SettingPage
         private void SaveSetting()
         {
             _settingService.SetSetting<PrinterStickerSetting>(new PrinterStickerSetting() { Printer = SelectedPrinter ,NameCompany = NameCompany });
-            MessageBox.Show("Дані збережено", "informations", MessageBoxButton.OK, MessageBoxImage.Information);
+            _messageBoxControlService.Show("Налаштування збережено", "Успішно", MessageBoxType.Success, "SettingSnadow");
         } 
         public ICommand PrintTestCheck => _printTestCheckCommand;
         private void PrintTest()

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ShopProject.Model.Domain.User;
+using ShopProject.Services.Modules.Common; 
 using System.Threading.Tasks;
 
 namespace ShopProject.Services.Modules.Main.Interface
@@ -10,6 +8,7 @@ namespace ShopProject.Services.Modules.Main.Interface
     {
         public Task<bool> IsConnectServer();
         public Task LoadStartData();
-        public Task LoadUserData();
+        public Task<OperationResult<User>> LoadUserData();
+        public Task LoadSession(); 
     }
 }

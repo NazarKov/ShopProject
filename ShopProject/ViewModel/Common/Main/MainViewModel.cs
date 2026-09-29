@@ -63,14 +63,14 @@ namespace ShopProject.ViewModel.Common.Main
 
         private ICommand _exitUserCommand;
 
-        private IMainAppServise _mainAppServise;
+        private IMainAppServise _mainAppService;
         private ISessionService _sessionService; 
 
 
-        public MainViewModel(IMainAppServise mainAppServise, ISessionService sessionService)
+        public MainViewModel(IMainAppServise mainAppService, ISessionService sessionService)
         {
             _sessionService = sessionService;
-            _mainAppServise = mainAppServise;
+            _mainAppService = mainAppService;
             _userName = string.Empty;
             _page = new Page();
             _statusMenu = new System.Windows.Controls.UserControl();
@@ -206,22 +206,23 @@ namespace ShopProject.ViewModel.Common.Main
         {
 
             InitStartViewButton(); 
-            if (await _mainAppServise.IsConnectServer())
+            if (await _mainAppService.IsConnectServer())
             {
-                await _mainAppServise.LoadStartData();
+                await _mainAppService.LoadStartData();
 
-                if (_sessionService.CheckingSession())
+                if (await _sessionService.CheckingSession())
                 {
-                    await _mainAppServise.LoadUserData();
-                    await SetFieldWindow();
-                }
-                else
-                {
-                    await MediatorService.ExecuteEventAsync("StopTimerCheckConnect");
-                    VisibilitiLostConnectionPage = Visibility.Collapsed;
-                    Page = App.Container.GetViewWithViewModel<AuthorizationView, AuthorizationViewModel>();
+                    if((await _mainAppService.LoadUserData()).IsSuccess)
+                    {
+                        await _mainAppService.LoadSession();
+                        await SetFieldWindow();
+                        return;
+                    }
                 }
 
+                await MediatorService.ExecuteEventAsync("StopTimerCheckConnect");
+                VisibilitiLostConnectionPage = Visibility.Collapsed;
+                Page = App.Container.GetViewWithViewModel<AuthorizationView, AuthorizationViewModel>();
             }
             else
             {
@@ -245,8 +246,9 @@ namespace ShopProject.ViewModel.Common.Main
             {
                 Page = new LoadingView();
                 PageVisibiliti = Visibility.Visible;
-                await _mainAppServise.LoadStartData();
-                await _mainAppServise.LoadUserData();
+                await _mainAppService.LoadStartData();
+                await _mainAppService.LoadUserData();
+                await _mainAppService.LoadSession();
                 await SetFieldWindow();
             });
 
@@ -297,12 +299,19 @@ namespace ShopProject.ViewModel.Common.Main
         } 
         private void OpenAssignedPointOfSale()
         {
-            if (_sessionService.CheckIsOpenShift())
+            if (_sessionService.CheckShiftSetting())
             {
-                Page = App.Container.GetViewWithViewModel<WorkShiftMenuView,WorkShiftMenuViewModel>();
+                if (  _sessionService.CheckIsOpenShift())
+                {
+                    Page = App.Container.GetViewWithViewModel<WorkShiftMenuView,WorkShiftMenuViewModel>();
+                }
+                else
+                {
+                    Page = App.Container.GetViewWithViewModel<AssignedPointsOfSaleView, AssignedPointsOfSaleViewModel>();
+                }
             }
             else
-            {
+            { 
                 Page = App.Container.GetViewWithViewModel<AssignedPointsOfSaleView, AssignedPointsOfSaleViewModel>();
             }
         }  

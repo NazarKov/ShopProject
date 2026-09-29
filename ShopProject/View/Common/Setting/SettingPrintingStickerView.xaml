@@ -192,11 +192,11 @@
                                                     BorderThickness="1"
                                                     CornerRadius="6" Padding="1">
 
-                                                <Grid>
+                                                <!--<Grid>
                                                     <Image Source="{Binding BarCode}" 
                                                            Stretch="UniformToFill" />
 
-                                                </Grid>
+                                                </Grid>-->
                                             </Border>
                                         </Grid>
 

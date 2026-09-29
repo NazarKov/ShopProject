@@ -14,6 +14,7 @@ namespace ShopProjectWebServer.DataBase.Interface.EntityInterface
         void Delete(OperationsRecorderEntity item);
         IEnumerable<OperationsRecorderEntity> GetAll(); 
         IEnumerable<OperationsRecorderEntity> GetByNameAndStatus(string name, TypeStatusOperationRecorder status);
+        OperationsRecorderEntity? GetByFiscalNumber(string fiscalNumber);
 
         public Task<bool> ExistsByName(string name);
     }

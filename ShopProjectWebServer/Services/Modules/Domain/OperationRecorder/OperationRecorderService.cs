@@ -1,5 +1,6 @@
-﻿using ShopProjectDataBase.Entities;  
-using ShopProjectWebServer.DataBase.Interface; 
+﻿using Newtonsoft.Json.Linq;
+using ShopProjectDataBase.Entities;  
+using ShopProjectWebServer.DataBase.Interface;
 using ShopProjectWebServer.Services.Common;
 using ShopProjectWebServer.Services.Common.Enum;
 using ShopProjectWebServer.Services.Modules.Domain.OperationRecorder.Interface;
@@ -118,6 +119,26 @@ namespace ShopProjectWebServer.Services.Modules.Domain.OperationRecorder
             catch (Exception ex)
             {
                 return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+        }
+
+        public OperationResult<OperationRecorderModel> GetByFiscalNumber(string fiscalNumber)
+        {
+            try
+            {
+                var result = _dataBaseService.DataBaseAccess.OperationRecorderTable.GetByFiscalNumber(fiscalNumber);
+                if (result != null)
+                {
+                    return OperationResult<OperationRecorderModel>.Success(result.ToOperationRecorder()); 
+                }
+                else
+                {
+                    return OperationResult<OperationRecorderModel>.Fail("null",ErrorType.NotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<OperationRecorderModel>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
             }
         }
     }

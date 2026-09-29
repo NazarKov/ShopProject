@@ -8,6 +8,7 @@ using ShopProjectWebServer.Services.Modules.Mapping.OperationRecorder;
 using ShopProjectWebServer.Services.Modules.Mapping.TaxObject;
 using ShopProjectWebServer.Services.Modules.Mapping.TaxObjectUser;
 using ShopProjectWebServer.Services.Modules.Mapping.User;
+using System.Xml.Linq;
 using TaxObjectModel = ShopProjectWebServer.Models.Domain.TaxObject.TaxObject;
 
 namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject
@@ -252,6 +253,23 @@ namespace ShopProjectWebServer.Services.Modules.Domain.TaxObject
             {
                 return OperationResult<bool>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
             }
-        } 
+        }
+
+        public async Task<OperationResult<TaxObjectModel>> GetById(Guid id)
+        {
+            try
+            {
+                var result = _dataBaseService.DataBaseAccess.TaxObjectTable.GetById(id);
+                if (result != null)
+                {
+                    return OperationResult<TaxObjectModel>.Success(result.ToTaxObject());
+                } 
+                return OperationResult<TaxObjectModel>.Fail("null",ErrorType.NotFound);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<TaxObjectModel>.Fail(ex.Message, ErrorType.Server, ErrorSource.Database);
+            }
+        }
     }
 }

@@ -1,15 +1,8 @@
-﻿using ShopProject.Model.Domain.SignatureKey;
-using ShopProject.Model.Domain.UserRole;
-using ShopProject.Model.Enum;
-using ShopProject.Model.UI.Product;
+﻿using ShopProject.Model.Enum; 
 using ShopProject.Model.UI.SignatureKey;
 using ShopProject.Model.UI.UserRole;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using System; 
+using System.Linq;  
 
 namespace ShopProject.Model.UI.User
 {
@@ -45,6 +38,21 @@ namespace ShopProject.Model.UI.User
                     return Login;
                 } 
             }
+        }
+        public string SignatureKeyIsCreate
+        {
+            get 
+            { 
+                if (SignatureKey != null && SignatureKey.Signature != null)
+                {
+                    return "Ключ підключено";
+                }
+                else
+                {
+                    return "Ключ відсутній";
+                }
+            }
+
         }
 
     }

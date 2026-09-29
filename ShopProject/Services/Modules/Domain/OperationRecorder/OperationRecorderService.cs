@@ -261,12 +261,12 @@ namespace ShopProject.Services.Modules.Domain.OperationRecorder
                         if (item.STATUS == "Активний")
                         {
                             tempList.Status = item.STATUS;
-                            tempList.TypeStatus = TypeStatusOperationRecorder.Open;
+                            tempList.TypeStatus = TypeStatusOperationRecorder.AvailableForUse;
                         }
                         else if (item.STATUS == "Скасований")
                         {
                             tempList.Status = item.STATUS;
-                            tempList.TypeStatus = TypeStatusOperationRecorder.Closed;
+                            tempList.TypeStatus = TypeStatusOperationRecorder.NotAvailableForUse;
                         }
 
                         var time = item.D_REG;
