@@ -1,6 +1,6 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Services.Integration.Printing;
 using ShopProject.Services.Integration.Printing.Interface;

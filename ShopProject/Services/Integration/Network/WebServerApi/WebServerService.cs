@@ -1,12 +1,8 @@
 ﻿using ShopProject.Services.Integration.Network.ShopProjectWebServerApi; 
-using ShopProject.Services.Integration.Network.WebServerApi.Controller;
-using ShopProject.Services.Integration.Network.WebServerApi.Exception;
+using ShopProject.Services.Integration.Network.WebServerApi.Controller; 
 using ShopProject.Services.Integration.Network.WebServerApi.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+using System; 
+using System.Net.Http; 
 using System.Threading.Tasks;
 
 namespace ShopProject.Services.Integration.Network.WebServerApi
@@ -52,7 +48,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi
                 var result = await Settings.Ping();
                 var time = DateTime.Now;
 
-                if (DateTime.TryParse(result, out time))
+                if (DateTime.TryParse(result.Data, out time))
                 { 
                     return true;
                 }
@@ -60,7 +56,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi
             }
             catch (TaskCanceledException)
             {
-                throw new СonnectionException("Невдалося підключитися до сервера");
+                throw new System.Exception("Невдалося підключитися до сервера");
             }
         }
     }

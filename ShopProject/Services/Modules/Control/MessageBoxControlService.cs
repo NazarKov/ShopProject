@@ -26,8 +26,15 @@ namespace ShopProject.Services.Modules.Control
         {
             if (!string.IsNullOrEmpty(shadowPage))
             {
-                await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible");
-                await MediatorService.ExecuteEventAsync(shadowPage + "SetVissible");
+                if(shadowPage == "VisibilitiShadowPage")
+                {
+                    await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible");
+                }
+                else
+                {
+                    await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible");
+                    await MediatorService.ExecuteEventAsync(shadowPage + "SetVissible");
+                }
             }
             var result = false;
 

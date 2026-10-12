@@ -1,12 +1,9 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Services.Integration.Printing.Interface;
-using ShopProject.Services.Modules.Domain.Product.Interface; 
+using ShopProject.Services.Modules.Domain.Product.Interface;
 using System;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Threading.Tasks; 
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 

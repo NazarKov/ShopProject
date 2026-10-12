@@ -1,5 +1,5 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm;
+using ShopProject.Infrastructure.Mvvm;
 
 namespace ShopProject.Controls.MessegeBox
 {

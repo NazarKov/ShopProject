@@ -11,7 +11,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 {
     public class ProductUnitController
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         public ProductUnitController(HttpClient httpClient)
         {
             _httpClient = httpClient; 
@@ -22,104 +22,54 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Add", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<ProductUnitDto>.Unpacking(responseBody); 
-            return result;
+            return await SendHttpRequest.SendAsync<ProductUnitDto>(() => _httpClient.PostAsync($"/api/ProductUnit/Add", httpContent)); 
         }
 
         public async Task<ApiResponse<bool>> Update(UpdateProductUnitDto unit)
         {
             var content = JsonSerializer.Serialize(unit);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Update", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<bool>(() => _httpClient.PostAsync($"/api/ProductUnit/Update", httpContent)); 
         }
 
         public async Task<ApiResponse<bool>> UpdateParameter(string parameter, object value, UpdateProductUnitDto product)
         {
             var content = JsonSerializer.Serialize(product);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<bool>(() => _httpClient.PostAsync($"/api/ProductUnit/UpdateParameter?parameter={parameter}&value={value.ToString()}", httpContent)); 
         }
 
         public async Task<ApiResponse<bool>> Delete(int id)
         {
             var content = JsonSerializer.Serialize(id.ToString());
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/Delete", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<bool>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<bool>(() => _httpClient.PostAsync($"/api/ProductUnit/Delete", httpContent)); 
         }
 
         public async Task<ApiResponse<PaginatorDto<ProductUnitDto,int>>> GetUnitByCode(string code, PaginatorDto<ProductUnitDto, int> paginator)
         {
             var content = JsonSerializer.Serialize(paginator);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetByCodePageColumn?code={code}", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<PaginatorDto<ProductUnitDto, int>>(() => _httpClient.PostAsync($"/api/ProductUnit/GetByCodePageColumn?code={code}", httpContent)); 
         }
 
         public async Task<ApiResponse<PaginatorDto<ProductUnitDto, int>>> GetByNamePageColumn(string name, PaginatorDto<ProductUnitDto, int> paginator)
         {
             var content = JsonSerializer.Serialize(paginator);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetByNamePageColumn?name={name}",httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<PaginatorDto<ProductUnitDto, int>>(() => _httpClient.PostAsync($"/api/ProductUnit/GetByNamePageColumn?name={name}", httpContent)); 
         }
 
         public async Task<ApiResponse<PaginatorDto<ProductUnitDto, int>>> GetPageColumn(PaginatorDto<ProductUnitDto, int> paginator)
         {
             var content = JsonSerializer.Serialize(paginator);
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/ProductUnit/GetPageColumn",httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<PaginatorDto<ProductUnitDto, int>>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<PaginatorDto<ProductUnitDto, int>>(() => _httpClient.PostAsync($"/api/ProductUnit/GetPageColumn", httpContent)); 
         }
 
         public async Task<ApiResponse<IEnumerable<ProductUnitDto>>> GetAll()
-        { 
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/ProductUnit/GetAll");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<IEnumerable<ProductUnitDto>>.Unpacking(responseBody);
-
-            return result; 
+        {
+            return await SendHttpRequest.SendAsync<IEnumerable<ProductUnitDto>>(() => _httpClient.GetAsync($"/api/ProductUnit/GetAll")); 
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.View.AdminPage.PointOfSale.OperationRecorder;
 using ShopProject.View.AdminPage.PointOfSale.TaxObject;
 using ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder;
-using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject; 
-using System.Collections.ObjectModel; 
+using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;

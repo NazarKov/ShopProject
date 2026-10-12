@@ -1,5 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.View.AdminPage.UserManagement.User;
 using ShopProject.ViewModel.AdminPage.UserManagement.User;

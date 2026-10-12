@@ -1,11 +1,6 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Model.UI.OperationRecorder;
-using ShopProject.Model.UI.TaxObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShopProject.Model.UI.OperationRecorder;
+using ShopProject.Model.UI.TaxObject; 
+using System.Collections.Generic; 
 
 namespace ShopProject.Model.UI.PointOfSale
 {

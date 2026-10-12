@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.Product"
       xmlns:paginator="clr-namespace:ShopProject.View.TemplatePage" 
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:control="clr-namespace:ShopProject.Controls"
+      xmlns:control="clr-namespace:ShopProject.Controls.TextBoxStretching"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800" 
       Title="ProductsDataView">

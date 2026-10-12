@@ -6,7 +6,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Interface
 {
     internal interface ISettingDataBaseController
     {
-        public Task<string> Ping();
+        public Task<ApiResponse<string>> Ping();
 
         public Task<ApiResponse<ControlWebServerDto>> IsAvailableServer();
     }

@@ -1,13 +1,9 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Navigation;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.NetworkUrlScanner.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ShopProject.Services.Modules.NetworkUrlScanner.Interface; 
+using System.Collections.Generic; 
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;

@@ -1,11 +1,7 @@
-﻿using ShopProject.Helpers;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using ShopProject.Core.Mvvm;
-using ShopProject.Model.Navigation;
-using ShopProject.Core.Mvvm.Command;
+﻿using System.Windows.Input;
+using ShopProject.Model.Navigation; 
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Infrastructure.Mvvm;
 
 namespace ShopProject.ViewModel.Common.Start
 {

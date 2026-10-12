@@ -1,4 +1,4 @@
-﻿using ShopProject.Core.Mvvm.Interface;
+﻿using ShopProject.Infrastructure.Mvvm.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

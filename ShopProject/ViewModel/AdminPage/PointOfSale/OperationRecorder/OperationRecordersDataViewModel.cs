@@ -1,25 +1,24 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface; 
+using ShopProject.Controls.Paginator; 
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Command;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.OperationRecorder; 
+using ShopProject.Model.UI.OperationRecorder;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
-using ShopProject.Services.Modules.Domain.OperationRecorder.Interface; 
+using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Mapping.OperationRecorder;
 using ShopProject.View.AdminPage.PointOfSale.OperationRecorder;
-using ShopProject.View.AdminPage.PointOfSale.TaxObject;
-using ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows; 
+using System.Windows;
 using System.Windows.Input;
 
 namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
@@ -35,10 +34,12 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
         private bool _reloadField;
         private readonly IMessageBoxControlService _messageBoxControlService;
         private IOperationRecorderService _operationRecorderService;
-        public OperationRecordersDataViewModel(IOperationRecorderService operationRecorderService, IMessageBoxControlService messageBoxControlService)
+        private IHandlerOperationResultService _handlerOperationResultService;
+        public OperationRecordersDataViewModel(IOperationRecorderService operationRecorderService, IMessageBoxControlService messageBoxControlService ,IHandlerOperationResultService handlerOperationResultService)
         {  
             _operationRecorderService = operationRecorderService;
             _messageBoxControlService = messageBoxControlService;
+            _handlerOperationResultService = handlerOperationResultService;
             _operationRecorders = new List<OperationRecorderModel>();
             _paginator = new PaginatorViewModel();
             _statusOperationRecorder = new List<string>();
@@ -48,8 +49,8 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
 
             _updateGridViewCommad = CreateCommandAsync(async () => { _reloadField = false; SearchItem = string.Empty; SelectedStatusOperationRecorder = 0; SelectIndexCountShowList = 0; await SetFieldPage(); });
             _searchItemCommand = CreateCommandAsync(DebounceSearch);
-            _openCreateOperationRecorderWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateOperationRecorederView, CreateOperationRecorederViewModel>().Show(); });
-            _openCreateOperationRecorderFromKeyWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateOperationRecorderFromKeyView,CreateOperationRecorderFromKeyViewModel>().Show();});
+            _openCreateOperationRecorderWindowCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateOperationRecorederView, CreateOperationRecorederViewModel>()); });
+            _openCreateOperationRecorderFromKeyWindowCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateOperationRecorderFromKeyView,CreateOperationRecorderFromKeyViewModel>());});
             MediatorService.AddEventAsync(NavigationButton.ReloadOperationRecroder.ToString(), async () => { await SafeExecuteAsync(SetFieldPage); });
 
             _shadowVisibility = Visibility.Collapsed;
@@ -87,7 +88,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -105,7 +106,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
             set
             {
                 _selectedStatusOperationRecorder = value; OnPropertyChanged(nameof(SelectedStatusOperationRecorder));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -166,7 +167,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
             var result = await _operationRecorderService.GetPageColumn(page, countCoulmn, Enum.GetValues<TypeStatusOperationRecorder>().ElementAt(SelectedStatusOperationRecorder));
-            if (result != null)
+            if (result.IsSuccess)
             {
                 var paginator = result.Data;
                 if (reloadbutton)
@@ -188,8 +189,9 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                 OperationRecorders = new List<OperationRecorderModel>(paginator.Data.ToOperationRecorderModel());
                 _isReadyUpdateDataGriedView = true;
             }
-            else if (result.IsError)
+            else  
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 OperationRecorders = new List<OperationRecorderModel>();
                 Paginator.CountButton = 0;
             }
@@ -253,8 +255,9 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                 }
                 OperationRecorders = new List<OperationRecorderModel>(paginator.Data.ToOperationRecorderModel());
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 OperationRecorders = new List<OperationRecorderModel>();
                 Paginator.CountButton = 0;
             }
@@ -274,8 +277,8 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                     var item = ((OperationRecorderModel)operationRecorders[0]);
                     if (item != null && !item.LoadTaxServer)
                     {
-                        _operationRecorderService.SetOperationRecordeOnSession(item.ToOperationRecorder());
-                        App.Container.GetNewViewWithViewModel<UpdateOperationRecorderView, UpdateOperationRecorderViewModel>().Show();
+                        _operationRecorderService.SetOperationRecordeOnSession(item.ToOperationRecorder()); 
+                        App.Container.GetNewViewWithViewModel<UpdateOperationRecorderView, UpdateOperationRecorderViewModel>().ShowDialog();
                     }
                     else
                     {
@@ -306,6 +309,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
                         }
                     }
@@ -335,6 +339,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
                         }
                     }

@@ -1,13 +1,14 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Model.Domain.Notification; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.OperationRecorder; 
+using ShopProject.Model.UI.OperationRecorder;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.Domain.OperationRecorder.Interface; 
-using ShopProject.Services.Modules.Mapping.OperationRecorder; 
-using System; 
+using ShopProject.Services.Modules.Common.Interface;
+using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
+using ShopProject.Services.Modules.Mapping.OperationRecorder;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -21,10 +22,12 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
         private ICommand _clearWindowCommand;
 
         private IOperationRecorderService _operationRecorderService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public CreateOperationRecorederViewModel(IOperationRecorderService operationRecorderService)
+        public CreateOperationRecorederViewModel(IOperationRecorderService operationRecorderService, IHandlerOperationResultService handlerOperationResultService)
         {
             _operationRecorderService = operationRecorderService;
+            _handlerOperationResultService = handlerOperationResultService;
             _error = string.Empty;
             _success = string.Empty;
             _operationRecorderModel = new OperationRecorderModel();
@@ -87,7 +90,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {

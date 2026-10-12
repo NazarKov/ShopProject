@@ -1,10 +1,10 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm; 
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Services.Modules.Control;
 using ShopProject.Services.Modules.Control.Interface;
-using ShopProject.Services.Modules.Setting.Interface; 
+using ShopProject.Services.Modules.Setting.Interface;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;

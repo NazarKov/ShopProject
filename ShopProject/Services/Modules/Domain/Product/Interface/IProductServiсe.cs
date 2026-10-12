@@ -22,8 +22,9 @@ namespace ShopProject.Services.Modules.Domain.Product.Interface
         public Task<OperationResult<ProductModel>> SearchByBarCode(string item);
 
 
-        public Task<ProductsInfo> GetProductStatistics(); 
- 
+        public Task<OperationResult<ProductsInfo>> GetProductStatistics();
+
+
         public List<ProductModel> ContertIListToList(IList list);
 
         public void SetProductOnSession(ShopProject.Model.Domain.Product.Product item);

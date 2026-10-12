@@ -1,12 +1,13 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface; 
+using ShopProject.Controls.Paginator; 
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Command;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.TaxObject; 
+using ShopProject.Model.UI.TaxObject;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.TaxObject;
@@ -18,7 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input; 
+using System.Windows.Input;
 
 namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 {
@@ -36,11 +37,13 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 
         private readonly IMessageBoxControlService _messageBoxControlService;
         private ITaxObjectService _taxObjectService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public TaxObjectsDataViewModel(ITaxObjectService taxObjectService, IMessageBoxControlService messageBoxControlService)
+        public TaxObjectsDataViewModel(ITaxObjectService taxObjectService, IMessageBoxControlService messageBoxControlService,IHandlerOperationResultService handlerOperationResultService)
         {
             _taxObjectService = taxObjectService;
             _messageBoxControlService = messageBoxControlService;
+            _handlerOperationResultService = handlerOperationResultService;
             _paginator = new  PaginatorViewModel();
             _taxObjects = new List<TaxObjectModel>();
             _statusTaxObject = new List<string>(); 
@@ -49,8 +52,8 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
  
             _updateGridViewCommad = CreateCommandAsync(async () => { _reloadField = false; SearchItem = string.Empty; SelectedStatusTaxObject = 0; SelectIndexCountShowList = 0; await SetFieldPage(); });
             _searchItemCommand = CreateCommandAsync(DebounceSearch);
-            _openCreateTaxObjectWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateTaxObjectView, CreateTaxObjectViewModel>().Show(); });
-            _openCreateTaxObjectForKeyWindwoCommmad = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateTaxObjectFromKeyView, CreateTaxObjectFromKeyViewModel>().Show(); });
+            _openCreateTaxObjectWindowCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateTaxObjectView, CreateTaxObjectViewModel>()); });
+            _openCreateTaxObjectForKeyWindwoCommmad = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateTaxObjectFromKeyView, CreateTaxObjectFromKeyViewModel>()); });
 
             MediatorService.AddEventAsync(NavigationButton.ReloadTaxObject.ToString(), async () => { await SafeExecuteAsync(SetFieldPage); });
 
@@ -90,7 +93,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -108,7 +111,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             set
             {
                 _selectedStatusTaxObject = value; OnPropertyChanged(nameof(SelectedStatusTaxObject));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
         private string _searchItem;
@@ -166,7 +169,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
             var result = await _taxObjectService.GetPageColumn(page, countCoulmn,Enum.GetValues<TypeStatusTaxObject>().ElementAt(SelectedStatusTaxObject));
-            if (result != null)
+            if (result.IsSuccess)
             {
                 var paginator = result.Data;
                 if (reloadbutton)
@@ -188,8 +191,9 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                 TaxObjects  = new List<TaxObjectModel>(paginator.Data.ToTaxObjectModel());
                 _isReadyUpdateDataGriedView = true;
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 TaxObjects = new List<TaxObjectModel>();
                 Paginator.CountButton = 0;
             }
@@ -252,8 +256,9 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                 }
                 TaxObjects = new List<TaxObjectModel>(paginator.Data.ToTaxObjectModel());
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 TaxObjects = new List<TaxObjectModel>();
                 Paginator.CountButton = 0;
             }
@@ -271,7 +276,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                     if (taxObject != null)
                     {
                         _taxObjectService.SetBindingTaxObjectTOSession(taxObject.ToTaxObject());
-                        App.Container.GetNewViewWithViewModel<BindingOperationRecorderToTaxObjectView, BindingOperationRecorderToTaxObjectViewModel>().Show();
+                        App.Container.GetNewViewWithViewModel<BindingOperationRecorderToTaxObjectView, BindingOperationRecorderToTaxObjectViewModel>().ShowDialog();
                     }
                 }
                 else
@@ -322,6 +327,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
                         }
                     }
@@ -351,6 +357,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "PointOfSaleSnadow");
                         }
                     }
@@ -374,7 +381,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                     if (item!=null && !item.LoadTaxServer)
                     {
                         _taxObjectService.SetBindingTaxObjectTOSession(item.ToTaxObject());
-                        App.Container.GetNewViewWithViewModel<UpdateTaxObjectView, UpdateTaxObjectViewModel>().Show();
+                        App.Container.GetNewViewWithViewModel<UpdateTaxObjectView, UpdateTaxObjectViewModel>().ShowDialog();
                     }
                     else
                     {

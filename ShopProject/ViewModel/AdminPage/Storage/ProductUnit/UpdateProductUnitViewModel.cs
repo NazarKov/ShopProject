@@ -1,17 +1,17 @@
-﻿using ShopProject.Core.Mvvm; 
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Notification; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Infrastructure.Mediator.Notifications; 
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
-using ShopProject.Services.Modules.Mapping.ProductUnit; 
+using ShopProject.Services.Modules.Mapping.ProductUnit;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,10 +24,13 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
         private readonly ICommand _updateProductUnitCommand;
         private readonly ICommand _exitWindowCommand;
         private IProductUnitServiсe _productUnitServiсe;
-         
-        public UpdateProductUnitViewModel(IProductUnitServiсe productUnitServiсe)
+        private IHandlerOperationResultService _handlerOperationResultService;
+
+
+        public UpdateProductUnitViewModel(IProductUnitServiсe productUnitServiсe,IHandlerOperationResultService handlerOperationResultService)
         {
-            _productUnitServiсe = productUnitServiсe; 
+            _productUnitServiсe = productUnitServiсe;
+            _handlerOperationResultService = handlerOperationResultService;
             _updateProductUnitCommand = CreateCommandAsync(UpdateProductUnit);
             _statusUnit = new List<string>();
             _exitWindowCommand = CreateCommand(() => { CloseView?.Invoke(); });
@@ -140,7 +143,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductUnitPage
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {

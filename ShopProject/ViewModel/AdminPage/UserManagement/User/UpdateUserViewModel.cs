@@ -1,12 +1,13 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.User;
 using ShopProject.Model.UI.UserRole;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Domain.UserRole.Interface;
 using ShopProject.Services.Modules.Mapping.User;
@@ -30,14 +31,15 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
 
         private readonly IUserRoleService _userRoleService;
         private readonly IUserService _userService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
 
         private string _nameFile; 
 
-        public UpdateUserViewModel(IUserRoleService userRoleService,IUserService userService)
+        public UpdateUserViewModel(IUserRoleService userRoleService,IUserService userService,IHandlerOperationResultService handlerOperationResultService)
         {
             _userService = userService;
             _userRoleService = userRoleService;
-
+            _handlerOperationResultService = handlerOperationResultService;
             _user = new UserModel();
             _nameFile = string.Empty; 
             _pathKey = string.Empty;
@@ -208,7 +210,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {
@@ -236,7 +238,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {

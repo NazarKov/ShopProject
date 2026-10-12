@@ -1,23 +1,24 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Controls.Paginator; 
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Command;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Paginator;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.Product; 
+using ShopProject.Model.UI.Product;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Common; 
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Domain.Storage.Interface;
-using ShopProject.Services.Modules.Mapping.Product; 
+using ShopProject.Services.Modules.Mapping.Product;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.Tools;
 using ShopProject.View.Integration.Excel.Export;
 using ShopProject.View.Integration.Excel.Import;
-using ShopProject.View.Integration.Printing; 
+using ShopProject.View.Integration.Printing;
 using ShopProject.ViewModel.Integration.Printing;
 using System;
 using System.Collections;
@@ -33,24 +34,25 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 {
     internal class ProductsDataViewModel:ViewModel<ProductsDataViewModel> , IViewModelLoadResourse
     {
-        private ICommand _openCreateProductWindowCommand; 
-        private ICommand _updateSizeGridCommand;
-        private ICommand _updateProductDataGridViewCommand;
-        private ICommand _openDeliveriOfProductCommand;
-        private ICommand _openExportProductToExelCommand;
-        private ICommand _openImportProductWhichExelCommand;
-        private ICommand _searchCommand;
+        private readonly ICommand _openCreateProductWindowCommand; 
+        private readonly ICommand _updateSizeGridCommand;
+        private readonly ICommand _updateProductDataGridViewCommand;
+        private readonly ICommand _openDeliveriOfProductCommand;
+        private readonly ICommand _openExportProductToExelCommand;
+        private readonly ICommand _openImportProductWhichExelCommand;
+        private readonly ICommand _searchCommand;
 
         private readonly IProductServiсe _productService;
         private readonly IStorageService _storageService;
         private readonly IMessageBoxControlService _messageBoxControlService;
-        private bool _reloadField;
-         
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
+        private bool _reloadField; 
         private bool _isReadyUpdateDataGriedView;  
-        public ProductsDataViewModel(IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService , IStorageService storageService)
+        public ProductsDataViewModel(IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService , IStorageService storageService, IHandlerOperationResultService handlerOperationResultService)
         {
             _productService = productServiсe;
             _storageService = storageService;
+            _handlerOperationResultService = handlerOperationResultService;
             _productslist = new List<ProductModel>(); 
             _statusProducts = new List<string>();
             _countShowList = new List<string>();
@@ -60,9 +62,8 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             _isReadyUpdateDataGriedView = false; 
             _searchItem = string.Empty;
             _shadowVisibility = Visibility.Collapsed; 
-            _reloadField = false;
-
-            _openCreateProductWindowCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateProductView, CreateProductViewModel>().Show(); }); 
+            _reloadField = false; 
+            _openCreateProductWindowCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateProductView, CreateProductViewModel>()); }); 
             _openDeliveriOfProductCommand = CreateCommand(() => { new DeliveryProductView().Show(); });
             _openExportProductToExelCommand = CreateCommand(() => { new ExportExcelProductView().Show(); });
             _openImportProductWhichExelCommand = CreateCommand(() => { new ImportProductExcelView().Show(); });
@@ -72,8 +73,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
 
             Paginator.Callback = async (int i) => { await UpdateDataGridView(i); };
 
-            MediatorService.AddEventAsync(NavigationButton.ReloadProduct.ToString(), async () =>{ await SafeExecuteAsync(SetFieldPage); });
-           
+            MediatorService.AddEventAsync(NavigationButton.ReloadProduct.ToString(), async () =>{ await SafeExecuteAsync(SetFieldPage); }); 
         }
 
         public async Task LoadResourse()
@@ -113,7 +113,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
                 if (_reloadField)
                 { 
-                    Task.Run(async () => { await UpdateDataGridView(); });
+                    _= UpdateDataGridView();
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 _selectedStatusProduct = value; OnPropertyChanged(nameof(SelectedStatusProduct));
                 if (_reloadField)
                 {
-                    Task.Run(async () => { await UpdateDataGridView(); });
+                    _= UpdateDataGridView();
                 }
             }
         }
@@ -203,10 +203,18 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private async Task SetFiledStatusBar()
         {
             var result = await _productService.GetProductStatistics();
-            StatusBarCountProduct = $"Кількість товарів: {result.CountProductAllStatus}   " +
-                                    $"Кількість товарів в наявності: {result.CountProductInStockStatus}  " +
-                                    $"Кількість товарів не в наявносіть: {result.CountProductOutStockStatus}  " +
-                                    $"Кількксть товарів в архіві: {result.CountProductArchivedStauts}  ";
+            if (result.IsSuccess)
+            {
+                StatusBarCountProduct = $"Кількість товарів: {result.Data.CountProductAllStatus}   " +
+                                   $"Кількість товарів в наявності: {result.Data.CountProductInStockStatus}  " +
+                                   $"Кількість товарів не в наявносіть: {result.Data.CountProductOutStockStatus}  " +
+                                   $"Кількксть товарів в архіві: {result.Data.CountProductArchivedStauts}  ";
+            }
+            else
+            {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
+            }
+            
         }
 
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = true)
@@ -214,29 +222,34 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             var result = await _productService.GetPageColumn(page, countCoulmn, Enum.Parse<TypeStatusProduct>(Enum.GetNames(typeof(TypeStatusProduct)).ToList().ElementAt(SelectedStatusProduct)));
             if (result.IsSuccess)
             {
-                if (reloadbutton)
+                if (result.Data != null)
                 {
-                    
-                    if (result.Data.Pages == 0)
+                    if (reloadbutton)
                     {
-                        Paginator.CountButton = 1; 
-                    }
-                    else
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            Paginator.ReloadButton = true;
-                            Paginator.CountButton = result.Data.Pages;
-                        }); 
-                    }
-                }
-                if (result.Data == null)
-                {
-                    throw new Exception("Невдалося завантажити товари");
-                }
 
-                ProductList = result.Data.Data.ToProductModel().ToList();
+                        if (result.Data.Pages == 0)
+                        {
+                            Paginator.CountButton = 1;
+                        }
+                        else
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                Paginator.ReloadButton = true;
+                                Paginator.CountButton = result.Data.Pages;
+                            });
+                        }
+                    }
+                    if (result.Data.Data != null)
+                    {
+                        ProductList = result.Data.Data.ToProductModel().ToList();
+                    }
+                } 
                 _isReadyUpdateDataGriedView = true;
+            }
+            else
+            {
+               await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
             }
         }
 
@@ -314,16 +327,12 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 }
                 ProductList = result.Data.Data.ToProductModel().ToList();
             }
-            else if (result.IsError)
-            {
-                ProductList = new List<ProductModel>();
-                Paginator.CountButton = 0;
-            }
             else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 ProductList = new List<ProductModel>();
-                throw new Exception("Невдалося завантажити товари");
-            }
+                Paginator.CountButton = 0;
+            } 
         }
 
 
@@ -379,6 +388,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "StorageSnadow"); 
                         } 
                     }
@@ -414,6 +424,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "StorageSnadow");
                         }
                     }
@@ -439,7 +450,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             if (products.Count == 1)
             {
                 _productService.SetProductOnSession(products[0]);
-                App.Container.GetNewViewWithViewModel<StickerPrintView,StickerPrintViewModel>().Show();
+                ShowWindow(App.Container.GetNewViewWithViewModel<StickerPrintView, StickerPrintViewModel>()); 
             }
             else
             {

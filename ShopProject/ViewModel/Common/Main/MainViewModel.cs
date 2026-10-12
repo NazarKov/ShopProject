@@ -1,40 +1,42 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Navigation;
+using ShopProject.Services.Infrastructure.ControlWindow.Interface;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Main.Interface;
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.View.AdminPage.Dashboard;
 using ShopProject.View.AdminPage.PointOfSale;
 using ShopProject.View.AdminPage.Storage;
-using ShopProject.View.AdminPage.Storage.Tools; 
+using ShopProject.View.AdminPage.Storage.Tools;
 using ShopProject.View.AdminPage.UserManagement;
 using ShopProject.View.Common.Authorization;
-using ShopProject.View.Common.ConnectionLost;
+using ShopProject.View.Common.Main.MainComponent.DeviceStatus;
+using ShopProject.View.Common.Main.MainComponent.LostConnection;
 using ShopProject.View.Common.Setting;
 using ShopProject.View.Common.Start;
 using ShopProject.View.GiftCertificatesPage;
 using ShopProject.View.HomePage.HomePageComponent;
-using ShopProject.View.Integration.DeviceStatus;
 using ShopProject.View.Integration.Excel.Export;
 using ShopProject.View.Integration.Excel.Import;
 using ShopProject.View.Integration.Printing;
-using ShopProject.View.Integration.Windows.Service; 
-using ShopProject.View.TemplatePage; 
+using ShopProject.View.Integration.Windows.Service;
+using ShopProject.View.TemplatePage;
 using ShopProject.View.UserPage.PointOfSale;
 using ShopProject.View.UserPage.PointOfSale.SaleMenu;
 using ShopProject.ViewModel.AdminPage.Dashboard;
-using ShopProject.ViewModel.AdminPage.PointOfSale; 
+using ShopProject.ViewModel.AdminPage.PointOfSale;
+using ShopProject.ViewModel.AdminPage.Storage;
 using ShopProject.ViewModel.AdminPage.UserManagement;
 using ShopProject.ViewModel.Common.Authorization;
-using ShopProject.ViewModel.Common.ConnectionLost;
+using ShopProject.ViewModel.Common.Main.MainComponent.DeviceStatus;
+using ShopProject.ViewModel.Common.Main.MainComponent.LostConnection;
 using ShopProject.ViewModel.Common.Setting;
 using ShopProject.ViewModel.Common.Start;
 using ShopProject.ViewModel.HomePage.HomePageComponent;
-using ShopProject.ViewModel.Integration.DeviceStatus;
 using ShopProject.ViewModel.Integration.Printing;
 using ShopProject.ViewModel.Integration.Windows.Service;
-using ShopProject.ViewModel.StoragePage;
 using ShopProject.ViewModel.UserPage.PointOfSale;
 using ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu;
 using System.Threading.Tasks;
@@ -46,31 +48,33 @@ namespace ShopProject.ViewModel.Common.Main
 {
     internal class MainViewModel : ViewModel<MainViewModel> , IViewModelLoadResourse
     {
-        private ICommand _exitAppCommand;
-        private ICommand _openSettingCommand;
-        private ICommand _openStorageCommand;
-        private ICommand _openExportProductCommand;
-        private ICommand _openImportProductCommand;
-        private ICommand _openCreateStikerCommand; 
-        private ICommand _openAssignedPointOfSaleCommand;
+        private readonly ICommand _exitAppCommand;
+        private readonly ICommand _openSettingCommand;
+        private readonly ICommand _openStorageCommand;
+        private readonly ICommand _openExportProductCommand;
+        private readonly ICommand _openImportProductCommand;
+        private readonly ICommand _openCreateStikerCommand; 
+        private readonly ICommand _openAssignedPointOfSaleCommand;
+        private readonly ICommand _openDeliveryOfGoodsCommand;
+        private readonly ICommand _openUsersPageCommand;
+        private readonly ICommand _openPoinOfSalePageCommand; 
+       // private ICommand _openStatisticsPageCommand;  
+        private readonly ICommand _openGiftCertificatesPageCommand;
+        private readonly ICommand _openNotificationPanelCommand; 
 
-        private ICommand _openDeliveryOfGoodsCommand;
-        private ICommand _openUsersPageCommand;
-        private ICommand _openPoinOfSalePageCommand; 
-        private ICommand _openStatisticsPageCommand;  
-        private ICommand _openGiftCertificatesPageCommand;
-        private ICommand _openNotificationPanelCommand; 
+        private readonly ICommand _exitUserCommand;
 
-        private ICommand _exitUserCommand;
+        private readonly IMainAppServise _mainAppService;
+        private readonly ISessionService _sessionService;
+        private readonly IMessageBoxControlService _messageBoxControlService;
+        private readonly IControlWindowService _controlWindowService;
 
-        private IMainAppServise _mainAppService;
-        private ISessionService _sessionService; 
-
-
-        public MainViewModel(IMainAppServise mainAppService, ISessionService sessionService)
+        public MainViewModel(IMainAppServise mainAppService, ISessionService sessionService, IMessageBoxControlService messageBoxControlService,IControlWindowService controlWindowService)
         {
             _sessionService = sessionService;
             _mainAppService = mainAppService;
+            _messageBoxControlService = messageBoxControlService;
+            _controlWindowService = controlWindowService;
             _userName = string.Empty;
             _page = new Page();
             _statusMenu = new System.Windows.Controls.UserControl();
@@ -170,15 +174,15 @@ namespace ShopProject.ViewModel.Common.Main
             set { _isEnableMenuButton = value; OnPropertyChanged(nameof(IsEnableMenuButton)); }
         }
 
-        private System.Windows.Controls.UserControl _statusMenu;
-        public System.Windows.Controls.UserControl StatusMenu
+        private UserControl _statusMenu;
+        public  UserControl StatusMenu
         {
             get { return _statusMenu; }
             set { _statusMenu = value; OnPropertyChanged(nameof(StatusMenu)); }
         }
 
-        private System.Windows.Controls.UserControl _notification;
-        public System.Windows.Controls.UserControl Notification
+        private UserControl _notification;
+        public  UserControl Notification
         {
             get { return _notification; }
             set {  _notification=value; OnPropertyChanged(nameof(Notification));}
@@ -212,12 +216,19 @@ namespace ShopProject.ViewModel.Common.Main
 
                 if (await _sessionService.CheckingSession())
                 {
-                    if((await _mainAppService.LoadUserData()).IsSuccess)
+                    var result = await _mainAppService.LoadUserData(); 
+                    if (result.IsSuccess)
                     {
-                        await _mainAppService.LoadSession();
-                        await SetFieldWindow();
-                        return;
-                    }
+                        if (result.Data != null)
+                        {
+                            if (result.Data.AutomaticLogin)
+                            {
+                                await _mainAppService.LoadSession();
+                                await SetFieldWindow();
+                                return;
+                            }
+                        }
+                    } 
                 }
 
                 await MediatorService.ExecuteEventAsync("StopTimerCheckConnect");
@@ -241,6 +252,7 @@ namespace ShopProject.ViewModel.Common.Main
             MediatorService.AddEventAsync("LostConnectSetHidden", async () => { VisibilitiShadowLostConnectionPage = Visibility.Collapsed; VisibilitiLostConnectionPage = Visibility.Collapsed; IsEnableMenuButton = true; });
             MediatorService.AddEventAsync("VisibilitiShadowSetVisible", async () => { VisibilitiShadowPage = Visibility.Visible; });
             MediatorService.AddEventAsync("VisibilitiShadowSetHidden", async () => { VisibilitiShadowPage = Visibility.Collapsed; });
+            MediatorService.AddEvent("CloseSecondaryWindows", _controlWindowService.CloseSecondaryWindows);
 
             MediatorService.AddEventAsync("StartApp", async () =>
             {
@@ -260,7 +272,14 @@ namespace ShopProject.ViewModel.Common.Main
         { 
             MediatorService.AddNavigation(NavigationButton.RedirectToAssignedPointsOfSalePage, () => { Page = App.Container.GetViewWithViewModel<AssignedPointsOfSaleView, AssignedPointsOfSaleViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectToWorkShiftMenuPage, () => { Page = App.Container.GetViewWithViewModel<WorkShiftMenuView, WorkShiftMenuViewModel>(); });
-            MediatorService.AddNavigation(NavigationButton.RedirectToAuthorizationPage, () => { Page = App.Container.GetViewWithViewModel<AuthorizationView,AuthorizationViewModel>(); });
+            MediatorService.AddNavigation(NavigationButton.RedirectToAuthorizationPage, () => { VisibilityMenu = Visibility.Collapsed; Page = App.Container.GetViewWithViewModel<AuthorizationView,AuthorizationViewModel>(); });
+            MediatorService.AddEventAsync("ErrorUnAuthorization", 
+                async () =>
+                {
+                    await RemoveSession();
+                    _controlWindowService.ActivateMainWindow();
+                    await _messageBoxControlService.Show("Сесія користувача завершенна авторизуйтеся повторно", "Information", ShopProject.Controls.MessegeBox.Enum.MessageBoxType.Information, "AuthorizationSnadow"); 
+                });
             MediatorService.AddNavigation(NavigationButton.RedirectServerSelectionPage, () => { Page = App.Container.GetViewWithViewModel<ServerSelectionView, ServerSelectionViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectStartPage, () => { Page = App.Container.GetViewWithViewModel<StartView, StartViewModel>(); });
             MediatorService.AddNavigation(NavigationButton.RedirectToRegisterWindwoServicePage, () => { Page = App.Container.GetViewWithViewModel<RegisterWindowsServiceView, RegisterWindowsServiceViewModel>(); });
@@ -314,11 +333,15 @@ namespace ShopProject.ViewModel.Common.Main
             { 
                 Page = App.Container.GetViewWithViewModel<AssignedPointsOfSaleView, AssignedPointsOfSaleViewModel>();
             }
-        }  
+        }
+
+       
+
         private void ExitApp()
         {
             System.Windows.Application.Current.Shutdown();
         }
+
 
         public ICommand OpenNotificationPanelCommand => _openNotificationPanelCommand;
         private async Task OpenNotificationPanel()
@@ -357,7 +380,7 @@ namespace ShopProject.ViewModel.Common.Main
         public ICommand OpenUsersCommand => _openUsersPageCommand; 
         public ICommand OpenPoinOfSalePageCommand => _openPoinOfSalePageCommand; 
         public ICommand ExitUserCommand => _exitUserCommand;
-        public ICommand OpenStatisticsPageCommand => _openStatisticsPageCommand;  
+        //public ICommand OpenStatisticsPageCommand => _openStatisticsPageCommand;  
 
         public ICommand OpenGiftCertificatesPageCommand => _openGiftCertificatesPageCommand; 
     }

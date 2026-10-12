@@ -1,11 +1,12 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Model.Domain.Notification; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Infrastructure.Mediator.Notifications; 
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
-using ShopProject.Services.Modules.Mapping.ProductUnit; 
+using ShopProject.Services.Modules.Mapping.ProductUnit;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,10 +20,12 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
         private readonly ICommand _createProductUnitCommand;
         private readonly ICommand _exitWindowCommand;
         private IProductUnitServiсe _productUnitServiсe;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public CreateProductUnitViewModel(IProductUnitServiсe productUnitServiсe)
+        public CreateProductUnitViewModel(IProductUnitServiсe productUnitServiсe,IHandlerOperationResultService handlerOperationResultService)
         {
-            _productUnitServiсe = productUnitServiсe; 
+            _productUnitServiсe = productUnitServiсe;
+            _handlerOperationResultService = handlerOperationResultService;
             _createProductUnitCommand = CreateCommandAsync(CreateProductUnit,SetError);
             _exitWindowCommand = CreateCommand(() => { CloseView?.Invoke(); });
             
@@ -95,7 +98,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result));
             }
             else
             {

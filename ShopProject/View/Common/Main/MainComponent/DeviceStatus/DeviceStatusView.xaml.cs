@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ShopProject.View.Common.ConnectionLost
+namespace ShopProject.View.Common.Main.MainComponent.DeviceStatus
 {
     /// <summary>
-    /// Interaction logic for ConnectionLostView.xaml
+    /// Interaction logic for DeviceStatusView.xaml
     /// </summary>
-    public partial class ConnectionLostView : Page
+    public partial class DeviceStatusView : UserControl
     {
-        public ConnectionLostView()
+        public DeviceStatusView()
         {
             InitializeComponent();
         }

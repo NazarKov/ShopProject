@@ -1,15 +1,16 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
 using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Paginator;
-using ShopProject.Model.Enum; 
+using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
-using ShopProject.Services.Modules.Mapping.ProductUnit; 
+using ShopProject.Services.Modules.Mapping.ProductUnit;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
 using ShopProject.ViewModel.StoragePage.ProductUnitPage;
 using System;
@@ -33,13 +34,15 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
         private IProductUnitServiсe _productUnitServiсe; 
         private ICommand _searchItemCommand;
         private readonly IMessageBoxControlService _messageBoxControlService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
         private bool _isReadyUpdateDataGriedView; 
         private bool _reloadField;
-        public ProductUnitsDataViewModel(IProductUnitServiсe productUnitServiсe, IMessageBoxControlService messageBoxControlService)
+        public ProductUnitsDataViewModel(IProductUnitServiсe productUnitServiсe, IMessageBoxControlService messageBoxControlService,IHandlerOperationResultService handlerOperationResultService)
         {
             _productUnitServiсe = productUnitServiсe;
             _messageBoxControlService = messageBoxControlService;
-            _openCreateProductUnitPageCommand = CreateCommand(() => {  App.Container.GetNewViewWithViewModel<CreateProductUnitView,CreateProductUnitViewModel>().Show(); });
+            _handlerOperationResultService = handlerOperationResultService;
+            _openCreateProductUnitPageCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateProductUnitView, CreateProductUnitViewModel>()); });
             _updateGridViewCommad = CreateCommandAsync(async () => { _reloadField = false; SearchItem = string.Empty; SelectedStatusUnit = 0; SelectIndexCountShowList = 0; await SetFieldPage(); });
             _searchItemCommand = CreateCommandAsync(DebounceSearch);
 
@@ -94,7 +97,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -112,7 +115,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
             set
             {
                 _selectedStatusUnit = value; OnPropertyChanged(nameof(SelectedStatusUnit));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -178,30 +181,33 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         { 
             var result = await _productUnitServiсe.GetPageColumn(page, countCoulmn, Enum.GetValues<TypeStatusUnit>().ElementAt(SelectedStatusUnit));
-            if (result != null)
+            if (result.IsSuccess)
             {
                 var paginator = result.Data;
-                if (reloadbutton)
+                if (paginator != null)
                 {
-                    if (paginator.Pages == 0)
+                    if (reloadbutton)
                     {
-                        Paginator.CountButton = 1;
+                        if (paginator.Pages == 0)
+                        {
+                            Paginator.CountButton = 1;
+                        }
+                        else
+                        {
+                            Paginator.ReloadButton = true;
+                            Paginator.CountButton = paginator.Pages;
+                        }
                     }
-                    else
+                    if (paginator.Data != null)
                     {
-                        Paginator.ReloadButton = true;
-                        Paginator.CountButton = paginator.Pages;
+                        Units = paginator.Data.ToProductUnitModel().ToList();
+                        _isReadyUpdateDataGriedView = true;
                     }
-                }
-                if (result.Data == null)
-                {
-                    throw new Exception("Невдалося завантажити одиниці");
-                }
-                Units = paginator.Data.ToProductUnitModel().ToList();
-                _isReadyUpdateDataGriedView = true;
+                } 
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 Units = new List<ProductUnitModel>();
                 Paginator.CountButton = 0;
             }
@@ -275,8 +281,9 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
                 }
                 Units = paginator.Data.ToProductUnitModel().ToList();
             }
-            else if (result.IsError)
+           else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 Units = new List<ProductUnitModel>();
                 Paginator.CountButton = 0;
             }
@@ -301,11 +308,11 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
             }
             else if (items.Count > 1)
             {
-                _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
             else
             {
-                _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             } 
         }
 
@@ -321,25 +328,25 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
                 var result = await _productUnitServiсe.Delete(((ProductUnitModel)items[0]).ToProductUnit());
                 if (result.IsSuccess)
                 {
-                    _messageBoxControlService.Show("Одиницю видалено", "Informations", MessageBoxType.Success, "StorageSnadow");
+                    await _messageBoxControlService.Show("Одиницю видалено", "Informations", MessageBoxType.Success, "StorageSnadow");
                     await UpdateDataGridView();
                 }
                 else if (result.IsError)
                 {
-                    _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "StorageSnadow");
                 }
                 else
                 {
-                    _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
                 }
             }
             else if (items.Count > 1)
             {
-                _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
             else
             {
-                _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
 
         }
@@ -358,25 +365,25 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
 
                 if (result.IsSuccess)
                 {
-                    _messageBoxControlService.Show("Одиницю оновлено", "Informations", MessageBoxType.Success, "StorageSnadow"); 
+                    await _messageBoxControlService.Show("Одиницю оновлено", "Informations", MessageBoxType.Success, "StorageSnadow"); 
                     await UpdateDataGridView();
                 }
                 else if (result.IsError)
                 {
-                    _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "StorageSnadow");
                 }
                 else
                 {
-                    _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
                 }
             }
             else if(items.Count > 1)
             {
-                _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
             else
             {
-                _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
 
         }
@@ -395,25 +402,25 @@ namespace ShopProject.ViewModel.AdminPage.Storage.ProductUnit
 
                 if (result.IsSuccess)
                 {
-                    _messageBoxControlService.Show("Одиницю оновлено", "Informations", MessageBoxType.Success, "StorageSnadow");
+                    await _messageBoxControlService.Show("Одиницю оновлено", "Informations", MessageBoxType.Success, "StorageSnadow");
                     await UpdateDataGridView();
                 }
                 else if (result.IsError)
                 {
-                    _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "StorageSnadow");
                 }
                 else
                 {
-                    _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
+                    await _messageBoxControlService.Show("Невдалося виконати операцію", "Error", MessageBoxType.Error, "StorageSnadow");
                 }
             }
             else if (items.Count > 1)
             {
-                _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+                await _messageBoxControlService.Show("Ви вибрали забагато елементів.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
             else
             {
-                _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
+               await _messageBoxControlService.Show("Ви не обрали елемент.", "Warninng", MessageBoxType.Warning, "StorageSnadow");
             }
 
         } 

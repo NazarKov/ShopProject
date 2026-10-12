@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShopProject.View.AdminPage.Storage.Product"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:control="clr-namespace:ShopProject.Controls"
+        xmlns:control="clr-namespace:ShopProject.Controls.TextBoxStretching"
         mc:Ignorable="d"
         Title="UpdateProductAll" Height="500" Width="1000"  Name="window" MinWidth="1000" MaxWidth="1000" WindowStartupLocation="CenterScreen">
     <Window.Resources>

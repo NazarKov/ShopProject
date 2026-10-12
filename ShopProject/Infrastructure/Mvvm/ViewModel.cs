@@ -1,23 +1,17 @@
-﻿using ShopProject.Core.Mvvm.Command; 
+﻿using ShopProject.Infrastructure.Mvvm.Command;
 using ShopProject.Services.Infrastructure.Exception;
 using ShopProject.Services.Infrastructure.Exception.Interface;
-using ShopProject.Services.Infrastructure.Logging;
-using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Infrastructure.Logging; 
 using ShopProject.Services.Integration.Directory;
-using ShopProject.Services.Integration.File.BaseFile;
-using ShopProject.Services.Integration.Network.WebServerApi.Exception;
-using System; 
+using ShopProject.Services.Integration.File.BaseFile; 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using System.Windows.Markup;
 
-namespace ShopProject.Core.Mvvm
+namespace ShopProject.Infrastructure.Mvvm
 {
     public abstract class ViewModel<TViewModel> : INotifyPropertyChanged
     {
@@ -40,11 +34,7 @@ namespace ShopProject.Core.Mvvm
                 try
                 {
                     func();
-                }
-                catch (ExeptionNonAuthorization)
-                {
-                    MediatorService.ExecuteNavigation(ShopProject.Model.Navigation.NavigationButton.RedirectToAuthorizationPage);
-                }
+                } 
                 catch (System.Exception ex)
                 {
                     Task.Run(async () =>
@@ -127,7 +117,34 @@ namespace ShopProject.Core.Mvvm
                 await _exceptionService.HandleAsync(ex, externalErrorHandel);
             }
         }
+        private Dictionary<Type,Window> windows = new Dictionary<Type,Window>();
+        protected void ShowWindow(Window showWindow)
+        {
+            var type = showWindow.GetType();
+            if (!windows.TryGetValue(type, out var window)) 
+            {
+                windows.Add(type, showWindow);
 
+                windows[type].Closed += (_, _) =>
+                {
+                    windows[type] = null;
+                };
+            }
+            else if (windows[type] == null)
+            {
+                windows[type]= showWindow;
+
+                windows[type].Closed += (_, _) =>
+                {
+                    windows[type] = null;
+                };
+            }
+
+            if (!windows[type].IsVisible)
+                windows[type].Show();
+
+            windows[type].Activate();
+        }  
 
     }
 }

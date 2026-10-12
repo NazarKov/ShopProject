@@ -9,7 +9,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 {
     public class DiscountController
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public DiscountController(HttpClient httpClient)
         {
@@ -17,17 +17,10 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
         }
 
         public async Task<ApiResponse<int>> AddDiscount(CreateDiscountDto item)
-        {
+        { 
             var discount = JsonSerializer.Serialize(item);
             HttpContent httpContent = new StringContent(discount, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/Discount/Add", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<int>.Unpacking(responseBody);
-
-            return result;
+            return await SendHttpRequest.SendAsync<int>(()=> _httpClient.PostAsync($"/api/Discount/Add", httpContent)); 
         }
     }
 }

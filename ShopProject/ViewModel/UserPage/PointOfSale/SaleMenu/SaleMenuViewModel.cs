@@ -1,11 +1,13 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface; 
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Operation;
 using ShopProject.Model.UI.Product;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
@@ -39,12 +41,14 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         private ISaleMenuService _saleMenuService;
         private IProductServiсe _productServiсe;
         private readonly IMessageBoxControlService _messageBoxControlService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
 
-        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService)
+        public SaleMenuViewModel(ISaleMenuService saleMenuService , IProductServiсe productServiсe, IMessageBoxControlService messageBoxControlService,IHandlerOperationResultService handlerOperationResultService)
         {
             _saleMenuService = saleMenuService;
             _productServiсe = productServiсe;
             _messageBoxControlService = messageBoxControlService;
+            _handlerOperationResultService = handlerOperationResultService;
             _searchBarCodeCommand = CreateCommandAsync(DebounceSearch);
             _clearFieldDataGrid = CreateCommand(ClearField);
             _setCashPaymentMethod = CreateCommand(() => { PaymentMenthod = new CashMethodView(); OperationSaleInfo.TypePayment = TypePayment.Cash; VisibilitiCheckMenu = Visibility.Visible; });
@@ -200,6 +204,10 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                     }
                 }
             }
+            else
+            {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
+            }
             BarCodeSearch = string.Empty;
         }
 
@@ -295,7 +303,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
                 }
                 else
                 {
-                    await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+                    await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu");
                 } 
             }
             IsEnableSendCheckButton = true; 

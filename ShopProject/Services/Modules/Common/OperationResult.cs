@@ -1,10 +1,5 @@
-﻿using ShopProject.Services.Integration.Network.WebServerApi.Interface;
-using ShopProject.Services.Modules.Common.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShopProject.Services.Modules.Common.Enum; 
+using System.Collections.Generic; 
 
 namespace ShopProject.Services.Modules.Common
 {

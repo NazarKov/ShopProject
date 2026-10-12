@@ -1,4 +1,4 @@
-﻿using ShopProject.Core.Mvvm; 
+﻿using ShopProject.Infrastructure.Mvvm;
 
 namespace ShopProject.Model.UI.User
 {

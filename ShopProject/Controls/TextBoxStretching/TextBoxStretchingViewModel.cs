@@ -1,16 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command; 
+﻿using ShopProject.Infrastructure.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.Controls
+namespace ShopProject.Controls.TextBoxStretching
 {
     public class TextBoxStretchingViewModel : ViewModel<TextBoxStretchingViewModel>
     {

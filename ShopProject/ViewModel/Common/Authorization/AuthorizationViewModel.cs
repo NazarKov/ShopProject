@@ -1,9 +1,8 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Navigation;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Modules.Domain.User.Interface; 
-using ShopProject.Services.Modules.Session.Interface; 
+using ShopProject.Services.Modules.Domain.User.Interface;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -31,7 +30,17 @@ namespace ShopProject.ViewModel.Common.Authorization
             _errorTextBlockVisibiliti = Visibility.Collapsed;
             _successTextBlockVisibiliti = Visibility.Collapsed;
             _messegeBlockVisibiliti = Visibility.Collapsed;
-        } 
+            _generalShadowVisibility = Visibility.Collapsed;
+            MediatorService.AddEventAsync("AuthorizationSnadowSetVissible", async () => { GeneralShadowVisibility = Visibility.Visible; });
+            MediatorService.AddEventAsync("AuthorizationSnadowSetCollapsed", async () => { GeneralShadowVisibility = Visibility.Collapsed; });
+        }
+        private Visibility _generalShadowVisibility;
+        public Visibility GeneralShadowVisibility
+        {
+            get { return _generalShadowVisibility; }
+            set { _generalShadowVisibility = value; OnPropertyChanged(nameof(GeneralShadowVisibility)); }
+        }
+
 
         public async Task LoadResourse()
         {
@@ -50,14 +59,7 @@ namespace ShopProject.ViewModel.Common.Authorization
         {
             get { return _password; }
             set { _password = value; OnPropertyChanged(nameof(Password)); }
-        }
-        private bool _autoLogin;
-        public bool AutoLogin
-        {
-            get { return _autoLogin; }
-            set { _autoLogin = value; OnPropertyChanged(nameof(AutoLogin)); }
-        }
-
+        } 
         private string _error;
         public string Error
         {

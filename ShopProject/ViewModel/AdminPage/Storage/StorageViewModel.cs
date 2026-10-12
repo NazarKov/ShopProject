@@ -1,17 +1,18 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.View.AdminPage.Storage.Product;
 using ShopProject.View.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.View.AdminPage.Storage.ProductUnit;
 using ShopProject.ViewModel.AdminPage.Storage.Product;
+using ShopProject.ViewModel.AdminPage.Storage.ProductCodeUKTZED;
 using ShopProject.ViewModel.AdminPage.Storage.ProductUnit;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ShopProject.ViewModel.StoragePage
+namespace ShopProject.ViewModel.AdminPage.Storage
 {
     internal class StorageViewModel : ViewModel<StorageViewModel>, IViewModelLoadResourse
     {

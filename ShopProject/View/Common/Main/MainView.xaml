@@ -9,6 +9,7 @@
         mc:Ignorable="d"   
         WindowState="Maximized" 
         WindowStartupLocation="CenterScreen"
+        
         Title="Project Shop" Height="550" Width="800" Icon="/Resource/Images/shop.png" WindowStyle="None">
     <WindowChrome.WindowChrome>
         <shell:WindowChrome
@@ -463,6 +464,6 @@
               Opacity="0.5"
               Visibility="{Binding VisibilitiShadowLostConnectionPage}"
               Panel.ZIndex="100"/>
-
+        <TextBlock VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="1" Text="v0.0.4.2" Opacity="0.5" HorizontalAlignment="Right" Margin="0,0,10,10"/>
     </Grid> 
 </Window>

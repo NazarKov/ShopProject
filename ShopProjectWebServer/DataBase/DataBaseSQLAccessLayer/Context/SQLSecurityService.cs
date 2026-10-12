@@ -22,19 +22,24 @@ namespace ShopProjectWebServer.DataBase.DataBaseSQLAccessLayer.Context
 
             string sql = @"
                         DECLARE @sql NVARCHAR(MAX);
-                        
-                        IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = @login)
+                        IF NOT EXISTS (
+                            SELECT 1
+                            FROM sys.server_principals
+                            WHERE name = @login
+                        )
                         BEGIN
                             SET @sql =
-                                N'CREATE LOGIN [' + REPLACE(@login, ']', ']]') +
-                                N'] WITH PASSWORD = ''' + REPLACE(@password, '''', '''''') +
-                                N''', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;'; 
+                                N'CREATE LOGIN ' + QUOTENAME(@login) +
+                                N' WITH PASSWORD = ''' +
+                                REPLACE(@password, '''', '''''') +
+                                N''', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;';
+                        
                             EXEC (@sql);
-                        END
+                        END;
                         
                         SET @sql =
-                            N'ALTER LOGIN [' + REPLACE(@login, ']', ']]') +
-                            N'] WITH DEFAULT_DATABASE = [' + REPLACE(@db, ']', ']]') + N']';
+                            N'ALTER LOGIN ' + QUOTENAME(@login) +
+                            N' WITH DEFAULT_DATABASE = ' + QUOTENAME(@db) + N';';
                         
                         EXEC (@sql);
                         ";

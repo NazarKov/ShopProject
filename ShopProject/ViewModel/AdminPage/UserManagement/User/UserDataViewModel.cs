@@ -1,5 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Helpers;
+﻿using ShopProject.Helpers;
+using ShopProject.Infrastructure.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;

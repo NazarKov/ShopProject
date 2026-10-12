@@ -26,13 +26,30 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Common
         public int Source { get; set; }
 
         public static ApiResponse<T> Unpacking(string json)
-        { 
-            var result = JsonSerializer.Deserialize<ApiResponse<T>>(json);
-            if (result == null) 
+        {
+            try
             {
-                throw new System.Exception("Невдалося розпакувати пакет");
-            }  
-            return result;
+                var result = JsonSerializer.Deserialize<ApiResponse<T>>(json);
+                if (result == null) 
+                {
+                    throw new System.Exception("Невдалося розпакувати пакет");
+                }  
+                return result; 
+            }
+            catch(Exception ex)
+            {
+                return Fail(ex.Message);
+            }
         } 
+
+        public static ApiResponse<T> Fail(string erorr , int errorType = 0)
+        {
+            return new ApiResponse<T>()
+            {
+                Error = erorr,
+                Status = 2,
+                ErrorType = errorType
+            };
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 {
     public class WorkingShiftContoller
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public WorkingShiftContoller(HttpClient httpClient)
         {
@@ -26,14 +26,7 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/Add", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
-            httpResponse.EnsureSuccessStatusCode();
-
-            return result;
+            return await SendHttpRequest.SendAsync<WorkingShiftDto>(() => _httpClient.PostAsync($"/api/WorkingShift/Add", httpContent)); 
         }
 
         public async Task<ApiResponse<WorkingShiftDto>> UpdateWorkingShift(WorkingShift shift)
@@ -42,31 +35,16 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller.DataB
 
             HttpContent httpContent = new StringContent(content, Encoding.UTF8, "application/json");
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            HttpResponseMessage httpResponse = await _httpClient.PostAsync($"/api/WorkingShift/Update", httpContent);
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
-            httpResponse.EnsureSuccessStatusCode();
-            return result;
+            return await SendHttpRequest.SendAsync<WorkingShiftDto>(() => _httpClient.PostAsync($"/api/WorkingShift/Update", httpContent)); 
         }
         public async Task<ApiResponse<WorkingShiftDto>> GetWorkingShift(int id)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetById?id={id}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync();
-
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<WorkingShiftDto>.Unpacking(responseBody);
-            return result;
+            return await SendHttpRequest.SendAsync<WorkingShiftDto>(() => _httpClient.GetAsync($"/api/WorkingShift/GetById?id={id}")); 
         }
 
         public async Task<ApiResponse<WorkingShiftResourseDto>> GetResourseById(string fiscalNumberRRo)
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync($"/api/WorkingShift/GetResourseByNumberRRO?fiscalNumberRRo={fiscalNumberRRo}");
-            string responseBody = await httpResponse.Content.ReadAsStringAsync(); 
-            httpResponse.EnsureSuccessStatusCode();
-            var result = ApiResponse<WorkingShiftResourseDto>.Unpacking(responseBody);
-            return result;
+            return await SendHttpRequest.SendAsync<WorkingShiftResourseDto>(() => _httpClient.GetAsync($"/api/WorkingShift/GetResourseByNumberRRO?fiscalNumberRRo={fiscalNumberRRo}")); 
         }
     }
 }

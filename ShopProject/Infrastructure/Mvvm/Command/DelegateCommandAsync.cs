@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System; 
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ShopProject.Core.Mvvm.Command
+namespace ShopProject.Infrastructure.Mvvm.Command
 {
     public class DelegateCommandAsync :ICommand
     {

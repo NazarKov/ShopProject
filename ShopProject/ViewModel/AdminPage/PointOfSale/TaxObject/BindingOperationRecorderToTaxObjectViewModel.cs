@@ -1,20 +1,20 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Notification; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.OperationRecorder;
 using ShopProject.Model.UI.TaxObject;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
-using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;  
+using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.OperationRecorder;
 using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -28,11 +28,13 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 
         private ITaxObjectService _taxObjectService;
         private IOperationRecorderService _operationRecorderService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public BindingOperationRecorderToTaxObjectViewModel(ITaxObjectService taxObjectService,IOperationRecorderService operationRecorderService)
+        public BindingOperationRecorderToTaxObjectViewModel(ITaxObjectService taxObjectService,IOperationRecorderService operationRecorderService, IHandlerOperationResultService handlerOperationResultService)
         {
             _taxObjectService = taxObjectService;
             _operationRecorderService = operationRecorderService;
+            _handlerOperationResultService = handlerOperationResultService;
             _error = string.Empty;
             _success = string.Empty;
             _operationRecorders = new List<OperationRecorderSelectItemModel>();
@@ -107,6 +109,11 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             {
                 OperationRecorders = new List<OperationRecorderSelectItemModel>(result.Data.Data.ToOperationRecorderSelectItemModel());
             }
+            else if (result.IsError)
+            {
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
+            }
+                 
             else
             {
                 SetError("Невдалося завантажити касові апарати");
@@ -129,7 +136,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {

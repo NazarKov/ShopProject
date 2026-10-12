@@ -1,6 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
@@ -10,18 +9,20 @@ using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
+using ShopProject.Services.Modules.Domain.Product.Interface;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
+using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
 using ShopProject.Services.Modules.Mapping.Product;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
-using ShopProject.Services.Modules.Mapping.ProductUnit; 
-using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
+using ShopProject.Services.Modules.Mapping.ProductUnit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
-using ShopProject.Services.Modules.Domain.Product.Interface;
 
 namespace ShopProject.ViewModel.AdminPage.Storage.Product
 {
@@ -34,11 +35,13 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private readonly IProductServiсe _productServiсe;
         private readonly IProductUnitServiсe _productUnitServiсe;
         private readonly IProductCodeUKTZEDServiсe _productCodeUKTZEDServiсe;
-        public CreateProductViewModel(IProductServiсe productService , IProductUnitServiсe productUnitService , IProductCodeUKTZEDServiсe productCodeUKTZEDService )
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
+        public CreateProductViewModel(IProductServiсe productService , IProductUnitServiсe productUnitService , IProductCodeUKTZEDServiсe productCodeUKTZEDService ,IHandlerOperationResultService handlerOperationResultService)
         {
             _productServiсe = productService;
             _productUnitServiсe = productUnitService;
             _productCodeUKTZEDServiсe = productCodeUKTZEDService;
+            _handlerOperationResultService = handlerOperationResultService;
 
             _saveProductCommand = CreateCommandAsync(SaveAndCreateProductDataBase,SetError);
             _clearWindowCommand = CreateCommand(ClearTextWindow);
@@ -198,7 +201,7 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {

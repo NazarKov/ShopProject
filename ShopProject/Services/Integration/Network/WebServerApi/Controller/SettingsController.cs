@@ -20,21 +20,12 @@ namespace ShopProject.Services.Integration.Network.WebServerApi.Controller
 
         public async Task<ApiResponse<ControlWebServerDto>> IsAvailableServer()
         {
-            HttpResponseMessage responseMessage = await _httpClient.GetAsync("/api/Settings/Health");
-            string responseBody = await responseMessage.Content.ReadAsStringAsync(); 
-            var result = ApiResponse<ControlWebServerDto>.Unpacking(responseBody); 
-            return result;
+            return await SendHttpRequest.SendAsync<ControlWebServerDto>(() => _httpClient.GetAsync("/api/Settings/Health")); 
         }
 
-        public async Task<string> Ping()
-        { 
-            HttpResponseMessage responseMessage = await _httpClient.GetAsync("/api/Settings/Ping");
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-            responseMessage.EnsureSuccessStatusCode();
-             
-            var result = ApiResponse<string>.Unpacking(responseBody);
-            
-            return result.Data.ToString(); 
+        public async Task<ApiResponse<string>> Ping()
+        {
+            return await SendHttpRequest.SendAsync<string>(() => _httpClient.GetAsync("/api/Settings/Ping")); 
         }
     }
 }

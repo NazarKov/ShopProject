@@ -9,6 +9,7 @@ using ShopProject.Services.Modules.Common.Enum;
 using ShopProject.Services.Modules.Domain.Product.Interface;
 using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
+using ShopProject.Services.Modules.Mapping.OperaionResult;
 using ShopProject.Services.Modules.Mapping.Product; 
 using ShopProject.Services.Modules.Session.Interface;
 using ShopProject.Services.Modules.Setting.Interface; 
@@ -24,8 +25,7 @@ using ProductModel = ShopProject.Model.Domain.Product.Product;
 namespace ShopProject.Services.Modules.Domain.Product
 {
     internal class ProductServiсe :IProductServiсe
-    {
-        private readonly string _token;
+    { 
         private readonly StorageSetting _setting;
         private IMainWebServerService _webServerService;
         private ISettingService _settingService;
@@ -42,8 +42,7 @@ namespace ShopProject.Services.Modules.Domain.Product
             _productCodeUKTZEDServiсe = productCodeUKTZEDServiсe;
             _productUnitServiсe = productUnitServiсe;
 
-            _setting = _settingService.GetSetting<StorageSetting>();
-            _token = _sessionService.User.Token;
+            _setting = _settingService.GetSetting<StorageSetting>(); 
         }
 
         public async Task<OperationResult<ProductModel>> Add(ProductModel product)
@@ -354,37 +353,30 @@ namespace ShopProject.Services.Modules.Domain.Product
 
         public async Task<OperationResult<ProductModel>> SearchByBarCode(string barCode)
         {
-            try
+            var result = new OperationResult<ProductModel>();
+
+            result = await CheckBarCodeToDeleteCode(barCode);
+            if (result.IsError)
             {
-                var result = new OperationResult<ProductModel>();
-
-                result = await CheckBarCodeToDeleteCode(barCode);
-                if (result.IsError)
-                {
-                    return result;
-                }
-                result = await CheckProductToSearch(barCode); 
-
-                if (result.IsSuccess)
-                {
-                    var response = await _webServerService.DataBase.ProductController.GetProductByBarCode(barCode);
-                    result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
-                    result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
-                    result.ErrorMessage = response.Error;
-                    result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
-                    result.ValidationErrors = response.Errors;
-                    if (result.IsSuccess)
-                    {
-                        result.Data = response.Data.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits);
-                    }
-                }
-
                 return result;
             }
-            catch (Exception ex)
+            result = await CheckProductToSearch(barCode);
+
+            if (result.IsSuccess)
             {
-                return OperationResult<ProductModel>.Fail(ex.Message);
+                var response = await _webServerService.DataBase.ProductController.GetProductByBarCode(barCode);
+                result.Source = Enum.Parse<ErrorSource>(response.Source.ToString());
+                result.Status = Enum.Parse<ResultStatus>(response.Status.ToString());
+                result.ErrorMessage = response.Error;
+                result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
+                result.ValidationErrors = response.Errors;
+                if (result.IsSuccess)
+                {
+                    result.Data = response.Data.ToProduct(_sessionService.ProductCodesUKTZED, _sessionService.ProductUnits);
+                }
             }
+
+            return result;
         } 
 
         private async Task<OperationResult<ProductModel>> CheckProductToSearch(string item)
@@ -430,16 +422,23 @@ namespace ShopProject.Services.Modules.Domain.Product
         }
 
 
-        public async Task<ProductsInfo> GetProductStatistics()
+        public async Task<OperationResult<ProductsInfo>> GetProductStatistics()
         {
-            try
-            {
-                return (await _webServerService.DataBase.ProductController.GetProductInfo(_token)).ToProductsInfo();
-            }
-            catch (Exception ex)
+            var response = (await _webServerService.DataBase.ProductController.GetProductInfo()).ToOperationResult();
+
+            var result = new OperationResult<ProductsInfo>()
             { 
-                return new ProductsInfo();
+                Source = response.Source,
+                ErrorMessage = response.ErrorMessage,
+                ErrorType = response.ErrorType,
+                Status = response.Status,
+                ValidationErrors = response.ValidationErrors,
+            };
+            if (response.Data != null)
+            {
+                result.Data = response.Data.ToProductsInfo();
             }
+            return result;
         } 
 
         public List<ProductModel> ContertIListToList(IList list)
@@ -450,24 +449,22 @@ namespace ShopProject.Services.Modules.Domain.Product
                 products.Add(item.ToProduct());
             }
             return products;
-        } 
-     
-         
+        }  
 
-        public void SetProductOnSession(ShopProject.Model.Domain.Product.Product item)
+        public void SetProductOnSession(ProductModel item)
         {
             _sessionService.UpdateProduct = item;
         }
-        public ShopProject.Model.Domain.Product.Product GetProductOnSession()
+        public ProductModel GetProductOnSession()
         {
             var item = _sessionService.UpdateProduct; 
             return item;
         }
-        public void SetProductsOnSession(List<ShopProject.Model.Domain.Product.Product> items)
+        public void SetProductsOnSession(List<ProductModel> items)
         {
             _sessionService.UpdateProductRange = items;
         }
-        public IEnumerable<ShopProject.Model.Domain.Product.Product> GetProductsOnSession()
+        public IEnumerable<ProductModel> GetProductsOnSession()
         {
             var items = _sessionService.UpdateProductRange;
             if (items == null)
@@ -475,19 +472,7 @@ namespace ShopProject.Services.Modules.Domain.Product
                 throw new Exception("Невдалося завантажити товар");
             }
             return items;
-        } 
-        public async Task<IEnumerable<ShopProject.Model.Domain.Product.Product>> GetItems()
-        {
-            try
-            {
-                var items = (await _webServerService.DataBase.ProductController.GetProducts(_token)).ToProduct(await _productCodeUKTZEDServiсe.GetFromSession(),await _productUnitServiсe.GetFromSession());
-                return items;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        } 
+        }  
     }
 
 }

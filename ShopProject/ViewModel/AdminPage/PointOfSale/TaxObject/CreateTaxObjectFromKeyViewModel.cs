@@ -1,10 +1,12 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.TaxObject;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
@@ -22,11 +24,13 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
         private ICommand _exitWindowCommand;
         private ICommand _openFileKeyCommand;
 
-        private ITaxObjectService _taxObjectService; 
+        private ITaxObjectService _taxObjectService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public CreateTaxObjectFromKeyViewModel(ITaxObjectService taxObjectService)
+        public CreateTaxObjectFromKeyViewModel(ITaxObjectService taxObjectService, IHandlerOperationResultService handlerOperationResultService)
         {
             _taxObjectService = taxObjectService;
+            _handlerOperationResultService = handlerOperationResultService;
             _error = string.Empty;
             _success = string.Empty;
             _taxObjects = new List<TaxObjectSelectItemModel>();
@@ -111,7 +115,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {
@@ -139,7 +143,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
                 }
                 else if (result.IsError) 
                 {
-                    SetError(result.ErrorMessage); 
+                    SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView)); 
                 }
                 else
                 {

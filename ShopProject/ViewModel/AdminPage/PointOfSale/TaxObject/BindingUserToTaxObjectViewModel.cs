@@ -1,12 +1,13 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.TaxObject;
 using ShopProject.Model.UI.User;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Mapping.TaxObject;
@@ -27,11 +28,13 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
 
         private ITaxObjectService _taxObjectService;
         private IUserService _userService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public BindingUserToTaxObjectViewModel(ITaxObjectService taxObjectService, IUserService userService)
+        public BindingUserToTaxObjectViewModel(ITaxObjectService taxObjectService, IUserService userService, IHandlerOperationResultService handlerOperationResultService)
         {
             _taxObjectService = taxObjectService;
             _userService = userService;
+            _handlerOperationResultService = handlerOperationResultService;
             _error = string.Empty;
             _success = string.Empty;
             _users = new List<UserSelectItemModel>();
@@ -106,6 +109,10 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             {
                 Users = new List<UserSelectItemModel>(result.Data.Data.ToUserSelectItemModel());
             }
+            else if (result.IsError)
+            {
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
+            }
             else
             {
                 SetError("Невдалося завантажити касові апарати");
@@ -128,7 +135,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {

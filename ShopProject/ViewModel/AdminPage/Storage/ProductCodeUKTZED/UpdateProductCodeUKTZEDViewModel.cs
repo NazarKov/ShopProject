@@ -1,17 +1,16 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
-using ShopProject.Model.Domain.Notification; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
+using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
+using ShopProject.Services.Infrastructure.Mediator.Notifications; 
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
+using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,10 +23,12 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         private readonly ICommand _updateProductCodeUKTZEDCommand;
         private readonly ICommand _exitWindowCommand;
         private IProductCodeUKTZEDServiсe _productCodeUKTZEDServiсe;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public UpdateProductCodeUKTZEDViewModel(IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe)
+        public UpdateProductCodeUKTZEDViewModel(IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe,IHandlerOperationResultService handlerOperationResultService)
         {
             _productCodeUKTZEDServiсe = productCodeUKTZEDServiсe;
+            _handlerOperationResultService = handlerOperationResultService;
             _productCodeUKTZED = new ProductCodeUKTZEDModel();
             _statusCodeUKTZED = new List<string>();
 
@@ -134,7 +135,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
             }
             else if(result.IsError) 
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {

@@ -1,21 +1,9 @@
-﻿using ShopProject.Core.Mvvm.Command;
-using ShopProject.ViewModel.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System; 
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Controls; 
+using System.Windows.Input; 
 
-namespace ShopProject.Controls
+namespace ShopProject.Controls.TextBoxStretching
 {
     /// <summary>
     /// Interaction logic for TextBoxStretching.xaml
@@ -32,7 +20,7 @@ namespace ShopProject.Controls
             {
                 switch (e.PropertyName)
                 {
-                   
+
 
                     case nameof(ViewModel.ShadowVisibility):
                         SetValue(ExternalShadowVisibilityProperty, ViewModel.ShadowVisibility);
@@ -285,6 +273,6 @@ namespace ShopProject.Controls
         {
             var control = (TextBoxStretching)d;
             control.ViewModel.LostFocusHeight = (double)e.NewValue;
-        } 
+        }
     }
 }

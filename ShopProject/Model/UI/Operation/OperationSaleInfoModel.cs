@@ -1,10 +1,10 @@
-﻿using ShopProject.Core.Mvvm;
+﻿using ShopProject.Infrastructure.Mvvm;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
 using ShopProject.Services.Infrastructure.Mediator;
 using System;
-using System.Collections.ObjectModel; 
+using System.Collections.ObjectModel;
 
 namespace ShopProject.Model.UI.Operation
 {

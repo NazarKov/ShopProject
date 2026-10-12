@@ -1,17 +1,14 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.TaxObject;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.TaxObject.Interface;
 using ShopProject.Services.Modules.Mapping.TaxObject;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -23,11 +20,12 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
         public ICommand _updateTaxObjectCommand;
         private ICommand _exitWindowCommand;
         private ITaxObjectService _taxObjectService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public UpdateTaxObjectViewModel(ITaxObjectService taxObjectService)
+        public UpdateTaxObjectViewModel(ITaxObjectService taxObjectService,IHandlerOperationResultService handlerOperationResultService)
         {
             _taxObjectService = taxObjectService;
-
+            _handlerOperationResultService = handlerOperationResultService;
             _exitWindowCommand = CreateCommand(() => { CloseView?.Invoke(); });
             _updateTaxObjectCommand = CreateCommandAsync(async ()=> { await UpdateTaxObject(); });
 
@@ -101,7 +99,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.TaxObject
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
             else
             {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using ShopProject.Core.Mvvm;
+using ShopProject.Infrastructure.Mvvm;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Integration.Windows.WindowsService.Helper;
 using ShopProject.Services.Integration.Windows.WindowsService.Interface;

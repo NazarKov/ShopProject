@@ -1,11 +1,13 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface; 
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Operation;
 using ShopProject.Model.UI.WorkingShift;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu.Interface;
@@ -47,14 +49,16 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
         private ICommand _printLastCheckCommand;
         private ICommand _publishCertificateCommand;
         private readonly IMessageBoxControlService _messageBoxControlService;
-        private IWorkingShiftService _workingShiftService; 
-         
-        public WorkShiftMenuViewModel(IUserService userServise, IWorkingShiftService workingShiftService, IOperationRecorderService operationRecorderServise, IMessageBoxControlService messageBoxControlService)
+        private readonly IWorkingShiftService _workingShiftService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
+
+
+        public WorkShiftMenuViewModel(IUserService userServise, IWorkingShiftService workingShiftService, IMessageBoxControlService messageBoxControlService , IHandlerOperationResultService handlerOperationResultService)
         {
             _userName = userServise.GetUserFromSession().FullName;
             _workingShiftService = workingShiftService;
             _messageBoxControlService = messageBoxControlService;
-
+            _handlerOperationResultService = handlerOperationResultService;
             _openShiftCommand = CreateCommandAsync(OpenShift);
             _openOpenShiftDialogWindowCommand = CreateCommandAsync(async () => {  Cash = 0; VisibilitiOpenShiftDialogWindow = Visibility.Visible;
                 await MediatorService.ExecuteEventAsync("VisibilitiShadowSetVisible"); VisibilitiShadowPage = Visibility.Visible; });
@@ -327,7 +331,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
             else
             {
-                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
+                await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
             }
             IsEnableOpenShiftButton = true;
         }
@@ -350,7 +354,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
             else
             {
-                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+                await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu");
             } 
             IsEnableCloseShiftButton = true; 
         }
@@ -397,7 +401,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
             else
             {
-                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
+                await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu"); 
             } 
         }
 
@@ -416,7 +420,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
             else
             {
-                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+                await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu");
             }
         }
 
@@ -437,7 +441,7 @@ namespace ShopProject.ViewModel.UserPage.PointOfSale.SaleMenu
             }
             if (result.IsError)
             {
-                await _messageBoxControlService.Show(result.ErrorMessage, "Error", MessageBoxType.Error, "WorkingShiftMenu");
+                await _messageBoxControlService.Show(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result), "Error", MessageBoxType.Error, "WorkingShiftMenu");
             }
         }
 

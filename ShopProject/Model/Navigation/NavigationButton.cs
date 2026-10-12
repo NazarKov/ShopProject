@@ -8,10 +8,8 @@ namespace ShopProject.Model.Navigation
 {
     public enum NavigationButton
     {
-        None,
-        RedirectToAuthorizationView, 
-        RedirectToChangePassword,
-        RedirectToTitleView,
+        None, 
+        RedirectToChangePassword, 
         ReloadProduct,
         ReloadUser,
         ReloadTaxObject,
@@ -25,6 +23,7 @@ namespace ShopProject.Model.Navigation
         RedirectToOperationsRecorderPage,
         RedirectToDashBoadPage,
         RedirectToAuthorizationPage,
+        RedirectToAuthorizationPageWhenErrorUnAuthorization,
         RedirectServerSelectionPage,
         RedirectStartPage,
         RedirectToRegisterWindwoServicePage,

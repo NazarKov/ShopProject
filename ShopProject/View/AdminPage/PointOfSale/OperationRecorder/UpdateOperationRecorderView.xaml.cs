@@ -1,5 +1,5 @@
-﻿using ShopProject.Core.Mvvm.Interface; 
-using System.Windows; 
+﻿using ShopProject.Infrastructure.Mvvm.Interface;
+using System.Windows;
 
 namespace ShopProject.View.AdminPage.PointOfSale.OperationRecorder
 {

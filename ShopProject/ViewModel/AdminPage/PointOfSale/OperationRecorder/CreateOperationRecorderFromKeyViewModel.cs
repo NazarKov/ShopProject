@@ -1,16 +1,16 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
-using ShopProject.Model.UI.OperationRecorder; 
+using ShopProject.Model.UI.OperationRecorder;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
-using ShopProject.Services.Modules.Domain.OperationRecorder.Interface; 
+using ShopProject.Services.Modules.Common.Interface;
+using ShopProject.Services.Modules.Domain.OperationRecorder.Interface;
 using ShopProject.Services.Modules.Mapping.OperationRecorder;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,10 +24,12 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
         private ICommand _openFileKeyCommand;
 
         private IOperationRecorderService _operationRecorderService;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public CreateOperationRecorderFromKeyViewModel(IOperationRecorderService operationRecorderServicetaxObjectService)
+        public CreateOperationRecorderFromKeyViewModel(IOperationRecorderService operationRecorderServicetaxObjectService,IHandlerOperationResultService handlerOperationResultService)
         {
             _operationRecorderService = operationRecorderServicetaxObjectService;
+            _handlerOperationResultService = handlerOperationResultService;
             _error = string.Empty;
             _success = string.Empty;
             _operationRecorders = new List<OperationRecorderSelectItemModel>();
@@ -116,7 +118,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {
@@ -144,7 +146,7 @@ namespace ShopProject.ViewModel.AdminPage.PointOfSale.OperationRecorder
                 }
                 else if (result.IsError)
                 {
-                    SetError(result.ErrorMessage);
+                    SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
                 }
                 else
                 {

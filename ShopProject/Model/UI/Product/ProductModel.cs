@@ -1,5 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Model.Domain.Discount; 
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Model.Domain.Discount;
 using ShopProject.Model.Domain.ProductUnit;
 using ShopProject.Model.Enum;
 using ShopProject.Model.UI.Discount;

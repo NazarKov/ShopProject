@@ -1,11 +1,11 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.UserRole;
 using ShopProject.Services.Infrastructure.Mediator;
-using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Infrastructure.Mediator.Notifications; 
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Domain.UserRole.Interface;
 using ShopProject.Services.Modules.Mapping.UserRole;
@@ -27,12 +27,14 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
         private ICommand _exitWindowCommand;
 
         private readonly IUserRoleService _userRoleService;
-        private readonly IUserService _userService; 
+        private readonly IUserService _userService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
 
-        public CreateUserViewModel(IUserRoleService userRoleService, IUserService userService)
+        public CreateUserViewModel(IUserRoleService userRoleService, IUserService userService,IHandlerOperationResultService handlerOperationResultService)
         {
             _userRoleService = userRoleService;
             _userService = userService;
+            _handlerOperationResultService = handlerOperationResultService;
             _login = string.Empty; 
             _fullName = string.Empty;
             _email = string.Empty;
@@ -168,7 +170,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
             }
             else if (result.IsError)
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {

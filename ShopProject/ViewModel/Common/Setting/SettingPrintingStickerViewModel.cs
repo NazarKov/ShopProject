@@ -1,7 +1,6 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
-using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Setting;
 using ShopProject.Services.Integration.Printing.Interface;
 using ShopProject.Services.Modules.Control.Interface;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ShopProject.ViewModel.SettingPage
+namespace ShopProject.ViewModel.Common.Setting
 {
     internal class SettingPrintingStickerViewModel : ViewModel<SettingPrintingStickerViewModel> , IViewModelLoadResourse
     {

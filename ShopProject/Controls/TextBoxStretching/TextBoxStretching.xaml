@@ -1,16 +1,16 @@
-﻿<UserControl x:Class="ShopProject.Controls.TextBoxStretching"
+﻿<UserControl x:Class="ShopProject.Controls.TextBoxStretching.TextBoxStretching"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ShopProject.ViewModel.Controls" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
+             xmlns:local="clr-namespace:ShopProject.Controls.TextBoxStretching" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             mc:Ignorable="d" x:Name="root"> 
+             mc:Ignorable="d" x:Name="root">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/ShopProject;component/Resource/Theme/LightTheme/TextBoxStyle.xaml"/>
-                <ResourceDictionary Source="/ShopProject;component/Resource/Theme/LightTheme/TextBlockstyle.xaml"/> 
+                <ResourceDictionary Source="/ShopProject;component/Resource/Theme/LightTheme/TextBlockstyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -38,7 +38,7 @@
               MaxHeight="{Binding ViewModel.MaxHeight, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" 
               HorizontalAlignment="Left"
               Panel.ZIndex="{Binding ViewModel.ResizableTextBoxZIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
-              VerticalAlignment="Top"> 
+              VerticalAlignment="Top">
             <TextBox x:Name="ResizableTextBox"   
                      MinWidth="{Binding ViewModel.MinWidth,RelativeSource={RelativeSource AncestorType=UserControl},Mode=TwoWay}" 
                      MinHeight="{Binding ViewModel.MinHeight, RelativeSource={RelativeSource AncestorType=UserControl} ,Mode=TwoWay}" 

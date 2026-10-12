@@ -36,7 +36,7 @@ namespace ShopProjectWebServer.Services.Modules.Authorization
                 }
             }
 
-            throw new BadHttpRequestException("Невірний токен авторизації",401);
+            return false;
         } 
         public void AddToken(string token)
         {

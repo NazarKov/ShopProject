@@ -25,16 +25,16 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 {
     internal class WorkingShiftOperationService : IWorkingShfitOperationService
     {
-        public ISessionService _sessionService;
-        private MainFiscalServerController _fiscalOperationController;
-        private IMainWebServerService _mainWebServerService; 
-        private ISettingService _settingService; 
+        public readonly ISessionService _sessionService;
+        private readonly MainFiscalServerController _fiscalOperationController;
+        private readonly IMainWebServerService _mainWebServerService; 
+        private readonly ISettingService _settingService; 
         public WorkingShiftOperationService(ISessionService sessionService  ,IMainWebServerService mainWebServerService , ISettingService settingService)
         {
             _sessionService = sessionService; 
             _mainWebServerService = mainWebServerService;
-            _settingService = settingService;  
-            _fiscalOperationController = new MainFiscalServerController(_sessionService.User.SignatureKey);
+            _settingService = settingService;   
+            _fiscalOperationController = new MainFiscalServerController(_sessionService.User.SignatureKey);  
         } 
 
         public async Task<OperationResult<string>> OpenShift(WorkingShiftModel shift)
@@ -53,6 +53,9 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                     return result;
                 }
             }
+
+            
+
 
             if (result.IsSuccess)
             {
@@ -73,14 +76,17 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 
                     if (result.IsSuccess)
                     {
-                        _sessionService.WorkingShiftStatus.UserID = _sessionService.User.ID;
-                        _sessionService.WorkingShiftStatus.WorkingShift = response.Data.ToWorkingShift();
-                        _sessionService.WorkingShiftStatus.OpenShiftTime = DateTime.Now;
-                        _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Open;
-                        _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
+                        if (response.Data != null)
+                        {
+                            _sessionService.WorkingShiftStatus.UserID = _sessionService.User.ID;
+                            _sessionService.WorkingShiftStatus.WorkingShift = response.Data.ToWorkingShift();
+                            _sessionService.WorkingShiftStatus.OpenShiftTime = DateTime.Now;
+                            _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Open;
+                            _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
+                        }
                     }
                 }
-            }
+            } 
             return result;
         }
         public async Task<OperationResult<string>> CloseShift(WorkingShiftModel shift)
@@ -98,9 +104,8 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                 {
                     return result;
                 }
-            }
-
-
+            } 
+             
             if (result.IsSuccess)
             {
                 if (!string.IsNullOrEmpty(result.Data))
@@ -117,14 +122,14 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
 
                     if (result.IsSuccess)
                     {
-                        _sessionService.WorkingShiftStatus.UserID = new Guid();  
+                        _sessionService.WorkingShiftStatus.UserID = new Guid();
                         _sessionService.WorkingShiftStatus.WorkingShift = null;
                         _sessionService.WorkingShiftStatus.OpenShiftTime = null;
                         _sessionService.WorkingShiftStatus.Status = ShopProject.Model.Enum.TypeStatusShift.Close;
                         _settingService.SetSetting<WorkingShiftStatus>(_sessionService.WorkingShiftStatus);
                     }
                 }
-            }
+            } 
             return result;
         }
 
@@ -143,7 +148,8 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                 {
                     return result;
                 }
-            }
+            } 
+
             if (result.IsSuccess)
             {
                 if (!string.IsNullOrEmpty(result.Data))
@@ -159,7 +165,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                     result.ErrorType = Enum.Parse<ErrorType>(response.ErrorType.ToString());
                     result.ValidationErrors = response.Errors;
                 }
-            }
+            } 
             return result;
         } 
 
@@ -184,20 +190,23 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             result.ValidationErrors = response.Errors;
             if (result.IsSuccess)
             {
-                var data = response.Data.ToWorkingShiftResourse();
-                if (string.IsNullOrEmpty(data.OperationNumber))
+                if (response.Data != null)
                 {
-                    data.OperationNumber = "1";
-                }
-                else
-                {
-                    data.OperationNumber = (Convert.ToInt32(data.OperationNumber) + 1).ToString();
-                }
-                if(data.MediaAccessControl == null)
-                {
-                    data.MediaAccessControl = new();
-                }
-                result.Data = data;
+                    var data = response.Data.ToWorkingShiftResourse();
+                    if (string.IsNullOrEmpty(data.OperationNumber))
+                    {
+                        data.OperationNumber = "1";
+                    }
+                    else
+                    {
+                        data.OperationNumber = (Convert.ToInt32(data.OperationNumber) + 1).ToString();
+                    }
+                    if (data.MediaAccessControl == null)
+                    {
+                        data.MediaAccessControl = new();
+                    }
+                    result.Data = data;
+                }  
             }
             return result; 
         }  
@@ -208,8 +217,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             if (workingShift == null)
             {
                 return OperationResult<string>.Fail("Невдалося завантажити зміну");
-            }
-
+            } 
 
             var result = _fiscalOperationController.SendReturnAndFiscalCheck(workingShift, operation, products.ToList(), (_settingService.GetSetting<ShopProject.Model.Domain.Setting.OperationRecorderSetting>()).IsTestMode);
             if (result.IsError || result.ErrorType == ErrorType.ErrorKey)
@@ -224,7 +232,7 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                 {
                     return result;
                 }
-            }
+            } 
 
             if (result.IsSuccess)
             {
@@ -238,10 +246,9 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
                     if (resultOperation.IsSuccess)
                     {
                         _sessionService.Operation = operation;
-                        return result;
                     }
                 }
-            }
+            } 
             return result;
         } 
         private async Task<OperationResult<bool>> SaveDataBase(Operation operation, IEnumerable<ProductModel> products)
@@ -252,21 +259,24 @@ namespace ShopProject.Services.Modules.Domain.PoinOfSale.SaleMenu
             }
             var result = (await _mainWebServerService.DataBase.OperationController.Add(operation.ToCreateOperationDto())).Data;
 
-            if (result.ID >= 0)
+            if (result != null)
             {
-                List<OrderModel> orders = new List<OrderModel>();
-                foreach (ProductModel item in products)
+                if (result.ID >= 0)
                 {
-                    orders.Add(new OrderModel()
+                    List<OrderModel> orders = new List<OrderModel>();
+                    foreach (ProductModel item in products)
                     {
-                        Operation = new Operation() { ID = result.ID },
-                        Product = item,
-                        Count = (int)item.Count,
+                        orders.Add(new OrderModel()
+                        {
+                            Operation = new Operation() { ID = result.ID },
+                            Product = item,
+                            Count = (int)item.Count,
 
-                    });
+                        });
+                    }
+                    await _mainWebServerService.DataBase.OrderController.AddOrderRange(orders);
                 }
-                await _mainWebServerService.DataBase.OrderController.AddOrderRange(orders);
-            }
+            } 
             return OperationResult<bool>.Success(true);
         }
     }

@@ -1,6 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.View.Common.Setting;
 using ShopProject.ViewModel.SettingPage;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ShopProject.Core.Mvvm.Command
+namespace ShopProject.Infrastructure.Mvvm.Command
 {
     internal abstract class Command : ICommand
     {

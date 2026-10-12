@@ -1,17 +1,14 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Command;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Helpers;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
-using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -24,9 +21,11 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
         private readonly ICommand _createProductCodeUKTZEDCommand;
         private readonly ICommand _exitWindowCommand;
         private IProductCodeUKTZEDServiсe _productCodeUKTZEDServiсe;
-        public CreateProductCodeUKTZEDViewModel(IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe)
+        private IHandlerOperationResultService _handlerOperationResultService;
+        public CreateProductCodeUKTZEDViewModel(IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe,IHandlerOperationResultService handlerOperationResultService)
         {
             _productCodeUKTZEDServiсe = productCodeUKTZEDServiсe;
+            _handlerOperationResultService = handlerOperationResultService;
             _productCodeUKTZED = new ProductCodeUKTZEDModel();
 
             _createProductCodeUKTZEDCommand = CreateCommandAsync(CreateProductCodeUKTZED, SetError);
@@ -95,7 +94,7 @@ namespace ShopProject.ViewModel.StoragePage.ProductCodeUKTZEDPage
             }
             else if(result.IsError) 
             {
-                SetError(result.ErrorMessage);
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result,CloseView));
             }
             else
             {

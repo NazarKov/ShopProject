@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShopProject.Core.Mvvm.Command
+namespace ShopProject.Infrastructure.Mvvm.Command
 {
     internal sealed class DelegateCommand : Command
     {

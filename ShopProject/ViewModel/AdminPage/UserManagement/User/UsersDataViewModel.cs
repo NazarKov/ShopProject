@@ -1,11 +1,12 @@
 ﻿using ShopProject.Controls.MessegeBox.Enum;
 using ShopProject.Controls.Paginator;
-using ShopProject.Core.Mvvm;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Enum;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.User;
 using ShopProject.Services.Infrastructure.Mediator;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Control.Interface;
 using ShopProject.Services.Modules.Domain.User.Interface;
 using ShopProject.Services.Modules.Mapping.User;
@@ -31,17 +32,19 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
         private bool _isReadyUpdateDataGriedView;
         private bool _reloadField;
         private readonly IMessageBoxControlService _messageBoxControlService;
+        private readonly IHandlerOperationResultService _handlerOperationResultService;
         private IUserService _userService;
-        public UsersDataViewModel(IUserService userService, IMessageBoxControlService messageBoxControlService)
+        public UsersDataViewModel(IUserService userService, IMessageBoxControlService messageBoxControlService,IHandlerOperationResultService handlerOperationResultService)
         {
             _userService = userService;
             _messageBoxControlService = messageBoxControlService;
+            _handlerOperationResultService = handlerOperationResultService;
             _users = new List<UserModel>();
             _statusUsers = new List<string>();
             _countShowList = new List<string>();
             _searchItem = string.Empty;
             _reloadField = false;
-            _openWindowCreateUserCommand = CreateCommand(() => { App.Container.GetNewViewWithViewModel<CreateUserView, CreateUserViewModel>().ShowDialog(); _updateGridViewCommad?.Execute(false); });
+            _openWindowCreateUserCommand = CreateCommand(() => { ShowWindow(App.Container.GetNewViewWithViewModel<CreateUserView, CreateUserViewModel>()); _updateGridViewCommad?.Execute(false); });
 
             _searchItemCommand = CreateCommandAsync(DebounceSearch);
             _updateGridViewCommad = CreateCommandAsync(async () => { _reloadField = false; SearchItem = string.Empty; SelectedStatusUser = 0; SelectIndexCountShowList = 0; await SetFieldPage(); });
@@ -113,7 +116,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
             set
             {
                 _selectIndexCountShowList = value; OnPropertyChanged(nameof(SelectIndexCountShowList));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -131,7 +134,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
             set
             {
                 _selectedStatusUser = value; OnPropertyChanged(nameof(SelectedStatusUser));
-                Task.Run(async () => { await UpdateDataGridView(); });
+                _ = UpdateDataGridView();
             }
         }
 
@@ -171,30 +174,30 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
         private async Task SetFieldDataGridView(int countCoulmn, int page = 1, bool reloadbutton = false)
         {
             var result = await _userService.GetPageColumn(page, countCoulmn, Enum.GetValues<TypeStatusUser>().ElementAt(SelectedStatusUser));
-            if (result != null)
+            if (result.IsSuccess)
             {
-                var paginator = result.Data;
-                if (reloadbutton)
+                if (result.Data != null)
                 {
-                    if (paginator.Pages == 0)
+                    var paginator = result.Data;
+                    if (reloadbutton)
                     {
-                        Paginator.CountButton = 1;
-                    }
-                    else
-                    {
-                        Paginator.ReloadButton = true;
-                        Paginator.CountButton = paginator.Pages;
-                    }
-                }
-                if (result.Data == null)
-                {
-                    throw new Exception("Невдалося завантажити одиниці");
-                }
-                Users = new List<UserModel>(paginator.Data.ToUserModel());
+                        if (paginator.Pages == 0)
+                        {
+                            Paginator.CountButton = 1;
+                        }
+                        else
+                        {
+                            Paginator.ReloadButton = true;
+                            Paginator.CountButton = paginator.Pages;
+                        }
+                    } 
+                    Users = new List<UserModel>(paginator.Data.ToUserModel());
+                } 
                 _isReadyUpdateDataGriedView = true;
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 Users = new List<UserModel>();
                 Paginator.CountButton = 0;
             }
@@ -259,8 +262,9 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
                 }
                 Users = new List<UserModel>(paginator.Data.ToUserModel());
             }
-            else if (result.IsError)
+            else
             {
+                await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                 Users = new List<UserModel>();
                 Paginator.CountButton = 0;
             }
@@ -308,6 +312,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "UserManagementSnadow");
                         }
                     }
@@ -337,6 +342,7 @@ namespace ShopProject.ViewModel.AdminPage.UserManagement.User
                         }
                         else
                         {
+                            await _handlerOperationResultService.CheckOperaionResultErrorStatus(result);
                             await _messageBoxControlService.Show("Невдалося виконати операцію.", "Error", MessageBoxType.Error, "UserManagementSnadow");
                         }
                     }

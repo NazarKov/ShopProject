@@ -1,6 +1,5 @@
-﻿using ShopProject.Core.Mvvm;
-using ShopProject.Core.Mvvm.Interface;
-using ShopProject.Infrastructure.CompositionRoot.Interface;
+﻿using ShopProject.Infrastructure.Mvvm;
+using ShopProject.Infrastructure.Mvvm.Interface;
 using ShopProject.Model.Domain.Notification;
 using ShopProject.Model.Navigation;
 using ShopProject.Model.UI.Product;
@@ -8,14 +7,15 @@ using ShopProject.Model.UI.ProductCodeUKTZED;
 using ShopProject.Model.UI.ProductUnit;
 using ShopProject.Services.Infrastructure.Mediator;
 using ShopProject.Services.Infrastructure.Mediator.Notifications;
+using ShopProject.Services.Modules.Common;
+using ShopProject.Services.Modules.Common.Interface;
 using ShopProject.Services.Modules.Domain.Product.Interface;
-using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface; 
+using ShopProject.Services.Modules.Domain.ProductCodeUKTZED.Interface;
 using ShopProject.Services.Modules.Domain.ProductUnit.Interface;
 using ShopProject.Services.Modules.Mapping.Product;
 using ShopProject.Services.Modules.Mapping.ProductCodeUKTZED;
-using ShopProject.Services.Modules.Mapping.ProductUnit; 
+using ShopProject.Services.Modules.Mapping.ProductUnit;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,13 +34,14 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
         private IProductServiсe _productServiсe;
         private IProductUnitServiсe _productUnitServiсe;
         private IProductCodeUKTZEDServiсe _productCodeUKTZEDServiсe;
+        private IHandlerOperationResultService _handlerOperationResultService;
 
-        public UpdateProductRangeViewModel(IProductServiсe productServiсe,IProductUnitServiсe productUnitServiсe , IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe)
+        public UpdateProductRangeViewModel(IProductServiсe productServiсe,IProductUnitServiсe productUnitServiсe , IProductCodeUKTZEDServiсe productCodeUKTZEDServiсe,IHandlerOperationResultService handlerOperationResultService)
         {
             _productServiсe = productServiсe;
             _productUnitServiсe = productUnitServiсe;
             _productCodeUKTZEDServiсe = productCodeUKTZEDServiсe;
-             
+            _handlerOperationResultService = handlerOperationResultService;
             _updateProductCommand = CreateCommandParameterAsync<ProductModel>(UpdateProduct);
             _updateProductRangeCommand = CreateCommandAsync(UpdateProductRange);
             _clearItemForListCommand = CreateCommandParameterAsync<ProductModel>(ClearItemForList);
@@ -178,14 +179,10 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 SetSuccess("Товар "+ result.Data.NameProduct +" редаговано");
                 await MediatorService.PublishNotificationsAsync<ShowNotificationEvent>(new ShowNotificationEvent(Notification.Succes("Товар", "Товар редаговано")));
                 await MediatorService.ExecuteEventAsync(NavigationButton.ReloadProduct.ToString());
-            }
-            else if (result.IsError)
-            {
-                SetError(result.ErrorMessage);
-            }
+            } 
             else
             {
-                SetError("Невдалося виконати операцію");
+                SetError(await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView));
             }
 
             Product.Remove(item);
@@ -253,16 +250,11 @@ namespace ShopProject.ViewModel.AdminPage.Storage.Product
                 Success = "Товари редаговано ";
                 ErrorTextBlockVisibiliti = Visibility.Collapsed;
                 SuccessTextBlockVisibiliti = Visibility.Visible; 
-            }
-            else if(result.IsError)
-            {
-                Error = "Невдалося редагувати товар";
-                ErrorTextBlockVisibiliti = Visibility.Visible;
-                SuccessTextBlockVisibiliti = Visibility.Collapsed; 
-            }
+            } 
             else
-            {
-                Error = "Невдалося виконати операцію";
+            { 
+                Error = await _handlerOperationResultService.CheckOperaionResultErrorStatus(result, CloseView);
+                
                 ErrorTextBlockVisibiliti = Visibility.Visible;
                 SuccessTextBlockVisibiliti = Visibility.Collapsed; 
             }
